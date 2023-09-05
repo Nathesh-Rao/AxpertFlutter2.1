@@ -1,0 +1,115 @@
+import 'dart:convert';
+
+import 'package:axpertflutter/Constants/AppStorage.dart';
+import 'package:axpertflutter/Constants/MyColors.dart';
+import 'package:axpertflutter/Constants/Routes.dart';
+import 'package:axpertflutter/Constants/const.dart';
+import 'package:axpertflutter/ModelPages/AddConnection/Controllers/AddConnectionController.dart';
+import 'package:axpertflutter/ModelPages/ProjectListing/Model/ProjectModel.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class ProjectItemListTile extends StatelessWidget {
+  String? keyValue;
+  AppStorage appStorage = AppStorage();
+
+  ProjectItemListTile(String keyvalue) {
+    keyValue = keyvalue ?? "";
+    var jsonProject = appStorage.retrieveValue(keyValue ?? "");
+    projectModel = ProjectModel.fromJson(jsonProject);
+  }
+  ProjectModel? projectModel;
+  AddConnectionController addConnectionController = Get.find();
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        appStorage.storeValue(AppStorage.cached, projectModel!.projectname);
+        Const.PROJECT_NAME = projectModel!.projectname;
+        Const.PROJECT_URL = projectModel!.web_url;
+        Const.ARM_URL = projectModel!.arm_url;
+        Get.offAndToNamed(Routes.Login);
+      },
+      child: Card(
+        elevation: 10,
+        color: MyColors.white1,
+        shadowColor: MyColors.white1,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: Padding(
+            padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  CircleAvatar(
+                    child: Text(projectModel!.projectname.characters.first
+                        .toUpperCase()),
+                  ),
+                  Container(
+                      height: 60,
+                      child: VerticalDivider(
+                        color: Colors.black38,
+                        thickness: 2,
+                      )),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          projectModel!.projectCaption,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              color: MyColors.buzzilyblack,
+                              fontWeight: FontWeight.w900,
+                              fontFamily: 'Proxima_Nova_Regular',
+                              fontSize: 15),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          projectModel!.arm_url,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              color: MyColors.buzzilyblack,
+                              fontWeight: FontWeight.w300,
+                              fontFamily: 'Proxima_Nova_Regular',
+                              fontSize: 15),
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.edit_sharp,
+                        size: 28, color: MyColors.green),
+                    tooltip: 'Edit',
+                    onPressed: () async {
+                      addConnectionController.edit(keyValue);
+                      // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => EditWelcomeSmallScreen(weburllist[i], armurllist[i], connectionnamelist[i], connectioncaptionlist[i], i)));
+                    },
+                  ),
+                  IconButton(
+                    icon:
+                        const Icon(Icons.delete, size: 28, color: MyColors.red),
+                    tooltip: 'Delete',
+                    onPressed: () async {
+                      Get.defaultDialog(
+                          title: "Alert!",
+                          barrierDismissible: false,
+                          middleText:
+                              "Please swipe item from Right to Left to delete",
+                          confirm: ElevatedButton(
+                              onPressed: () {
+                                Get.back();
+                              },
+                              child: Text("Ok")));
+                    },
+                  ),
+                ])),
+      ),
+    );
+  }
+}
