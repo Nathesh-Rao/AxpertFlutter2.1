@@ -5,8 +5,8 @@ class AppStorage {
   static String cached = "Cached";
   static String token = "Token";
   static String sessionId = "SessionID";
-  static String userID = "SessionID";
-  static String userPass = "SessionID";
+  static String userID = "userID";
+  static String userPass = "userPass";
   static String userName = "UserName";
   var box;
 

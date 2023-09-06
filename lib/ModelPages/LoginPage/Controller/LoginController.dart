@@ -145,15 +145,15 @@ class LoginController extends GetxController {
       EasyLoading.dismiss();
       if (response != "" || !response.toString().toLowerCase().contains("error")) {
         var json = jsonDecode(response);
-        // print(json);
+        // print(json["result"]["sessionid"].toString());
         if (json["result"]["success"].toString().toLowerCase() == "true") {
-          appStorage.storeValue(AppStorage.token, json["result"]["token"].toString());
-          appStorage.storeValue(AppStorage.sessionId, json["result"]["sessionid"].toString());
-          appStorage.storeValue(AppStorage.userName, userNameController.text);
+          await appStorage.storeValue(AppStorage.token, json["result"]["token"].toString());
+          await appStorage.storeValue(AppStorage.sessionId, json["result"]["sessionid"].toString());
+          await appStorage.storeValue(AppStorage.userName, userNameController.text);
           //Save Data
           if (rememberMe.value) {
-            appStorage.storeValue(AppStorage.userID, userNameController.text);
-            appStorage.storeValue(AppStorage.userPass, userPasswordController.text);
+            await appStorage.storeValue(AppStorage.userID, userNameController.text);
+            await appStorage.storeValue(AppStorage.userPass, userPasswordController.text);
           } else {
             appStorage.remove(AppStorage.userID);
             appStorage.remove(AppStorage.userPass);
@@ -162,9 +162,7 @@ class LoginController extends GetxController {
           Get.offAndToNamed(Routes.HomePage);
         } else {
           Get.snackbar("Error ", json["result"]["message"],
-              snackPosition: SnackPosition.BOTTOM,
-              backgroundColor: Colors.redAccent,
-              colorText: Colors.white);
+              snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
         }
       }
 
@@ -214,17 +212,13 @@ class LoginController extends GetxController {
         print(jsonResp);
         if (jsonResp['result']['success'].toString() == "false") {
           Get.snackbar("Alert!", jsonResp['result']['message'].toString(),
-              snackPosition: SnackPosition.BOTTOM,
-              colorText: Colors.white,
-              backgroundColor: Colors.red);
+              snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
         } else {
           Get.offAndToNamed(Routes.HomePage);
         }
       } else {
         Get.snackbar("Error", "Some Error occured",
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
-            snackPosition: SnackPosition.BOTTOM);
+            backgroundColor: Colors.red, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM);
       }
       print(resp);
       // print(googleUser);

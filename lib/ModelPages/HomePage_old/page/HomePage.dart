@@ -1,5 +1,7 @@
+import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
-import 'package:axpertflutter/ModelPages/HomePage/controller/HomePageController.dart';
+import 'package:axpertflutter/Constants/const.dart';
+import 'package:axpertflutter/ModelPages/HomePage_old/controller/HomePageController.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/ModelPages/InApplicationWebView/page/InApplicationWebView.dart';
 import 'package:flutter/material.dart';
@@ -38,14 +40,13 @@ class HomePage extends StatelessWidget {
                         child: Container(
                           margin: EdgeInsets.only(top: 40),
                           height: 250,
-                          decoration: BoxDecoration(
-                              color: Colors.white, borderRadius: BorderRadius.circular(20)),
+                          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
                           child: Column(
                             children: [
                               Container(
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+                                  borderRadius:
+                                      BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
                                   color: MyColors.buzzilyblack,
                                 ),
                                 height: 200,
@@ -89,10 +90,8 @@ class HomePage extends StatelessWidget {
                                             Text(
                                               'Manage Your Account',
                                               textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 14,
-                                                  fontFamily: "nunitoreg"),
+                                              style:
+                                                  TextStyle(color: Colors.white, fontSize: 14, fontFamily: "nunitoreg"),
                                             ),
                                           ]),
                                         ),
@@ -133,23 +132,18 @@ class HomePage extends StatelessWidget {
             body: IndexedStack(
               index: homePageController.bottomIndex.value,
               children: <Widget>[
-                Container(
-                  color: Colors.red,
-                  child: InAppWebView(
-                    initialUrlRequest: URLRequest(url: Uri.parse('google.com')),
-                  ),
+                InApplicationWebViewer(homePageController.linkList[0]),
+                InAppWebView(
+                  initialUrlRequest: URLRequest(url: Uri.parse(homePageController.linkList[1])),
                 ),
                 InAppWebView(
-                  initialUrlRequest: URLRequest(url: Uri.parse('google.com')),
+                  initialUrlRequest: URLRequest(url: Uri.parse(homePageController.linkList[2])),
                 ),
                 InAppWebView(
-                  initialUrlRequest: URLRequest(url: Uri.parse('google.com')),
+                  initialUrlRequest: URLRequest(url: Uri.parse(homePageController.linkList[3])),
                 ),
                 InAppWebView(
-                  initialUrlRequest: URLRequest(url: Uri.parse('google.com')),
-                ),
-                InAppWebView(
-                  initialUrlRequest: URLRequest(url: Uri.parse('google.com')),
+                  initialUrlRequest: URLRequest(url: Uri.parse(homePageController.linkList[4])),
                 ),
               ],
             ),
@@ -163,10 +157,8 @@ class HomePage extends StatelessWidget {
                   BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: "Home"),
                   BottomNavigationBarItem(icon: Icon(Icons.list_alt_rounded), label: "Active List"),
                   // BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: "Dashboard"),
-                  BottomNavigationBarItem(
-                      icon: Icon(Icons.calendar_month_sharp), label: "Calendar"),
-                  BottomNavigationBarItem(
-                      icon: Icon(Icons.notifications_active_outlined), label: "Notification"),
+                  BottomNavigationBarItem(icon: Icon(Icons.calendar_month_sharp), label: "Calendar"),
+                  BottomNavigationBarItem(icon: Icon(Icons.notifications_active_outlined), label: "Notification"),
                   BottomNavigationBarItem(icon: Icon(Icons.more_horiz), label: "More"),
                 ]),
           )),

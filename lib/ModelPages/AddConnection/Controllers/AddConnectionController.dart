@@ -16,6 +16,7 @@ class AddConnectionController extends GetxController {
   TextEditingController armUrlController = TextEditingController();
   TextEditingController conNameController = TextEditingController();
   TextEditingController conCaptionController = TextEditingController();
+
   var deleted = false.obs;
   var updateProjectDetails = false;
   var errCode = ''.obs;
@@ -88,15 +89,13 @@ class AddConnectionController extends GetxController {
   projetcDetailsClicked() async {
     ProjectModel projectModel;
     if (validateProjectDetailsForm()) {
-      EasyLoading.show(
-          dismissOnTap: false, status: "Please Wait...", maskType: EasyLoadingMaskType.black);
+      EasyLoading.show(dismissOnTap: false, status: "Please Wait...", maskType: EasyLoadingMaskType.black);
       var url = armUrlController.text.trim();
       url += url.endsWith("/") ? "api/v1/ARMAppStatus" : "/api/v1/ARMAppStatus";
       final data = await serverConnections.getFromServer(url: url);
       EasyLoading.dismiss();
 
-      if (data != "" &&
-          data.toString().toLowerCase().contains("running successfully".toLowerCase())) {
+      if (data != "" && data.toString().toLowerCase().contains("running successfully".toLowerCase())) {
         projectModel = ProjectModel(conNameController.text.trim(), webUrlController.text.trim(),
             armUrlController.text.trim(), conCaptionController.text.trim());
         conNameController.text = "";
@@ -153,11 +152,10 @@ class AddConnectionController extends GetxController {
   connectionCodeClick() async {
     if (validateConnectionForm()) {
       FocusManager.instance.primaryFocus?.unfocus();
-      EasyLoading.show(
-          status: "loading...", maskType: EasyLoadingMaskType.black, dismissOnTap: false);
+      EasyLoading.show(status: "loading...", maskType: EasyLoadingMaskType.black, dismissOnTap: false);
       isLoading.value = true;
-      var data = await serverConnections.postToServer(
-          ClientID: connectionCodeController.text.toString().trim().toLowerCase());
+      var data =
+          await serverConnections.postToServer(ClientID: connectionCodeController.text.toString().trim().toLowerCase());
       EasyLoading.dismiss();
       if (data == "") {
         isLoading.value = false;
@@ -176,9 +174,7 @@ class AddConnectionController extends GetxController {
           saveDatAndRedirect(model, jsonObj);
         } catch (e) {
           Get.snackbar("Invalid Project Code", "Please check project code and try again",
-              backgroundColor: Colors.redAccent,
-              snackPosition: SnackPosition.BOTTOM,
-              colorText: Colors.white);
+              backgroundColor: Colors.redAccent, snackPosition: SnackPosition.BOTTOM, colorText: Colors.white);
         }
       }
     }
@@ -217,6 +213,7 @@ class AddConnectionController extends GetxController {
             projectListingController.getConnections();
             Get.back();
             deleted.value = true;
+            projectListingController.needRefresh.value = true;
           },
           style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.red)),
           child: Text("Yes"),

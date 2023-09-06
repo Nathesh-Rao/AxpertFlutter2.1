@@ -3,6 +3,7 @@ import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:get/get.dart';
 
 class ProjectListingController extends GetxController {
+  var needRefresh = false.obs;
   var isloading = false.obs;
   List<dynamic> fullList = [].obs;
   var number = 1.obs;

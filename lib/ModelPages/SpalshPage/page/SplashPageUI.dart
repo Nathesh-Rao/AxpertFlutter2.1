@@ -2,11 +2,10 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/const.dart';
-import 'package:axpertflutter/ModelPages/HomePage/page/HomePage.dart';
 import 'package:axpertflutter/ModelPages/ProjectListing/Model/ProjectModel.dart';
-import 'package:axpertflutter/ModelPages/ProjectListing/Page/ProjectListingPage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -15,18 +14,16 @@ class SplashPage extends StatefulWidget {
   State<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage>
-    with SingleTickerProviderStateMixin {
+class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateMixin {
   var _animationController;
   AppStorage appStorage = AppStorage();
   ProjectModel? projectModel;
 
   @override
   void initState() {
-    _animationController = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 1500));
-    _animationController.repeat();
-    Future.delayed(Duration(milliseconds: 1550), () {
+    _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 800));
+    _animationController.forward();
+    Future.delayed(Duration(milliseconds: 1800), () {
       _animationController.stop();
       var cached = appStorage.retrieveValue(AppStorage.cached);
       try {
@@ -52,12 +49,8 @@ class _SplashPageState extends State<SplashPage>
       body: Stack(
         children: [
           Center(
-            child: AnimatedBuilder(
-              builder: (context, child) => Transform.rotate(
-                angle: _animationController.value * 6.3,
-                child: child,
-              ),
-              animation: _animationController,
+            child: RotationTransition(
+              turns: Tween(begin: 0.0, end: 1.0).animate(_animationController),
               child: Container(
                 height: 150,
                 width: 150,
@@ -92,4 +85,27 @@ AnimatedSplashScreen(
       nextScreen: ProjectListingPage(),
       // nextRoute: Routes.SplashScreen,
     )
-* */
+*
+AnimatedBuilder(
+              builder: (context, child) {
+                var v = Transform.rotate(
+                  angle: _animationController.value < 1 ? _animationController.value * 8 : 1,
+                  child: child,
+                );
+                print(_animationController.value);
+                return v;
+              },
+              animation: _animationController,
+              child: Container(
+                height: 150,
+                width: 150,
+                child: Image.asset(
+                  'assets/images/agilelabslogo.png',
+                  fit: BoxFit.cover,
+                ),
+              ),
+            )
+
+
+
+*/

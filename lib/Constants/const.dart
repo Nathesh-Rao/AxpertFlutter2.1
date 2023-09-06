@@ -11,11 +11,9 @@ class Const {
   static String DUMMY_USER = "admin";
   static const String DUMMYUSER_PWD = "a5ca360e803b868680e2b6f7805fcb9e";
 
-  static final String URL_JSON_OBJECTGETCHOICE =
-      "asbmenurest.dll/datasnap/rest/Tasbmenurest/getchoices";
+  static final String URL_JSON_OBJECTGETCHOICE = "asbmenurest.dll/datasnap/rest/Tasbmenurest/getchoices";
   static final String SET_HYBRID_INFO = "/Webservice.asmx/SetHybridInfo";
-  static final String SET_HYBRID_NOTIFICATION_INFO =
-      "/Webservice.asmx/SetHybridNotifiInfo";
+  static final String SET_HYBRID_NOTIFICATION_INFO = "/Webservice.asmx/SetHybridNotifiInfo";
   static final String LOGOUT_LINK = "webservice.asmx/SignOut";
   static String getSQLforClientID(String clientID) =>
       "select * from tblclientMST where " + "clientid = '" + clientID + "'";

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:axpertflutter/ModelPages/AddConnection/Controllers/AddConnectionController.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:flutter/material.dart';
@@ -39,12 +41,8 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
               ),
               SizedBox(height: 20),
               Container(
-                height: MediaQuery.of(context).size.height * 0.3 > 300
-                    ? 300
-                    : MediaQuery.of(context).size.height * 0.3,
-                width: MediaQuery.of(context).size.width * 0.7 > 300
-                    ? 300
-                    : MediaQuery.of(context).size.width * 0.7,
+                height: MediaQuery.of(context).size.height * 0.3 > 300 ? 300 : MediaQuery.of(context).size.height * 0.3,
+                width: MediaQuery.of(context).size.width * 0.7 > 300 ? 300 : MediaQuery.of(context).size.width * 0.7,
                 child: _buildQrView(context),
               ),
               SizedBox(height: 20),
@@ -56,15 +54,13 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
                         addConnectionController.qrViewController!.toggleFlash();
                         addConnectionController.isFlashOn.toggle();
                       },
-                      icon: Obx(() => addConnectionController.isFlashOn.value
-                          ? Icon(Icons.flash_off)
-                          : Icon(Icons.flash_on))),
+                      icon: Obx(() =>
+                          addConnectionController.isFlashOn.value ? Icon(Icons.flash_off) : Icon(Icons.flash_on))),
                   IconButton(
                       onPressed: () {},
-                      icon: Obx(() =>
-                          addConnectionController.isPlayPauseOn.value
-                              ? Icon(Icons.pause)
-                              : Icon(Icons.play_arrow_sharp))),
+                      icon: Obx(() => addConnectionController.isPlayPauseOn.value
+                          ? Icon(Icons.pause)
+                          : Icon(Icons.play_arrow_sharp))),
                   IconButton(
                       onPressed: () {
                         addConnectionController.qrViewController!.flipCamera();
@@ -92,13 +88,8 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
       key: qrKey,
       onQRViewCreated: _onQRViewCreated,
       overlay: QrScannerOverlayShape(
-          borderColor: MyColors.blue2,
-          borderRadius: 10,
-          borderLength: 30,
-          borderWidth: 10,
-          cutOutSize: scanArea),
-      onPermissionSet: (ctrl, p) =>
-          addConnectionController.requestPermissionForCamera(ctrl, p),
+          borderColor: MyColors.blue2, borderRadius: 10, borderLength: 30, borderWidth: 10, cutOutSize: scanArea),
+      onPermissionSet: (ctrl, p) => addConnectionController.requestPermissionForCamera(ctrl, p),
     );
   }
 
@@ -107,24 +98,25 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
       addConnectionController.qrViewController = controller;
     });
 
-    // controller.scannedDataStream.listen((scanData) {
-    //   addConnectionController.barcodeResult = scanData;
-    //   // print(scanData);
-    //   if (result.toString() != "" && result.toString() != null) {
-    //     setState(() {
-    //       scanflg = true;
-    //       startstop = false;
-    //       x = x + 1;
-    //     });
-    //   }
-    //   if (x == 1) {
-    //     print(result!);
-    //     controller.stopCamera();
-    //     _parseScanResultAndSave(result!);
-    //   } else {
-    //     controller.stopCamera();
-    //     x = 0;
-    //   }
-    // });
+    controller.scannedDataStream.listen((scanData) {
+      addConnectionController.barcodeResult = scanData;
+      // print(scanData);
+      if (addConnectionController.barcodeResult.toString() != "" &&
+          addConnectionController.barcodeResult.toString() != null) {
+        print(addConnectionController.barcodeResult.toString());
+        controller.stopCamera();
+        try {
+          //  _scanqr(result!.code.toString());
+          var json = jsonDecode(addConnectionController.barcodeResult!.code.toString());
+          // var qrResult = Scanmodel.fromJson(json);
+          // print(qrResult);
+          addConnectionController.armUrlController.text = json['arm_url'] + "/";
+          addConnectionController.webUrlController.text = json['p_url'] + "/";
+          addConnectionController.conNameController.text = json['pname'];
+          addConnectionController.conCaptionController.text = json['pname'];
+          addConnectionController.projetcDetailsClicked();
+        } catch (e) {}
+      }
+    });
   }
 }
