@@ -1,19 +1,12 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class InApplicationWebViewer extends StatefulWidget {
   InApplicationWebViewer(this.data);
@@ -24,8 +17,6 @@ class InApplicationWebViewer extends StatefulWidget {
 }
 
 class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
-  final ReceivePort _port = ReceivePort();
-
   bool _isConnectionAvailable = true;
   bool _progressBarActive = true;
   late InAppWebViewController _controller;
@@ -63,23 +54,6 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
     }
   }
 
-  Future<bool> onWillPop() async {
-    if (await _controller.canGoBack()) {
-      // var url = await _controller.getUrl().then((value) {
-      //   if (value.toString().contains("/aspx/sess.aspx") || value.toString().contains("/aspx/signin.aspx")) {
-      //     Navigator.pop(context);
-      //   } else {
-      //     // print("live");
-      //   }
-      // });
-      _controller.goBack();
-      return Future.value(false);
-    } else {
-      Navigator.of(context).pop();
-      return Future.value(true);
-    }
-  }
-
   showDialogBox() => showDialog(
       barrierDismissible: false,
       context: context,
@@ -98,10 +72,11 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
 
   @override
   void initState() {
+    // print(widget.data);
     super.initState();
     checkConnection();
-    if (Platform.isAndroid) _initForAndroid();
-    if (Platform.isIOS) _initForIOS();
+    // if (Platform.isAndroid) _initForAndroid();
+    // if (Platform.isIOS) _initForIOS();
   }
 
   @override
@@ -110,53 +85,43 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
     IsolateNameServer.removePortNameMapping("downloader_send_port");
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    setState(() {
-      if (state == AppLifecycleState.detached) {
-        // startBackServiceAgain();
-      }
-      // print("State: $state");
-    });
-  }
+  // Future<void> _initForAndroid() async {
+  //   AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
+  //   WidgetsFlutterBinding.ensureInitialized();
+  //
+  //   await FlutterDownloader.registerCallback(downloadCallback);
+  //   bool isSuccess = await IsolateNameServer.registerPortWithName(_port.sendPort, 'downloader_send_port');
+  //   _port.listen((dynamic data) {
+  //     String id = data[0];
+  //     int status = data[1];
+  //     int progress = data[2];
+  //     setState(() async {
+  //       if (progress == 100 && status == 3) {
+  //         await FlutterDownloader.open(taskId: id);
+  //       }
+  //     });
+  //     // _openDownloadedFile(progress, id);
+  //   });
+  // }
 
-  Future<void> _initForAndroid() async {
-    AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
-    WidgetsFlutterBinding.ensureInitialized();
-
-    await FlutterDownloader.registerCallback(downloadCallback);
-    bool isSuccess = await IsolateNameServer.registerPortWithName(_port.sendPort, 'downloader_send_port');
-    _port.listen((dynamic data) {
-      String id = data[0];
-      int status = data[1];
-      int progress = data[2];
-      setState(() async {
-        if (progress == 100 && status == 3) {
-          await FlutterDownloader.open(taskId: id);
-        }
-      });
-      // _openDownloadedFile(progress, id);
-    });
-  }
-
-  _initForIOS() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await FlutterDownloader.registerCallback(downloadCallback);
-    bool isSuccess = IsolateNameServer.registerPortWithName(_port.sendPort, 'downloader_send_port');
-    _port.listen((dynamic data) {
-      String id = data[0];
-      int status = data[1];
-      int progress = data[2];
-      setState(() {
-        // print("Progress: $progress and status: $status and sttt: $DownloadTaskStatus.complete; id: $id");
-        if (progress == 100 && status == 3 && id != null) {
-          FlutterDownloader.open(taskId: id);
-          print("Completedddd $status");
-        }
-      });
-      // _openDownloadedFile(progress, id);
-    });
-  }
+  // _initForIOS() async {
+  //   WidgetsFlutterBinding.ensureInitialized();
+  //   await FlutterDownloader.registerCallback(downloadCallback);
+  //   bool isSuccess = IsolateNameServer.registerPortWithName(_port.sendPort, 'downloader_send_port');
+  //   _port.listen((dynamic data) {
+  //     String id = data[0];
+  //     int status = data[1];
+  //     int progress = data[2];
+  //     setState(() {
+  //       // print("Progress: $progress and status: $status and sttt: $DownloadTaskStatus.complete; id: $id");
+  //       if (progress == 100 && status == 3 && id != null) {
+  //         FlutterDownloader.open(taskId: id);
+  //         print("Completedddd $status");
+  //       }
+  //     });
+  //     // _openDownloadedFile(progress, id);
+  //   });
+  // }
 
   @pragma('vm:entry-point')
   static void downloadCallback(String id, int status, int progress) {
@@ -164,76 +129,76 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
     send!.send([id, status, progress]);
   }
 
-  void _download(String url) async {
-    if (Platform.isAndroid) {
-      final deviceInfo = await DeviceInfoPlugin().androidInfo;
-      var status;
-      if (deviceInfo.version.sdkInt > 32) {
-        status = await Permission.photos.request().isGranted;
-        print(">32");
-      } else {
-        status = await Permission.storage.request().isGranted;
-      }
-      if (status) {
-        final id = await FileDownloader.downloadFile(
-          url: url,
-          onProgress: (fileName, progress) {
-            // print("On Progressssss");
-          },
-          onDownloadCompleted: (path) {
-            // print("Download Completed:   $path");
-            //OpenFile.open(path);
-            OpenFile.open(path);
-          },
-        );
-      } else {
-        print('Permission Denied');
-      }
-    }
-    // if(Platform.isAndroid){
-    //   final deviceInfo = await DeviceInfoPlugin().androidInfo;
-    //   var status;
-    //   if (deviceInfo.version.sdkInt > 32) {
-    //         status = await Permission.photos.request().isGranted;
-    //         print(">32");
-    //       } else {
-    //         status = await Permission.storage.request().isGranted;
-    //       }
-    //   if(status){
-    //     var documents = await AndroidPathProvider.downloadsPath;
-    //     print(documents);
-    //     final taskId = await FlutterDownloader.enqueue(
-    //       url: url,
-    //       // fileName: "Download.pdf",
-    //       savedDir: documents,
-    //       showNotification: true, // show download progress in status bar (for Android)
-    //       openFileFromNotification: true, // click on notification to open downloaded file (for Android)
-    //     );
-    //     print("Task id: $taskId");
-    //   }
-    //   else{
-    //     print("Permission Denied");
-    //   }
-    //
-    // }
-    if (Platform.isIOS) {
-      var status = await Permission.storage.request().isGranted;
-      if (status) {
-        Directory documents = await getApplicationDocumentsDirectory();
-        print(documents.path);
-        final taskId = await FlutterDownloader.enqueue(
-          url: url,
-          // fileName: "Download.pdf",
-          savedDir: documents.path,
-          showNotification: true, // show download progress in status bar (for Android)
-          openFileFromNotification: true, // click on notification to open downloaded file (for Android)
-        );
-        // print("Task id: $taskId");
-      } else {
-        print("Permission Denied");
-      }
-    }
-  }
+  // void _download(String url) async {
+  //   if (Platform.isAndroid) {
+  //     final deviceInfo = await DeviceInfoPlugin().androidInfo;
+  //     var status;
+  //     if (deviceInfo.version.sdkInt > 32) {
+  //       status = await Permission.photos.request().isGranted;
+  //       print(">32");
+  //     } else {
+  //       status = await Permission.storage.request().isGranted;
+  //     }
+  //     if (status) {
+  //       final id = await FileDownloader.downloadFile(
+  //         url: url,
+  //         onProgress: (fileName, progress) {
+  //           // print("On Progressssss");
+  //         },
+  //         onDownloadCompleted: (path) {
+  //           // print("Download Completed:   $path");
+  //           //OpenFile.open(path);
+  //           OpenFile.open(path);
+  //         },
+  //       );
+  //     } else {
+  //       print('Permission Denied');
+  //     }
+  //   }
+  //   // if(Platform.isAndroid){
+  //   //   final deviceInfo = await DeviceInfoPlugin().androidInfo;
+  //   //   var status;
+  //   //   if (deviceInfo.version.sdkInt > 32) {
+  //   //         status = await Permission.photos.request().isGranted;
+  //   //         print(">32");
+  //   //       } else {
+  //   //         status = await Permission.storage.request().isGranted;
+  //   //       }
+  //   //   if(status){
+  //   //     var documents = await AndroidPathProvider.downloadsPath;
+  //   //     print(documents);
+  //   //     final taskId = await FlutterDownloader.enqueue(
+  //   //       url: url,
+  //   //       // fileName: "Download.pdf",
+  //   //       savedDir: documents,
+  //   //       showNotification: true, // show download progress in status bar (for Android)
+  //   //       openFileFromNotification: true, // click on notification to open downloaded file (for Android)
+  //   //     );
+  //   //     print("Task id: $taskId");
+  //   //   }
+  //   //   else{
+  //   //     print("Permission Denied");
+  //   //   }
+  //   //
+  //   // }
+  //   if (Platform.isIOS) {
+  //     var status = await Permission.storage.request().isGranted;
+  //     if (status) {
+  //       Directory documents = await getApplicationDocumentsDirectory();
+  //       print(documents.path);
+  //       final taskId = await FlutterDownloader.enqueue(
+  //         url: url,
+  //         // fileName: "Download.pdf",
+  //         savedDir: documents.path,
+  //         showNotification: true, // show download progress in status bar (for Android)
+  //         openFileFromNotification: true, // click on notification to open downloaded file (for Android)
+  //       );
+  //       // print("Task id: $taskId");
+  //     } else {
+  //       print("Permission Denied");
+  //     }
+  //   }
+  // }
   //
   // @override
   // void dispose() {
@@ -276,10 +241,10 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
           onWebViewCreated: (controller) {
             _controller = controller;
           },
-          onDownloadStartRequest: (controller, downloadStartRequest) {
-            print("started");
-            _download(downloadStartRequest.url.toString());
-          },
+          // onDownloadStartRequest: (controller, downloadStartRequest) {
+          //   print("started");
+          //   _download(downloadStartRequest.url.toString());
+          // },
           androidOnPermissionRequest: (controller, origin, resources) async {
             return PermissionRequestResponse(resources: resources, action: PermissionRequestResponseAction.GRANT);
           },

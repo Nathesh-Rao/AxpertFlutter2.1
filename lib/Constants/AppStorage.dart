@@ -8,6 +8,10 @@ class AppStorage {
   static String userID = "userID";
   static String userPass = "userPass";
   static String userName = "UserName";
+
+  static String projectName = "ProjectName";
+  static String projectUrl = "ProjectUrl";
+  static String armUrl = "ArmUrl";
   var box;
 
   AppStorage() {

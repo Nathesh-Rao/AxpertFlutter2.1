@@ -41,19 +41,21 @@ class LoginController extends GetxController {
     var data = await serverConnections.postToServer(url: url, body: body);
     EasyLoading.dismiss();
 
-    data = data.toString().replaceAll("null", "\"\"");
+    if (data != "" && !data.toString().contains("error")) {
+      data = data.toString().replaceAll("null", "\"\"");
 
-    print(data);
+      print(data);
 
-    var jsopnData = jsonDecode(data)['result']['data'] as List;
-    userTypeList.clear();
-    for (var item in jsopnData) {
-      String val = item["usergroup"].toString();
-      userTypeList.add(CommonMethods.capitalize(val));
+      var jsopnData = jsonDecode(data)['result']['data'] as List;
+      userTypeList.clear();
+      for (var item in jsopnData) {
+        String val = item["usergroup"].toString();
+        userTypeList.add(CommonMethods.capitalize(val));
+      }
+      userTypeList..sort((a, b) => a.toString().toLowerCase().compareTo(b.toString().toLowerCase()));
+      ddSelectedValue.value = userTypeList[0];
+      dropDownItemChanged(ddSelectedValue);
     }
-    userTypeList..sort((a, b) => a.toString().toLowerCase().compareTo(b.toString().toLowerCase()));
-    ddSelectedValue.value = userTypeList[0];
-    dropDownItemChanged(ddSelectedValue);
   }
 
   Color getColor(Set<MaterialState> states) {
@@ -76,7 +78,7 @@ class LoginController extends GetxController {
     print(body);
     var data = await serverConnections.postToServer(url: url, body: body);
     EasyLoading.dismiss();
-    var jsopnData = jsonDecode(data);
+    // var jsopnData = jsonDecode(data);
     print(data);
   }
 
@@ -159,7 +161,7 @@ class LoginController extends GetxController {
             appStorage.remove(AppStorage.userPass);
           }
 
-          Get.offAndToNamed(Routes.HomePage);
+          ProcessLoginAndGoToHomePage();
         } else {
           Get.snackbar("Error ", json["result"]["message"],
               snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
@@ -180,7 +182,7 @@ class LoginController extends GetxController {
         idToken: googleAuth.idToken,
       );
 
-      var data = await FirebaseAuth.instance.signInWithCredential(credential);
+      await FirebaseAuth.instance.signInWithCredential(credential);
       // print("data: $data");
       // print("access token : " + googleAuth.accessToken.toString());
       // print("ID Token : " + googleAuth.idToken.toString());
@@ -214,7 +216,7 @@ class LoginController extends GetxController {
           Get.snackbar("Alert!", jsonResp['result']['message'].toString(),
               snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
         } else {
-          Get.offAndToNamed(Routes.HomePage);
+          ProcessLoginAndGoToHomePage();
         }
       } else {
         Get.snackbar("Error", "Some Error occured",
@@ -223,5 +225,36 @@ class LoginController extends GetxController {
       print(resp);
       // print(googleUser);
     }
+  }
+
+  ProcessLoginAndGoToHomePage() async {
+    //connect to Axpert
+    var conectBody = {'ARMSessionId': appStorage.retrieveValue(AppStorage.sessionId)};
+    var cUrl = Const.getFullARMUrl(ServerConnections.connectToAxpertEntryPoint);
+    var mUrl = Const.getFullARMUrl(ServerConnections.getARMMenuEntryPoint);
+    var cHeader = {
+      'Content-Type': "application/json",
+      'Authorization': 'Bearer ' + appStorage.retrieveValue(AppStorage.token)
+    };
+    var connectResp = await serverConnections.postToServer(url: cUrl, body: jsonEncode(conectBody), header: cHeader);
+    print(connectResp);
+    // getArmMenu
+    var menuResp = await serverConnections.postToServer(url: mUrl, body: jsonEncode(conectBody), header: cHeader);
+    print(menuResp);
+    var jsonResp = jsonDecode(connectResp);
+    if (jsonResp != "" && !jsonResp.toString().contains("error")) {
+      if (jsonResp['result']['success'].toString() == "true") {
+        Get.offAndToNamed(Routes.LandingPage);
+      } else {
+        showErrorSnack();
+      }
+    } else {
+      showErrorSnack();
+    }
+  }
+
+  showErrorSnack() {
+    Get.snackbar("Error", "Server busy, Please try again later.",
+        snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
   }
 }

@@ -1,6 +1,8 @@
+import 'package:axpertflutter/Constants/AppStorage.dart';
+
 class Const {
   static String DEVICE_ID = "";
-  static String PROJECT_URL = "https://app.buzzily.com/Run";
+  static String PROJECT_URL = ""; //"https://app.buzzily.com/Run";
   static String PROJECT_NAME = "axpertqa11";
   static String ARM_URL = "";
   static String GUID = "";
@@ -17,8 +19,22 @@ class Const {
   static final String LOGOUT_LINK = "webservice.asmx/SignOut";
   static String getSQLforClientID(String clientID) =>
       "select * from tblclientMST where " + "clientid = '" + clientID + "'";
-  static String getFullARMUrl(String Entrypoint) =>
-      ARM_URL.endsWith("/") ? ARM_URL + Entrypoint : ARM_URL + "/" + Entrypoint;
+  static String getFullARMUrl(String Entrypoint) {
+    if (ARM_URL == "") {
+      var data = AppStorage().retrieveValue(AppStorage.armUrl) ?? "";
+      return data.endsWith("/") ? data + Entrypoint : data + "/" + Entrypoint;
+    } else
+      return ARM_URL.endsWith("/") ? ARM_URL + Entrypoint : ARM_URL + "/" + Entrypoint;
+  }
+
+  static String getFullProjectUrl(String Entrypoint) {
+    if (PROJECT_URL == "") {
+      var data = AppStorage().retrieveValue(AppStorage.projectUrl) ?? "";
+      return data.endsWith("/") ? data + Entrypoint : data + "/" + Entrypoint;
+    } else
+      return PROJECT_URL.endsWith("/") ? PROJECT_URL + Entrypoint : PROJECT_URL + "/" + Entrypoint;
+  }
+
   static String getAppBody() => "{\"Appname\":\"" + PROJECT_NAME + "\"}";
 
   // static String getSQLforClientID(String clientID) =>

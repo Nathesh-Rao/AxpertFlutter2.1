@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
@@ -24,11 +22,14 @@ class ProjectItemListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         appStorage.storeValue(AppStorage.cached, projectModel!.projectname);
         Const.PROJECT_NAME = projectModel!.projectname;
         Const.PROJECT_URL = projectModel!.web_url;
         Const.ARM_URL = projectModel!.arm_url;
+        await appStorage.storeValue(AppStorage.projectName, projectModel!.projectname);
+        await appStorage.storeValue(AppStorage.projectUrl, projectModel!.web_url);
+        await appStorage.storeValue(AppStorage.armUrl, projectModel!.arm_url);
         Get.offAndToNamed(Routes.Login);
       },
       child: Card(

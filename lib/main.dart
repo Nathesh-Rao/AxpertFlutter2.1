@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/const.dart';
+import 'package:axpertflutter/Utils/ServerConnections/InternetConnectivity.dart';
 import 'package:axpertflutter/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -15,7 +15,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await GetStorage.init();
-  await FlutterDownloader.initialize(debug: true);
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   configureEasyLoading();
   runApp(MyApp());
@@ -33,14 +32,11 @@ void configureEasyLoading() {
     ..radius = 10.0;
 }
 
-class MyApp extends StatefulWidget {
-  MyApp({Key? key}) : super(key: key);
+// ignore: must_be_immutable
+class MyApp extends StatelessWidget {
+  MyApp({super.key});
+  InternetConnctiviry internetConnctiviry = Get.put(InternetConnctiviry());
 
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(

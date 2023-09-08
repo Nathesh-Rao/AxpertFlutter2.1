@@ -1,11 +1,7 @@
-import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
-import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/ModelPages/HomePage_old/controller/HomePageController.dart';
-import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/ModelPages/InApplicationWebView/page/InApplicationWebView.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
 
 class HomePage extends StatelessWidget {
@@ -77,6 +73,7 @@ class HomePage extends StatelessWidget {
                                       child: ElevatedButton(
                                         onPressed: () {
                                           Get.back();
+                                          showManageWindow();
                                         },
                                         child: Container(
                                           width: 170.0,
@@ -114,7 +111,10 @@ class HomePage extends StatelessWidget {
                                   'Log Out',
                                   style: TextStyle(color: Colors.white, fontSize: 14),
                                 ),
-                                onPressed: () {},
+                                onPressed: () {
+                                  Get.back();
+                                  homePageController.signOut();
+                                },
                               )),
                             ],
                           ),
@@ -133,18 +133,10 @@ class HomePage extends StatelessWidget {
               index: homePageController.bottomIndex.value,
               children: <Widget>[
                 InApplicationWebViewer(homePageController.linkList[0]),
-                InAppWebView(
-                  initialUrlRequest: URLRequest(url: Uri.parse(homePageController.linkList[1])),
-                ),
-                InAppWebView(
-                  initialUrlRequest: URLRequest(url: Uri.parse(homePageController.linkList[2])),
-                ),
-                InAppWebView(
-                  initialUrlRequest: URLRequest(url: Uri.parse(homePageController.linkList[3])),
-                ),
-                InAppWebView(
-                  initialUrlRequest: URLRequest(url: Uri.parse(homePageController.linkList[4])),
-                ),
+                InApplicationWebViewer(homePageController.linkList[1]),
+                InApplicationWebViewer(homePageController.linkList[2]),
+                InApplicationWebViewer(homePageController.linkList[1]),
+                InApplicationWebViewer(homePageController.linkList[1]),
               ],
             ),
             bottomNavigationBar: BottomNavigationBar(
@@ -163,5 +155,192 @@ class HomePage extends StatelessWidget {
                 ]),
           )),
     );
+  }
+
+  showManageWindow() {
+    return Get.dialog(Dialog(
+        backgroundColor: Colors.transparent,
+        child: Container(
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
+          height: 400,
+          child: Padding(
+            padding: EdgeInsets.all(10),
+            child: DefaultTabController(
+              length: 2,
+              child: Scaffold(
+                appBar: TabBar(unselectedLabelColor: Colors.black, labelColor: Colors.black, tabs: [
+                  Tab(
+                    text: "User Profile",
+                  ),
+                  Tab(text: "Change\nCredentials")
+                ]),
+                body: Padding(
+                  padding: EdgeInsets.only(left: 20, right: 20),
+                  child: TabBarView(
+                    children: [userProfile(), userCredentials()],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        )));
+  }
+
+  userProfile() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SizedBox(height: 20),
+        TextFormField(
+          readOnly: true,
+          enableInteractiveSelection: false,
+          keyboardType: TextInputType.text,
+          style: const TextStyle(fontFamily: "nunitobold", fontSize: 14.0),
+          decoration: const InputDecoration(
+            labelText: 'User Name',
+            hintText: 'User Name',
+          ),
+        ),
+        SizedBox(height: 20),
+        ElevatedButton(
+          onPressed: () {},
+          child: Container(
+            width: 600.0,
+            height: 30,
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(5)),
+            ),
+            padding: const EdgeInsets.fromLTRB(3.0, 6.0, 3.0, 3.0),
+            child: Column(children: const [
+              Text(
+                'Cancel',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white, fontSize: 14, fontFamily: "nunitoreg"),
+              ),
+            ]),
+          ),
+        ),
+      ],
+    );
+  }
+
+  userCredentials() {
+    return Obx(() => Column(
+          children: [
+            SizedBox(height: 20),
+            TextFormField(
+              controller: homePageController.oPassCtrl,
+              obscureText: !homePageController.showOldPass.value,
+              keyboardType: TextInputType.text,
+              onChanged: (value) {},
+              style: const TextStyle(fontFamily: "nunitobold", fontSize: 14.0),
+              decoration: InputDecoration(
+                labelText: 'Old Password',
+                hintText: 'Enter your old password',
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    homePageController.showOldPass.value ? Icons.visibility_off : Icons.visibility,
+                  ),
+                  onPressed: () {
+                    homePageController.showOldPass.toggle();
+                  },
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            TextFormField(
+              controller: homePageController.nPassCtrl,
+              obscureText: !homePageController.showNewPass.value,
+              keyboardType: TextInputType.text,
+              onChanged: (value) {},
+              style: const TextStyle(fontFamily: "nunitobold", fontSize: 14.0),
+              decoration: InputDecoration(
+                labelText: 'New Password',
+                hintText: 'Enter your new password',
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    homePageController.showNewPass.value ? Icons.visibility_off : Icons.visibility,
+                  ),
+                  onPressed: () {
+                    homePageController.showNewPass.toggle();
+                  },
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            TextFormField(
+              controller: homePageController.cnPassCtrl,
+              obscureText: !homePageController.showConNewPass.value,
+              keyboardType: TextInputType.text,
+              onChanged: (value) {},
+              style: const TextStyle(fontFamily: "nunitobold", fontSize: 14.0),
+              decoration: InputDecoration(
+                labelText: 'Confrmation Password',
+                hintText: 'Enter your Confrmation password',
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    homePageController.showConNewPass.value ? Icons.visibility_off : Icons.visibility,
+                  ),
+                  onPressed: () {
+                    homePageController.showConNewPass.toggle();
+                  },
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+              SizedBox(
+                height: 30.0,
+                width: 100.0,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  child: Container(
+                    width: 600.0,
+                    height: 30,
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                    ),
+                    padding: const EdgeInsets.fromLTRB(3.0, 6.0, 3.0, 3.0),
+                    child: Column(children: const [
+                      Text('Cancel',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white, fontSize: 14, fontFamily: "nunitoreg"))
+                    ]),
+                  ),
+                ),
+              ),
+              Container(
+                width: 15.0,
+              ),
+              SizedBox(
+                height: 30.0,
+                width: 100.0,
+                child: ElevatedButton(
+                  onPressed: () {
+                    homePageController.changePasswordCalled();
+                  },
+                  child: Container(
+                    width: 600.0,
+                    height: 30,
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(5),
+                      ),
+                    ),
+                    padding: const EdgeInsets.fromLTRB(3.0, 6.0, 3.0, 3.0),
+                    child: Text(
+                      'Update',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white, fontSize: 14, fontFamily: "nunitoreg"),
+                    ),
+                  ),
+                ),
+              )
+            ]),
+          ],
+        ));
   }
 }

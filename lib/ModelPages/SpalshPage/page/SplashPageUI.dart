@@ -1,11 +1,9 @@
-import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/ModelPages/ProjectListing/Model/ProjectModel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -21,6 +19,7 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
 
   @override
   void initState() {
+    super.initState();
     _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 800));
     _animationController.forward();
     Future.delayed(Duration(milliseconds: 1800), () {
