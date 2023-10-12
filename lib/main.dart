@@ -13,12 +13,12 @@ import 'package:platform_device_id/platform_device_id.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await GetStorage.init();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   configureEasyLoading();
   runApp(MyApp());
-
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.black38));
   try {
     Const.DEVICE_ID = await PlatformDeviceId.getDeviceId ?? "00";
   } on PlatformException {}
@@ -35,20 +35,21 @@ void configureEasyLoading() {
 // ignore: must_be_immutable
 class MyApp extends StatelessWidget {
   MyApp({super.key});
-  InternetConnctiviry internetConnctiviry = Get.put(InternetConnctiviry());
+  InternetConnectivity internetConnectivity = Get.put(InternetConnectivity());
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Axpert Flutter',
+      title: 'Axpert Flutter 2.1',
       theme: ThemeData(
         brightness: Brightness.light,
         primaryColor: Color(0xff003AA5),
         scaffoldBackgroundColor: Colors.white,
-        colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.cyan),
+        // colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.cyan),
       ),
       initialRoute: Routes.SplashScreen,
+      // initialRoute: Routes.LandingPage,
       getPages: RoutePages.pages,
       builder: EasyLoading.init(),
     );

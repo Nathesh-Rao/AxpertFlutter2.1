@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 
 class ServerConnections {
   static var client = http.Client();
-  InternetConnctiviry internetConnctiviry = Get.find();
+  InternetConnectivity internetConnectivity = Get.find();
   static String groupEntryPoint = "api/v1/ARMUserGroups";
   static String signInDetailsEntryPoint = "api/v1/ARMSigninDetails";
   static String userSignInEntryPoint = "api/v1/ARMSignIn";
@@ -19,6 +19,7 @@ class ServerConnections {
   static String googleSignInSSOEntryPoint = "api/v1/ARMSigninSSO";
   static String connectToAxpertEntryPoint = "api/v1/ARMConnectToAxpert";
   static String getHomePageCardsEntryPoint = "api/v1/ARMGetHomePageCards";
+  static String getHomePageCardsDataEntryPoint = "api/v1/ARMGetDataResponse";
 
   static String getARMMenuEntryPoint = "api/v1/ARMGetMenu";
   static String signOutEntryPoint = "api/v1/ARMSignOut";
@@ -33,14 +34,14 @@ class ServerConnections {
       "http://demo.agile-labs.com/axmclientidscripts/asbmenurest.dll/datasnap/rest/Tasbmenurest/getchoices";
 
   postToServer({String url = '', var header = '', String body = '', String ClientID = ''}) async {
-    if (await internetConnctiviry.connectionStatus)
+    if (await internetConnectivity.connectionStatus)
       try {
         if (ClientID != '') _baseBody = _generateBody(ClientID.toLowerCase());
         if (url == '') url = _baseUrl;
         if (header == '') header = {"Content-Type": "application/json"};
         if (body == '') body = _baseBody;
         print("Post Url: $url");
-        // print("Post header: $header");
+        print("Post header: $header");
         print("Post body:" + body);
         var response = await client.post(Uri.parse(url), headers: header, body: body);
         if (response.statusCode == 200) return response.body;
@@ -59,6 +60,7 @@ class ServerConnections {
         Get.snackbar("Error ", e.toString(),
             snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
       }
+
     return "";
   }
 

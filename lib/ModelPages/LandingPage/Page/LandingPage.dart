@@ -2,6 +2,8 @@ import 'package:axpertflutter/ModelPages/LandingPage/Controller/LandingPageContr
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetBottomNavigation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcolor/hexcolor.dart';
 
 class LandingPage extends StatelessWidget {
   LandingPage({super.key});
@@ -13,7 +15,21 @@ class LandingPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
-        title: Text("Axpert"),
+        title: Container(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Image.asset(
+                "assets/images/axpert.png",
+                height: 25,
+              ),
+              Text(
+                "xpert",
+                style: TextStyle(fontFamily: 'Gellix-Black', color: HexColor("#133884"), fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ),
         centerTitle: false,
         actions: [
           IconButton(
@@ -25,6 +41,7 @@ class LandingPage extends StatelessWidget {
           CircleAvatar(
             // backgroundImage: AssetImage('assets/images/profpic.jpg'),
             backgroundColor: Colors.blue,
+            backgroundImage: AssetImage("assets/images/axpert.png"),
           ),
           SizedBox(
             width: 8,

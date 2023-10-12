@@ -17,6 +17,9 @@ class AddConnectionController extends GetxController {
   TextEditingController conNameController = TextEditingController();
   TextEditingController conCaptionController = TextEditingController();
 
+  var selectedRadioValue = "QR".obs;
+  var index = 0.obs;
+
   var deleted = false.obs;
   var updateProjectDetails = false;
   var errCode = ''.obs;
@@ -34,6 +37,7 @@ class AddConnectionController extends GetxController {
 
   @override
   void onInit() {
+    selectedRadioValue = "QR".obs;
     super.onInit();
   }
 
@@ -112,6 +116,7 @@ class AddConnectionController extends GetxController {
     //if upodate is required
     if (updateProjectDetails) {
       appStorage.storeValue(projectModel.projectname, json);
+      projectListingController.needRefresh.value = true;
       Get.back(result: "{refresh:true}");
       updateProjectDetails = false;
     } else {

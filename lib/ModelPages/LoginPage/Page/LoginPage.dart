@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:axpertflutter/Constants/MyColors.dart';
@@ -6,8 +7,10 @@ import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/ModelPages/LoginPage/Controller/LoginController.dart';
 import 'package:axpertflutter/ModelPages/LoginPage/Controller/SignUpController.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 class LoginPage extends StatefulWidget {
@@ -19,10 +22,17 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   LoginController loginController = Get.put(LoginController());
+  PullToRefreshController pullToRefreshController = PullToRefreshController();
 
   @override
   Widget build(BuildContext context) {
     return Obx(() => Scaffold(
+          appBar: Platform.isIOS
+              ? AppBar(
+                  toolbarHeight: 1,
+                  backgroundColor: Colors.white,
+                )
+              : null,
           body: SafeArea(
             child: Stack(
               children: [
@@ -34,70 +44,61 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Stack(children: [
-                          Align(
-                            alignment: Alignment.topRight,
-                            child: IconButton(
-                              onPressed: () {
-                                Get.offAndToNamed(Routes.ProjectListingPage);
-                              },
-                              icon: Icon(Icons.settings),
+                        Stack(
+                          children: [
+                            Align(
+                              alignment: Alignment.topRight,
+                              child: IconButton(
+                                onPressed: () {
+                                  Get.offAndToNamed(Routes.ProjectListingPage);
+                                },
+                                icon: Icon(Icons.settings),
+                              ),
                             ),
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(height: 10),
-                              Center(
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SizedBox(height: 10),
+                                Center(
+                                  child: Image.asset(
+                                    'assets/images/buzzily-logo.png',
+                                    height: MediaQuery.of(context).size.height * 0.048,
+                                    width: MediaQuery.of(context).size.width * 0.38,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                                SizedBox(height: 25),
+                                Text('Login',
+                                    style: GoogleFonts.poppins(
+                                        textStyle:
+                                            TextStyle(fontWeight: FontWeight.w700, fontSize: 20, color: Colors.black))),
+                                SizedBox(height: 10),
+                                Text('Enter Your Credentials',
+                                    style: GoogleFonts.poppins(
+                                        textStyle:
+                                            TextStyle(fontWeight: FontWeight.w400, fontSize: 12, color: Colors.black))),
+                              ],
+                            ),
+                            Align(
+                              alignment: Alignment.topRight,
+                              child: Padding(
+                                padding: EdgeInsets.only(right: 30),
                                 child: Image.asset(
-                                  'assets/images/buzzily-logo.png',
-                                  height: MediaQuery.of(context).size.height * 0.048,
-                                  width: MediaQuery.of(context).size.width * 0.38,
+                                  'assets/images/buzzily.png',
+                                  height: MediaQuery.of(context).size.height * 0.13,
+                                  width: MediaQuery.of(context).size.width * 0.24,
                                   fit: BoxFit.fill,
                                 ),
                               ),
-                              SizedBox(height: 25),
-                              Text(
-                                'Login',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 20,
-                                    fontFamily: 'Poppins',
-                                    color: Colors.black),
-                              ),
-                              SizedBox(height: 10),
-                              Text(
-                                'Enter Your Credentials',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 12,
-                                    fontFamily: 'Poppins',
-                                    color: Colors.black),
-                              ),
-                            ],
-                          ),
-                          Align(
-                            alignment: Alignment.topRight,
-                            child: Padding(
-                              padding: EdgeInsets.only(right: 30),
-                              child: Image.asset(
-                                'assets/images/buzzily.png',
-                                height: MediaQuery.of(context).size.height * 0.13,
-                                width: MediaQuery.of(context).size.width * 0.24,
-                                fit: BoxFit.fill,
-                              ),
                             ),
-                          ),
-                        ]),
+                          ],
+                        ),
                         SizedBox(height: 5),
                         Text(
                           Const.PROJECT_NAME.toString().toUpperCase(),
-                          style: TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 10,
-                              fontFamily: 'Poppins',
-                              color: Colors.black),
+                          style: GoogleFonts.poppins(
+                              textStyle: TextStyle(fontWeight: FontWeight.w400, fontSize: 10, color: Colors.black)),
                         ),
                         SizedBox(height: 20),
                         TextField(
@@ -189,8 +190,7 @@ class _LoginPageState extends State<LoginPage> {
                                     value: loginController.rememberMe.value,
                                     onChanged: (value) => {loginController.rememberMe.toggle()},
                                     checkColor: Colors.white,
-                                    fillColor:
-                                        MaterialStateProperty.resolveWith(loginController.getColor),
+                                    fillColor: MaterialStateProperty.resolveWith(loginController.getColor),
                                   ),
                                   Text("Remember Me")
                                 ],
@@ -220,17 +220,14 @@ class _LoginPageState extends State<LoginPage> {
                             },
                             child: Container(
                               height: 50,
-                              decoration: BoxDecoration(
-                                  color: Colors.blue.shade400,
-                                  borderRadius: BorderRadius.circular(20)),
+                              decoration:
+                                  BoxDecoration(color: Colors.blue.shade400, borderRadius: BorderRadius.circular(20)),
                               child: Center(
                                 child: Text(
                                   "Login",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                      fontFamily: 'Poppins',
-                                      color: MyColors.white1),
+                                  style: GoogleFonts.poppins(
+                                      textStyle:
+                                          TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: MyColors.white1)),
                                 ),
                               ),
                             ),
@@ -257,11 +254,9 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 label: Text(
                                   'Sign In With Google',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 12,
-                                      fontFamily: 'Poppins',
-                                      color: HexColor("#3E4153")),
+                                  style: GoogleFonts.poppins(
+                                      textStyle: TextStyle(
+                                          fontWeight: FontWeight.w500, fontSize: 12, color: HexColor("#3E4153"))),
                                 ),
                                 onPressed: () {
                                   loginController.googleSignInClicked();
@@ -279,19 +274,17 @@ class _LoginPageState extends State<LoginPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text("New user?  ",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 12,
-                                        fontFamily: 'Poppins',
-                                        color: HexColor("#3E4153"))),
+                                    style: GoogleFonts.poppins(
+                                        textStyle: TextStyle(
+                                            fontWeight: FontWeight.w600, fontSize: 12, color: HexColor("#3E4153")))),
                                 Text(
                                   "Sign up",
-                                  style: TextStyle(
-                                      decoration: TextDecoration.underline,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 12,
-                                      fontFamily: 'Poppins',
-                                      color: HexColor("#4E9AF5")),
+                                  style: GoogleFonts.poppins(
+                                      textStyle: TextStyle(
+                                          decoration: TextDecoration.underline,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 12,
+                                          color: HexColor("#4E9AF5"))),
                                 )
                               ],
                             ),
@@ -301,65 +294,55 @@ class _LoginPageState extends State<LoginPage> {
                         FittedBox(
                           child: Text(
                             "By using the software, you agree to the",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 12,
-                                fontFamily: 'Poppins',
-                                letterSpacing: 1,
-                                color: Colors.black),
+                            style: GoogleFonts.poppins(
+                                textStyle: TextStyle(
+                                    fontWeight: FontWeight.w400, fontSize: 12, letterSpacing: 1, color: Colors.black)),
                           ),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             FittedBox(
-                              child: Text(
-                                "Privacy Policy",
-                                style: TextStyle(
-                                    decoration: TextDecoration.underline,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 12,
-                                    fontFamily: 'Poppins',
-                                    color: Colors.blue,
-                                    letterSpacing: 1),
-                              ),
+                              child: Text("Privacy Policy",
+                                  style: GoogleFonts.poppins(
+                                    textStyle: TextStyle(
+                                        decoration: TextDecoration.underline,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 12,
+                                        color: Colors.blue,
+                                        letterSpacing: 1),
+                                  )),
                             ),
                             FittedBox(
-                              child: Text(
-                                " and the",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 12,
-                                    fontFamily: 'Poppins',
-                                    color: Colors.black,
-                                    letterSpacing: 1),
-                              ),
+                              child: Text(" and the",
+                                  style: GoogleFonts.poppins(
+                                    textStyle: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 12,
+                                        color: Colors.black,
+                                        letterSpacing: 1),
+                                  )),
                             ),
                             FittedBox(
-                              child: Text(
-                                " Terms of Use",
-                                style: TextStyle(
-                                    decoration: TextDecoration.underline,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 12,
-                                    fontFamily: 'Poppins',
-                                    color: Colors.blue,
-                                    letterSpacing: 1),
-                              ),
+                              child: Text(" Terms of Use",
+                                  style: GoogleFonts.poppins(
+                                    textStyle: TextStyle(
+                                        decoration: TextDecoration.underline,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 12,
+                                        color: Colors.blue,
+                                        letterSpacing: 1),
+                                  )),
                             ),
                           ],
                         ),
                         SizedBox(height: 10),
-                        Text(
-                          "Powered By",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 12,
-                              fontFamily: 'Poppins',
-                              color: Colors.black,
-                              letterSpacing: 1),
-                        ),
+                        Text("Powered By",
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.poppins(
+                              textStyle: TextStyle(
+                                  fontWeight: FontWeight.w500, fontSize: 12, color: Colors.black, letterSpacing: 1),
+                            )),
                         Image.asset(
                           'assets/images/agilelabslogo.png',
                           height: MediaQuery.of(context).size.height * 0.035,
@@ -376,11 +359,11 @@ class _LoginPageState extends State<LoginPage> {
                     padding: const EdgeInsets.fromLTRB(0, 0, 10, 2),
                     child: Text(
                       "",
-                      style: TextStyle(
-                          color: MyColors.buzzilyblack,
-                          fontWeight: FontWeight.w700,
-                          fontFamily: 'Poppins',
-                          fontSize: MediaQuery.of(context).size.height * 0.012),
+                      style: GoogleFonts.poppins(
+                          textStyle: TextStyle(
+                              color: MyColors.buzzilyblack,
+                              fontWeight: FontWeight.w700,
+                              fontSize: MediaQuery.of(context).size.height * 0.012)),
                     ),
                   ),
                 )

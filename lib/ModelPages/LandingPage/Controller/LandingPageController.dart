@@ -1,26 +1,41 @@
 import 'package:axpertflutter/Constants/AppStorage.dart';
-import 'package:axpertflutter/ModelPages/LandingPage/Controller/MenuHomePageConroller.dart';
-import 'package:axpertflutter/ModelPages/LandingPage/Page/MenuActiveListPage.dart';
-import 'package:axpertflutter/ModelPages/LandingPage/Page/MenuCalendarPage.dart';
-import 'package:axpertflutter/ModelPages/LandingPage/Page/MenuDashboardPage.dart';
-import 'package:axpertflutter/ModelPages/LandingPage/Page/MenuHomePage.dart';
-import 'package:axpertflutter/ModelPages/LandingPage/Page/MenuMorePage.dart';
+import 'package:axpertflutter/ModelPages/HomePage_old/controller/HomePageController.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageConroller.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Page/MenuActiveListPage.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuCalendarPage/Page/MenuCalendarPage.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuDashboardPage/Page/MenuDashboardPage.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Page/MenuHomePage.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Page/MenuMorePage.dart';
+import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetNotification.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
+import 'package:carousel_slider/carousel_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class LandingPageController extends GetxController {
   var bottomIndex = 0.obs;
+  var carouselIndex = 0.obs;
+  final CarouselController carouselController = CarouselController();
 
   DateTime currentBackPressTime = DateTime.now();
 
   ServerConnections serverConnections = ServerConnections();
   AppStorage appStorage = AppStorage();
   var pageList = [MenuHomePage(), MenuActiveListPage(), MenuDashboardPage(), MenuCalendarPage(), MenuMorePage()];
-
+  var list = [
+    WidgetNotification("1"),
+    WidgetNotification("2"),
+    WidgetNotification("3"),
+    WidgetNotification("4"),
+    WidgetNotification("5"),
+    WidgetNotification("6"),
+  ];
   get getPage => pageList[bottomIndex.value];
 
-  indexChange(value) => bottomIndex.value = value;
+  indexChange(value) {
+    deleteController(bottomIndex.value, value);
+    bottomIndex.value = value;
+  }
 
   showNotificationIconPressed() {}
 
@@ -91,12 +106,12 @@ class LandingPageController extends GetxController {
               child: Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20),
                 child: ListView.separated(
-                  itemCount: menuHomePageController.list.length,
+                  itemCount: list.length,
                   separatorBuilder: (context, index) {
                     return Container(height: 1, color: Colors.grey.shade300);
                   },
                   itemBuilder: (context, index) {
-                    return menuHomePageController.list[index];
+                    return list[index];
                   },
                 ),
               ),
@@ -123,5 +138,18 @@ class LandingPageController extends GetxController {
         ),
       ),
     ));
+  }
+
+  void deleteController(int bottomIndex, value) {
+    // switch (bottomIndex) {
+    //   case 0:
+    //     Get.delete<MenuHomePageController>();
+    //     break;
+    // }
+    // switch (value) {
+    //   case 0:
+    //     MenuHomePageController m = Get.put(MenuHomePageController());
+    //     break;
+    // }
   }
 }

@@ -123,7 +123,7 @@ app.*.symbols
 ## Related .gitignores ##
 
 # Firebase configuration files / Google Services (e.g. APIs or Firebase)
-ios/Runner/GoogleService-Info.plist
+ios_0/Runner/GoogleService-Info.plist
 android/app/google-services.json
 
 # Google Maps API

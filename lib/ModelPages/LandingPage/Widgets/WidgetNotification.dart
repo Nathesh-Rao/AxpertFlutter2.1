@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class WidgetNotification extends StatelessWidget {
   WidgetNotification(String this.text, {super.key});
@@ -22,16 +23,14 @@ class WidgetNotification extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Declare your IT Saving" + text,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    "Declare your IT Saving..." + text,
+                    style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 15),
                   Text(
                     "IT Declaration goes here.IT Declaration goes here.IT Declaration goes here.IT Declaration goes here.IT Declaration goes here.",
                     maxLines: 3,
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
+                    style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 12)),
                   ),
                 ],
               ),

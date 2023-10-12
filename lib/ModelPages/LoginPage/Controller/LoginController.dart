@@ -36,6 +36,7 @@ class LoginController extends GetxController {
   fetchUserTypeList() async {
     EasyLoading.show(status: "Please wait...", maskType: EasyLoadingMaskType.black);
     print(Const.ARM_URL);
+    userTypeList.clear();
     var url = Const.getFullARMUrl(ServerConnections.groupEntryPoint);
     var body = Const.getAppBody();
     var data = await serverConnections.postToServer(url: url, body: body);
@@ -145,6 +146,7 @@ class LoginController extends GetxController {
       // var data = serverConnections.parseData(response);
       var response = await serverConnections.postToServer(url: url, body: body);
       EasyLoading.dismiss();
+
       if (response != "" || !response.toString().toLowerCase().contains("error")) {
         var json = jsonDecode(response);
         // print(json["result"]["sessionid"].toString());
@@ -231,7 +233,7 @@ class LoginController extends GetxController {
     //connect to Axpert
     var conectBody = {'ARMSessionId': appStorage.retrieveValue(AppStorage.sessionId)};
     var cUrl = Const.getFullARMUrl(ServerConnections.connectToAxpertEntryPoint);
-    var mUrl = Const.getFullARMUrl(ServerConnections.getARMMenuEntryPoint);
+
     var cHeader = {
       'Content-Type': "application/json",
       'Authorization': 'Bearer ' + appStorage.retrieveValue(AppStorage.token)
@@ -239,8 +241,7 @@ class LoginController extends GetxController {
     var connectResp = await serverConnections.postToServer(url: cUrl, body: jsonEncode(conectBody), header: cHeader);
     print(connectResp);
     // getArmMenu
-    var menuResp = await serverConnections.postToServer(url: mUrl, body: jsonEncode(conectBody), header: cHeader);
-    print(menuResp);
+
     var jsonResp = jsonDecode(connectResp);
     if (jsonResp != "" && !jsonResp.toString().contains("error")) {
       if (jsonResp['result']['success'].toString() == "true") {

@@ -231,32 +231,31 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
               retain: true,
             );
           },
-          initialUrlRequest: URLRequest(
-            url: Uri.parse(Uri.encodeFull(widget.data)),
-          ),
-          initialOptions: options,
-          shouldOverrideUrlLoading: (controller, navigationAction) {
-            return Future.value(NavigationActionPolicy.ALLOW);
-          },
-          onWebViewCreated: (controller) {
-            _controller = controller;
-          },
-          // onDownloadStartRequest: (controller, downloadStartRequest) {
-          //   print("started");
-          //   _download(downloadStartRequest.url.toString());
-          // },
-          androidOnPermissionRequest: (controller, origin, resources) async {
-            return PermissionRequestResponse(resources: resources, action: PermissionRequestResponseAction.GRANT);
-          },
-          onLoadError: err,
-          onProgressChanged: (controller, progress) {
-            if (progress == 100) {
-              setState(() {
-                _progressBarActive = false;
-              });
-            }
-          },
+          initialUrlRequest: URLRequest(url: WebUri(widget.data)),
         ),
+        // initialOptions: options,
+        // shouldOverrideUrlLoading: (controller, navigationAction) {
+        //   return Future.value(NavigationActionPolicy.ALLOW);
+        // },
+        // onWebViewCreated: (controller) {
+        //   _controller = controller;
+        // },
+        // onDownloadStartRequest: (controller, downloadStartRequest) {
+        //   print("started");
+        //   _download(downloadStartRequest.url.toString());
+        // },
+        // androidOnPermissionRequest: (controller, origin, resources) async {
+        //   return PermissionRequestResponse(resources: resources, action: PermissionRequestResponseAction.GRANT);
+        // },
+        // onLoadError: err,
+        //   onProgressChanged: (controller, progress) {
+        //     if (progress == 100) {
+        //       setState(() {
+        //         _progressBarActive = false;
+        //       });
+        //     }
+        //   },
+        // ),
         _progressBarActive
             ? Container(
                 child: Center(

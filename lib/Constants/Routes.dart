@@ -1,5 +1,6 @@
 import 'package:axpertflutter/ModelPages/AddConnection/page/AddNewConnections.dart';
 import 'package:axpertflutter/ModelPages/HomePage_old/page/HomePage.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Widgets/WidgetPendingListItemDetails.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Page/LandingPage.dart';
 import 'package:axpertflutter/ModelPages/LoginPage/Page/ForgetPassword.dart';
 import 'package:axpertflutter/ModelPages/LoginPage/Page/LoginPage.dart';
@@ -9,15 +10,16 @@ import 'package:axpertflutter/ModelPages/SpalshPage/page/SplashPageUI.dart';
 import 'package:get/get.dart';
 
 class Routes {
-  static String SplashScreen = "/SplashScreen";
-  static String HomePage = "/Home";
-  static String AddNewConnection = "/AddConnection";
-  static String InApplicationWebViewer = "/InApplicationWebViewer";
-  static String ProjectListingPage = "/ProjectListingPage";
-  static String Login = "/Login";
-  static String SignUp = "/SignUp";
-  static String ForgetPassword = "/ForgetPassword";
-  static String LandingPage = "/LandingPage";
+  static const String SplashScreen = "/SplashScreen";
+  static const String HomePage = "/Home";
+  static const String AddNewConnection = "/AddConnection";
+  static const String InApplicationWebViewer = "/InApplicationWebViewer";
+  static const String ProjectListingPage = "/ProjectListingPage";
+  static const String ProjectListingPageDetails = "/ProjectListingPage/Details";
+  static const String Login = "/Login";
+  static const String SignUp = "/SignUp";
+  static const String ForgetPassword = "/ForgetPassword";
+  static const String LandingPage = "/LandingPage";
 }
 
 class RoutePages {
@@ -45,6 +47,11 @@ class RoutePages {
     GetPage(
       name: Routes.ProjectListingPage,
       page: () => ProjectListingPage(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: Routes.ProjectListingPageDetails,
+      page: () => WidgetPendingListItemDetails(),
       transition: Transition.rightToLeft,
     ),
     GetPage(

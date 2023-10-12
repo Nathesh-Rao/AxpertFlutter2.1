@@ -5,6 +5,7 @@ import 'package:axpertflutter/ModelPages/LoginPage/Controller/SignUpController.d
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/otp_field_style.dart';
@@ -39,10 +40,7 @@ class _SignUpUserState extends State<SignUpUser> {
             title: Text(
               "Sign Up",
               style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  color: HexColor("#000000"),
-                  fontFamily: 'redhatsmbold'),
+                  fontWeight: FontWeight.bold, fontSize: 18, color: HexColor("#000000"), fontFamily: 'redhatsmbold'),
             ),
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
@@ -125,8 +123,7 @@ class _SignUpUserState extends State<SignUpUser> {
                           SizedBox(height: 20),
                           Text(
                             signUpController.errOtp.value,
-                            style: const TextStyle(
-                                color: MyColors.red, fontSize: 12, fontFamily: 'opensansbold'),
+                            style: const TextStyle(color: MyColors.red, fontSize: 12, fontFamily: 'opensansbold'),
                           ),
                           SizedBox(height: 30),
                           GestureDetector(
@@ -143,8 +140,7 @@ class _SignUpUserState extends State<SignUpUser> {
                               child: Center(
                                 child: Text(
                                   'Verify OTP',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 15, letterSpacing: 1),
+                                  style: TextStyle(color: Colors.white, fontSize: 15, letterSpacing: 1),
                                 ),
                               ),
                             ),
@@ -153,10 +149,8 @@ class _SignUpUserState extends State<SignUpUser> {
                           signUpController.showTimer.value
                               ? Text(
                                   "Resend OTP in " + signUpController.timerText.value.toString(),
-                                  style: const TextStyle(
-                                      color: MyColors.blue2,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w700),
+                                  style:
+                                      const TextStyle(color: MyColors.blue2, fontSize: 15, fontWeight: FontWeight.w700),
                                 )
                               : GestureDetector(
                                   onTap: () {
@@ -206,8 +200,7 @@ class _SignUpUserState extends State<SignUpUser> {
                               textInputAction: TextInputAction.next,
                               //  enabled: false,
                               decoration: InputDecoration(
-                                errorText:
-                                    signUpController.evaluteError(signUpController.errUserId),
+                                errorText: signUpController.evaluteError(signUpController.errUserId),
                                 enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(color: HexColor("#E2E1E6")),
                                 ),
@@ -215,11 +208,9 @@ class _SignUpUserState extends State<SignUpUser> {
                                   borderSide: BorderSide(color: HexColor("#E2E1E6")),
                                 ),
                                 hintText: 'User Id',
-                                hintStyle: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 15,
-                                    fontFamily: 'Poppins',
-                                    color: HexColor("#3E4153")),
+                                hintStyle: GoogleFonts.poppins(
+                                    textStyle: TextStyle(
+                                        fontWeight: FontWeight.w600, fontSize: 15, color: HexColor("#3E4153"))),
                                 prefixIcon: Icon(
                                   Icons.person,
                                   color: HexColor("#5C5C5D"),
@@ -238,8 +229,7 @@ class _SignUpUserState extends State<SignUpUser> {
 
                               //  enabled: false,
                               decoration: InputDecoration(
-                                errorText:
-                                    signUpController.evaluteError(signUpController.errUserName),
+                                errorText: signUpController.evaluteError(signUpController.errUserName),
                                 enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(color: HexColor("#E2E1E6")),
                                 ),
@@ -247,11 +237,9 @@ class _SignUpUserState extends State<SignUpUser> {
                                   borderSide: BorderSide(color: HexColor("#E2E1E6")),
                                 ),
                                 hintText: 'Username',
-                                hintStyle: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 15,
-                                    fontFamily: 'Poppins',
-                                    color: HexColor("#3E4153")),
+                                hintStyle: GoogleFonts.poppins(
+                                    textStyle: TextStyle(
+                                        fontWeight: FontWeight.w600, fontSize: 15, color: HexColor("#3E4153"))),
                                 prefixIcon: Icon(
                                   Icons.person,
                                   color: HexColor("#5C5C5D"),
@@ -267,8 +255,7 @@ class _SignUpUserState extends State<SignUpUser> {
                             obscureText: !signUpController.showPass.value,
                             textInputAction: TextInputAction.next,
                             decoration: InputDecoration(
-                              errorText:
-                                  signUpController.evaluteError(signUpController.errUserPass),
+                              errorText: signUpController.evaluteError(signUpController.errUserPass),
                               enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: HexColor("#E2E1E6")),
                               ),
@@ -276,11 +263,9 @@ class _SignUpUserState extends State<SignUpUser> {
                                 borderSide: BorderSide(color: HexColor("#E2E1E6")),
                               ),
                               hintText: 'Password',
-                              hintStyle: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
-                                  fontFamily: 'Poppins',
-                                  color: HexColor("#3E4153")),
+                              hintStyle: GoogleFonts.poppins(
+                                  textStyle:
+                                      TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: HexColor("#3E4153"))),
                               prefixIcon: Icon(
                                 Icons.lock,
                                 color: HexColor("#5C5C5D"),
@@ -288,9 +273,7 @@ class _SignUpUserState extends State<SignUpUser> {
                               ),
                               suffixIcon: GestureDetector(
                                 child: Icon(
-                                  signUpController.showPass.value
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
+                                  signUpController.showPass.value ? Icons.visibility_off : Icons.visibility,
                                   color: HexColor("#4E9AF5"),
                                 ),
                                 onTap: () {
@@ -299,10 +282,10 @@ class _SignUpUserState extends State<SignUpUser> {
                               ),
                               filled: true,
                               fillColor: MyColors.white1,
-                              labelStyle: const TextStyle(
+                              labelStyle: GoogleFonts.poppins(
+                                  textStyle: TextStyle(
                                 fontSize: 22,
-                                fontFamily: 'Poppins',
-                              ),
+                              )),
                               contentPadding: const EdgeInsets.only(top: 15, left: 10),
                             ),
                           ),
@@ -312,8 +295,7 @@ class _SignUpUserState extends State<SignUpUser> {
                             obscureText: !signUpController.showConPass.value,
                             textInputAction: TextInputAction.next,
                             decoration: InputDecoration(
-                              errorText:
-                                  signUpController.evaluteError(signUpController.errUserConPass),
+                              errorText: signUpController.evaluteError(signUpController.errUserConPass),
                               enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: HexColor("#E2E1E6")),
                               ),
@@ -333,9 +315,7 @@ class _SignUpUserState extends State<SignUpUser> {
                               ),
                               suffixIcon: GestureDetector(
                                 child: Icon(
-                                  signUpController.showConPass.value
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
+                                  signUpController.showConPass.value ? Icons.visibility_off : Icons.visibility,
                                   color: HexColor("#4E9AF5"),
                                 ),
                                 onTap: () {
@@ -359,8 +339,7 @@ class _SignUpUserState extends State<SignUpUser> {
                               textInputAction: TextInputAction.next,
                               //  enabled: false,
                               decoration: InputDecoration(
-                                errorText:
-                                    signUpController.evaluteError(signUpController.errUserEmail),
+                                errorText: signUpController.evaluteError(signUpController.errUserEmail),
                                 enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(color: HexColor("#E2E1E6")),
                                 ),
@@ -398,8 +377,7 @@ class _SignUpUserState extends State<SignUpUser> {
                                                           FilteringTextInputFormatter.deny(RegExp("[-.,' ']"))
                                                         ],*/
                               decoration: InputDecoration(
-                                errorText:
-                                    signUpController.evaluteError(signUpController.errUserMobile),
+                                errorText: signUpController.evaluteError(signUpController.errUserMobile),
                                 enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(color: HexColor("#E2E1E6")),
                                 ),
@@ -430,9 +408,8 @@ class _SignUpUserState extends State<SignUpUser> {
                               },
                               child: Container(
                                 height: 50,
-                                decoration: BoxDecoration(
-                                    color: Colors.blue.shade400,
-                                    borderRadius: BorderRadius.circular(20)),
+                                decoration:
+                                    BoxDecoration(color: Colors.blue.shade400, borderRadius: BorderRadius.circular(20)),
                                 child: Center(
                                   child: Text('Register',
                                       style: TextStyle(
