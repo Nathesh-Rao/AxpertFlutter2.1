@@ -25,16 +25,16 @@ class HomePageController extends GetxController {
   var linkList = [].obs;
   AppStorage appStorage = AppStorage();
   HomePageController() {
-    userName.value = appStorage.retrieveValue(AppStorage.userName) ?? "Demo";
+    userName.value = appStorage.retrieveValue(AppStorage.USER_NAME) ?? "Demo";
     userCtrl.text = userName.value;
     linkList.value = [
       Const.getFullProjectUrl('aspx/AxMain.aspx?pname=ddashboard&authKey=AXPERT-') +
-          appStorage.retrieveValue(AppStorage.sessionId).toString(),
+          appStorage.retrieveValue(AppStorage.SESSIONID).toString(),
       Const.getFullARMUrl('api/v1/ARMPages?page=ActiveList.html&') +
           'session=' +
-          appStorage.retrieveValue(AppStorage.sessionId).toString(),
+          appStorage.retrieveValue(AppStorage.SESSIONID).toString(),
       Const.getFullProjectUrl('aspx/AxMain.aspx?pname=hMy Calendar&authKey=AXPERT-') +
-          appStorage.retrieveValue(AppStorage.sessionId).toString(),
+          appStorage.retrieveValue(AppStorage.SESSIONID).toString(),
     ];
   }
 
@@ -60,8 +60,8 @@ class HomePageController extends GetxController {
   }
 
   signOut() async {
-    var body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.sessionId)};
-    var url = Const.getFullARMUrl(ServerConnections.signOutEntryPoint);
+    var body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
+    var url = Const.getFullARMUrl(ServerConnections.API_SIGNOUT);
     Get.defaultDialog(
         title: "Log out",
         middleText: "Are you sure you want to log out?",

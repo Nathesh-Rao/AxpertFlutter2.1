@@ -83,85 +83,101 @@ class _AddNewConnectionState extends State<AddNewConnection> {
           //   ),
           // ),
         ),
-        body: Obx(() => Column(
-              children: [
-                SizedBox(height: 10),
-                Container(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.32,
-                          child: RadioListTile(
-                            contentPadding: EdgeInsets.zero,
-                            visualDensity: const VisualDensity(horizontal: VisualDensity.minimumDensity),
-                            value: "QR",
-                            groupValue: connectionController.selectedRadioValue.value,
-                            onChanged: (v) {
-                              connectionController.selectedRadioValue.value = v.toString();
-                              connectionController.index.value = 0;
-                            },
-                            title: Text(
-                              "Scan QR Code",
-                              style: TextStyle(
-                                  color: MyColors.buzzilyblack,
-                                  //fontWeight: FontWeight.bold,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w900),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.32,
-                          child: RadioListTile(
-                            contentPadding: EdgeInsets.zero,
-                            visualDensity: const VisualDensity(horizontal: VisualDensity.minimumDensity),
-                            value: "CC",
-                            groupValue: connectionController.selectedRadioValue.value,
-                            onChanged: (v) {
-                              connectionController.selectedRadioValue.value = v.toString();
-                              connectionController.index.value = 1;
-                            },
-                            title: Text(
-                              "Connection Code",
-                              style: TextStyle(
-                                  color: MyColors.buzzilyblack,
-                                  //fontWeight: FontWeight.bold,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w900),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.32,
-                          child: RadioListTile(
-                            contentPadding: EdgeInsets.zero,
-                            visualDensity: const VisualDensity(horizontal: VisualDensity.minimumDensity),
-                            value: "URL",
-                            groupValue: connectionController.selectedRadioValue.value,
-                            onChanged: (v) {
-                              connectionController.selectedRadioValue.value = v.toString();
-                              connectionController.index.value = 2;
-                            },
-                            title: Text(
-                              "URL Details",
-                              style: TextStyle(
-                                  color: MyColors.buzzilyblack,
-                                  //fontWeight: FontWeight.bold,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w900),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+        body: Stack(
+          children: [
+            Positioned(
+                right: -50,
+                bottom: 30,
+                child: ClipRRect(
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(80), topLeft: Radius.circular(80), topRight: Radius.circular(80)),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height / 1.5,
+                    width: MediaQuery.of(context).size.width,
+                    color: MyColors.yellow1,
                   ),
-                ),
-                Expanded(child: pages[connectionController.index.value])
-              ],
-            )),
+                )),
+            Obx(() => Column(
+                  children: [
+                    SizedBox(height: 10),
+                    Container(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.32,
+                              child: RadioListTile(
+                                contentPadding: EdgeInsets.zero,
+                                visualDensity: const VisualDensity(horizontal: VisualDensity.minimumDensity),
+                                value: "QR",
+                                groupValue: connectionController.selectedRadioValue.value,
+                                onChanged: (v) {
+                                  connectionController.selectedRadioValue.value = v.toString();
+                                  connectionController.index.value = 0;
+                                },
+                                title: Text(
+                                  "Scan QR Code",
+                                  style: TextStyle(
+                                      color: MyColors.buzzilyblack,
+                                      //fontWeight: FontWeight.bold,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w900),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.32,
+                              child: RadioListTile(
+                                contentPadding: EdgeInsets.zero,
+                                visualDensity: const VisualDensity(horizontal: VisualDensity.minimumDensity),
+                                value: "CC",
+                                groupValue: connectionController.selectedRadioValue.value,
+                                onChanged: (v) {
+                                  connectionController.selectedRadioValue.value = v.toString();
+                                  connectionController.index.value = 1;
+                                },
+                                title: Text(
+                                  "Connection Code",
+                                  style: TextStyle(
+                                      color: MyColors.buzzilyblack,
+                                      //fontWeight: FontWeight.bold,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w900),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.32,
+                              child: RadioListTile(
+                                contentPadding: EdgeInsets.zero,
+                                visualDensity: const VisualDensity(horizontal: VisualDensity.minimumDensity),
+                                value: "URL",
+                                groupValue: connectionController.selectedRadioValue.value,
+                                onChanged: (v) {
+                                  connectionController.selectedRadioValue.value = v.toString();
+                                  connectionController.index.value = 2;
+                                },
+                                title: Text(
+                                  "URL Details",
+                                  style: TextStyle(
+                                      color: MyColors.buzzilyblack,
+                                      //fontWeight: FontWeight.bold,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w900),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Expanded(child: pages[connectionController.index.value])
+                  ],
+                )),
+          ],
+        ),
       ),
     );
   }

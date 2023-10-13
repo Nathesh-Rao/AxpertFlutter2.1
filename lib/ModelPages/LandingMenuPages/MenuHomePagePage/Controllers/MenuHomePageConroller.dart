@@ -22,10 +22,10 @@ class MenuHomePageController extends GetxController {
   var body, header;
 
   MenuHomePageController() {
-    body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.sessionId)};
+    body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
     header = {
       "Content-Type": "application/json",
-      'Authorization': 'Bearer ' + appStorage.retrieveValue(AppStorage.token).toString() ?? "",
+      'Authorization': 'Bearer ' + appStorage.retrieveValue(AppStorage.TOKEN).toString() ?? "",
     };
 
     getCardDetails();
@@ -61,7 +61,7 @@ class MenuHomePageController extends GetxController {
   getCardDetails() async {
     isLoading.value = true;
     EasyLoading.show(status: "Please Wait...", maskType: EasyLoadingMaskType.black);
-    var url = Const.getFullARMUrl(ServerConnections.getHomePageCardsEntryPoint);
+    var url = Const.getFullARMUrl(ServerConnections.API_GET_HOMEPAGE_CARDS);
     var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), header: header);
     print(resp);
     if (resp != "" && !resp.toString().contains("error")) {
@@ -100,7 +100,7 @@ class MenuHomePageController extends GetxController {
       return actionData;
     } else {
       // var dataSourceUrl = baseUrl + GlobalConfiguration().get("HomeCardDataResponse").toString();
-      var dataSourceUrl = Const.getFullARMUrl(ServerConnections.getHomePageCardsDataEntryPoint);
+      var dataSourceUrl = Const.getFullARMUrl(ServerConnections.API_GET_HOMEPAGE_CARDSDATASOURCE);
       var dataSourceBody = body;
       dataSourceBody["sqlParams"] = {"param": "value"};
 

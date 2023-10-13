@@ -24,7 +24,7 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
     _animationController.forward();
     Future.delayed(Duration(milliseconds: 1800), () {
       _animationController.stop();
-      var cached = appStorage.retrieveValue(AppStorage.cached);
+      var cached = appStorage.retrieveValue(AppStorage.CACHED);
       try {
         if (cached == null)
           Get.offAndToNamed(Routes.ProjectListingPage);

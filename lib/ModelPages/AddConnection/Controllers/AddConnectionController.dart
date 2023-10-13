@@ -122,12 +122,12 @@ class AddConnectionController extends GetxController {
     } else {
       //create a fresh one
       List<dynamic> projectList = [];
-      var storedList = appStorage.retrieveValue(AppStorage.projectList);
+      var storedList = appStorage.retrieveValue(AppStorage.PROJECT_LIST);
       print(storedList);
       if (storedList == null) {
         projectList.add(projectModel.projectname);
         appStorage.storeValue(projectModel.projectname, json);
-        appStorage.storeValue(AppStorage.projectList, jsonEncode(projectList));
+        appStorage.storeValue(AppStorage.PROJECT_LIST, jsonEncode(projectList));
         Get.back(result: "{refresh:true}");
       } else {
         projectList = jsonDecode(storedList);
@@ -136,7 +136,7 @@ class AddConnectionController extends GetxController {
         } else {
           projectList.add(projectModel.projectname);
           appStorage.storeValue(projectModel.projectname, json);
-          appStorage.storeValue(AppStorage.projectList, jsonEncode(projectList));
+          appStorage.storeValue(AppStorage.PROJECT_LIST, jsonEncode(projectList));
           Get.back(result: "{refresh:true}");
         }
       }
@@ -204,15 +204,15 @@ class AddConnectionController extends GetxController {
         confirm: ElevatedButton(
           onPressed: () {
             List<dynamic> projectList = [];
-            var storedList = appStorage.retrieveValue(AppStorage.projectList);
+            var storedList = appStorage.retrieveValue(AppStorage.PROJECT_LIST);
             if (storedList != null) {
               projectList = jsonDecode(storedList);
               projectList.remove(keyValue);
-              appStorage.storeValue(AppStorage.projectList, jsonEncode(projectList));
+              appStorage.storeValue(AppStorage.PROJECT_LIST, jsonEncode(projectList));
               appStorage.remove(keyValue ?? "");
-              var cached = appStorage.retrieveValue(AppStorage.cached);
+              var cached = appStorage.retrieveValue(AppStorage.CACHED);
               if (cached != null) {
-                if (cached == keyValue) appStorage.remove(AppStorage.cached);
+                if (cached == keyValue) appStorage.remove(AppStorage.CACHED);
               }
             }
             projectListingController.getConnections();

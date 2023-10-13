@@ -28,8 +28,8 @@ class LoginController extends GetxController {
 
   LoginController() {
     fetchUserTypeList();
-    userNameController.text = appStorage.retrieveValue(AppStorage.userID) ?? "";
-    userPasswordController.text = appStorage.retrieveValue(AppStorage.userPass) ?? "";
+    userNameController.text = appStorage.retrieveValue(AppStorage.USERID) ?? "";
+    userPasswordController.text = appStorage.retrieveValue(AppStorage.USER_PASSWORD) ?? "";
     if (userNameController.text.toString() != "") rememberMe.value = true;
   }
 
@@ -37,7 +37,7 @@ class LoginController extends GetxController {
     EasyLoading.show(status: "Please wait...", maskType: EasyLoadingMaskType.black);
     print(Const.ARM_URL);
     userTypeList.clear();
-    var url = Const.getFullARMUrl(ServerConnections.groupEntryPoint);
+    var url = Const.getFullARMUrl(ServerConnections.API_GET_USERGROUPS);
     var body = Const.getAppBody();
     var data = await serverConnections.postToServer(url: url, body: body);
     EasyLoading.dismiss();
@@ -74,7 +74,7 @@ class LoginController extends GetxController {
   fetchSignInDetail() async {
     EasyLoading.show(status: "Please wait...", maskType: EasyLoadingMaskType.black);
     print(Const.ARM_URL);
-    var url = Const.getFullARMUrl(ServerConnections.signInDetailsEntryPoint);
+    var url = Const.getFullARMUrl(ServerConnections.API_GET_SIGNINDETAILS);
     var body = Const.getAppBody();
     print(body);
     var data = await serverConnections.postToServer(url: url, body: body);
@@ -139,7 +139,7 @@ class LoginController extends GetxController {
       EasyLoading.show(status: "Please wait.", maskType: EasyLoadingMaskType.black);
 
       var body = await getSignInBody();
-      var url = Const.getFullARMUrl(ServerConnections.userSignInEntryPoint);
+      var url = Const.getFullARMUrl(ServerConnections.API_SIGNIN);
       print(body.toString());
       // var response = await http.post(Uri.parse(url),
       //     headers: {"Content-Type": "application/json"}, body: body);
@@ -151,16 +151,16 @@ class LoginController extends GetxController {
         var json = jsonDecode(response);
         // print(json["result"]["sessionid"].toString());
         if (json["result"]["success"].toString().toLowerCase() == "true") {
-          await appStorage.storeValue(AppStorage.token, json["result"]["token"].toString());
-          await appStorage.storeValue(AppStorage.sessionId, json["result"]["sessionid"].toString());
-          await appStorage.storeValue(AppStorage.userName, userNameController.text);
+          await appStorage.storeValue(AppStorage.TOKEN, json["result"]["token"].toString());
+          await appStorage.storeValue(AppStorage.SESSIONID, json["result"]["sessionid"].toString());
+          await appStorage.storeValue(AppStorage.USER_NAME, userNameController.text);
           //Save Data
           if (rememberMe.value) {
-            await appStorage.storeValue(AppStorage.userID, userNameController.text);
-            await appStorage.storeValue(AppStorage.userPass, userPasswordController.text);
+            await appStorage.storeValue(AppStorage.USERID, userNameController.text);
+            await appStorage.storeValue(AppStorage.USER_PASSWORD, userPasswordController.text);
           } else {
-            appStorage.remove(AppStorage.userID);
-            appStorage.remove(AppStorage.userPass);
+            appStorage.remove(AppStorage.USERID);
+            appStorage.remove(AppStorage.USER_PASSWORD);
           }
 
           ProcessLoginAndGoToHomePage();
@@ -208,7 +208,7 @@ class LoginController extends GetxController {
         },
       };
 
-      var url = Const.getFullARMUrl(ServerConnections.googleSignInSSOEntryPoint);
+      var url = Const.getFullARMUrl(ServerConnections.API_GOOGLESIGNIN_SSO);
       var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body));
       EasyLoading.dismiss();
       if (resp != "" && !resp.toString().contains("error")) {
@@ -231,12 +231,12 @@ class LoginController extends GetxController {
 
   ProcessLoginAndGoToHomePage() async {
     //connect to Axpert
-    var conectBody = {'ARMSessionId': appStorage.retrieveValue(AppStorage.sessionId)};
-    var cUrl = Const.getFullARMUrl(ServerConnections.connectToAxpertEntryPoint);
+    var conectBody = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
+    var cUrl = Const.getFullARMUrl(ServerConnections.API_CONNECTTOAXPERT);
 
     var cHeader = {
       'Content-Type': "application/json",
-      'Authorization': 'Bearer ' + appStorage.retrieveValue(AppStorage.token)
+      'Authorization': 'Bearer ' + appStorage.retrieveValue(AppStorage.TOKEN)
     };
     var connectResp = await serverConnections.postToServer(url: cUrl, body: jsonEncode(conectBody), header: cHeader);
     print(connectResp);

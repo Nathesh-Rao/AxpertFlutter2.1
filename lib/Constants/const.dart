@@ -21,7 +21,7 @@ class Const {
       "select * from tblclientMST where " + "clientid = '" + clientID + "'";
   static String getFullARMUrl(String Entrypoint) {
     if (ARM_URL == "") {
-      var data = AppStorage().retrieveValue(AppStorage.armUrl) ?? "";
+      var data = AppStorage().retrieveValue(AppStorage.ARM_URL) ?? "";
       return data.endsWith("/") ? data + Entrypoint : data + "/" + Entrypoint;
     } else
       return ARM_URL.endsWith("/") ? ARM_URL + Entrypoint : ARM_URL + "/" + Entrypoint;
@@ -29,7 +29,7 @@ class Const {
 
   static String getFullProjectUrl(String Entrypoint) {
     if (PROJECT_URL == "") {
-      var data = AppStorage().retrieveValue(AppStorage.projectUrl) ?? "";
+      var data = AppStorage().retrieveValue(AppStorage.PROJECT_URL) ?? "";
       return data.endsWith("/") ? data + Entrypoint : data + "/" + Entrypoint;
     } else
       return PROJECT_URL.endsWith("/") ? PROJECT_URL + Entrypoint : PROJECT_URL + "/" + Entrypoint;

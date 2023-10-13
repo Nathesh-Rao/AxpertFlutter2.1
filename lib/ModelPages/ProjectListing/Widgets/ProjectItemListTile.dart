@@ -23,13 +23,13 @@ class ProjectItemListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        appStorage.storeValue(AppStorage.cached, projectModel!.projectname);
+        appStorage.storeValue(AppStorage.CACHED, projectModel!.projectname);
         Const.PROJECT_NAME = projectModel!.projectname;
         Const.PROJECT_URL = projectModel!.web_url;
         Const.ARM_URL = projectModel!.arm_url;
-        await appStorage.storeValue(AppStorage.projectName, projectModel!.projectname);
-        await appStorage.storeValue(AppStorage.projectUrl, projectModel!.web_url);
-        await appStorage.storeValue(AppStorage.armUrl, projectModel!.arm_url);
+        await appStorage.storeValue(AppStorage.PROJECT_NAME, projectModel!.projectname);
+        await appStorage.storeValue(AppStorage.PROJECT_URL, projectModel!.web_url);
+        await appStorage.storeValue(AppStorage.ARM_URL, projectModel!.arm_url);
         Get.offAndToNamed(Routes.Login);
       },
       child: Card(

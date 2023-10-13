@@ -1,17 +1,17 @@
 import 'package:get_storage/get_storage.dart';
 
 class AppStorage {
-  static String projectList = "ProjectList";
-  static String cached = "Cached";
-  static String token = "Token";
-  static String sessionId = "SessionID";
-  static String userID = "userID";
-  static String userPass = "userPass";
-  static String userName = "UserName";
+  static const String PROJECT_LIST = "ProjectList";
+  static const String CACHED = "Cached";
+  static const String TOKEN = "Token";
+  static const String SESSIONID = "SessionID";
+  static const String USERID = "userID";
+  static const String USER_PASSWORD = "userPass";
+  static const String USER_NAME = "UserName";
 
-  static String projectName = "ProjectName";
-  static String projectUrl = "ProjectUrl";
-  static String armUrl = "ArmUrl";
+  static const String PROJECT_NAME = "ProjectName";
+  static const String PROJECT_URL = "ProjectUrl";
+  static const String ARM_URL = "ArmUrl";
   var box;
 
   AppStorage() {

@@ -86,7 +86,7 @@ class ForgetPasswordController extends GetxController {
     if (vaidateForm()) {
       EasyLoading.show(status: "Please wait...", maskType: EasyLoadingMaskType.black);
       Map body = {'email': emailController.text.trim().toString()};
-      var url = Const.getFullARMUrl(ServerConnections.forgetPasswordEntryPoint);
+      var url = Const.getFullARMUrl(ServerConnections.API_FORGETPASSWORD);
       var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body));
       EasyLoading.dismiss();
       if (resp.toString() != "" && !resp.toString().toLowerCase().contains("error")) {
@@ -128,7 +128,7 @@ class ForgetPasswordController extends GetxController {
       'regid': regID.value,
       'otp': enteredPin.value,
     };
-    var url = Const.getFullARMUrl(ServerConnections.otpValidationEntryPoint);
+    var url = Const.getFullARMUrl(ServerConnections.API_OTP_VALIDATE_USER);
     var responses = await serverConnections.postToServer(url: url, body: jsonEncode(otpBody));
     print(responses);
     if (responses != "" && !responses.toString().toLowerCase().contains("error")) {
@@ -170,7 +170,7 @@ class ForgetPasswordController extends GetxController {
         'updatedPassword': passwordController.text.trim().toString(),
         'otp': otpController.text.trim().toString(),
       };
-      var url = Const.getFullARMUrl(ServerConnections.validateForgetPasswordEntryPoint);
+      var url = Const.getFullARMUrl(ServerConnections.API_VALIDATE_FORGETPASSWORD);
       var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body));
       EasyLoading.dismiss();
       if (resp != "" && !resp.toString().toLowerCase().contains(("error"))) {

@@ -55,7 +55,7 @@ class SignUpController extends GetxController {
   fetchUserTypeList() async {
     EasyLoading.show(status: "Please wait...", maskType: EasyLoadingMaskType.black);
 
-    var url = Const.getFullARMUrl(ServerConnections.groupEntryPoint);
+    var url = Const.getFullARMUrl(ServerConnections.API_GET_USERGROUPS);
     var body = Const.getAppBody();
     var data = await serverConnections.postToServer(url: url, body: body);
     EasyLoading.dismiss();
@@ -202,7 +202,7 @@ class SignUpController extends GetxController {
     if (validateForm()) {
       EasyLoading.show(status: "Please wait...", maskType: EasyLoadingMaskType.black);
       var body = getJsonBody();
-      var url = Const.getFullARMUrl(ServerConnections.addUserEntryPoint);
+      var url = Const.getFullARMUrl(ServerConnections.API_ADDUSER);
       var responses = await serverConnections.postToServer(url: url, body: body);
       try {
         if (responses != "" && !responses.toString().toLowerCase().contains("error")) {
@@ -267,7 +267,7 @@ class SignUpController extends GetxController {
       'regid': regID.value,
       'otp': enteredPin.value,
     };
-    var url = Const.getFullARMUrl(ServerConnections.otpValidationEntryPoint);
+    var url = Const.getFullARMUrl(ServerConnections.API_OTP_VALIDATE_USER);
     var responses = await serverConnections.postToServer(url: url, body: jsonEncode(otpBody));
     print(responses);
     if (responses != "" && !responses.toString().toLowerCase().contains("error")) {

@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light,
         primaryColor: Color(0xff003AA5),
         scaffoldBackgroundColor: Colors.white,
-        // colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.cyan),
+        colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.indigo),
       ),
       initialRoute: Routes.SplashScreen,
       // initialRoute: Routes.LandingPage,

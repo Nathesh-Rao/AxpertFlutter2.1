@@ -8,21 +8,21 @@ import 'package:http/http.dart' as http;
 class ServerConnections {
   static var client = http.Client();
   InternetConnectivity internetConnectivity = Get.find();
-  static String groupEntryPoint = "api/v1/ARMUserGroups";
-  static String signInDetailsEntryPoint = "api/v1/ARMSigninDetails";
-  static String userSignInEntryPoint = "api/v1/ARMSignIn";
-  static String appStatusEntryPoint = "api/v1/ARMAppStatus";
-  static String addUserEntryPoint = "api/v1/ARMAddUser";
-  static String otpValidationEntryPoint = "api/v1/ARMValidateAddUser";
-  static String forgetPasswordEntryPoint = "api/v1/ARMForgetPassword";
-  static String validateForgetPasswordEntryPoint = "api/v1/ARMValidateForgotPassword";
-  static String googleSignInSSOEntryPoint = "api/v1/ARMSigninSSO";
-  static String connectToAxpertEntryPoint = "api/v1/ARMConnectToAxpert";
-  static String getHomePageCardsEntryPoint = "api/v1/ARMGetHomePageCards";
-  static String getHomePageCardsDataEntryPoint = "api/v1/ARMGetDataResponse";
+  static const String API_GET_USERGROUPS = "api/v1/ARMUserGroups";
+  static const String API_GET_SIGNINDETAILS = "api/v1/ARMSigninDetails";
+  static const String API_SIGNIN = "api/v1/ARMSignIn";
+  static const String API_GET_APPSTATUS = "api/v1/ARMAppStatus";
+  static const String API_ADDUSER = "api/v1/ARMAddUser";
+  static const String API_OTP_VALIDATE_USER = "api/v1/ARMValidateAddUser";
+  static const String API_FORGETPASSWORD = "api/v1/ARMForgetPassword";
+  static const String API_VALIDATE_FORGETPASSWORD = "api/v1/ARMValidateForgotPassword";
+  static const String API_GOOGLESIGNIN_SSO = "api/v1/ARMSigninSSO";
+  static const String API_CONNECTTOAXPERT = "api/v1/ARMConnectToAxpert";
+  static const String API_GET_HOMEPAGE_CARDS = "api/v1/ARMGetHomePageCards";
+  static const String API_GET_HOMEPAGE_CARDSDATASOURCE = "api/v1/ARMGetDataResponse";
 
-  static String getARMMenuEntryPoint = "api/v1/ARMGetMenu";
-  static String signOutEntryPoint = "api/v1/ARMSignOut";
+  static const String API_GET_MENU = "api/v1/ARMGetMenu";
+  static const String API_SIGNOUT = "api/v1/ARMSignOut";
 
   ServerConnections() {
     client = http.Client();

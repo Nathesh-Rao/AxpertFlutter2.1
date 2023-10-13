@@ -46,11 +46,11 @@ class MenuMorePageController extends GetxController {
   }
 
   getMenuList() async {
-    var mUrl = Const.getFullARMUrl(ServerConnections.getARMMenuEntryPoint);
-    var conectBody = {'ARMSessionId': appStorage.retrieveValue(AppStorage.sessionId)};
+    var mUrl = Const.getFullARMUrl(ServerConnections.API_GET_MENU);
+    var conectBody = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
     var cHeader = {
       'Content-Type': "application/json",
-      'Authorization': 'Bearer ' + appStorage.retrieveValue(AppStorage.token)
+      'Authorization': 'Bearer ' + appStorage.retrieveValue(AppStorage.TOKEN)
     };
     var menuResp = await serverConnections.postToServer(url: mUrl, body: jsonEncode(conectBody), header: cHeader);
 
