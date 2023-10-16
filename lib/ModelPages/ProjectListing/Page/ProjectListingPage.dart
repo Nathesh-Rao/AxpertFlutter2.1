@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/ModelPages/AddConnection/Controllers/AddConnectionController.dart';
@@ -35,7 +37,6 @@ class _ProjectListingPageState extends State<ProjectListingPage> {
 
   _NavigateToAddConnectionPage() async {
     var data = await Get.toNamed(Routes.AddNewConnection);
-    print(data);
     if (data != null) {
       if (projectListingController.isCountAvailable.value == false)
         projectListingController.isCountAvailable.value = true;
@@ -50,6 +51,12 @@ class _ProjectListingPageState extends State<ProjectListingPage> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: MyColors.white1,
+        appBar: Platform.isIOS
+            ? AppBar(
+                toolbarHeight: 0,
+                backgroundColor: Colors.white,
+              )
+            : null,
         body: LoadingOverlay(
           isLoading: projectListingController.isloading.value,
           progressIndicator: const CircularProgressIndicator(),
@@ -144,7 +151,7 @@ class _ProjectListingPageState extends State<ProjectListingPage> {
                                                           itemBuilder: (_, index) {
                                                             return GestureDetector(
                                                               onTap: () {
-                                                                print(snapshot.data![index]);
+                                                                print("index data: " + snapshot.data![index]);
                                                               },
                                                               child: Dismissible(
                                                                   background: Container(

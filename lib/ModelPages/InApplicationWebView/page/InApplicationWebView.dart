@@ -231,7 +231,7 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
               retain: true,
             );
           },
-          initialUrlRequest: URLRequest(url: WebUri(widget.data)),
+          initialUrlRequest: URLRequest(url: Uri.parse(widget.data)),
         ),
         // initialOptions: options,
         // shouldOverrideUrlLoading: (controller, navigationAction) {

@@ -77,97 +77,100 @@ reBuild(MenuMorePageController menuMorePageController) {
           FutureBuilder(
             future: menuMorePageController.futureBuilder(),
             builder: (context, snapshot) {
-              if (snapshot.hasData)
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: ClampingScrollPhysics(),
-                  itemCount: menuMorePageController.fetchList.value.length,
-                  itemBuilder: (context, mainIndex) {
-                    return Container(
-                      margin: EdgeInsets.only(bottom: 15),
-                      decoration: BoxDecoration(
-                          border: Border.all(width: 1, color: HexColor('EDF0F8')),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Theme(
-                        data: ThemeData().copyWith(dividerColor: Colors.transparent),
-                        child: ExpansionTile(
-                          initiallyExpanded: true,
-                          title: Text(
-                            menuMorePageController.fetchList.value[mainIndex].toString(),
-                            textAlign: TextAlign.left,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.poppins(
-                                textStyle:
-                                    TextStyle(color: HexColor("#3E4153"), fontSize: 14, fontWeight: FontWeight.w900)),
-                          ),
-                          children: [
-                            SizedBox(height: 3),
-                            Container(
-                              height: 1,
-                              color: Colors.grey.withOpacity(0.4),
+              if (snapshot.hasData) {
+                if (menuMorePageController.fetchList.value.length == 0)
+                  return Text("Menu is not Initialized");
+                else
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: ClampingScrollPhysics(),
+                    itemCount: menuMorePageController.fetchList.value.length,
+                    itemBuilder: (context, mainIndex) {
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 15),
+                        decoration: BoxDecoration(
+                            border: Border.all(width: 1, color: HexColor('EDF0F8')),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Theme(
+                          data: ThemeData().copyWith(dividerColor: Colors.transparent),
+                          child: ExpansionTile(
+                            initiallyExpanded: true,
+                            title: Text(
+                              menuMorePageController.fetchList.value[mainIndex].toString(),
+                              textAlign: TextAlign.left,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.poppins(
+                                  textStyle:
+                                      TextStyle(color: HexColor("#3E4153"), fontSize: 14, fontWeight: FontWeight.w900)),
                             ),
-                            GridView.builder(
-                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                  childAspectRatio: 1,
-                                  crossAxisCount: 3, // HERE YOU CAN ADD THE NO OF ITEMS PER LINE
-                                  mainAxisSpacing: 10,
-                                  crossAxisSpacing: 10),
-                              // childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height / 5),
-                              shrinkWrap: true,
-                              physics: ClampingScrollPhysics(),
-                              itemCount: menuMorePageController.getSubmenuItemList(mainIndex).length,
-                              itemBuilder: (context, index) {
-                                return GestureDetector(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        child: Material(
-                                          color: menuMorePageController.colorList[index % 8], //color
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                                          clipBehavior: Clip.antiAlias,
-                                          child: Padding(
-                                            padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
-                                            child: Icon(
-                                              menuMorePageController.IconList[index % 8], //icon
-                                              color: MyColors.white1,
-                                              size: 25,
+                            children: [
+                              SizedBox(height: 3),
+                              Container(
+                                height: 1,
+                                color: Colors.grey.withOpacity(0.4),
+                              ),
+                              GridView.builder(
+                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                    childAspectRatio: 1,
+                                    crossAxisCount: 3, // HERE YOU CAN ADD THE NO OF ITEMS PER LINE
+                                    mainAxisSpacing: 10,
+                                    crossAxisSpacing: 10),
+                                // childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height / 5),
+                                shrinkWrap: true,
+                                physics: ClampingScrollPhysics(),
+                                itemCount: menuMorePageController.getSubmenuItemList(mainIndex).length,
+                                itemBuilder: (context, index) {
+                                  return GestureDetector(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          child: Material(
+                                            color: menuMorePageController.colorList[index % 8], //color
+                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                                            clipBehavior: Clip.antiAlias,
+                                            child: Padding(
+                                              padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
+                                              child: Icon(
+                                                menuMorePageController.IconList[index % 8], //icon
+                                                color: MyColors.white1,
+                                                size: 25,
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.fromLTRB(0, 5, 0, 2),
-                                        child: Text(
-                                          menuMorePageController.getSubmenuItemList(mainIndex)[index].caption,
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 2,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              color: (HexColor("#3E4153")),
-                                              fontSize: 11,
-                                              fontFamily: "Poppins",
-                                              fontWeight: FontWeight.bold),
+                                        Padding(
+                                          padding: EdgeInsets.fromLTRB(0, 5, 0, 2),
+                                          child: Text(
+                                            menuMorePageController.getSubmenuItemList(mainIndex)[index].caption,
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 2,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: (HexColor("#3E4153")),
+                                                fontSize: 11,
+                                                fontFamily: "Poppins",
+                                                fontWeight: FontWeight.bold),
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            )
-                          ],
+                                      ],
+                                    ),
+                                  );
+                                },
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                );
-              else {
+                      );
+                    },
+                  );
+              } else {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
                 }
               }
-              return SizedBox();
+              return Text("Menu not Initialized");
             },
           )
         ],

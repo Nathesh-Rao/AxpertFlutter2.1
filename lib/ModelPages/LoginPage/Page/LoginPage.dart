@@ -5,7 +5,6 @@ import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/ModelPages/LoginPage/Controller/LoginController.dart';
-import 'package:axpertflutter/ModelPages/LoginPage/Controller/SignUpController.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -50,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
                               alignment: Alignment.topRight,
                               child: IconButton(
                                 onPressed: () {
-                                  Get.offAndToNamed(Routes.ProjectListingPage);
+                                  Get.toNamed(Routes.ProjectListingPage);
                                 },
                                 icon: Icon(Icons.settings),
                               ),
@@ -159,23 +158,6 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                         ),
-                        // FutureBuilder(
-                        //     future: loginController.fetchUserTypeList(),
-                        //     builder: (context, snapshot) {
-                        //       if (snapshot.hasData) {
-                        //         return DropdownButtonFormField(
-                        //           value: loginController.ddSelectedValue.value,
-                        //           items:
-                        //               loginController.dropdownMenuItem().toList(),
-                        //           onChanged: loginController.dropDownItemChanged,
-                        //           decoration: InputDecoration(
-                        //               border: OutlineInputBorder(
-                        //             borderRadius: BorderRadius.circular(10),
-                        //           )),
-                        //         );
-                        //       }
-                        //       return Text("");
-                        //     }),
                         SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -234,7 +216,6 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         SizedBox(height: 10),
-
                         Visibility(
                           visible: loginController.googleSigninVisible.value,
                           child: Padding(
@@ -345,8 +326,8 @@ class _LoginPageState extends State<LoginPage> {
                             )),
                         Image.asset(
                           'assets/images/agilelabslogo.png',
-                          height: MediaQuery.of(context).size.height * 0.035,
-                          width: MediaQuery.of(context).size.width * 0.075,
+                          height: MediaQuery.of(context).size.height * 0.04,
+                          // width: MediaQuery.of(context).size.width * 0.075,
                           fit: BoxFit.fill,
                         ),
                       ],
@@ -356,9 +337,9 @@ class _LoginPageState extends State<LoginPage> {
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 10, 2),
+                    padding: const EdgeInsets.fromLTRB(0, 0, 25, 10),
                     child: Text(
-                      "",
+                      "Version: 2.1.0",
                       style: GoogleFonts.poppins(
                           textStyle: TextStyle(
                               color: MyColors.buzzilyblack,

@@ -26,37 +26,29 @@ class _ConnectCodeState extends State<ConnectCode> {
         ),
         child: Obx(() => Padding(
               padding: EdgeInsets.fromLTRB(20, 20, 20, 100),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(height: 20),
-                    Text("Connection Code",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold)),
-                    SizedBox(height: 20),
-                    TextField(
-                      controller:
-                          addConnectionController.connectionCodeController,
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                              borderSide: BorderSide(width: 1),
-                              borderRadius: BorderRadius.circular(10)),
-                          hintText: "Enter Connection Code",
-                          errorText: addConnectionController.evaluteErrorText(
-                              addConnectionController.errCode),
-                          label: Text("Connection Code")),
-                    ),
-                    SizedBox(height: 20),
-                    Center(
-                      child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: Size(200, 40),
-                          ),
-                          onPressed:
-                              addConnectionController.connectionCodeClick,
-                          child: Text("SAVE")),
-                    ),
-                  ]),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
+                SizedBox(height: 20),
+                Text("Connection Code", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                SizedBox(height: 20),
+                TextField(
+                  controller: addConnectionController.connectionCodeController,
+                  decoration: InputDecoration(
+                      border:
+                          OutlineInputBorder(borderSide: BorderSide(width: 1), borderRadius: BorderRadius.circular(10)),
+                      hintText: "Enter Connection Code",
+                      errorText: addConnectionController.evaluateErrorText(addConnectionController.errCode),
+                      label: Text("Connection Code")),
+                ),
+                SizedBox(height: 20),
+                Center(
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: Size(200, 40),
+                      ),
+                      onPressed: addConnectionController.connectionCodeClick,
+                      child: Text("SAVE")),
+                ),
+              ]),
             )),
       ),
     );

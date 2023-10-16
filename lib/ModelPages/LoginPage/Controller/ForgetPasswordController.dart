@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
 class ForgetPasswordController extends GetxController {
@@ -84,19 +84,17 @@ class ForgetPasswordController extends GetxController {
 
   void proceedButtonClicked() async {
     if (vaidateForm()) {
-      EasyLoading.show(status: "Please wait...", maskType: EasyLoadingMaskType.black);
+      LoadingScreen.show();
       Map body = {'email': emailController.text.trim().toString()};
       var url = Const.getFullARMUrl(ServerConnections.API_FORGETPASSWORD);
       var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body));
-      EasyLoading.dismiss();
+      LoadingScreen.dismiss();
       if (resp.toString() != "" && !resp.toString().toLowerCase().contains("error")) {
         var jsonMsg = jsonDecode(resp);
         print(jsonMsg);
         if (jsonMsg['result']['success'].toString() == "false") {
           Get.snackbar("Alert!", jsonMsg['result']['message'],
-              snackPosition: SnackPosition.BOTTOM,
-              colorText: Colors.white,
-              backgroundColor: Colors.red);
+              snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
         } else {
           otpAttempts.value = jsonMsg["result"]["otpattemptsleft"];
           regID.value = jsonMsg["result"]["regid"];
@@ -123,7 +121,7 @@ class ForgetPasswordController extends GetxController {
   }
 
   void verifyOtp() async {
-    EasyLoading.show(status: "Please wait...", maskType: EasyLoadingMaskType.black);
+    LoadingScreen.show();
     Map otpBody = {
       'regid': regID.value,
       'otp': enteredPin.value,
@@ -140,7 +138,7 @@ class ForgetPasswordController extends GetxController {
       Get.back();
     }
     reSendOtpCount++;
-    EasyLoading.dismiss();
+    LoadingScreen.dismiss();
   }
 
   void reSendOTP() {
@@ -160,7 +158,7 @@ class ForgetPasswordController extends GetxController {
 
   void submitOTPClicked() async {
     if (validateOTPSubmittionForm()) {
-      EasyLoading.show(status: "Please wait...", maskType: EasyLoadingMaskType.black);
+      LoadingScreen.show();
       // {"appname": "hcmdev","email": "debasish@agile-labs.com","regid":
       // "4091b470-f0ea-4819-bf4e-a9dc3f457ce6","updatedPassword": "Qwer@123","otp": "334444"}
       Map body = {
@@ -172,14 +170,12 @@ class ForgetPasswordController extends GetxController {
       };
       var url = Const.getFullARMUrl(ServerConnections.API_VALIDATE_FORGETPASSWORD);
       var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body));
-      EasyLoading.dismiss();
+      LoadingScreen.dismiss();
       if (resp != "" && !resp.toString().toLowerCase().contains(("error"))) {
         var jsonResp = jsonDecode(resp);
         if (jsonResp['result']['success'].toString() == "false") {
           Get.snackbar("Alert!", jsonResp['result']['message'],
-              snackPosition: SnackPosition.BOTTOM,
-              colorText: Colors.white,
-              backgroundColor: Colors.red);
+              snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
         } else {
           Get.defaultDialog(
               title: "Success",

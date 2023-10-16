@@ -62,7 +62,8 @@ class WidgetCard extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 5, bottom: 2),
                 child: Text(
                   cardModel.caption,
-                  style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 14, color: HexColor("#444444"))),
+                  style: GoogleFonts.roboto(
+                      textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: HexColor("#444444"))),
                 ),
               ),
             ),

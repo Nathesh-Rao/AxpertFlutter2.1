@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:axpertflutter/ModelPages/AddConnection/Controllers/AddConnectionController.dart';
@@ -57,8 +58,16 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
                       icon: Obx(() =>
                           addConnectionController.isFlashOn.value ? Icon(Icons.flash_off) : Icon(Icons.flash_on))),
                   IconButton(
-                      onPressed: () {},
-                      icon: Obx(() => addConnectionController.isPlayPauseOn.value
+                      onPressed: () async {
+                        if (!addConnectionController.isPlayPauseOn.value) {
+                          await addConnectionController.qrViewController!.pauseCamera();
+                          addConnectionController.isPlayPauseOn.toggle();
+                        } else {
+                          await addConnectionController.qrViewController!.resumeCamera();
+                          addConnectionController.isPlayPauseOn.toggle();
+                        }
+                      },
+                      icon: Obx(() => !addConnectionController.isPlayPauseOn.value
                           ? Icon(Icons.pause)
                           : Icon(Icons.play_arrow_sharp))),
                   IconButton(
@@ -66,6 +75,12 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
                         addConnectionController.qrViewController!.flipCamera();
                       },
                       icon: Icon(Icons.flip_camera_ios)),
+                  //Pick image from gallery
+                  IconButton(
+                      onPressed: () {
+                        print("To be Implemented");
+                      },
+                      icon: Icon(Icons.filter)),
                 ],
               )
             ],
@@ -104,18 +119,19 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
       if (addConnectionController.barcodeResult.toString() != "" &&
           addConnectionController.barcodeResult.toString() != null) {
         print(addConnectionController.barcodeResult.toString());
-        controller.stopCamera();
-        try {
-          //  _scanqr(result!.code.toString());
-          var json = jsonDecode(addConnectionController.barcodeResult!.code.toString());
-          // var qrResult = Scanmodel.fromJson(json);
-          // print(qrResult);
-          addConnectionController.armUrlController.text = json['arm_url'] + "/";
-          addConnectionController.webUrlController.text = json['p_url'] + "/";
-          addConnectionController.conNameController.text = json['pname'];
-          addConnectionController.conCaptionController.text = json['pname'];
-          addConnectionController.projetcDetailsClicked();
-        } catch (e) {}
+        controller.pauseCamera();
+        var data = addConnectionController.barcodeResult!.code.toString();
+        if (data == "" || !addConnectionController.validateQRData(data)) {
+          Get.snackbar("Invalid!", "Please choose a valid QR Code",
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: Colors.red,
+              colorText: Colors.white,
+              duration: Duration(seconds: 1));
+          Timer(Duration(seconds: 2), () {
+            controller!.resumeCamera();
+          });
+        } else
+          addConnectionController.decodeQRResult(data);
       }
     });
   }

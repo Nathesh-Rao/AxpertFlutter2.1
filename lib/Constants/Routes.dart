@@ -1,6 +1,6 @@
 import 'package:axpertflutter/ModelPages/AddConnection/page/AddNewConnections.dart';
 import 'package:axpertflutter/ModelPages/HomePage_old/page/HomePage.dart';
-import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Widgets/WidgetPendingListItemDetails.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Page/PendingListItemDetails.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Page/LandingPage.dart';
 import 'package:axpertflutter/ModelPages/LoginPage/Page/ForgetPassword.dart';
 import 'package:axpertflutter/ModelPages/LoginPage/Page/LoginPage.dart';
@@ -51,7 +51,7 @@ class RoutePages {
     ),
     GetPage(
       name: Routes.ProjectListingPageDetails,
-      page: () => WidgetPendingListItemDetails(),
+      page: () => PendingListItemDetails(),
       transition: Transition.rightToLeft,
     ),
     GetPage(

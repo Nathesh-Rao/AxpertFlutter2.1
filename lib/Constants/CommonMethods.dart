@@ -1,4 +1,11 @@
-class CommonMethods{
+import 'dart:async';
+
+import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get/get.dart';
+
+class CommonMethods {
   static String capitalize(String value) {
     var result = value[0].toUpperCase();
     bool cap = true;
@@ -12,5 +19,28 @@ class CommonMethods{
     }
     return result;
   }
+}
 
+class LoadingScreen {
+  static const backName = "DisableBack";
+  static show({status = "Please Wait...", maskType = EasyLoadingMaskType.clear}) {
+    BackButtonInterceptor.add(myInterceptor, zIndex: 2, name: backName);
+    EasyLoading.show(status: status, maskType: maskType, dismissOnTap: false);
+    Timer(Duration(seconds: 20), () {
+      if (EasyLoading.isShow) {
+        dismiss();
+        Get.snackbar("Error", "Unable to fetch data",
+            snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red, colorText: Colors.white);
+      }
+    });
+  }
+
+  static dismiss() {
+    BackButtonInterceptor.removeByName(backName);
+    EasyLoading.dismiss();
+  }
+
+  static bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    return true;
+  }
 }

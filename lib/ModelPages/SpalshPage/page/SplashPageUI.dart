@@ -27,17 +27,17 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
       var cached = appStorage.retrieveValue(AppStorage.CACHED);
       try {
         if (cached == null)
-          Get.offAndToNamed(Routes.ProjectListingPage);
+          Get.offAllNamed(Routes.ProjectListingPage);
         else {
           var jsonProject = appStorage.retrieveValue(cached);
           projectModel = ProjectModel.fromJson(jsonProject);
           Const.PROJECT_NAME = projectModel!.projectname;
           Const.PROJECT_URL = projectModel!.web_url;
           Const.ARM_URL = projectModel!.arm_url;
-          Get.offAndToNamed(Routes.Login);
+          Get.offAllNamed(Routes.Login);
         }
       } catch (e) {
-        Get.offAndToNamed(Routes.ProjectListingPage);
+        Get.offAllNamed(Routes.ProjectListingPage);
       }
     });
   }
