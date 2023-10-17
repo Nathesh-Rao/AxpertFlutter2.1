@@ -78,7 +78,7 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
                   //Pick image from gallery
                   IconButton(
                       onPressed: () {
-                        print("To be Implemented");
+                        addConnectionController.pickImageFromGalleryCalled();
                       },
                       icon: Icon(Icons.filter)),
                 ],

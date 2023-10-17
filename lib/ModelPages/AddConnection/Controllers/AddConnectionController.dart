@@ -275,6 +275,8 @@ class AddConnectionController extends GetxController {
     } catch (e) {}
   }
 
+  void pickImageFromGalleryCalled() async {}
+
   validateQRData(data) {
     if (!data.toString().contains("arm_url")) return false;
     if (!data.toString().contains("p_url")) return false;
