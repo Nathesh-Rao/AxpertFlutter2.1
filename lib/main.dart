@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/Utils/ServerConnections/InternetConnectivity.dart';
@@ -27,7 +28,7 @@ Future<void> main() async {
 void configureEasyLoading() {
   EasyLoading.instance
     ..indicatorType = EasyLoadingIndicatorType.ring
-    ..loadingStyle = EasyLoadingStyle.dark
+    ..loadingStyle = EasyLoadingStyle.light
     ..indicatorSize = 45.0
     ..radius = 10.0;
 }
@@ -44,6 +45,8 @@ class MyApp extends StatelessWidget {
       title: 'Axpert Flutter 2.1',
       theme: ThemeData(
         brightness: Brightness.light,
+        elevatedButtonTheme:
+            ElevatedButtonThemeData(style: ButtonStyle(backgroundColor: MaterialStateProperty.all(MyColors.blue2))),
         primaryColor: Color(0xff003AA5),
         scaffoldBackgroundColor: Colors.white,
         colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.indigo),

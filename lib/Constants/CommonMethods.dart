@@ -23,7 +23,7 @@ class CommonMethods {
 
 class LoadingScreen {
   static const backName = "DisableBack";
-  static show({status = "Please Wait...", maskType = EasyLoadingMaskType.clear}) {
+  static show({status = "Please Wait...", maskType = EasyLoadingMaskType.black}) {
     BackButtonInterceptor.add(myInterceptor, zIndex: 2, name: backName);
     EasyLoading.show(status: status, maskType: maskType, dismissOnTap: false);
     Timer(Duration(seconds: 20), () {

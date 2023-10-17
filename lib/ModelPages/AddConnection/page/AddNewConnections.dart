@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/ModelPages/AddConnection/Controllers/AddConnectionController.dart';
 import 'package:axpertflutter/ModelPages/AddConnection/Widgets/ConnectCode.dart';
@@ -7,7 +5,6 @@ import 'package:axpertflutter/ModelPages/AddConnection/Widgets/QRCodeScanner.dar
 import 'package:axpertflutter/ModelPages/AddConnection/Widgets/URLDetails.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class AddNewConnection extends StatefulWidget {
   const AddNewConnection({super.key});
@@ -61,7 +58,7 @@ class _AddNewConnectionState extends State<AddNewConnection> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(connectionController.heading.value),
-          foregroundColor: Colors.blue,
+          foregroundColor: MyColors.blue2,
           backgroundColor: Colors.white,
           centerTitle: true,
         ),
