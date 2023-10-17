@@ -30,7 +30,7 @@ class ProjectItemListTile extends StatelessWidget {
         await appStorage.storeValue(AppStorage.PROJECT_NAME, projectModel!.projectname);
         await appStorage.storeValue(AppStorage.PROJECT_URL, projectModel!.web_url);
         await appStorage.storeValue(AppStorage.ARM_URL, projectModel!.arm_url);
-        Get.offAndToNamed(Routes.Login);
+        Get.offAllNamed(Routes.Login);
       },
       child: Card(
         elevation: 10,

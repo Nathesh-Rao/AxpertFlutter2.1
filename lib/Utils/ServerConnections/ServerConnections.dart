@@ -1,7 +1,7 @@
+import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/Utils/ServerConnections/InternetConnectivity.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -41,8 +41,8 @@ class ServerConnections {
         if (header == '') header = {"Content-Type": "application/json"};
         if (body == '') body = _baseBody;
         print("Post Url: $url");
-        print("Post header: $header");
-        print("Post body:" + body);
+        // print("Post header: $header");
+        // print("Post body:" + body);
         var response = await client.post(Uri.parse(url), headers: header, body: body);
         if (response.statusCode == 200) return response.body;
         if (response.statusCode == 404) {
@@ -105,7 +105,7 @@ class ServerConnections {
       Get.snackbar("Error ", e.toString(),
           snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
     }
-    EasyLoading.dismiss();
+    LoadingScreen.dismiss();
   }
 
   _generateBody(String ClientId) {

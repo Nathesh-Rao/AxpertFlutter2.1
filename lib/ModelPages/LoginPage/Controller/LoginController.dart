@@ -8,7 +8,6 @@ import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -34,13 +33,15 @@ class LoginController extends GetxController {
   }
 
   fetchUserTypeList() async {
-    EasyLoading.show(status: "Please wait...", maskType: EasyLoadingMaskType.black);
-    print(Const.ARM_URL);
+    LoadingScreen.show();
+
+    print(Const.PROJECT_URL);
+    // print(Const.ARM_URL);
     userTypeList.clear();
     var url = Const.getFullARMUrl(ServerConnections.API_GET_USERGROUPS);
     var body = Const.getAppBody();
     var data = await serverConnections.postToServer(url: url, body: body);
-    EasyLoading.dismiss();
+    LoadingScreen.dismiss();
 
     if (data != "" && !data.toString().contains("error")) {
       data = data.toString().replaceAll("null", "\"\"");
@@ -72,13 +73,13 @@ class LoginController extends GetxController {
   }
 
   fetchSignInDetail() async {
-    EasyLoading.show(status: "Please wait...", maskType: EasyLoadingMaskType.black);
+    LoadingScreen.show();
     print(Const.ARM_URL);
     var url = Const.getFullARMUrl(ServerConnections.API_GET_SIGNINDETAILS);
     var body = Const.getAppBody();
     print(body);
     var data = await serverConnections.postToServer(url: url, body: body);
-    EasyLoading.dismiss();
+    LoadingScreen.dismiss();
     // var jsopnData = jsonDecode(data);
     print(data);
   }
@@ -136,7 +137,7 @@ class LoginController extends GetxController {
   void loginButtonClicked() async {
     if (validateForm()) {
       FocusManager.instance.primaryFocus?.unfocus();
-      EasyLoading.show(status: "Please wait.", maskType: EasyLoadingMaskType.black);
+      LoadingScreen.show();
 
       var body = await getSignInBody();
       var url = Const.getFullARMUrl(ServerConnections.API_SIGNIN);
@@ -145,7 +146,7 @@ class LoginController extends GetxController {
       //     headers: {"Content-Type": "application/json"}, body: body);
       // var data = serverConnections.parseData(response);
       var response = await serverConnections.postToServer(url: url, body: body);
-      EasyLoading.dismiss();
+      LoadingScreen.dismiss();
 
       if (response != "" || !response.toString().toLowerCase().contains("error")) {
         var json = jsonDecode(response);
@@ -175,57 +176,54 @@ class LoginController extends GetxController {
   }
 
   void googleSignInClicked() async {
-    final googleUser = await googleLoginIn.signIn();
-    if (googleUser != null) {
-      EasyLoading.show(status: "Please wait...", maskType: EasyLoadingMaskType.black);
-      final googleAuth = await googleUser.authentication;
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
+    try {
+      final googleUser = await googleLoginIn.signIn();
+      if (googleUser != null) {
+        LoadingScreen.show();
+        final googleAuth = await googleUser.authentication;
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
 
-      await FirebaseAuth.instance.signInWithCredential(credential);
-      // print("data: $data");
-      // print("access token : " + googleAuth.accessToken.toString());
-      // print("ID Token : " + googleAuth.idToken.toString());
-      // print("ID signInMethod : " + credential.signInMethod);
-      // print("ID providerId : " + credential.providerId);
-      // print("ID Token : " + credential.providerId);
-      // print("ID Token : " + googleUser!.displayName.toString());
-      // print("ID Token : " + googleUser!.email.toString());
-      // print("ID Token : " + googleUser!.photoUrl.toString());
-      // print("appname----loginsmallscreen.dart3");
-      // "ssoType":"$ssotype","ssodetails":{"id":"$userid","token":"$token"}}';
+        await FirebaseAuth.instance.signInWithCredential(credential);
 
-      Map body = {
-        'appname': Const.PROJECT_NAME,
-        'userid': googleUser!.email.toString(),
-        'userGroup': ddSelectedValue.value.toString(),
-        'ssoType': 'Google',
-        'ssodetails': {
-          'id': googleUser!.id,
-          'token': googleAuth.accessToken.toString(),
-        },
-      };
+        Map body = {
+          'appname': Const.PROJECT_NAME,
+          'userid': googleUser!.email.toString(),
+          'userGroup': ddSelectedValue.value.toString(),
+          'ssoType': 'Google',
+          'ssodetails': {
+            'id': googleUser!.id,
+            'token': googleAuth.accessToken.toString(),
+          },
+        };
 
-      var url = Const.getFullARMUrl(ServerConnections.API_GOOGLESIGNIN_SSO);
-      var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body));
-      EasyLoading.dismiss();
-      if (resp != "" && !resp.toString().contains("error")) {
-        var jsonResp = jsonDecode(resp);
-        print(jsonResp);
-        if (jsonResp['result']['success'].toString() == "false") {
-          Get.snackbar("Alert!", jsonResp['result']['message'].toString(),
-              snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
+        var url = Const.getFullARMUrl(ServerConnections.API_GOOGLESIGNIN_SSO);
+        var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body));
+        LoadingScreen.dismiss();
+        if (resp != "" && !resp.toString().contains("error")) {
+          var jsonResp = jsonDecode(resp);
+          // print(jsonResp);
+          if (jsonResp['result']['success'].toString() == "false") {
+            Get.snackbar("Alert!", jsonResp['result']['message'].toString(),
+                snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
+          } else {
+            await appStorage.storeValue(AppStorage.TOKEN, jsonResp["result"]["token"].toString());
+            await appStorage.storeValue(AppStorage.SESSIONID, jsonResp["result"]["sessionid"].toString());
+            await appStorage.storeValue(AppStorage.USER_NAME, googleUser!.email.toString());
+            ProcessLoginAndGoToHomePage();
+          }
         } else {
-          ProcessLoginAndGoToHomePage();
+          Get.snackbar("Error", "Some Error occured",
+              backgroundColor: Colors.red, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM);
         }
-      } else {
-        Get.snackbar("Error", "Some Error occured",
-            backgroundColor: Colors.red, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM);
+        print(resp);
+        // print(googleUser);
       }
-      print(resp);
-      // print(googleUser);
+    } catch (e) {
+      Get.snackbar("Error", "User is not Registered!",
+          snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
     }
   }
 
@@ -245,7 +243,7 @@ class LoginController extends GetxController {
     var jsonResp = jsonDecode(connectResp);
     if (jsonResp != "" && !jsonResp.toString().contains("error")) {
       if (jsonResp['result']['success'].toString() == "true") {
-        Get.offAndToNamed(Routes.LandingPage);
+        Get.offAllNamed(Routes.LandingPage);
       } else {
         showErrorSnack();
       }

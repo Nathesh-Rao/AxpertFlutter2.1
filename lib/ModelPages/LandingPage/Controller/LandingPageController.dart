@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:axpertflutter/Constants/AppStorage.dart';
-import 'package:axpertflutter/ModelPages/HomePage_old/controller/HomePageController.dart';
+import 'package:axpertflutter/Constants/Routes.dart';
+import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageConroller.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Page/MenuActiveListPage.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuCalendarPage/Page/MenuCalendarPage.dart';
@@ -13,6 +16,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class LandingPageController extends GetxController {
+  TextEditingController userCtrl = TextEditingController();
+  TextEditingController oPassCtrl = TextEditingController();
+  TextEditingController nPassCtrl = TextEditingController();
+  TextEditingController cnPassCtrl = TextEditingController();
+  var errOPass = ''.obs;
+  var errNPass = ''.obs;
+  var errCNPass = ''.obs;
+  var showOldPass = false.obs;
+  var showNewPass = false.obs;
+  var showConNewPass = false.obs;
+  var userName = 'j'.obs; //update with user name
   var bottomIndex = 0.obs;
   var carouselIndex = 0.obs;
   final CarouselController carouselController = CarouselController();
@@ -31,6 +45,11 @@ class LandingPageController extends GetxController {
     WidgetNotification("6"),
   ];
   get getPage => pageList[bottomIndex.value];
+
+  LandingPageController() {
+    userName.value = appStorage.retrieveValue(AppStorage.USER_NAME) ?? "";
+    userCtrl.text = userName.value;
+  }
 
   indexChange(value) {
     deleteController(bottomIndex.value, value);
@@ -151,5 +170,41 @@ class LandingPageController extends GetxController {
     //     MenuHomePageController m = Get.put(MenuHomePageController());
     //     break;
     // }
+  }
+  signOut() async {
+    var body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
+    var url = Const.getFullARMUrl(ServerConnections.API_SIGNOUT);
+    Get.defaultDialog(
+        title: "Log out",
+        middleText: "Are you sure you want to log out?",
+        confirm: ElevatedButton(
+            onPressed: () async {
+              var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body));
+              print(resp);
+              if (resp != "" && !resp.toString().contains("error")) {
+                var jsonResp = jsonDecode(resp);
+                if (jsonResp['result']['success'].toString() == "true") {
+                  Get.offAllNamed(Routes.Login);
+                } else {
+                  error(jsonResp['result']['message'].toString());
+                }
+              } else {
+                error("Some error occurred");
+              }
+            },
+            child: Text("Yes")),
+        cancel: ElevatedButton(
+            style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.grey)),
+            onPressed: () {
+              Get.back();
+            },
+            child: Text("No")));
+  }
+
+  void changePasswordCalled() {}
+
+  error(var msg) {
+    Get.snackbar("Error!", msg,
+        snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
   }
 }

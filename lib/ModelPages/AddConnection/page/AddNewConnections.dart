@@ -24,6 +24,7 @@ class _AddNewConnectionState extends State<AddNewConnection> {
   void initState() {
     try {
       connectionController.index.value = 0;
+      connectionController.heading.value = "Add new Connection";
       if (argumentData != null) connectionController.index.value = argumentData[0]?.toInt() ?? 0;
     } catch (e) {}
     print(connectionController.index.value);
@@ -36,6 +37,7 @@ class _AddNewConnectionState extends State<AddNewConnection> {
         break;
       case 2:
         connectionController.selectedRadioValue.value = "URL";
+        connectionController.heading.value = "Edit Connection";
         break;
     }
   }
@@ -44,7 +46,6 @@ class _AddNewConnectionState extends State<AddNewConnection> {
 
   @override
   void dispose() {
-    print("Dispose Called");
     connectionController.updateProjectDetails = false;
     connectionController.connectionCodeController.text = "";
     connectionController.conCaptionController.text = "";
@@ -59,29 +60,10 @@ class _AddNewConnectionState extends State<AddNewConnection> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Add New Connection"),
+          title: Text(connectionController.heading.value),
           foregroundColor: Colors.blue,
           backgroundColor: Colors.white,
           centerTitle: true,
-          // bottom: PreferredSize(
-          //   preferredSize: Size.fromHeight(kToolbarHeight),
-          //   child: Container(
-          //     decoration: BoxDecoration(
-          //       color: Colors.white,
-          //     ),
-          //     child: TabBar(
-          //       indicatorColor: Colors.amberAccent,
-          //       unselectedLabelColor: Colors.black38,
-          //       labelColor: Colors.black,
-          //       indicatorWeight: 3,
-          //       tabs: [
-          //         Tab(text: "Scan QR Code"),
-          //         Tab(text: "Connect Code"),
-          //         Tab(text: "URL Details"),
-          //       ],
-          //     ),
-          //   ),
-          // ),
         ),
         body: Stack(
           children: [
@@ -90,7 +72,8 @@ class _AddNewConnectionState extends State<AddNewConnection> {
                 bottom: 30,
                 child: ClipRRect(
                   clipBehavior: Clip.antiAliasWithSaveLayer,
-                  borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(80), topLeft: Radius.circular(80), topRight: Radius.circular(80)),
+                  borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(80), topLeft: Radius.circular(80), topRight: Radius.circular(80)),
                   child: Container(
                     height: MediaQuery.of(context).size.height / 1.5,
                     width: MediaQuery.of(context).size.width,

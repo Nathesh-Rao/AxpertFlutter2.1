@@ -45,7 +45,6 @@ class _WebViewCalendarState extends State<WebViewCalendar> {
   @override
   void initState() {
     super.initState();
-    print("11111");
     // getConnectivity();
   }
 
@@ -95,7 +94,7 @@ class _WebViewCalendarState extends State<WebViewCalendar> {
         return Stack(children: <Widget>[
           InAppWebView(
             key: _key,
-            initialUrlRequest: URLRequest(url: WebUri(widget.weburl)),
+            initialUrlRequest: URLRequest(url: Uri.parse(widget.weburl)),
             onWebViewCreated: (controller) {
               _controller.complete(controller);
               _webViewController = controller;

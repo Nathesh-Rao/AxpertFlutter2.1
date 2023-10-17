@@ -1,14 +1,12 @@
 import 'dart:convert';
 
 import 'package:axpertflutter/Constants/AppStorage.dart';
+import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/CardModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/CardOptionModel.dart';
-import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetNotification.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
-import 'package:carousel_slider/carousel_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
 class MenuHomePageController extends GetxController {
@@ -60,10 +58,10 @@ class MenuHomePageController extends GetxController {
 
   getCardDetails() async {
     isLoading.value = true;
-    EasyLoading.show(status: "Please Wait...", maskType: EasyLoadingMaskType.black);
+    LoadingScreen.show();
     var url = Const.getFullARMUrl(ServerConnections.API_GET_HOMEPAGE_CARDS);
     var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), header: header);
-    print(resp);
+    // print(resp);
     if (resp != "" && !resp.toString().contains("error")) {
       var jsonResp = jsonDecode(resp);
       if (jsonResp['result']['success'].toString() == "true") {
@@ -78,7 +76,7 @@ class MenuHomePageController extends GetxController {
         //error
       }
     }
-    EasyLoading.dismiss();
+    LoadingScreen.dismiss();
     isLoading.value = false;
     if (listOfCards.length == 0) {
       print("Length:   0");
@@ -91,7 +89,7 @@ class MenuHomePageController extends GetxController {
               },
               child: Text("Ok")));
     }
-    getCardDataSources();
+    await getCardDataSources();
     return listOfCards;
   }
 

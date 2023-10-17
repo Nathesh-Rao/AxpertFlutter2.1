@@ -30,53 +30,42 @@ class _URLDetailsState extends State<URLDetails> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(height: 20),
-                  Text("Enter Project Details",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  Text("Enter Project Details", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   SizedBox(height: 20),
                   TextField(
                       controller: addConnectionController.webUrlController,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(
-                              borderSide: BorderSide(width: 1),
-                              borderRadius: BorderRadius.circular(10)),
+                              borderSide: BorderSide(width: 1), borderRadius: BorderRadius.circular(10)),
                           hintText: "https://",
-                          errorText: addConnectionController.evaluteErrorText(
-                              addConnectionController.errWebUrl),
+                          errorText: addConnectionController.evaluateErrorText(addConnectionController.errWebUrl),
                           label: Text("Web URL"))),
                   SizedBox(height: 20),
                   TextField(
                       controller: addConnectionController.armUrlController,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(
-                              borderSide: BorderSide(width: 1),
-                              borderRadius: BorderRadius.circular(10)),
+                              borderSide: BorderSide(width: 1), borderRadius: BorderRadius.circular(10)),
                           hintText: "Enter Arm Url",
-                          errorText: addConnectionController.evaluteErrorText(
-                              addConnectionController.errArmUrl),
+                          errorText: addConnectionController.evaluateErrorText(addConnectionController.errArmUrl),
                           label: Text("ARM URL"))),
                   SizedBox(height: 20),
                   TextField(
                       controller: addConnectionController.conNameController,
-                      enabled: !addConnectionController.updateProjectDetails,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(
-                              borderSide: BorderSide(width: 1),
-                              borderRadius: BorderRadius.circular(10)),
+                              borderSide: BorderSide(width: 1), borderRadius: BorderRadius.circular(10)),
                           hintText: "Enter Connection Name",
-                          errorText: addConnectionController.evaluteErrorText(
-                              addConnectionController.errName),
+                          errorText: addConnectionController.evaluateErrorText(addConnectionController.errName),
                           label: Text("Connection Name"))),
                   SizedBox(height: 20),
                   TextField(
                       controller: addConnectionController.conCaptionController,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(
-                              borderSide: BorderSide(width: 1),
-                              borderRadius: BorderRadius.circular(10)),
+                              borderSide: BorderSide(width: 1), borderRadius: BorderRadius.circular(10)),
                           hintText: "Enter Connection Caption",
-                          errorText: addConnectionController.evaluteErrorText(
-                              addConnectionController.errCaption),
+                          errorText: addConnectionController.evaluateErrorText(addConnectionController.errCaption),
                           label: Text("Connection Caption"))),
                   SizedBox(height: 20),
                   Center(
@@ -84,8 +73,7 @@ class _URLDetailsState extends State<URLDetails> {
                         style: ElevatedButton.styleFrom(
                           minimumSize: Size(200, 40),
                         ),
-                        onPressed:
-                            addConnectionController.projetcDetailsClicked,
+                        onPressed: addConnectionController.projectDetailsClicked,
                         child: Text("SAVE")),
                   ),
                   SizedBox(height: 20),

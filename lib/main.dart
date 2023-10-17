@@ -13,7 +13,7 @@ import 'package:platform_device_id/platform_device_id.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await GetStorage.init();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   configureEasyLoading();

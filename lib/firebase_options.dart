@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyAL8btbnDnPpGgDMwAoJnQdOsftEejMvUE',
-    appId: '1:687601632005:android:9b6d3f8450472cbceead6c',
+    appId: '1:687601632005:android:433f29df8da0197ceead6c',
     messagingSenderId: '687601632005',
     projectId: 'axperthybrid',
     storageBucket: 'axperthybrid.appspot.com',
@@ -59,12 +59,12 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAf6TxtF1ADjdt-qEpwtCxw3OfwVVy-Csw',
-    appId: '1:687601632005:ios:338dafab5d240b04eead6c',
+    appId: '1:687601632005:ios:792ba1e22c26724deead6c',
     messagingSenderId: '687601632005',
     projectId: 'axperthybrid',
     storageBucket: 'axperthybrid.appspot.com',
     androidClientId: '687601632005-9ja5407fj42jtsi2hob805sr109rc0g0.apps.googleusercontent.com',
-    iosClientId: '687601632005-bfc005cvu87naen834r3p2bb73v8jhgv.apps.googleusercontent.com',
-    iosBundleId: 'com.agile.axpertios',
+    iosClientId: '687601632005-1q4bfacl23038glcug09dc9igalhap1c.apps.googleusercontent.com',
+    iosBundleId: 'com.agile.ios.axpertflutter',
   );
 }

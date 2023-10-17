@@ -40,8 +40,8 @@ class HomePageController extends GetxController {
 
   indexChange(val) {
     bottomIndex.value = val;
-    print("Index: $bottomIndex");
-    print("Link: " + linkList[bottomIndex.value].toString());
+    // print("Index: $bottomIndex");
+    // print("Link: " + linkList[bottomIndex.value].toString());
   }
 
   Future<bool> onWillPop() {
@@ -72,7 +72,7 @@ class HomePageController extends GetxController {
               if (resp != "" && !resp.toString().contains("error")) {
                 var jsonResp = jsonDecode(resp);
                 if (jsonResp['result']['success'].toString() == "true") {
-                  Get.offAndToNamed(Routes.Login);
+                  Get.offAllNamed(Routes.Login);
                 } else {
                   error(jsonResp['result']['message'].toString());
                 }
@@ -99,4 +99,11 @@ class HomePageController extends GetxController {
   }
 
   void changePasswordCalled() {}
+
+  void openBtnAction(String btnType, String btnOpen, String url) {
+    if (btnType.startsWith("btn")) {
+      // webUrl = url + "aspx/AxMain.aspx?authKey=AXPERT-" + session + "&pname=" + btnOpen;
+      // switchPage.toggle();
+    } else {}
+  }
 }

@@ -96,7 +96,7 @@ class MenuMorePageController extends GetxController {
       var newList = menuListMain.where((oldValue) {
         return oldValue.caption.toString().toLowerCase().contains(value.toString().toLowerCase());
       });
-      print("new list: " + newList.length.toString());
+      // print("new list: " + newList.length.toString());
       reOrganise(newList);
     }
   }

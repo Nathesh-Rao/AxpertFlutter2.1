@@ -6,7 +6,6 @@ import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/ModelPages/LoginPage/Controller/LoginController.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -53,12 +52,12 @@ class SignUpController extends GetxController {
   }
 
   fetchUserTypeList() async {
-    EasyLoading.show(status: "Please wait...", maskType: EasyLoadingMaskType.black);
+    LoadingScreen.show();
 
     var url = Const.getFullARMUrl(ServerConnections.API_GET_USERGROUPS);
     var body = Const.getAppBody();
     var data = await serverConnections.postToServer(url: url, body: body);
-    EasyLoading.dismiss();
+    LoadingScreen.show();
 
     data = data.toString().replaceAll("null", "\"\"");
 
@@ -123,8 +122,8 @@ class SignUpController extends GetxController {
   }
 
   validateForm() {
-    errUserId.value = errUserName.value =
-        errUserPass.value = errUserConPass.value = errUserEmail.value = errUserMobile.value = '';
+    errUserId.value =
+        errUserName.value = errUserPass.value = errUserConPass.value = errUserEmail.value = errUserMobile.value = '';
     Pattern pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{7,}$';
     RegExp regex = RegExp(pattern.toString());
 
@@ -200,7 +199,7 @@ class SignUpController extends GetxController {
 
   void registerButtonCalled() async {
     if (validateForm()) {
-      EasyLoading.show(status: "Please wait...", maskType: EasyLoadingMaskType.black);
+      LoadingScreen.show();
       var body = getJsonBody();
       var url = Const.getFullARMUrl(ServerConnections.API_ADDUSER);
       var responses = await serverConnections.postToServer(url: url, body: body);
@@ -215,15 +214,13 @@ class SignUpController extends GetxController {
             startTimer();
           } else {
             Get.snackbar("Alert!", jsonResponse["result"]["message"],
-                snackPosition: SnackPosition.BOTTOM,
-                backgroundColor: Colors.red,
-                colorText: Colors.white);
+                snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red, colorText: Colors.white);
           }
         }
       } catch (e) {
         //error
       } finally {
-        EasyLoading.dismiss();
+        LoadingScreen.dismiss();
       }
     }
   }
@@ -262,7 +259,7 @@ class SignUpController extends GetxController {
   }
 
   void verifyOtp() async {
-    EasyLoading.show(status: "Please wait...", maskType: EasyLoadingMaskType.black);
+    LoadingScreen.show();
     Map otpBody = {
       'regid': regID.value,
       'otp': enteredPin.value,
@@ -287,11 +284,9 @@ class SignUpController extends GetxController {
       }
     } else {
       Get.snackbar("Alert!", "Some error occured",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white);
+          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red, colorText: Colors.white);
     }
     reSendOtpCount++;
-    EasyLoading.dismiss();
+    LoadingScreen.dismiss();
   }
 }

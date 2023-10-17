@@ -2,7 +2,6 @@ import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Con
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Page/CompletedListPage.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Page/KPIPage.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Page/PendingListPage.dart';
-import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Widgets/WidgetPendingListItemDetails.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetSlidingNotification.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -86,13 +85,9 @@ class MenuActiveListPage extends StatelessWidget {
                     ),
                   ),
                 ]),
-            body: Obx(() => TabBarView(
-                  children: [
-                    pendingListController.subPage.value == true ? PendingListPage() : WidgetPendingListItemDetails(),
-                    CompletedListPage(),
-                    KPIPage()
-                  ],
-                )),
+            body: TabBarView(
+              children: [PendingListPage(), CompletedListPage(), KPIPage()],
+            ),
           ),
         ))
       ],
