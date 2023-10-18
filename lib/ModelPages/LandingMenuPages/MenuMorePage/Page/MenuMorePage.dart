@@ -89,8 +89,7 @@ reBuild(MenuMorePageController menuMorePageController) {
                       return Container(
                         margin: EdgeInsets.only(bottom: 15),
                         decoration: BoxDecoration(
-                            border: Border.all(width: 1, color: HexColor('EDF0F8')),
-                            borderRadius: BorderRadius.circular(10)),
+                            border: Border.all(width: 1, color: HexColor('EDF0F8')), borderRadius: BorderRadius.circular(10)),
                         child: Theme(
                           data: ThemeData().copyWith(dividerColor: Colors.transparent),
                           child: ExpansionTile(
@@ -100,8 +99,7 @@ reBuild(MenuMorePageController menuMorePageController) {
                               textAlign: TextAlign.left,
                               overflow: TextOverflow.ellipsis,
                               style: GoogleFonts.poppins(
-                                  textStyle:
-                                      TextStyle(color: HexColor("#3E4153"), fontSize: 14, fontWeight: FontWeight.w900)),
+                                  textStyle: TextStyle(color: HexColor("#3E4153"), fontSize: 14, fontWeight: FontWeight.w900)),
                             ),
                             children: [
                               SizedBox(height: 3),

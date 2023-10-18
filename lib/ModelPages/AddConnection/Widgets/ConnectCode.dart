@@ -12,7 +12,6 @@ class ConnectCode extends StatefulWidget {
 
 class _ConnectCodeState extends State<ConnectCode> {
   AddConnectionController addConnectionController = Get.find();
-  bool _saveLoader = false;
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -33,8 +32,7 @@ class _ConnectCodeState extends State<ConnectCode> {
                 TextField(
                   controller: addConnectionController.connectionCodeController,
                   decoration: InputDecoration(
-                      border:
-                          OutlineInputBorder(borderSide: BorderSide(width: 1), borderRadius: BorderRadius.circular(10)),
+                      border: OutlineInputBorder(borderSide: BorderSide(width: 1), borderRadius: BorderRadius.circular(10)),
                       hintText: "Enter Connection Code",
                       errorText: addConnectionController.evaluateErrorText(addConnectionController.errCode),
                       label: Text("Connection Code")),

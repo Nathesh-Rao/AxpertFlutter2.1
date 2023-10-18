@@ -59,7 +59,6 @@ class WidgetDisplayProfileDetails extends StatelessWidget {
                         height: 30,
                         decoration: const BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(38)),
-                          color: Colors.blue,
                         ),
                         padding: const EdgeInsets.fromLTRB(4.0, 5.0, 0.0, 0.0),
                         child: Column(children: const [
@@ -137,6 +136,7 @@ class WidgetDisplayProfileDetails extends StatelessWidget {
         SizedBox(height: 20),
         TextFormField(
           readOnly: true,
+          controller: landingPageController.userCtrl,
           enableInteractiveSelection: false,
           keyboardType: TextInputType.text,
           style: const TextStyle(fontFamily: "nunitobold", fontSize: 14.0),
@@ -147,7 +147,9 @@ class WidgetDisplayProfileDetails extends StatelessWidget {
         ),
         SizedBox(height: 20),
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            landingPageController.closeProfileDialog();
+          },
           child: Container(
             width: 600.0,
             height: 30,
@@ -238,7 +240,7 @@ class WidgetDisplayProfileDetails extends StatelessWidget {
                 width: 100.0,
                 child: ElevatedButton(
                   onPressed: () {
-                    Get.back();
+                    landingPageController.closeProfileDialog();
                   },
                   child: Container(
                     width: 600.0,

@@ -11,8 +11,8 @@ class ProjectItemListTile extends StatelessWidget {
   String? keyValue;
   AppStorage appStorage = AppStorage();
 
-  ProjectItemListTile(String keyvalue) {
-    keyValue = keyvalue ?? "";
+  ProjectItemListTile(String value) {
+    keyValue = value;
     var jsonProject = appStorage.retrieveValue(keyValue ?? "");
     projectModel = ProjectModel.fromJson(jsonProject);
   }
@@ -93,16 +93,6 @@ class ProjectItemListTile extends StatelessWidget {
                 tooltip: 'Delete',
                 onPressed: () async {
                   addConnectionController.delete(keyValue);
-                  // Get.defaultDialog(
-                  //     title: "Alert!",
-                  //     barrierDismissible: false,
-                  //     middleText:
-                  //         "Please swipe item from Right to Left to delete",
-                  //     confirm: ElevatedButton(
-                  //         onPressed: () {
-                  //           Get.back();
-                  //         },
-                  //         child: Text("Ok")));
                 },
               ),
             ])),

@@ -3,8 +3,6 @@ import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetBottomNavigat
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetLandingAppBar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:hexcolor/hexcolor.dart';
 
 class LandingPage extends StatelessWidget {
   LandingPage({super.key});

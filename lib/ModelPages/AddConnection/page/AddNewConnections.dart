@@ -19,6 +19,7 @@ class _AddNewConnectionState extends State<AddNewConnection> {
 
   @override
   void initState() {
+    super.initState();
     try {
       connectionController.index.value = 0;
       connectionController.heading.value = "Add new Connection";

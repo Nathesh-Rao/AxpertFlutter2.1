@@ -8,7 +8,7 @@ import 'package:hexcolor/hexcolor.dart';
 
 class PendingListItemDetails extends StatelessWidget {
   PendingListItemDetails({super.key});
-  PendingListController pendingListController = Get.find();
+  PendingListController pendingListController = Get.put(PendingListController());
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +24,8 @@ class PendingListItemDetails extends StatelessWidget {
               Container(
                 height: 50,
                 width: double.maxFinite,
-                decoration: BoxDecoration(
-                    border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
+                decoration:
+                    BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
                 // color: Colors.red,
                 child: ListView.separated(
                     scrollDirection: Axis.horizontal,
@@ -45,8 +45,8 @@ class PendingListItemDetails extends StatelessWidget {
               SizedBox(height: 10),
               Container(
                 padding: EdgeInsets.only(top: 5, bottom: 10),
-                decoration: BoxDecoration(
-                    border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
+                decoration:
+                    BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
                 child: Padding(
                   padding: EdgeInsets.only(left: 10, right: 10),
                   child: Row(
@@ -68,12 +68,10 @@ class PendingListItemDetails extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text("Ticket",
-                              style: GoogleFonts.nunitoSans(
-                                  textStyle: TextStyle(color: HexColor('495057'), fontSize: 16))),
+                              style: GoogleFonts.nunitoSans(textStyle: TextStyle(color: HexColor('495057'), fontSize: 16))),
                           Text("#TKT00217",
                               style: GoogleFonts.nunitoSans(
-                                  textStyle:
-                                      TextStyle(color: HexColor('495057'), fontSize: 22, fontWeight: FontWeight.w800))),
+                                  textStyle: TextStyle(color: HexColor('495057'), fontSize: 22, fontWeight: FontWeight.w800))),
                         ],
                       ),
                       Expanded(child: Text("")),
@@ -95,8 +93,8 @@ class PendingListItemDetails extends StatelessWidget {
               SizedBox(height: 10),
               Container(
                 padding: EdgeInsets.only(top: 5, bottom: 10),
-                decoration: BoxDecoration(
-                    border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
+                decoration:
+                    BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
                 child: Padding(
                   padding: EdgeInsets.only(left: 10, right: 10),
                   child: Row(
@@ -120,8 +118,8 @@ class PendingListItemDetails extends StatelessWidget {
               SizedBox(height: 10),
               Container(
                 padding: EdgeInsets.only(top: 5, bottom: 10),
-                decoration: BoxDecoration(
-                    border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
+                decoration:
+                    BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
                 child: Padding(
                   padding: EdgeInsets.only(left: 10, right: 10),
                   child: Row(
@@ -140,8 +138,7 @@ class PendingListItemDetails extends StatelessWidget {
                         width: MediaQuery.of(context).size.width * 0.4,
                         child: Text(
                           "Vaidheesh",
-                          style: GoogleFonts.roboto(
-                              textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
+                          style: GoogleFonts.roboto(textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
                         ),
                       ),
                     ],
@@ -151,8 +148,8 @@ class PendingListItemDetails extends StatelessWidget {
               SizedBox(height: 10),
               Container(
                 padding: EdgeInsets.only(top: 5, bottom: 10),
-                decoration: BoxDecoration(
-                    border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
+                decoration:
+                    BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
                 child: Padding(
                   padding: EdgeInsets.only(left: 10, right: 10),
                   child: Row(
@@ -171,8 +168,7 @@ class PendingListItemDetails extends StatelessWidget {
                         width: MediaQuery.of(context).size.width * 0.4,
                         child: Text(
                           "Vaidheesh",
-                          style: GoogleFonts.roboto(
-                              textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
+                          style: GoogleFonts.roboto(textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
                         ),
                       ),
                     ],
@@ -182,8 +178,8 @@ class PendingListItemDetails extends StatelessWidget {
               SizedBox(height: 10),
               Container(
                 padding: EdgeInsets.only(top: 5, bottom: 10),
-                decoration: BoxDecoration(
-                    border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
+                decoration:
+                    BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
                 child: Padding(
                   padding: EdgeInsets.only(left: 10, right: 10),
                   child: Row(
@@ -225,8 +221,8 @@ class PendingListItemDetails extends StatelessWidget {
               SizedBox(height: 10),
               Container(
                 padding: EdgeInsets.only(top: 5, bottom: 10),
-                decoration: BoxDecoration(
-                    border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
+                decoration:
+                    BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
                 child: Padding(
                   padding: EdgeInsets.only(left: 10, right: 10),
                   child: Row(

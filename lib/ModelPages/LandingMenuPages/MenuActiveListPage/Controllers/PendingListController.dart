@@ -10,7 +10,7 @@ class PendingListController extends GetxController {
     StatusModel("3", "RM Approval"),
     StatusModel("4", "Approval By Developer"),
   ];
-  var statusListActiveIndex = 3;
+  var statusListActiveIndex = 2;
 
-  ScrollController scrollController = ScrollController(initialScrollOffset: 100 * 3.0);
+  ScrollController scrollController = ScrollController(initialScrollOffset: 100 * 1.0);
 }

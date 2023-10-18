@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -128,7 +127,7 @@ class ForgetPasswordController extends GetxController {
     };
     var url = Const.getFullARMUrl(ServerConnections.API_OTP_VALIDATE_USER);
     var responses = await serverConnections.postToServer(url: url, body: jsonEncode(otpBody));
-    print(responses);
+
     if (responses != "" && !responses.toString().toLowerCase().contains("error")) {
       var jsonResp = jsonDecode(responses);
       if (jsonResp['result']['success'].toString() == "false") {

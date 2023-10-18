@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/ModelPages/LoginPage/Controller/SignUpController.dart';
 import 'package:flutter/material.dart';
@@ -39,8 +37,7 @@ class _SignUpUserState extends State<SignUpUser> {
                 icon: Icon(Icons.arrow_back_ios)),
             title: Text(
               "Sign Up",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold, fontSize: 18, color: HexColor("#000000"), fontFamily: 'redhatsmbold'),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: HexColor("#000000"), fontFamily: 'redhatsmbold'),
             ),
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
@@ -149,8 +146,7 @@ class _SignUpUserState extends State<SignUpUser> {
                           signUpController.showTimer.value
                               ? Text(
                                   "Resend OTP in " + signUpController.timerText.value.toString(),
-                                  style:
-                                      const TextStyle(color: MyColors.blue2, fontSize: 15, fontWeight: FontWeight.w700),
+                                  style: const TextStyle(color: MyColors.blue2, fontSize: 15, fontWeight: FontWeight.w700),
                                 )
                               : GestureDetector(
                                   onTap: () {
@@ -209,8 +205,7 @@ class _SignUpUserState extends State<SignUpUser> {
                                 ),
                                 hintText: 'User Id',
                                 hintStyle: GoogleFonts.poppins(
-                                    textStyle: TextStyle(
-                                        fontWeight: FontWeight.w600, fontSize: 15, color: HexColor("#3E4153"))),
+                                    textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: HexColor("#3E4153"))),
                                 prefixIcon: Icon(
                                   Icons.person,
                                   color: HexColor("#5C5C5D"),
@@ -238,8 +233,7 @@ class _SignUpUserState extends State<SignUpUser> {
                                 ),
                                 hintText: 'Username',
                                 hintStyle: GoogleFonts.poppins(
-                                    textStyle: TextStyle(
-                                        fontWeight: FontWeight.w600, fontSize: 15, color: HexColor("#3E4153"))),
+                                    textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: HexColor("#3E4153"))),
                                 prefixIcon: Icon(
                                   Icons.person,
                                   color: HexColor("#5C5C5D"),
@@ -264,8 +258,7 @@ class _SignUpUserState extends State<SignUpUser> {
                               ),
                               hintText: 'Password',
                               hintStyle: GoogleFonts.poppins(
-                                  textStyle:
-                                      TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: HexColor("#3E4153"))),
+                                  textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: HexColor("#3E4153"))),
                               prefixIcon: Icon(
                                 Icons.lock,
                                 color: HexColor("#5C5C5D"),
@@ -304,10 +297,7 @@ class _SignUpUserState extends State<SignUpUser> {
                               ),
                               hintText: 'Confirm Password',
                               hintStyle: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
-                                  fontFamily: 'Poppins',
-                                  color: HexColor("#3E4153")),
+                                  fontWeight: FontWeight.w600, fontSize: 15, fontFamily: 'Poppins', color: HexColor("#3E4153")),
                               prefixIcon: Icon(
                                 Icons.lock,
                                 color: HexColor("#5C5C5D"),
@@ -348,10 +338,7 @@ class _SignUpUserState extends State<SignUpUser> {
                                 ),
                                 hintText: 'Email',
                                 hintStyle: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 15,
-                                    fontFamily: 'Poppins',
-                                    color: HexColor("#3E4153")),
+                                    fontWeight: FontWeight.w600, fontSize: 15, fontFamily: 'Poppins', color: HexColor("#3E4153")),
                                 prefixIcon: Icon(
                                   Icons.email,
                                   color: HexColor("#5C5C5D"),
@@ -386,10 +373,7 @@ class _SignUpUserState extends State<SignUpUser> {
                                 ),
                                 hintText: 'Mobile No',
                                 hintStyle: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 15,
-                                    fontFamily: 'Poppins',
-                                    color: HexColor("#3E4153")),
+                                    fontWeight: FontWeight.w600, fontSize: 15, fontFamily: 'Poppins', color: HexColor("#3E4153")),
                                 prefixIcon: Icon(
                                   Icons.phone_android,
                                   color: HexColor("#5C5C5D"),
@@ -408,8 +392,7 @@ class _SignUpUserState extends State<SignUpUser> {
                               },
                               child: Container(
                                 height: 50,
-                                decoration:
-                                    BoxDecoration(color: Colors.blue.shade400, borderRadius: BorderRadius.circular(20)),
+                                decoration: BoxDecoration(color: Colors.blue.shade400, borderRadius: BorderRadius.circular(20)),
                                 child: Center(
                                   child: Text('Register',
                                       style: TextStyle(

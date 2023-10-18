@@ -2,9 +2,6 @@ import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/ModelPages/LoginPage/Controller/ForgetPasswordController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:otp_text_field/otp_field.dart';
-import 'package:otp_text_field/otp_field_style.dart';
-import 'package:otp_text_field/style.dart';
 
 class ForgetPassword extends StatelessWidget {
   ForgetPassword({super.key});
@@ -26,11 +23,7 @@ class ForgetPassword extends StatelessWidget {
                 }),
             title: Text(
               "Forgot Password",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18.0,
-                  color: MyColors.blue2,
-                  fontFamily: 'redhatsmbold'),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0, color: MyColors.blue2, fontFamily: 'redhatsmbold'),
             ),
             actions: [
               Padding(
@@ -83,12 +76,8 @@ class ForgetPassword extends StatelessWidget {
                               ),
                               forgetPasswordController.showTimer.value
                                   ? Text(
-                                      "Resend OTP in " +
-                                          forgetPasswordController.timerText.value.toString(),
-                                      style: const TextStyle(
-                                          color: MyColors.blue2,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w700),
+                                      "Resend OTP in " + forgetPasswordController.timerText.value.toString(),
+                                      style: const TextStyle(color: MyColors.blue2, fontSize: 15, fontWeight: FontWeight.w700),
                                     )
                                   : GestureDetector(
                                       onTap: () {
@@ -114,14 +103,12 @@ class ForgetPassword extends StatelessWidget {
                           TextField(
                             obscureText: !forgetPasswordController.showOTP.value,
                             controller: forgetPasswordController.otpController,
-                            maxLength:
-                                int.tryParse(forgetPasswordController.otpLength.value ?? "8"),
+                            maxLength: int.tryParse(forgetPasswordController.otpLength.value ?? "8"),
                             textInputAction: TextInputAction.next,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                              errorText: forgetPasswordController.otpError.value == ""
-                                  ? null
-                                  : forgetPasswordController.otpError.value,
+                              errorText:
+                                  forgetPasswordController.otpError.value == "" ? null : forgetPasswordController.otpError.value,
                               hintText: 'OTP',
                               hintStyle: const TextStyle(
                                 fontSize: 15,
@@ -129,9 +116,7 @@ class ForgetPassword extends StatelessWidget {
                               suffixIcon: IconButton(
                                 icon: Icon(
                                   // Based on passwordVisible state choose the icon
-                                  forgetPasswordController.showOTP.value
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
+                                  forgetPasswordController.showOTP.value ? Icons.visibility_off : Icons.visibility,
                                   color: MyColors.buzzilyblack,
                                 ),
                                 onPressed: () {
@@ -189,9 +174,7 @@ class ForgetPassword extends StatelessWidget {
                               suffixIcon: IconButton(
                                 icon: Icon(
                                   // Based on passwordVisible state choose the icon
-                                  forgetPasswordController.showPass.value
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
+                                  forgetPasswordController.showPass.value ? Icons.visibility_off : Icons.visibility,
                                   color: MyColors.buzzilyblack,
                                 ),
                                 onPressed: () {
@@ -248,9 +231,7 @@ class ForgetPassword extends StatelessWidget {
                               suffixIcon: IconButton(
                                 icon: Icon(
                                   // Based on passwordVisible state choose the icon
-                                  forgetPasswordController.showConPass.value
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
+                                  forgetPasswordController.showConPass.value ? Icons.visibility_off : Icons.visibility,
                                   color: MyColors.buzzilyblack,
                                 ),
                                 onPressed: () {
@@ -294,8 +275,7 @@ class ForgetPassword extends StatelessWidget {
                               child: Center(
                                 child: Text(
                                   'Submit',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 15, letterSpacing: 1),
+                                  style: TextStyle(color: Colors.white, fontSize: 15, letterSpacing: 1),
                                 ),
                               ),
                             ),
@@ -371,14 +351,11 @@ class ForgetPassword extends StatelessWidget {
                               },
                               child: Container(
                                 height: 50,
-                                decoration: BoxDecoration(
-                                    color: Colors.blue.shade400,
-                                    borderRadius: BorderRadius.circular(20)),
+                                decoration: BoxDecoration(color: Colors.blue.shade400, borderRadius: BorderRadius.circular(20)),
                                 child: Center(
                                   child: Text(
                                     'Proceed',
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 15, letterSpacing: 1),
+                                    style: TextStyle(color: Colors.white, fontSize: 15, letterSpacing: 1),
                                   ),
                                 ),
                               ),

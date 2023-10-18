@@ -7,7 +7,6 @@ import 'package:hexcolor/hexcolor.dart';
 
 class PendingListPage extends StatelessWidget {
   PendingListPage({super.key});
-  PendingListController pendingListController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +26,7 @@ class PendingListPage extends StatelessWidget {
                     isDense: true,
                     contentPadding: EdgeInsets.zero,
                     hintText: "Search",
-                    border:
-                        OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(width: 1))),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(width: 1))),
               )),
               SizedBox(width: 6),
               Material(

@@ -7,7 +7,6 @@ import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -16,7 +15,7 @@ class LoginController extends GetxController {
   final googleLoginIn = GoogleSignIn();
   AppStorage appStorage = AppStorage();
   var rememberMe = false.obs;
-  var googleSigninVisible = false.obs;
+  var googleSignInVisible = false.obs;
   var ddSelectedValue = "".obs;
   var userTypeList = [].obs;
   var showPassword = true.obs;
@@ -29,13 +28,14 @@ class LoginController extends GetxController {
     fetchUserTypeList();
     userNameController.text = appStorage.retrieveValue(AppStorage.USERID) ?? "";
     userPasswordController.text = appStorage.retrieveValue(AppStorage.USER_PASSWORD) ?? "";
+    ddSelectedValue.value = appStorage.retrieveValue(AppStorage.USER_GROUP) ?? "";
+    dropDownItemChanged(ddSelectedValue);
     if (userNameController.text.toString() != "") rememberMe.value = true;
   }
 
   fetchUserTypeList() async {
     LoadingScreen.show();
 
-    print(Const.PROJECT_URL);
     // print(Const.ARM_URL);
     userTypeList.clear();
     var url = Const.getFullARMUrl(ServerConnections.API_GET_USERGROUPS);
@@ -46,17 +46,19 @@ class LoginController extends GetxController {
     if (data != "" && !data.toString().contains("error")) {
       data = data.toString().replaceAll("null", "\"\"");
 
-      print(data);
+      // print(data);
 
-      var jsopnData = jsonDecode(data)['result']['data'] as List;
+      var jsonData = jsonDecode(data)['result']['data'] as List;
       userTypeList.clear();
-      for (var item in jsopnData) {
+      for (var item in jsonData) {
         String val = item["usergroup"].toString();
         userTypeList.add(CommonMethods.capitalize(val));
       }
       userTypeList..sort((a, b) => a.toString().toLowerCase().compareTo(b.toString().toLowerCase()));
-      ddSelectedValue.value = userTypeList[0];
-      dropDownItemChanged(ddSelectedValue);
+      if (ddSelectedValue.value == "") {
+        ddSelectedValue.value = userTypeList[0];
+        dropDownItemChanged(ddSelectedValue);
+      }
     }
   }
 
@@ -74,14 +76,10 @@ class LoginController extends GetxController {
 
   fetchSignInDetail() async {
     LoadingScreen.show();
-    print(Const.ARM_URL);
     var url = Const.getFullARMUrl(ServerConnections.API_GET_SIGNINDETAILS);
     var body = Const.getAppBody();
-    print(body);
     var data = await serverConnections.postToServer(url: url, body: body);
     LoadingScreen.dismiss();
-    // var jsopnData = jsonDecode(data);
-    print(data);
   }
 
   dropdownMenuItem() {
@@ -99,9 +97,9 @@ class LoginController extends GetxController {
   dropDownItemChanged(Object? value) {
     ddSelectedValue.value = value.toString();
     if (ddSelectedValue.value.toLowerCase() == "external")
-      googleSigninVisible.value = true;
+      googleSignInVisible.value = true;
     else
-      googleSigninVisible.value = false;
+      googleSignInVisible.value = false;
     // print(value);
   }
 
@@ -141,7 +139,7 @@ class LoginController extends GetxController {
 
       var body = await getSignInBody();
       var url = Const.getFullARMUrl(ServerConnections.API_SIGNIN);
-      print(body.toString());
+      // print(body.toString());
       // var response = await http.post(Uri.parse(url),
       //     headers: {"Content-Type": "application/json"}, body: body);
       // var data = serverConnections.parseData(response);
@@ -155,16 +153,19 @@ class LoginController extends GetxController {
           await appStorage.storeValue(AppStorage.TOKEN, json["result"]["token"].toString());
           await appStorage.storeValue(AppStorage.SESSIONID, json["result"]["sessionid"].toString());
           await appStorage.storeValue(AppStorage.USER_NAME, userNameController.text);
+          await appStorage.storeValue(AppStorage.LAST_LOGIN_DATA, body);
           //Save Data
           if (rememberMe.value) {
             await appStorage.storeValue(AppStorage.USERID, userNameController.text);
             await appStorage.storeValue(AppStorage.USER_PASSWORD, userPasswordController.text);
+            await appStorage.storeValue(AppStorage.USER_GROUP, ddSelectedValue.value);
           } else {
             appStorage.remove(AppStorage.USERID);
             appStorage.remove(AppStorage.USER_PASSWORD);
+            appStorage.remove(AppStorage.USER_GROUP);
           }
 
-          ProcessLoginAndGoToHomePage();
+          _processLoginAndGoToHomePage();
         } else {
           Get.snackbar("Error ", json["result"]["message"],
               snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
@@ -190,11 +191,11 @@ class LoginController extends GetxController {
 
         Map body = {
           'appname': Const.PROJECT_NAME,
-          'userid': googleUser!.email.toString(),
+          'userid': googleUser.email.toString(),
           'userGroup': ddSelectedValue.value.toString(),
           'ssoType': 'Google',
           'ssodetails': {
-            'id': googleUser!.id,
+            'id': googleUser.id,
             'token': googleAuth.accessToken.toString(),
           },
         };
@@ -211,8 +212,8 @@ class LoginController extends GetxController {
           } else {
             await appStorage.storeValue(AppStorage.TOKEN, jsonResp["result"]["token"].toString());
             await appStorage.storeValue(AppStorage.SESSIONID, jsonResp["result"]["sessionid"].toString());
-            await appStorage.storeValue(AppStorage.USER_NAME, googleUser!.email.toString());
-            ProcessLoginAndGoToHomePage();
+            await appStorage.storeValue(AppStorage.USER_NAME, googleUser.email.toString());
+            _processLoginAndGoToHomePage();
           }
         } else {
           Get.snackbar("Error", "Some Error occured",
@@ -227,19 +228,12 @@ class LoginController extends GetxController {
     }
   }
 
-  ProcessLoginAndGoToHomePage() async {
+  _processLoginAndGoToHomePage() async {
     //connect to Axpert
-    var conectBody = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
+    var connectBody = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
     var cUrl = Const.getFullARMUrl(ServerConnections.API_CONNECTTOAXPERT);
-
-    var cHeader = {
-      'Content-Type': "application/json",
-      'Authorization': 'Bearer ' + appStorage.retrieveValue(AppStorage.TOKEN)
-    };
-    var connectResp = await serverConnections.postToServer(url: cUrl, body: jsonEncode(conectBody), header: cHeader);
-    print(connectResp);
-    // getArmMenu
-
+    var cHeader = {'Content-Type': "application/json", 'Authorization': 'Bearer ' + appStorage.retrieveValue(AppStorage.TOKEN)};
+    var connectResp = await serverConnections.postToServer(url: cUrl, body: jsonEncode(connectBody), header: cHeader);
     var jsonResp = jsonDecode(connectResp);
     if (jsonResp != "" && !jsonResp.toString().contains("error")) {
       if (jsonResp['result']['success'].toString() == "true") {

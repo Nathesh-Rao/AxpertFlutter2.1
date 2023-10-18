@@ -60,13 +60,13 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Padding(
-              padding: EdgeInsets.only(right: 20, bottom: 20),
-              child: Text("Version: "),
-            ),
-          )
+          // Align(
+          //   alignment: Alignment.bottomRight,
+          //   child: Padding(
+          //     padding: EdgeInsets.only(right: 20, bottom: 20),
+          //     child: Text("Version: "),
+          //   ),
+          // )
         ],
       ),
     );

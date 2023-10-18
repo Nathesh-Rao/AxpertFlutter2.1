@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
@@ -70,13 +69,11 @@ class _LoginPageState extends State<LoginPage> {
                                 SizedBox(height: 25),
                                 Text('Login',
                                     style: GoogleFonts.poppins(
-                                        textStyle:
-                                            TextStyle(fontWeight: FontWeight.w700, fontSize: 20, color: Colors.black))),
+                                        textStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 20, color: Colors.black))),
                                 SizedBox(height: 10),
                                 Text('Enter Your Credentials',
                                     style: GoogleFonts.poppins(
-                                        textStyle:
-                                            TextStyle(fontWeight: FontWeight.w400, fontSize: 12, color: Colors.black))),
+                                        textStyle: TextStyle(fontWeight: FontWeight.w400, fontSize: 12, color: Colors.black))),
                               ],
                             ),
                             Align(
@@ -203,13 +200,12 @@ class _LoginPageState extends State<LoginPage> {
                             child: Container(
                               height: 50,
                               decoration:
-                                  BoxDecoration(color: Colors.blue.shade400, borderRadius: BorderRadius.circular(20)),
+                                  BoxDecoration(color: MyColors.blue1.withOpacity(0.8), borderRadius: BorderRadius.circular(20)),
                               child: Center(
                                 child: Text(
                                   "Login",
                                   style: GoogleFonts.poppins(
-                                      textStyle:
-                                          TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: MyColors.white1)),
+                                      textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: MyColors.white1)),
                                 ),
                               ),
                             ),
@@ -217,28 +213,21 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         SizedBox(height: 10),
                         Visibility(
-                          visible: loginController.googleSigninVisible.value,
+                          visible: loginController.googleSignInVisible.value,
                           child: Padding(
                             padding: EdgeInsets.only(left: 30, right: 30),
                             child: ElevatedButton.icon(
                                 style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                                   foregroundColor: MyColors.buzzilyblack,
                                   backgroundColor: MyColors.white1,
-                                  minimumSize: Size(double.infinity, 40),
+                                  minimumSize: Size(double.infinity, 48),
                                 ),
-                                icon: Icon(
-                                  FontAwesomeIcons.google,
-                                  color: MyColors.red,
-                                ),
-                                label: Text(
-                                  'Sign In With Google',
-                                  style: GoogleFonts.poppins(
-                                      textStyle: TextStyle(
-                                          fontWeight: FontWeight.w500, fontSize: 12, color: HexColor("#3E4153"))),
-                                ),
+                                icon: Icon(FontAwesomeIcons.google, color: MyColors.red),
+                                label: Text('Sign In With Google',
+                                    style: GoogleFonts.poppins(
+                                        textStyle:
+                                            TextStyle(fontWeight: FontWeight.w500, fontSize: 12, color: HexColor("#3E4153")))),
                                 onPressed: () {
                                   loginController.googleSignInClicked();
                                 }),
@@ -256,8 +245,8 @@ class _LoginPageState extends State<LoginPage> {
                               children: [
                                 Text("New user?  ",
                                     style: GoogleFonts.poppins(
-                                        textStyle: TextStyle(
-                                            fontWeight: FontWeight.w600, fontSize: 12, color: HexColor("#3E4153")))),
+                                        textStyle:
+                                            TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: HexColor("#3E4153")))),
                                 Text(
                                   "Sign up",
                                   style: GoogleFonts.poppins(
@@ -276,8 +265,8 @@ class _LoginPageState extends State<LoginPage> {
                           child: Text(
                             "By using the software, you agree to the",
                             style: GoogleFonts.poppins(
-                                textStyle: TextStyle(
-                                    fontWeight: FontWeight.w400, fontSize: 12, letterSpacing: 1, color: Colors.black)),
+                                textStyle:
+                                    TextStyle(fontWeight: FontWeight.w400, fontSize: 12, letterSpacing: 1, color: Colors.black)),
                           ),
                         ),
                         Row(
@@ -298,10 +287,7 @@ class _LoginPageState extends State<LoginPage> {
                               child: Text(" and the",
                                   style: GoogleFonts.poppins(
                                     textStyle: TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 12,
-                                        color: Colors.black,
-                                        letterSpacing: 1),
+                                        fontWeight: FontWeight.w400, fontSize: 12, color: Colors.black, letterSpacing: 1),
                                   )),
                             ),
                             FittedBox(
@@ -321,8 +307,8 @@ class _LoginPageState extends State<LoginPage> {
                         Text("Powered By",
                             textAlign: TextAlign.center,
                             style: GoogleFonts.poppins(
-                              textStyle: TextStyle(
-                                  fontWeight: FontWeight.w500, fontSize: 12, color: Colors.black, letterSpacing: 1),
+                              textStyle:
+                                  TextStyle(fontWeight: FontWeight.w500, fontSize: 12, color: Colors.black, letterSpacing: 1),
                             )),
                         Image.asset(
                           'assets/images/agilelabslogo.png',
