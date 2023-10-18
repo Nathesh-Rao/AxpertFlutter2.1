@@ -1,6 +1,6 @@
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/const.dart';
-import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageConroller.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/CardModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Widgets/WidgetOptionListTile.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -19,11 +19,12 @@ class WidgetCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(cardModel.colorcode);
     return Container(
       // margin: EdgeInsets.all(10),
       height: 50,
       decoration: BoxDecoration(
-          color: HexColor(cardModel.colorcode.trim()),
+          color: HexColor(cardModel.colorcode.trim() ?? "ffffff"),
           borderRadius: BorderRadius.circular(10),
           // boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 20)] ,
           border: Border.all(width: 2, color: HexColor(cardModel.colorcode.trim()))),
@@ -74,9 +75,8 @@ class WidgetCard extends StatelessWidget {
   }
 
   showMenuDialog(CardModel cardModel) {
-    List optionLists = menuHomePageController.actionData[cardModel.caption] == null
-        ? []
-        : menuHomePageController.actionData[cardModel.caption];
+    List optionLists =
+        menuHomePageController.actionData[cardModel.caption] == null ? [] : menuHomePageController.actionData[cardModel.caption];
     if (!optionLists.isEmpty) {
       Get.dialog(Dialog(
         backgroundColor: Colors.transparent,

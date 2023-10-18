@@ -1,8 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:axpertflutter/ModelPages/AddConnection/Controllers/AddConnectionController.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
+import 'package:axpertflutter/ModelPages/AddConnection/Controllers/AddConnectionController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -50,13 +49,21 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  IconButton(
-                      onPressed: () {
-                        addConnectionController.qrViewController!.toggleFlash();
-                        addConnectionController.isFlashOn.toggle();
-                      },
-                      icon: Obx(() =>
-                          addConnectionController.isFlashOn.value ? Icon(Icons.flash_off) : Icon(Icons.flash_on))),
+                  Visibility(
+                    visible: !addConnectionController.doesDeviceHasFlash(),
+                    child: IconButton(onPressed: null, icon: Icon(Icons.no_flash, color: MyColors.blue2)),
+                  ),
+                  Visibility(
+                    visible: addConnectionController.doesDeviceHasFlash(),
+                    child: IconButton(
+                        onPressed: () {
+                          addConnectionController.qrViewController!.toggleFlash();
+                          addConnectionController.isFlashOn.toggle();
+                        },
+                        icon: Obx(() => addConnectionController.isFlashOn.value
+                            ? Icon(Icons.flash_off, color: MyColors.blue2)
+                            : Icon(Icons.flash_on, color: MyColors.blue2))),
+                  ),
                   IconButton(
                       onPressed: () async {
                         if (!addConnectionController.isPlayPauseOn.value) {
@@ -68,21 +75,20 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
                         }
                       },
                       icon: Obx(() => !addConnectionController.isPlayPauseOn.value
-                          ? Icon(Icons.pause)
-                          : Icon(Icons.play_arrow_sharp))),
+                          ? Icon(Icons.pause, color: MyColors.blue2)
+                          : Icon(Icons.play_arrow_sharp, color: MyColors.blue2))),
                   IconButton(
                       onPressed: () {
                         addConnectionController.qrViewController!.flipCamera();
                       },
-                      icon: Icon(Icons.flip_camera_ios)),
-                  //Pick image from gallery
+                      icon: Icon(Icons.flip_camera_ios, color: MyColors.blue2)),
                   IconButton(
                       onPressed: () {
                         addConnectionController.pickImageFromGalleryCalled();
                       },
-                      icon: Icon(Icons.filter)),
+                      icon: Icon(Icons.filter, color: MyColors.blue2)),
                 ],
-              )
+              ),
             ],
           ),
         ),
@@ -116,8 +122,7 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
     controller.scannedDataStream.listen((scanData) {
       addConnectionController.barcodeResult = scanData;
       // print(scanData);
-      if (addConnectionController.barcodeResult.toString() != "" &&
-          addConnectionController.barcodeResult.toString() != null) {
+      if (addConnectionController.barcodeResult.toString() != "") {
         print(addConnectionController.barcodeResult.toString());
         controller.pauseCamera();
         var data = addConnectionController.barcodeResult!.code.toString();
@@ -128,7 +133,7 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
               colorText: Colors.white,
               duration: Duration(seconds: 1));
           Timer(Duration(seconds: 2), () {
-            controller!.resumeCamera();
+            controller.resumeCamera();
           });
         } else
           addConnectionController.decodeQRResult(data);

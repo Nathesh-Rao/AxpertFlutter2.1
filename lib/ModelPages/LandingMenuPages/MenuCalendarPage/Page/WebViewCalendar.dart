@@ -1,14 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-import 'dart:typed_data';
+
 import 'package:axpertflutter/Constants/MyColors.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:path_provider/path_provider.dart';
 
 class WebViewCalendar extends StatefulWidget {
   String weburl;
@@ -20,8 +15,8 @@ class WebViewCalendar extends StatefulWidget {
 
 class _WebViewCalendarState extends State<WebViewCalendar> {
   final Completer<InAppWebViewController> _controller = Completer<InAppWebViewController>();
-  late InAppWebViewController _webViewController;
-  ScrollController? _scrollController;
+  // late InAppWebViewController _webViewController;
+  // ScrollController? _scrollController;
   TextEditingController mobileController = new TextEditingController();
   late String mobile;
   int counter = 0;
@@ -32,11 +27,11 @@ class _WebViewCalendarState extends State<WebViewCalendar> {
   bool isDeviceConnected = false;
   bool isAlertSet = false;
   bool IconcolorSet = false;
-  PageController _pageController = PageController(
-    initialPage: 0,
-  );
-  @override
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  // PageController _pageController = PageController(
+  //   initialPage: 0,
+  // );
+  // @override
+  // final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   bool _progressBarActive = true;
 
   // bool _refreshBarActive=false;
@@ -97,7 +92,7 @@ class _WebViewCalendarState extends State<WebViewCalendar> {
             initialUrlRequest: URLRequest(url: Uri.parse(widget.weburl)),
             onWebViewCreated: (controller) {
               _controller.complete(controller);
-              _webViewController = controller;
+              // _webViewController = controller;
               controller.clearCache();
             },
             // javascriptMode: JavascriptMode.unrestricted,

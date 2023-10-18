@@ -3,11 +3,9 @@ import 'dart:convert';
 
 import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/const.dart';
-import 'package:axpertflutter/ModelPages/LoginPage/Controller/LoginController.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 
 class SignUpController extends GetxController {
   var userTypeList = [].obs;
@@ -266,7 +264,7 @@ class SignUpController extends GetxController {
     };
     var url = Const.getFullARMUrl(ServerConnections.API_OTP_VALIDATE_USER);
     var responses = await serverConnections.postToServer(url: url, body: jsonEncode(otpBody));
-    print(responses);
+
     if (responses != "" && !responses.toString().toLowerCase().contains("error")) {
       var jsonResp = jsonDecode(responses);
       if (jsonResp['result']['success'].toString() == "false") {

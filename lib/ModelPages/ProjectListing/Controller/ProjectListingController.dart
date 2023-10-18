@@ -28,7 +28,7 @@ class ProjectListingController extends GetxController {
 
   getProjectCount() {
     List<dynamic> list = getConnections();
-    if (list == null || list.isEmpty) {
+    if (list.isEmpty) {
       isCountAvailable.value = false;
       return 0;
     } else {

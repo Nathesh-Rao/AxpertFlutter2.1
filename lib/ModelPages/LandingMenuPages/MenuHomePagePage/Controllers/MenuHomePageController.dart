@@ -23,7 +23,7 @@ class MenuHomePageController extends GetxController {
     body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
     header = {
       "Content-Type": "application/json",
-      'Authorization': 'Bearer ' + appStorage.retrieveValue(AppStorage.TOKEN).toString() ?? "",
+      'Authorization': 'Bearer ' + appStorage.retrieveValue(AppStorage.TOKEN).toString(),
     };
 
     getCardDetails();
@@ -77,7 +77,7 @@ class MenuHomePageController extends GetxController {
       }
     }
     LoadingScreen.dismiss();
-    isLoading.value = false;
+
     if (listOfCards.length == 0) {
       print("Length:   0");
       Get.defaultDialog(
@@ -90,6 +90,7 @@ class MenuHomePageController extends GetxController {
               child: Text("Ok")));
     }
     await getCardDataSources();
+    isLoading.value = false;
     return listOfCards;
   }
 
@@ -106,11 +107,10 @@ class MenuHomePageController extends GetxController {
       for (var items in setOfDatasource) {
         dataSourceBody["datasource"] = items;
         // setOfDatasource.remove(items);
-        var dsResp =
-            await serverConnections.postToServer(url: dataSourceUrl, header: header, body: jsonEncode(dataSourceBody));
+        var dsResp = await serverConnections.postToServer(url: dataSourceUrl, header: header, body: jsonEncode(dataSourceBody));
         if (dsResp != "") {
           var jsonDSResp = jsonDecode(dsResp);
-          print(jsonDSResp);
+          // print(jsonDSResp);
           if (jsonDSResp['result']['success'].toString() == "true") {
             var dsDataList = jsonDSResp['result']['data'];
             for (var item in dsDataList) {

@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/const.dart';
-import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageConroller.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Page/MenuActiveListPage.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuCalendarPage/Page/MenuCalendarPage.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuDashboardPage/Page/MenuDashboardPage.dart';
@@ -26,7 +25,7 @@ class LandingPageController extends GetxController {
   var showOldPass = false.obs;
   var showNewPass = false.obs;
   var showConNewPass = false.obs;
-  var userName = 'j'.obs; //update with user name
+  var userName = 'Demo'.obs; //update with user name
   var bottomIndex = 0.obs;
   var carouselIndex = 0.obs;
   final CarouselController carouselController = CarouselController();
@@ -47,7 +46,7 @@ class LandingPageController extends GetxController {
   get getPage => pageList[bottomIndex.value];
 
   LandingPageController() {
-    userName.value = appStorage.retrieveValue(AppStorage.USER_NAME) ?? "";
+    userName.value = appStorage.retrieveValue(AppStorage.USER_NAME) ?? userName.value;
     userCtrl.text = userName.value;
   }
 
@@ -79,7 +78,6 @@ class LandingPageController extends GetxController {
   }
 
   void showNotifications() {
-    MenuHomePageController menuHomePageController = Get.find();
     Get.dialog(Dialog(
       backgroundColor: Colors.transparent,
       child: Container(
@@ -201,10 +199,21 @@ class LandingPageController extends GetxController {
             child: Text("No")));
   }
 
-  void changePasswordCalled() {}
+  void changePasswordCalled() {
+    //change Password
+
+    // if success
+    closeProfileDialog();
+  }
 
   error(var msg) {
-    Get.snackbar("Error!", msg,
-        snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
+    Get.snackbar("Error!", msg, snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
+  }
+
+  void closeProfileDialog() {
+    cnPassCtrl.text = "";
+    oPassCtrl.text = "";
+    nPassCtrl.text = "";
+    Get.back();
   }
 }

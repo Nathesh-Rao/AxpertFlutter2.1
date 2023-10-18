@@ -8,6 +8,8 @@ class AppStorage {
   static const String USERID = "userID";
   static const String USER_PASSWORD = "userPass";
   static const String USER_NAME = "UserName";
+  static const String USER_GROUP = "UserGroup";
+  static const String LAST_LOGIN_DATA = "LastLoginData";
 
   static const String PROJECT_NAME = "ProjectName";
   static const String PROJECT_URL = "ProjectUrl";

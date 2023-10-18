@@ -19,7 +19,6 @@ class InApplicationWebViewer extends StatefulWidget {
 class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
   bool _isConnectionAvailable = true;
   bool _progressBarActive = true;
-  late InAppWebViewController _controller;
   final Completer<AndroidInAppWebViewController> controllerCompleter = Completer<AndroidInAppWebViewController>();
   bool isDeviceConnected = false;
   bool isAlertSet = false;

@@ -4,7 +4,6 @@ import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Models/MenuItemModel.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -48,10 +47,7 @@ class MenuMorePageController extends GetxController {
   getMenuList() async {
     var mUrl = Const.getFullARMUrl(ServerConnections.API_GET_MENU);
     var conectBody = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
-    var cHeader = {
-      'Content-Type': "application/json",
-      'Authorization': 'Bearer ' + appStorage.retrieveValue(AppStorage.TOKEN)
-    };
+    var cHeader = {'Content-Type': "application/json", 'Authorization': 'Bearer ' + appStorage.retrieveValue(AppStorage.TOKEN)};
     var menuResp = await serverConnections.postToServer(url: mUrl, body: jsonEncode(conectBody), header: cHeader);
 
     if (menuResp != "" && !menuResp.toString().contains("error")) {
@@ -104,7 +100,7 @@ class MenuMorePageController extends GetxController {
   futureBuilder() async {
     // await Future.delayed(Duration(microseconds: 2));
     // reOrganise(menuListMain)
-    return fetchList.value;
+    return fetchList;
   }
 
   clearCalled() {
