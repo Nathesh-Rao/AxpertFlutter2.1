@@ -169,6 +169,7 @@ class LandingPageController extends GetxController {
     //     break;
     // }
   }
+
   signOut() async {
     var body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
     var url = Const.getFullARMUrl(ServerConnections.API_SIGNOUT);
@@ -178,7 +179,7 @@ class LandingPageController extends GetxController {
         confirm: ElevatedButton(
             onPressed: () async {
               var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body));
-              print(resp);
+             // print(resp);
               if (resp != "" && !resp.toString().contains("error")) {
                 var jsonResp = jsonDecode(resp);
                 if (jsonResp['result']['success'].toString() == "true") {

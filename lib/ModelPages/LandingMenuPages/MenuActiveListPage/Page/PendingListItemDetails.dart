@@ -8,7 +8,7 @@ import 'package:hexcolor/hexcolor.dart';
 
 class PendingListItemDetails extends StatelessWidget {
   PendingListItemDetails({super.key});
-  PendingListController pendingListController = Get.put(PendingListController());
+  PendingListController pendingListController = Get.find();
 
   @override
   Widget build(BuildContext context) {

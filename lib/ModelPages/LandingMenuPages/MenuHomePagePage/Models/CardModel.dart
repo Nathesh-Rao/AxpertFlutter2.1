@@ -16,9 +16,9 @@ class CardModel {
         stransid = json['stransid'].toString(),
         datasource = json['datasource'].toString(),
         moreoption = json['moreoption'].toString(),
-        colorcode = json['colorcode'].toString() == ""
-            ? "#FFECE5"
-            : (json['colorcode'].toString() == "null" ? "#FFECE5" : json['colorcode'].toString());
+        colorcode = json['colorcode'].toString();
+
+  // json['colorcode'].toString() == "" ? "#FFECE5" : (json['colorcode'].toString() == "null" ? "#FFECE5" : json['colorcode'].toString());
 
   Map<String, dynamic> toJson() => {
         'cardid': cardid,

@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 
+import '../../../../Constants/CommonMethods.dart';
+
 class MenuMorePageController extends GetxController {
   var needRefresh = true.obs;
   TextEditingController searchController = TextEditingController();
@@ -41,15 +43,14 @@ class MenuMorePageController extends GetxController {
   ];
 
   MenuMorePageController() {
+    print("-----------MenuMorePageController Called-------------");
     getMenuList();
   }
 
   getMenuList() async {
     var mUrl = Const.getFullARMUrl(ServerConnections.API_GET_MENU);
     var conectBody = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
-    var cHeader = {'Content-Type': "application/json", 'Authorization': 'Bearer ' + appStorage.retrieveValue(AppStorage.TOKEN)};
-    var menuResp = await serverConnections.postToServer(url: mUrl, body: jsonEncode(conectBody), header: cHeader);
-
+    var menuResp = await serverConnections.postToServer(url: mUrl, body: jsonEncode(conectBody), isBearer: true);
     if (menuResp != "" && !menuResp.toString().contains("error")) {
       var menuJson = jsonDecode(menuResp);
       if (menuJson['result']['success'].toString() == "true") {

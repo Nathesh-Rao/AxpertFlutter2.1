@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 
 class LandingPage extends StatelessWidget {
   LandingPage({super.key});
+
   LandingPageController landingPageController = Get.put(LandingPageController());
 
   @override

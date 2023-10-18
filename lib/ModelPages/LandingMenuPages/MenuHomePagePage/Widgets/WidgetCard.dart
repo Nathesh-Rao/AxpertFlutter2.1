@@ -11,6 +11,7 @@ import 'package:hexcolor/hexcolor.dart';
 
 class WidgetCard extends StatelessWidget {
   WidgetCard(this.cardModel, {super.key});
+
   CardModel cardModel;
   AppStorage appStorage = AppStorage();
   MenuHomePageController menuHomePageController = Get.find();
@@ -24,10 +25,10 @@ class WidgetCard extends StatelessWidget {
       // margin: EdgeInsets.all(10),
       height: 50,
       decoration: BoxDecoration(
-          color: HexColor(cardModel.colorcode.trim() ?? "ffffff"),
+          color: HexColor(menuHomePageController.getCardBackgroundColor(cardModel.colorcode.trim())), // ?? "ffffff"),
           borderRadius: BorderRadius.circular(10),
           // boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 20)] ,
-          border: Border.all(width: 2, color: HexColor(cardModel.colorcode.trim()))),
+          border: Border.all(width: 2, color: HexColor(menuHomePageController.getCardBackgroundColor(cardModel.colorcode.trim())))),
       child: Padding(
         padding: EdgeInsets.only(left: 20, top: 10, right: 2),
         child: Column(
@@ -40,8 +41,7 @@ class WidgetCard extends StatelessWidget {
                   alignment: Alignment.topLeft,
                   child: CachedNetworkImage(
                     imageUrl: Const.getFullProjectUrl("CustomPages/icons/homepageicon/") + cardModel.caption + '.png',
-                    errorWidget: (context, url, error) =>
-                        Image.network(Const.getFullProjectUrl('CustomPages/icons/homepageicon/default.png')),
+                    errorWidget: (context, url, error) => Image.network(Const.getFullProjectUrl('CustomPages/icons/homepageicon/default.png')),
                     width: 40,
                   ),
                 ),
@@ -60,11 +60,13 @@ class WidgetCard extends StatelessWidget {
             GestureDetector(
               onTap: () => captionOnTapFunction(cardModel),
               child: Padding(
-                padding: const EdgeInsets.only(top: 5, bottom: 2),
-                child: Text(
-                  cardModel.caption,
-                  style: GoogleFonts.roboto(
-                      textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: HexColor("#444444"))),
+                padding: const EdgeInsets.only(top: 5, bottom: 2, right: 5),
+                child: FittedBox(
+                  fit: BoxFit.fitWidth,
+                  child: Text(
+                    cardModel.caption,
+                    style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: HexColor("#444444"))),
+                  ),
                 ),
               ),
             ),
@@ -75,8 +77,7 @@ class WidgetCard extends StatelessWidget {
   }
 
   showMenuDialog(CardModel cardModel) {
-    List optionLists =
-        menuHomePageController.actionData[cardModel.caption] == null ? [] : menuHomePageController.actionData[cardModel.caption];
+    List optionLists = menuHomePageController.actionData[cardModel.caption] == null ? [] : menuHomePageController.actionData[cardModel.caption];
     if (!optionLists.isEmpty) {
       Get.dialog(Dialog(
         backgroundColor: Colors.transparent,
@@ -95,7 +96,7 @@ class WidgetCard extends StatelessWidget {
                   child: Center(
                     child: Text(
                       cardModel.caption,
-                      style: TextStyle(fontSize: 30),
+                      style: TextStyle(fontSize: 25),
                     ),
                   ),
                 ),
@@ -116,9 +117,15 @@ class WidgetCard extends StatelessWidget {
                   decoration: BoxDecoration(border: Border(top: BorderSide(width: 1, color: Colors.grey))),
                   child: cardModel.moreoption.toString() == ""
                       ? null
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: decodeMoreOptopns(cardModel.moreoption),
+                      : SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: decodeMoreOptopns(cardModel.moreoption),
+                            ),
+                          ),
                         ),
                 ),
               ],
@@ -128,10 +135,7 @@ class WidgetCard extends StatelessWidget {
       ));
     } else {
       Get.snackbar("Oops!", "Nothing to Show",
-          backgroundColor: Colors.grey,
-          colorText: Colors.black,
-          snackPosition: SnackPosition.BOTTOM,
-          duration: Duration(seconds: 1));
+          backgroundColor: Colors.grey, colorText: Colors.black, snackPosition: SnackPosition.BOTTOM, duration: Duration(seconds: 1));
     }
   }
 
@@ -168,14 +172,15 @@ class WidgetCard extends StatelessWidget {
       if (btnName != "") {
         widget = ElevatedButton(
             style: ButtonStyle(
-              padding: MaterialStateProperty.all(EdgeInsets.only(left: 2, right: 2, top: 5, bottom: 5)),
+              padding: MaterialStateProperty.all(EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5)),
             ),
             onPressed: () {
               Get.back();
               menuHomePageController.openBtnAction(btnType, btnOpen, "webUrl");
             },
-            child: Text(btnName));
+            child: FittedBox(fit: BoxFit.fitWidth, child: Text(btnName)));
         widgeList.add(widget);
+        widgeList.add(SizedBox(width: 10));
       }
     }
     return widgeList;

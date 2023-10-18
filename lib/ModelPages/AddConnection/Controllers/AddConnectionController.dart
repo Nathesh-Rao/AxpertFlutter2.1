@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
@@ -103,20 +102,25 @@ class AddConnectionController extends GetxController {
     ProjectModel projectModel;
     if (validateProjectDetailsForm()) {
       LoadingScreen.show();
-      var url = armUrlController.text.trim();
-      url += url.endsWith("/") ? "api/v1/ARMAppStatus" : "/api/v1/ARMAppStatus";
+      var baseUrl = armUrlController.text.trim();
+      baseUrl += baseUrl.endsWith("/") ? "" : "/";
+      var url = baseUrl + ServerConnections.API_GET_APPSTATUS;
       final data = await serverConnections.getFromServer(url: url);
       LoadingScreen.dismiss();
 
       if (data != "" && data.toString().toLowerCase().contains("running successfully".toLowerCase())) {
-        projectModel = ProjectModel(conNameController.text.trim(), webUrlController.text.trim(), armUrlController.text.trim(),
-            conCaptionController.text.trim());
-        conNameController.text = "";
-        webUrlController.text = "";
-        armUrlController.text = "";
-        conCaptionController.text = "";
-        var json = projectModel.toJson();
+        //check whether the entered Connection name is proper
+        Future<bool> isValidConnName = validateConnectionName(baseUrl);
+        if (await isValidConnName) {
+          projectModel = ProjectModel(
+              conNameController.text.trim(), webUrlController.text.trim(), armUrlController.text.trim(), conCaptionController.text.trim());
+          conNameController.text = "";
+          webUrlController.text = "";
+          armUrlController.text = "";
+          conCaptionController.text = "";
+          var json = projectModel.toJson();
         saveDatAndRedirect(projectModel, json, isQr: true);
+        }
       }
     }
   }
@@ -308,5 +312,19 @@ class AddConnectionController extends GetxController {
     if (!data.toString().contains("pname")) return false;
     if (!data.toString().contains("pname")) return false;
     return true;
+  }
+
+  Future<bool> validateConnectionName(String baseUrl) async {
+    var url = baseUrl + ServerConnections.API_GET_SIGNINDETAILS;
+    var body = "{\"appname\":\"" + conNameController.text.trim() + "\"}";
+    final response = await serverConnections.postToServer(url: url, body: body);
+    if (response != "" || !response.toString().toLowerCase().contains("error")) {
+      var json = jsonDecode(response);
+      if (json["result"]["message"].toString().toLowerCase() == "success")
+        return true;
+      else
+        errName.value = json["result"]["message"].toString();
+    }
+    return false;
   }
 }

@@ -216,15 +216,13 @@ class LoginController extends GetxController {
             _processLoginAndGoToHomePage();
           }
         } else {
-          Get.snackbar("Error", "Some Error occured",
-              backgroundColor: Colors.red, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM);
+          Get.snackbar("Error", "Some Error occured", backgroundColor: Colors.red, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM);
         }
-        print(resp);
+        // print(resp);
         // print(googleUser);
       }
     } catch (e) {
-      Get.snackbar("Error", "User is not Registered!",
-          snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
+      Get.snackbar("Error", "User is not Registered!", snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
     }
   }
 
@@ -232,8 +230,10 @@ class LoginController extends GetxController {
     //connect to Axpert
     var connectBody = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
     var cUrl = Const.getFullARMUrl(ServerConnections.API_CONNECTTOAXPERT);
-    var cHeader = {'Content-Type': "application/json", 'Authorization': 'Bearer ' + appStorage.retrieveValue(AppStorage.TOKEN)};
-    var connectResp = await serverConnections.postToServer(url: cUrl, body: jsonEncode(connectBody), header: cHeader);
+    var connectResp = await serverConnections.postToServer(url: cUrl, body: jsonEncode(connectBody), isBearer: true);
+    print(connectResp);
+    // getArmMenu
+
     var jsonResp = jsonDecode(connectResp);
     if (jsonResp != "" && !jsonResp.toString().contains("error")) {
       if (jsonResp['result']['success'].toString() == "true") {

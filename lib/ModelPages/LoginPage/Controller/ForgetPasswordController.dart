@@ -127,7 +127,7 @@ class ForgetPasswordController extends GetxController {
     };
     var url = Const.getFullARMUrl(ServerConnections.API_OTP_VALIDATE_USER);
     var responses = await serverConnections.postToServer(url: url, body: jsonEncode(otpBody));
-
+    //print(responses);
     if (responses != "" && !responses.toString().toLowerCase().contains("error")) {
       var jsonResp = jsonDecode(responses);
       if (jsonResp['result']['success'].toString() == "false") {

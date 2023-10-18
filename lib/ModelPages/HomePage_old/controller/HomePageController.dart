@@ -68,7 +68,7 @@ class HomePageController extends GetxController {
         confirm: ElevatedButton(
             onPressed: () async {
               var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body));
-              print(resp);
+             // print(resp);
               if (resp != "" && !resp.toString().contains("error")) {
                 var jsonResp = jsonDecode(resp);
                 if (jsonResp['result']['success'].toString() == "true") {

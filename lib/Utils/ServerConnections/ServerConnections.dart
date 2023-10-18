@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
+import '../../Constants/AppStorage.dart';
+
 class ServerConnections {
   static var client = http.Client();
   InternetConnectivity internetConnectivity = Get.find();
@@ -20,9 +22,12 @@ class ServerConnections {
   static const String API_CONNECTTOAXPERT = "api/v1/ARMConnectToAxpert";
   static const String API_GET_HOMEPAGE_CARDS = "api/v1/ARMGetHomePageCards";
   static const String API_GET_HOMEPAGE_CARDSDATASOURCE = "api/v1/ARMGetDataResponse";
+  static const String API_GET_PENDING_ACTIVELIST = "api/v1/ARMGetActiveTasks";
+
 
   static const String API_GET_MENU = "api/v1/ARMGetMenu";
   static const String API_SIGNOUT = "api/v1/ARMSignOut";
+  AppStorage appStorage = AppStorage();
 
   ServerConnections() {
     client = http.Client();
@@ -30,35 +35,43 @@ class ServerConnections {
 
   var _baseBody = "";
 
-  String _baseUrl =
-      "http://demo.agile-labs.com/axmclientidscripts/asbmenurest.dll/datasnap/rest/Tasbmenurest/getchoices";
+  String _baseUrl = "http://demo.agile-labs.com/axmclientidscripts/asbmenurest.dll/datasnap/rest/Tasbmenurest/getchoices";
 
-  postToServer({String url = '', var header = '', String body = '', String ClientID = ''}) async {
+  postToServer({String url = '', var header = '', String body = '', String ClientID = '', bool isBearer = false}) async {
     if (await internetConnectivity.connectionStatus)
       try {
         if (ClientID != '') _baseBody = _generateBody(ClientID.toLowerCase());
         if (url == '') url = _baseUrl;
         if (header == '') header = {"Content-Type": "application/json"};
         if (body == '') body = _baseBody;
-        print("Post Url: $url");
+        if (isBearer)
+          header = {
+            "Content-Type": "application/json",
+            'Authorization': 'Bearer ' + appStorage.retrieveValue(AppStorage.TOKEN).toString() ?? "",
+          };
+        print("API_POST_URL: $url");
         // print("Post header: $header");
-        // print("Post body:" + body);
+        print("API_POST_BODY:" + body);
         var response = await client.post(Uri.parse(url), headers: header, body: body);
+        print("API_RESPONSE_DATA: ${response.body}\n");
+        print("");
         if (response.statusCode == 200) return response.body;
         if (response.statusCode == 404) {
+          print("API_ERROR: $url: ${response.body}");
           Get.snackbar("Error " + response.statusCode.toString(), "Invalid Url",
               snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
         } else {
           if (response.statusCode == 400) {
             return response.body;
           } else {
+            print("API_ERROR: $url: ${response.body}");
             Get.snackbar("Error " + response.statusCode.toString(), "Internal server error",
                 snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
           }
         }
       } catch (e) {
-        Get.snackbar("Error ", e.toString(),
-            snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
+      print("API_ERROR: $url: ${e.toString()}");
+        Get.snackbar("Error ", e.toString(), snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
       }
 
     return "";
@@ -102,8 +115,7 @@ class ServerConnections {
             snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
       }
     } catch (e) {
-      Get.snackbar("Error ", e.toString(),
-          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
+      Get.snackbar("Error ", e.toString(), snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
     }
     LoadingScreen.dismiss();
   }

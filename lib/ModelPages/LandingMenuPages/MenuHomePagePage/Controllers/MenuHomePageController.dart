@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/CommonMethods.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class MenuHomePageController extends GetxController {
+  var colorList = ["#EEF2FF", "#FFF9E7", "#F5EBFF", "#FFECF6", "#E5F5FA", "#E6FAF4", "#F7F7F7", "#E8F5F8"];
   var listOfCards = [].obs;
   var actionData = {};
   Set setOfDatasource = {};
@@ -128,4 +130,9 @@ class MenuHomePageController extends GetxController {
   }
 
   void openBtnAction(String btnType, String btnOpen, webUrl) {}
+
+  String getCardBackgroundColor(String colorCode) {
+    final _random = new Random();
+    return !["", null, "null"].contains(colorCode) ? colorCode : colorList[_random.nextInt(colorList.length)];
+  }
 }

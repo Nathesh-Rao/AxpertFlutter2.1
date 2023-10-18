@@ -1,9 +1,15 @@
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Controllers/PendingListController.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Models/ActiveListModel.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 class WidgetListItem extends StatelessWidget {
-  const WidgetListItem({super.key});
+  WidgetListItem(this.pendingActiveListModel, {super.key});
+  PendingListController pendingListController = Get.find();
+
+  ActiveListModel pendingActiveListModel;
 
   @override
   Widget build(BuildContext context) {
@@ -54,16 +60,15 @@ class WidgetListItem extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text(
-                      "#TKT00217",
-                      style: GoogleFonts.roboto(
-                          textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: HexColor('#495057'))),
+                      pendingActiveListModel.displaytitle.toString(),
+                      style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: HexColor('#495057'))),
                     ),
                     Expanded(child: Text("")),
                     Icon(Icons.person),
                     SizedBox(
                       width: 10,
                     ),
-                    Text("Mohankumar",
+                    Text(pendingActiveListModel.fromuser.toString().capitalize!,
                         style: GoogleFonts.roboto(
                           textStyle: TextStyle(
                             fontSize: 14,
@@ -75,7 +80,7 @@ class WidgetListItem extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 10),
-                Text("EMPG-000038,Ciro Izhakov,AI Developers, EMPG-110204,Howard....",
+                Text(pendingActiveListModel.displaycontent.toString(),
                     maxLines: 1,
                     style: GoogleFonts.roboto(
                       textStyle: TextStyle(
@@ -88,7 +93,7 @@ class WidgetListItem extends StatelessWidget {
                   children: [
                     Icon(Icons.calendar_today_outlined, size: 20),
                     SizedBox(width: 10),
-                    Text("27/06/2023",
+                    Text(pendingListController.getDateValue(pendingActiveListModel.eventdatetime),
                         style: GoogleFonts.roboto(
                           textStyle: TextStyle(
                             fontSize: 12,
@@ -99,7 +104,7 @@ class WidgetListItem extends StatelessWidget {
                     Expanded(child: Text("")),
                     Icon(Icons.access_time, size: 20),
                     SizedBox(width: 10),
-                    Text("13:02:07",
+                    Text(pendingListController.getTimeValue(pendingActiveListModel.eventdatetime),
                         style: GoogleFonts.roboto(
                           textStyle: TextStyle(
                             fontSize: 12,
@@ -113,13 +118,13 @@ class WidgetListItem extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(width: 15),
+          SizedBox(width: 5),
           Container(
             height: 70,
             child: Center(
                 child: Icon(
               Icons.chevron_right,
-              size: 50,
+              size: 30,
               color: HexColor("B5B5B5"),
             )),
           ),
