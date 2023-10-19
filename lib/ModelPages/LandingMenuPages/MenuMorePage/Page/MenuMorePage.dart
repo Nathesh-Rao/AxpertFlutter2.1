@@ -1,5 +1,6 @@
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Controllers/MenuMorePageController.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Models/MenuItemModel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -120,47 +121,8 @@ reBuild(MenuMorePageController menuMorePageController) {
                                 physics: ClampingScrollPhysics(),
                                 itemCount: menuMorePageController.getSubmenuItemList(mainIndex).length,
                                 itemBuilder: (context, index) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      menuMorePageController
-                                          .openItemClick(menuMorePageController.getSubmenuItemList(mainIndex)[index]);
-                                    },
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                          child: Material(
-                                            color: menuMorePageController.colorList[index % 8], //color
-                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                                            clipBehavior: Clip.antiAlias,
-                                            child: Padding(
-                                              padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
-                                              child: Icon(
-                                                menuMorePageController.IconList[index % 8], //icon
-                                                color: MyColors.white1,
-                                                size: 25,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.fromLTRB(0, 5, 0, 2),
-                                          child: Text(
-                                            menuMorePageController.getSubmenuItemList(mainIndex)[index].caption,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 2,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                color: (HexColor("#3E4153")),
-                                                fontSize: 11,
-                                                fontFamily: "Poppins",
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
+                                  return getGridItem(
+                                      menuMorePageController, menuMorePageController.getSubmenuItemList(mainIndex)[index], index);
                                 },
                               )
                             ],
@@ -179,6 +141,45 @@ reBuild(MenuMorePageController menuMorePageController) {
           )
         ],
       ),
+    ),
+  );
+}
+
+getGridItem(MenuMorePageController menuMorePageController, MenuItemModel model, int index) {
+  return GestureDetector(
+    onTap: () {
+      menuMorePageController.openItemClick(model);
+    },
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          child: Material(
+            color: menuMorePageController.colorList[index % 8], //color
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+            clipBehavior: Clip.antiAlias,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
+              child: Icon(
+                menuMorePageController.IconList[index % 8], //icon
+                color: MyColors.white1,
+                size: 25,
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.fromLTRB(0, 5, 0, 2),
+          child: Text(
+            model.caption,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: (HexColor("#3E4153")), fontSize: 11, fontFamily: "Poppins", fontWeight: FontWeight.bold),
+          ),
+        ),
+      ],
     ),
   );
 }

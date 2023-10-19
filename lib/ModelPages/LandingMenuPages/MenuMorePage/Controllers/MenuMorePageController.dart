@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:axpertflutter/Constants/AppStorage.dart';
+import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Models/MenuItemModel.dart';
@@ -114,8 +115,9 @@ class MenuMorePageController extends GetxController {
   void openItemClick(MenuItemModel itemModel) {
     MenuHomePageController menuHomePageController = Get.find();
     if (itemModel.url != "") {
-      menuHomePageController.webUrl = Const.getFullProjectUrl(itemModel.url);
-      menuHomePageController.switchPage.value = true;
+      // menuHomePageController.webUrl = Const.getFullProjectUrl(itemModel.url);
+      // menuHomePageController.switchPage.value = true;
+      Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(itemModel.url)]);
     }
   }
 }

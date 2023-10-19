@@ -1,4 +1,5 @@
 import 'package:axpertflutter/ModelPages/AddConnection/page/AddNewConnections.dart';
+import 'package:axpertflutter/ModelPages/InApplicationWebView/page/InApplicationWebView.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Page/PendingListItemDetails.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Page/LandingPage.dart';
 import 'package:axpertflutter/ModelPages/LoginPage/Page/ForgetPassword.dart';
@@ -27,17 +28,16 @@ class RoutePages {
       page: () => SplashPage(),
       transition: Transition.fadeIn,
     ),
-
     GetPage(
       name: Routes.AddNewConnection,
       page: () => AddNewConnection(),
       transition: Transition.rightToLeft,
     ),
-    // GetPage(
-    //   name: Routes.InApplicationWebViewer,
-    //   page: () => InApplicationWebViewer(),
-    //   transition: Transition.rightToLeft,
-    // ),
+    GetPage(
+      name: Routes.InApplicationWebViewer,
+      page: () => InApplicationWebViewer(""),
+      transition: Transition.rightToLeft,
+    ),
     GetPage(
       name: Routes.ProjectListingPage,
       page: () => ProjectListingPage(),
