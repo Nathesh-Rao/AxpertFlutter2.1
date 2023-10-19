@@ -120,7 +120,6 @@ reBuild(MenuMorePageController menuMorePageController) {
                                 physics: ClampingScrollPhysics(),
                                 itemCount: menuMorePageController.getSubmenuItemList(mainIndex).length,
                                 itemBuilder: (context, index) {
-                                  print(index);
                                   return GestureDetector(
                                     onTap: () {
                                       menuMorePageController
