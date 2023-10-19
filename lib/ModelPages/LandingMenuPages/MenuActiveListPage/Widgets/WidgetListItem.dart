@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:text_scroll/text_scroll.dart';
 
 class WidgetListItem extends StatelessWidget {
   WidgetListItem(this.pendingActiveListModel, {super.key});
+
   PendingListController pendingListController = Get.find();
 
   ActiveListModel pendingActiveListModel;
@@ -59,11 +61,24 @@ class WidgetListItem extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Text(
-                      pendingActiveListModel.displaytitle.toString(),
-                      style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: HexColor('#495057'))),
+                    Expanded(
+                      child: TextScroll(
+                        pendingActiveListModel.displaytitle.toString(),
+                        style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: HexColor('#495057'))),
+                        mode: TextScrollMode.endless,
+                        velocity: Velocity(pixelsPerSecond: Offset(30, 0)),
+                        delayBefore: Duration(milliseconds: 1500),
+                        //numberOfReps: 5,
+                        pauseBetween: Duration(milliseconds: 1500),
+                        textAlign: TextAlign.left,
+                        selectable: true,
+                      ),
                     ),
-                    Expanded(child: Text("")),
+
+                    //Expanded(child: Text("")),
+                    SizedBox(
+                      width: 10,
+                    ),
                     Icon(Icons.person),
                     SizedBox(
                       width: 10,

@@ -51,8 +51,8 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
             child: RotationTransition(
               turns: Tween(begin: 0.0, end: 1.0).animate(_animationController),
               child: Container(
-                height: 150,
-                width: 150,
+                height: 80,
+                width: 80,
                 child: Image.asset(
                   'assets/images/agilelabslogo.png',
                   fit: BoxFit.cover,

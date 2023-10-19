@@ -25,11 +25,6 @@ class MenuHomePageController extends GetxController {
 
   MenuHomePageController() {
     body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
-    header = {
-      "Content-Type": "application/json",
-      'Authorization': 'Bearer ' + appStorage.retrieveValue(AppStorage.TOKEN).toString(),
-    };
-
     getCardDetails();
   }
 
@@ -64,7 +59,7 @@ class MenuHomePageController extends GetxController {
     isLoading.value = true;
     LoadingScreen.show();
     var url = Const.getFullARMUrl(ServerConnections.API_GET_HOMEPAGE_CARDS);
-    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), header: header);
+    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
     // print(resp);
     if (resp != "" && !resp.toString().contains("error")) {
       var jsonResp = jsonDecode(resp);
@@ -111,7 +106,7 @@ class MenuHomePageController extends GetxController {
       for (var items in setOfDatasource) {
         dataSourceBody["datasource"] = items;
         // setOfDatasource.remove(items);
-        var dsResp = await serverConnections.postToServer(url: dataSourceUrl, header: header, body: jsonEncode(dataSourceBody));
+        var dsResp = await serverConnections.postToServer(url: dataSourceUrl, isBearer: true, body: jsonEncode(dataSourceBody));
         if (dsResp != "") {
           var jsonDSResp = jsonDecode(dsResp);
           // print(jsonDSResp);
@@ -134,10 +129,7 @@ class MenuHomePageController extends GetxController {
   void openBtnAction(String btnType, String btnOpen) {
     print("hit $btnType");
     if (btnType.startsWith("btn")) {
-      webUrl = Const.getFullProjectUrl("aspx/AxMain.aspx?authKey=AXPERT-") +
-          appStorage.retrieveValue(AppStorage.SESSIONID) +
-          "&pname=" +
-          btnOpen;
+      webUrl = Const.getFullProjectUrl("aspx/AxMain.aspx?authKey=AXPERT-") + appStorage.retrieveValue(AppStorage.SESSIONID) + "&pname=" + btnOpen;
       switchPage.toggle();
     } else {}
   }
