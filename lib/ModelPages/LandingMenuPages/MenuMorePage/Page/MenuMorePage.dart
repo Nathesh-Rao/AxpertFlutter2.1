@@ -84,11 +84,13 @@ reBuild(MenuMorePageController menuMorePageController) {
                   return ListView.builder(
                     shrinkWrap: true,
                     physics: ClampingScrollPhysics(),
+                    controller: ScrollController(),
                     itemCount: menuMorePageController.fetchList.value.length,
                     itemBuilder: (context, mainIndex) {
                       return Container(
                         margin: EdgeInsets.only(bottom: 15),
-                        decoration: BoxDecoration(border: Border.all(width: 1, color: HexColor('EDF0F8')), borderRadius: BorderRadius.circular(10)),
+                        decoration: BoxDecoration(
+                            border: Border.all(width: 1, color: HexColor('EDF0F8')), borderRadius: BorderRadius.circular(10)),
                         child: Theme(
                           data: ThemeData().copyWith(dividerColor: Colors.transparent),
                           child: ExpansionTile(
@@ -97,7 +99,8 @@ reBuild(MenuMorePageController menuMorePageController) {
                               menuMorePageController.fetchList.value[mainIndex].toString(),
                               textAlign: TextAlign.left,
                               overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.poppins(textStyle: TextStyle(color: HexColor("#3E4153"), fontSize: 14, fontWeight: FontWeight.w900)),
+                              style: GoogleFonts.poppins(
+                                  textStyle: TextStyle(color: HexColor("#3E4153"), fontSize: 14, fontWeight: FontWeight.w900)),
                             ),
                             children: [
                               SizedBox(height: 3),
@@ -113,10 +116,16 @@ reBuild(MenuMorePageController menuMorePageController) {
                                     crossAxisSpacing: 10),
                                 // childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height / 5),
                                 shrinkWrap: true,
+                                controller: ScrollController(),
                                 physics: ClampingScrollPhysics(),
                                 itemCount: menuMorePageController.getSubmenuItemList(mainIndex).length,
                                 itemBuilder: (context, index) {
+                                  print(index);
                                   return GestureDetector(
+                                    onTap: () {
+                                      menuMorePageController
+                                          .openItemClick(menuMorePageController.getSubmenuItemList(mainIndex)[index]);
+                                    },
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -144,7 +153,10 @@ reBuild(MenuMorePageController menuMorePageController) {
                                             maxLines: 2,
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                                color: (HexColor("#3E4153")), fontSize: 11, fontFamily: "Poppins", fontWeight: FontWeight.bold),
+                                                color: (HexColor("#3E4153")),
+                                                fontSize: 11,
+                                                fontFamily: "Poppins",
+                                                fontWeight: FontWeight.bold),
                                           ),
                                         ),
                                       ],

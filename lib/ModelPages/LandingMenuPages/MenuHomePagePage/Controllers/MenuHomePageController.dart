@@ -15,6 +15,8 @@ class MenuHomePageController extends GetxController {
   var listOfCards = [].obs;
   var actionData = {};
   Set setOfDatasource = {};
+  var switchPage = false.obs;
+  var webUrl = "";
 
   var isLoading = true.obs;
   ServerConnections serverConnections = ServerConnections();
@@ -78,7 +80,6 @@ class MenuHomePageController extends GetxController {
         //error
       }
     }
-    LoadingScreen.dismiss();
 
     if (listOfCards.length == 0) {
       print("Length:   0");
@@ -93,6 +94,7 @@ class MenuHomePageController extends GetxController {
     }
     await getCardDataSources();
     isLoading.value = false;
+    LoadingScreen.dismiss();
     return listOfCards;
   }
 
@@ -129,7 +131,16 @@ class MenuHomePageController extends GetxController {
     }
   }
 
-  void openBtnAction(String btnType, String btnOpen, webUrl) {}
+  void openBtnAction(String btnType, String btnOpen) {
+    print("hit $btnType");
+    if (btnType.startsWith("btn")) {
+      webUrl = Const.getFullProjectUrl("aspx/AxMain.aspx?authKey=AXPERT-") +
+          appStorage.retrieveValue(AppStorage.SESSIONID) +
+          "&pname=" +
+          btnOpen;
+      switchPage.toggle();
+    } else {}
+  }
 
   String getCardBackgroundColor(String colorCode) {
     final _random = new Random();

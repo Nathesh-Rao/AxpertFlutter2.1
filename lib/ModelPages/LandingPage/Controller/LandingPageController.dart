@@ -6,6 +6,7 @@ import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Page/MenuActiveListPage.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuCalendarPage/Page/MenuCalendarPage.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuDashboardPage/Page/MenuDashboardPage.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Page/MenuHomePage.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Page/MenuMorePage.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetNotification.dart';
@@ -51,6 +52,8 @@ class LandingPageController extends GetxController {
   }
 
   indexChange(value) {
+    MenuHomePageController menuHomePageController = Get.find();
+    menuHomePageController.switchPage.value = false;
     deleteController(bottomIndex.value, value);
     bottomIndex.value = value;
   }
@@ -58,6 +61,13 @@ class LandingPageController extends GetxController {
   showNotificationIconPressed() {}
 
   Future<bool> onWillPop() {
+    try {
+      MenuHomePageController menuHomePageController = Get.find();
+      if (menuHomePageController.switchPage.value == true) {
+        menuHomePageController.switchPage.toggle();
+        return Future.value(false);
+      }
+    } catch (e) {}
     DateTime now = DateTime.now();
     if (bottomIndex.value != 0) {
       bottomIndex.value = 0;
@@ -179,7 +189,7 @@ class LandingPageController extends GetxController {
         confirm: ElevatedButton(
             onPressed: () async {
               var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body));
-             // print(resp);
+              // print(resp);
               if (resp != "" && !resp.toString().contains("error")) {
                 var jsonResp = jsonDecode(resp);
                 if (jsonResp['result']['success'].toString() == "true") {

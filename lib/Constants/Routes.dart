@@ -1,5 +1,4 @@
 import 'package:axpertflutter/ModelPages/AddConnection/page/AddNewConnections.dart';
-import 'package:axpertflutter/ModelPages/HomePage_old/page/HomePage.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Page/PendingListItemDetails.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Page/LandingPage.dart';
 import 'package:axpertflutter/ModelPages/LoginPage/Page/ForgetPassword.dart';
@@ -11,7 +10,6 @@ import 'package:get/get.dart';
 
 class Routes {
   static const String SplashScreen = "/SplashScreen";
-  static const String HomePage = "/Home";
   static const String AddNewConnection = "/AddConnection";
   static const String InApplicationWebViewer = "/InApplicationWebViewer";
   static const String ProjectListingPage = "/ProjectListingPage";
@@ -29,11 +27,7 @@ class RoutePages {
       page: () => SplashPage(),
       transition: Transition.fadeIn,
     ),
-    GetPage(
-      name: Routes.HomePage,
-      page: () => HomePage(),
-      transition: Transition.rightToLeft,
-    ),
+
     GetPage(
       name: Routes.AddNewConnection,
       page: () => AddNewConnection(),

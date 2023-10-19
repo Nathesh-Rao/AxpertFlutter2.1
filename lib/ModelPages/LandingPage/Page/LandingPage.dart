@@ -1,3 +1,5 @@
+import 'package:axpertflutter/ModelPages/InApplicationWebView/page/InApplicationWebView.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Controller/LandingPageController.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetBottomNavigation.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetLandingAppBar.dart';
@@ -8,6 +10,7 @@ class LandingPage extends StatelessWidget {
   LandingPage({super.key});
 
   LandingPageController landingPageController = Get.put(LandingPageController());
+  final MenuHomePageController menuHomePageController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +19,9 @@ class LandingPage extends StatelessWidget {
       bottomNavigationBar: AppBottomNavigation(),
       body: WillPopScope(
         onWillPop: landingPageController.onWillPop,
-        child: Obx(() => landingPageController.getPage),
+        child: Obx(() => menuHomePageController.switchPage.value == true
+            ? InApplicationWebViewer(menuHomePageController.webUrl)
+            : landingPageController.getPage),
       ),
     );
   }
