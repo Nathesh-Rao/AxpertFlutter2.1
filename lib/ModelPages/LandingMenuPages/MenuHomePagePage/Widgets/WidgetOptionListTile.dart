@@ -1,3 +1,4 @@
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/CardOptionModel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,6 +10,8 @@ class WidgetOptionListTile extends StatelessWidget {
 
   WidgetOptionListTile(CardOptionModel this.cardOptionModel, {super.key});
 
+  MenuHomePageController menuHomePageController = Get.find();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -19,8 +22,7 @@ class WidgetOptionListTile extends StatelessWidget {
         child: Row(
           children: [
             Visibility(
-                visible: cardOptionModel.cardicon.toString() == "" ? false : true,
-                child: Icon(showIcons(cardOptionModel.cardicon.toString()))),
+                visible: cardOptionModel.cardicon.toString() == "" ? false : true, child: Icon(showIcons(cardOptionModel.cardicon.toString()))),
             Expanded(
               child: Center(
                 child: Padding(
@@ -35,12 +37,11 @@ class WidgetOptionListTile extends StatelessWidget {
             shouldShowLinkText(cardOptionModel)
                 ? Expanded(
                     child: TextButton(
-                      onPressed: () {
-                        Get.back();
-                        // menuHomePageController.openBtnAction("btn", cardOptionModel.link, webUrl);
-                      },
-                      child: Text(cardOptionModel.text)
-                    ),
+                        onPressed: () {
+                          Get.back();
+                          menuHomePageController.openBtnAction("button", cardOptionModel.link);
+                        },
+                        child: Text(cardOptionModel.text)),
                   )
                 : Expanded(
                     child: Center(

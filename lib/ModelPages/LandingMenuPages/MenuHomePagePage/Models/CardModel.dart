@@ -15,7 +15,7 @@ class CardModel {
         displayicon = json['displayicon'].toString(),
         stransid = json['stransid'].toString(),
         datasource = json['datasource'].toString(),
-        moreoption = json['moreoption'].toString(),
+        moreoption = json['moreoption'] ?? "",
         colorcode = json['colorcode'].toString();
 
   // json['colorcode'].toString() == "" ? "#FFECE5" : (json['colorcode'].toString() == "null" ? "#FFECE5" : json['colorcode'].toString());

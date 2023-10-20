@@ -143,6 +143,7 @@ class WidgetCard extends StatelessWidget {
     var widget;
     List<String> mainList;
     moreOptionText = moreOptionText.replaceAll("{", "");
+    print("moreOptionText: $moreOptionText");
     mainList = moreOptionText.split("}");
     mainList.remove("");
     for (String item in mainList) {
