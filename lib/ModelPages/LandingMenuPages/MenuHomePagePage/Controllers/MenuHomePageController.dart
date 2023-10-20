@@ -128,7 +128,7 @@ class MenuHomePageController extends GetxController {
 
   void openBtnAction(String btnType, String btnOpen) {
     print("hit $btnType");
-    if (btnType.startsWith("btn")) {
+    if (btnType.toLowerCase() == "button" && btnOpen != "") {
       webUrl = Const.getFullProjectUrl("aspx/AxMain.aspx?authKey=AXPERT-") + appStorage.retrieveValue(AppStorage.SESSIONID) + "&pname=" + btnOpen;
       switchPage.toggle();
     } else {}

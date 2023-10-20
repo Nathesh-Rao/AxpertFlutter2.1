@@ -296,7 +296,7 @@ class AddConnectionController extends GetxController {
     print(image.path);
     String path = image.path;
     String? result = await Scan.parse(path);
-    print(result);
+    //print(result);
     var data = result ?? "";
     if (data == "" || !validateQRData(data)) {
       qrViewController!.resumeCamera();

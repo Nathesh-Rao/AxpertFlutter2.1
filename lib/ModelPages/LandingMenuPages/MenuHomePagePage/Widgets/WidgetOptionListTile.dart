@@ -23,9 +23,12 @@ class WidgetOptionListTile extends StatelessWidget {
                 child: Icon(showIcons(cardOptionModel.cardicon.toString()))),
             Expanded(
               child: Center(
-                child: Text(
-                  cardOptionModel.caption,
-                  style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 14, color: HexColor("#444444"))),
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 5.0),
+                  child: Text(
+                    cardOptionModel.caption,
+                    style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 14, color: HexColor("#444444"))),
+                  ),
                 ),
               ),
             ),
@@ -36,7 +39,7 @@ class WidgetOptionListTile extends StatelessWidget {
                         Get.back();
                         // menuHomePageController.openBtnAction("btn", cardOptionModel.link, webUrl);
                       },
-                      child: Text(cardOptionModel.text),
+                      child: Text(cardOptionModel.text)
                     ),
                   )
                 : Expanded(

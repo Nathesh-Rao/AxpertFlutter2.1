@@ -24,7 +24,6 @@ class ServerConnections {
   static const String API_GET_HOMEPAGE_CARDSDATASOURCE = "api/v1/ARMGetDataResponse";
   static const String API_GET_PENDING_ACTIVELIST = "api/v1/ARMGetActiveTasks";
 
-
   static const String API_GET_MENU = "api/v1/ARMGetMenu";
   static const String API_SIGNOUT = "api/v1/ARMSignOut";
   AppStorage appStorage = AppStorage();
@@ -38,6 +37,7 @@ class ServerConnections {
   String _baseUrl = "http://demo.agile-labs.com/axmclientidscripts/asbmenurest.dll/datasnap/rest/Tasbmenurest/getchoices";
 
   postToServer({String url = '', var header = '', String body = '', String ClientID = '', bool isBearer = false}) async {
+    var API_NAME = url.substring(url.lastIndexOf("/") + 1, url.length);
     if (await internetConnectivity.connectionStatus)
       try {
         if (ClientID != '') _baseBody = _generateBody(ClientID.toLowerCase());
@@ -57,20 +57,20 @@ class ServerConnections {
         print("");
         if (response.statusCode == 200) return response.body;
         if (response.statusCode == 404) {
-          print("API_ERROR: $url: ${response.body}");
+          print("API_ERROR: $API_NAME: ${response.body}");
           Get.snackbar("Error " + response.statusCode.toString(), "Invalid Url",
               snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
         } else {
           if (response.statusCode == 400) {
             return response.body;
           } else {
-            print("API_ERROR: $url: ${response.body}");
+            print("API_ERROR: $API_NAME: ${response.body}");
             Get.snackbar("Error " + response.statusCode.toString(), "Internal server error",
                 snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
           }
         }
       } catch (e) {
-      print("API_ERROR: $url: ${e.toString()}");
+        print("API_ERROR: $API_NAME: ${e.toString()}");
         Get.snackbar("Error ", e.toString(), snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
       }
 
