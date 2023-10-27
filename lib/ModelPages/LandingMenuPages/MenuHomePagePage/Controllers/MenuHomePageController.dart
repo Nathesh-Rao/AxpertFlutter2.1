@@ -10,7 +10,10 @@ import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../Utils/ServerConnections/InternetConnectivity.dart';
+
 class MenuHomePageController extends GetxController {
+  InternetConnectivity internetConnectivity = Get.find();
   var colorList = ["#EEF2FF", "#FFF9E7", "#F5EBFF", "#FFECF6", "#E5F5FA", "#E6FAF4", "#F7F7F7", "#E8F5F8"];
   var listOfCards = [].obs;
   var actionData = {};
@@ -126,12 +129,15 @@ class MenuHomePageController extends GetxController {
     }
   }
 
-  void openBtnAction(String btnType, String btnOpen) {
-    print("hit $btnType");
-    if (btnType.toLowerCase() == "button" && btnOpen != "") {
-      webUrl = Const.getFullProjectUrl("aspx/AxMain.aspx?authKey=AXPERT-") + appStorage.retrieveValue(AppStorage.SESSIONID) + "&pname=" + btnOpen;
-      switchPage.toggle();
-    } else {}
+  void openBtnAction(String btnType, String btnOpen) async {
+    if (await internetConnectivity.connectionStatus) {
+      print("hit $btnType");
+      print("pname: $btnOpen");
+      if (btnType.toLowerCase() == "button" && btnOpen != "") {
+        webUrl = Const.getFullProjectUrl("aspx/AxMain.aspx?authKey=AXPERT-") + appStorage.retrieveValue(AppStorage.SESSIONID) + "&pname=" + btnOpen;
+        switchPage.toggle();
+      } else {}
+    }
   }
 
   String getCardBackgroundColor(String colorCode) {

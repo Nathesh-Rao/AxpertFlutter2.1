@@ -8,6 +8,11 @@ import 'package:get/get.dart';
 
 class InternetConnectivity extends GetxController {
   var isConnected = false.obs;
+
+  InternetConnectivity() {
+    connectivity_listen();
+  }
+
   Future<bool> check() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile) {
@@ -26,8 +31,12 @@ class InternetConnectivity extends GetxController {
 
   void showError() {
     Get.defaultDialog(
-      title: "Alert!",
-      middleText: "No Internet Connections are available.\nPlease try again later",
+      contentPadding: EdgeInsets.all(10),
+      titlePadding: EdgeInsets.only(top: 20),
+      title: "No Connection!",
+      middleText: "Please check your internet connectivity",
+      barrierDismissible: false,
+      //"No Internet Connections are available.\nPlease try again later",
       confirm: ElevatedButton(
           onPressed: () async {
             Get.back();
@@ -47,6 +56,19 @@ class InternetConnectivity extends GetxController {
       //     child: Text("Ok"))
     );
   }
+
+  connectivity_listen() async {
+    await Connectivity().onConnectivityChanged.listen(
+      (ConnectivityResult result) async {
+        if (result == ConnectivityResult.mobile || result == ConnectivityResult.wifi) {
+          isConnected.value = true;
+        } else {
+          isConnected.value = false;
+          showError();
+        }
+      },
+    );
+  }
 }
 
 doRefresh(String currentRoute) {
@@ -55,7 +77,6 @@ doRefresh(String currentRoute) {
     case Routes.Login:
       LoginController loginController = Get.find();
       loginController.fetchUserTypeList();
-
       break;
     default:
       break;

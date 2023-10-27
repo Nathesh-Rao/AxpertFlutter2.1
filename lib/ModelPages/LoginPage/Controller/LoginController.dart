@@ -9,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class LoginController extends GetxController {
   ServerConnections serverConnections = ServerConnections();
@@ -249,5 +250,16 @@ class LoginController extends GetxController {
   showErrorSnack() {
     Get.snackbar("Error", "Server busy, Please try again later.",
         snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
+  }
+
+  getVersionName() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+    String appName = packageInfo.appName;
+    String packageName = packageInfo.packageName;
+    var version = packageInfo.version;
+    String buildNumber = packageInfo.buildNumber;
+
+    return version;
   }
 }

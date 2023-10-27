@@ -55,7 +55,7 @@ class SignUpController extends GetxController {
     var url = Const.getFullARMUrl(ServerConnections.API_GET_USERGROUPS);
     var body = Const.getAppBody();
     var data = await serverConnections.postToServer(url: url, body: body);
-    LoadingScreen.show();
+    LoadingScreen.dismiss();
 
     data = data.toString().replaceAll("null", "\"\"");
 

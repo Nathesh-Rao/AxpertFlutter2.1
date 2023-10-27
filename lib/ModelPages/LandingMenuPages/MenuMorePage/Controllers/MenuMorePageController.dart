@@ -11,8 +11,10 @@ import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 import '../../../../Constants/CommonMethods.dart';
+import '../../../../Utils/ServerConnections/InternetConnectivity.dart';
 
 class MenuMorePageController extends GetxController {
+  InternetConnectivity internetConnectivity = Get.find();
   var needRefresh = true.obs;
   TextEditingController searchController = TextEditingController();
   AppStorage appStorage = AppStorage();
@@ -112,12 +114,13 @@ class MenuMorePageController extends GetxController {
     FocusManager.instance.primaryFocus?.unfocus();
   }
 
-  void openItemClick(MenuItemModel itemModel) {
-    MenuHomePageController menuHomePageController = Get.find();
-    if (itemModel.url != "") {
-      // menuHomePageController.webUrl = Const.getFullProjectUrl(itemModel.url);
-      // menuHomePageController.switchPage.value = true;
-      Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(itemModel.url)]);
+  void openItemClick(MenuItemModel itemModel) async {
+    if (await internetConnectivity.connectionStatus) {
+      if (itemModel.url != "") {
+            // menuHomePageController.webUrl = Const.getFullProjectUrl(itemModel.url);
+            // menuHomePageController.switchPage.value = true;
+            Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(itemModel.url)]);
+          }
     }
   }
 }

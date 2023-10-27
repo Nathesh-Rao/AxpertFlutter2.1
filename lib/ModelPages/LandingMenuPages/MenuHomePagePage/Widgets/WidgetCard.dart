@@ -188,14 +188,18 @@ class WidgetCard extends StatelessWidget {
   }
 
   captionOnTapFunction(CardModel cardModel) {
+    var link_id = cardModel.stransid;
     var validity = false;
-    if (cardModel.stransid.toLowerCase().startsWith('h')) {
+    if (link_id.toLowerCase().startsWith('h')) {
+      if (link_id.toLowerCase().contains("hp")) {
+        link_id = link_id.toLowerCase().replaceAll("hp", "h");
+      }
       validity = true;
     } else {
-      if (cardModel.stransid.toLowerCase().startsWith('i')) {
+      if (link_id.toLowerCase().startsWith('i')) {
         validity = true;
       } else {
-        if (cardModel.stransid.toLowerCase().startsWith('t')) {
+        if (link_id.toLowerCase().startsWith('t')) {
           validity = true;
         } else
           validity = false;
@@ -205,7 +209,7 @@ class WidgetCard extends StatelessWidget {
       // print(
       //     "https://app.buzzily.com/run/aspx/AxMain.aspx?authKey=AXPERT-ARMSESSION-1ed2b2a1-e6f9-4081-b7cc-5ddcf50d8690&pname=" +
       //         cardModel.stransid);
-      menuHomePageController.openBtnAction("btn", cardModel.stransid);
+      menuHomePageController.openBtnAction("button", link_id);
     }
   }
 }
