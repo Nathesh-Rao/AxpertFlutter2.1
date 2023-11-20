@@ -31,6 +31,7 @@ class _LoginPageState extends State<LoginPage> {
                   backgroundColor: Colors.white,
                 )
               : null,
+          resizeToAvoidBottomInset: false,
           body: SafeArea(
             child: Stack(
               children: [

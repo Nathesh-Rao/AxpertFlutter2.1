@@ -113,6 +113,7 @@ class SignUpController extends GetxController {
       userMobileVisible.value = true;
       userEmaiVisible.value = true;
     }
+    clearFieldValues();
   }
 
   evaluteError(errMsg) {
@@ -120,8 +121,7 @@ class SignUpController extends GetxController {
   }
 
   validateForm() {
-    errUserId.value =
-        errUserName.value = errUserPass.value = errUserConPass.value = errUserEmail.value = errUserMobile.value = '';
+    errUserId.value = errUserName.value = errUserPass.value = errUserConPass.value = errUserEmail.value = errUserMobile.value = '';
     Pattern pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{7,}$';
     RegExp regex = RegExp(pattern.toString());
 
@@ -281,10 +281,18 @@ class SignUpController extends GetxController {
                 child: Text("Ok")));
       }
     } else {
-      Get.snackbar("Alert!", "Some error occured",
-          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red, colorText: Colors.white);
+      Get.snackbar("Alert!", "Some error occured", snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red, colorText: Colors.white);
     }
     reSendOtpCount++;
     LoadingScreen.dismiss();
+  }
+
+  clearFieldValues() {
+    userIdController.clear();
+    userNameController.clear();
+    userPassController.clear();
+    userConfirmPassController.clear();
+    userEmailController.clear();
+    userMobileController.clear();
   }
 }

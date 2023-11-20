@@ -61,8 +61,8 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
                           addConnectionController.isFlashOn.toggle();
                         },
                         icon: Obx(() => addConnectionController.isFlashOn.value
-                            ? Icon(Icons.flash_off, color: MyColors.blue2)
-                            : Icon(Icons.flash_on, color: MyColors.blue2))),
+                            ? Icon(Icons.flash_on, color: MyColors.blue2)
+                            : Icon(Icons.flash_off, color: MyColors.blue2))),
                   ),
                   IconButton(
                       onPressed: () async {

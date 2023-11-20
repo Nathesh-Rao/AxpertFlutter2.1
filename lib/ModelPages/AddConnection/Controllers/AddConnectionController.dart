@@ -119,8 +119,14 @@ class AddConnectionController extends GetxController {
           armUrlController.text = "";
           conCaptionController.text = "";
           var json = projectModel.toJson();
-        saveDatAndRedirect(projectModel, json, isQr: true);
+          saveDatAndRedirect(projectModel, json, isQr: true);
         }
+      }
+    } else {
+      if (isQr) {
+        Get.snackbar("Invalid!", "Please choose a valid QR Code",
+            snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red, colorText: Colors.white);
+        qrViewController!.resumeCamera();
       }
     }
   }

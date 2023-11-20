@@ -4,37 +4,12 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2002a9eb-1fad-4d1b-af4c-4df41018e18b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../.flutter-plugins" beforeDir="false" afterPath="$PROJECT_DIR$/../.flutter-plugins" afterDir="false" />
+    <list default="true" id="accc006a-306b-4874-929d-c9defeb16ebc" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/../.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/../.flutter-plugins-dependencies" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/kotlinc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/Constants/AppStorage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/Constants/AppStorage.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/Constants/const.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/Constants/const.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/ModelPages/AddConnection/Controllers/AddConnectionController.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/ModelPages/AddConnection/Controllers/AddConnectionController.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/ModelPages/AddConnection/page/AddNewConnections.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/ModelPages/AddConnection/page/AddNewConnections.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/ModelPages/HomePage_old/controller/HomePageController.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/ModelPages/HomePage_old/controller/HomePageController.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageConroller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageConroller.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/ModelPages/LandingMenuPages/MenuMorePage/Controllers/MenuMorePageController.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/ModelPages/LandingMenuPages/MenuMorePage/Controllers/MenuMorePageController.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/ModelPages/LoginPage/Controller/ForgetPasswordController.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/ModelPages/LoginPage/Controller/ForgetPasswordController.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/ModelPages/LoginPage/Controller/LoginController.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/ModelPages/LoginPage/Controller/LoginController.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/ModelPages/AddConnection/Widgets/QRCodeScanner.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/ModelPages/AddConnection/Widgets/QRCodeScanner.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../lib/ModelPages/LoginPage/Controller/SignUpController.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/ModelPages/LoginPage/Controller/SignUpController.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/ModelPages/ProjectListing/Controller/ProjectListingController.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/ModelPages/ProjectListing/Controller/ProjectListingController.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/ModelPages/ProjectListing/Widgets/ProjectItemListTile.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/ModelPages/ProjectListing/Widgets/ProjectItemListTile.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/ModelPages/SpalshPage/page/SplashPageUI.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/ModelPages/SpalshPage/page/SplashPageUI.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/Utils/ServerConnections/ServerConnections.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/Utils/ServerConnections/ServerConnections.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../pubspec.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/ModelPages/LoginPage/Page/LoginPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/ModelPages/LoginPage/Page/LoginPage.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,7 +19,7 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectId" id="2WhjEl8WAQCRIwK7kBhSiGtqwBh" />
+  <component name="ProjectId" id="2XbxWZyFCvEFXKhTJtOsoRFYbWx" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -57,17 +32,21 @@
     "android.gradle.sync.needed": "true",
     "cidr.known.project.marker": "true",
     "dart.analysis.tool.window.visible": "false",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.17",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
     "show.migrate.to.gradle.popup": "false"
   }
 }]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="2002a9eb-1fad-4d1b-af4c-4df41018e18b" name="Changes" comment="" />
-      <created>1697191596770</created>
+      <changelist id="accc006a-306b-4874-929d-c9defeb16ebc" name="Changes" comment="" />
+      <created>1698911613250</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1697191596770</updated>
+      <updated>1698911613250</updated>
     </task>
     <servers />
   </component>
