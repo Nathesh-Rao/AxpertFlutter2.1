@@ -2,10 +2,11 @@ class ChartCardModel {
   String cardname;
   String cardtype;
   String charttype;
+  String cardbgclr;
 
   List<dynamic> dataList;
 
-  ChartCardModel(this.cardname, this.cardtype, this.charttype, this.dataList) {}
+  ChartCardModel(this.cardname, this.cardtype, this.charttype, this.dataList, {this.cardbgclr = 'null'}) {}
 }
 
 class ChartData {

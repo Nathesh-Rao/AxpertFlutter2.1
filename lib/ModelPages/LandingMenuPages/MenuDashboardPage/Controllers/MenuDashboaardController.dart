@@ -46,7 +46,9 @@ class MenuDashboardController extends GetxController {
                     ChartData bmodel = ChartData.fromJson(eachData);
                     bar.add(bmodel);
                   }
-                  if (validate(bar)) chartList.add(ChartCardModel(card['cardname'], card['cardtype'], card['charttype'], bar));
+                  if (validate(bar))
+                    chartList.add(ChartCardModel(card['cardname'], card['cardtype'], card['charttype'], bar,
+                        cardbgclr: card['cardbgclr'] ?? "null"));
                 } catch (e) {}
                 break;
             }

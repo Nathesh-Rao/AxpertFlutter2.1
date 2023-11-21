@@ -65,15 +65,24 @@ Widget chooseChart(ChartCardModel cardModel) {
 
 Widget getKpi(ChartCardModel cardModel) {
   ChartData cd = cardModel.dataList[0];
-  return Padding(
-    padding: EdgeInsets.only(left: 20, right: 10, top: 10, bottom: 10),
-    child: Row(
-      children: [
-        Text(
-          cd.value.toString() == "null" ? cd.count : cd.value,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-      ],
+  return Container(
+    decoration: BoxDecoration(
+      color: getColorFromName(cardModel.cardbgclr),
+      borderRadius: BorderRadius.circular(5),
+    ),
+    child: Padding(
+      padding: EdgeInsets.only(left: 20, right: 10, top: 10, bottom: 10),
+      child: Row(
+        children: [
+          Text(
+            cd.value.toString() == "null" ? cd.count : cd.value,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
     ),
   );
 }
@@ -144,6 +153,7 @@ Widget getBarChart(ChartCardModel cardModel) {
       BarSeries(
           name: cardModel.dataList[0].data_label == '' ? " Data" : cardModel.dataList[0].data_label,
           dataSource: cardModel.dataList,
+          color: Colors.green.shade800,
           xValueMapper: (datum, index) => datum.x_axis,
           yValueMapper: (datum, index) => double.parse(datum.value),
           dataLabelSettings: DataLabelSettings(isVisible: true))
@@ -170,4 +180,21 @@ Widget getDonutChart(ChartCardModel cardModel) {
       )
     ],
   );
+}
+
+getColorFromName(cardbgclr) {
+  switch (cardbgclr.toString().toLowerCase()) {
+    case 'light-pink':
+      return Colors.pink.shade300;
+    case 'red':
+      return Colors.red;
+    case 'cyan':
+      return Colors.cyan;
+    case 'purple':
+      return Colors.purple.shade300;
+    case 'cream':
+      return HexColor('FFFDD0');
+    default:
+      return Colors.red;
+  }
 }

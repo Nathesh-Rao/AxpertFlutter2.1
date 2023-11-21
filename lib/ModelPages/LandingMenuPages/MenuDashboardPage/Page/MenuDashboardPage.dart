@@ -22,7 +22,7 @@ class MenuDashboardPage extends StatelessWidget {
               itemCount: menuDashboardController.chartList.length,
               shrinkWrap: true,
               physics: ClampingScrollPhysics(),
-              separatorBuilder: (context, index) => SizedBox(height: 20),
+              separatorBuilder: (context, index) => SizedBox(height: 30),
               itemBuilder: (context, index) {
                 return WidgetCharts(menuDashboardController.chartList[index]);
               },
