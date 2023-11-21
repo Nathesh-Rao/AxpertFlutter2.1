@@ -14,6 +14,8 @@ class AppStorage {
   static const String PROJECT_NAME = "ProjectName";
   static const String PROJECT_URL = "ProjectUrl";
   static const String ARM_URL = "ArmUrl";
+  static const String NOTIFICATION_LIST = "NotificationList";
+  static const String NOTIFICATION_UNREAD = "NotificationUnreadNo";
   var box;
 
   AppStorage() {

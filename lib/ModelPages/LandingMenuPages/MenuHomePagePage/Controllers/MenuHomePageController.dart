@@ -6,11 +6,10 @@ import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/CardModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/CardOptionModel.dart';
+import 'package:axpertflutter/Utils/ServerConnections/InternetConnectivity.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../../../../Utils/ServerConnections/InternetConnectivity.dart';
 
 class MenuHomePageController extends GetxController {
   InternetConnectivity internetConnectivity = Get.find();
@@ -91,6 +90,7 @@ class MenuHomePageController extends GetxController {
               child: Text("Ok")));
     }
     await getCardDataSources();
+    listOfCards..sort((a, b) => a.caption.toString().toLowerCase().compareTo(b.caption.toString().toLowerCase()));
     isLoading.value = false;
     LoadingScreen.dismiss();
     return listOfCards;
@@ -134,7 +134,10 @@ class MenuHomePageController extends GetxController {
       print("hit $btnType");
       print("pname: $btnOpen");
       if (btnType.toLowerCase() == "button" && btnOpen != "") {
-        webUrl = Const.getFullProjectUrl("aspx/AxMain.aspx?authKey=AXPERT-") + appStorage.retrieveValue(AppStorage.SESSIONID) + "&pname=" + btnOpen;
+        webUrl = Const.getFullProjectUrl("aspx/AxMain.aspx?authKey=AXPERT-") +
+            appStorage.retrieveValue(AppStorage.SESSIONID) +
+            "&pname=" +
+            btnOpen;
         switchPage.toggle();
       } else {}
     }

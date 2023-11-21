@@ -1,14 +1,12 @@
 import 'dart:convert';
 
-import 'package:axpertflutter/Constants/CommonMethods.dart';
+import 'package:axpertflutter/Constants/AppStorage.dart';
+import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Models/ActiveListModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Models/StatusModel.dart';
+import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-
-import '../../../../Constants/AppStorage.dart';
-import '../../../../Constants/const.dart';
-import '../../../../Utils/ServerConnections/ServerConnections.dart';
 
 class PendingListController extends GetxController {
   var subPage = true.obs;
@@ -76,7 +74,6 @@ class PendingListController extends GetxController {
       pending_activeList.value = newList.toList();
     }
   }
-  
 
   void clearCalled() {
     searchController.text = "";

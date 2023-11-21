@@ -64,7 +64,8 @@ class WidgetListItem extends StatelessWidget {
                     Expanded(
                       child: TextScroll(
                         pendingActiveListModel.displaytitle.toString(),
-                        style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: HexColor('#495057'))),
+                        style: GoogleFonts.roboto(
+                            textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: HexColor('#495057'))),
                         mode: TextScrollMode.endless,
                         velocity: Velocity(pixelsPerSecond: Offset(30, 0)),
                         delayBefore: Duration(milliseconds: 1500),

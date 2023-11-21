@@ -1,9 +1,10 @@
+import 'package:axpertflutter/ModelPages/LandingPage/Models/FirebaseMessageModel.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class WidgetNotification extends StatelessWidget {
-  WidgetNotification(String this.text, {super.key});
-  String text;
+  WidgetNotification(FirebaseMessageModel this.model, {super.key});
+  FirebaseMessageModel model;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -23,12 +24,12 @@ class WidgetNotification extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Declare your IT Saving..." + text,
+                    model.title,
                     style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
                   ),
                   SizedBox(height: 15),
                   Text(
-                    "IT Declaration goes here.IT Declaration goes here.IT Declaration goes here.IT Declaration goes here.IT Declaration goes here.",
+                    model.body,
                     maxLines: 3,
                     style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 12)),
                   ),

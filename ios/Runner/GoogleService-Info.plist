@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>687601632005-1q4bfacl23038glcug09dc9igalhap1c.apps.googleusercontent.com</string>
+	<string>687601632005-bfc005cvu87naen834r3p2bb73v8jhgv.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.687601632005-1q4bfacl23038glcug09dc9igalhap1c</string>
+	<string>com.googleusercontent.apps.687601632005-bfc005cvu87naen834r3p2bb73v8jhgv</string>
 	<key>ANDROID_CLIENT_ID</key>
 	<string>687601632005-9ja5407fj42jtsi2hob805sr109rc0g0.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.agile.ios.axpertflutter</string>
+	<string>com.agile.axpertios</string>
 	<key>PROJECT_ID</key>
 	<string>axperthybrid</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:687601632005:ios:792ba1e22c26724deead6c</string>
+	<string>1:687601632005:ios:338dafab5d240b04eead6c</string>
 </dict>
 </plist>

@@ -6,10 +6,12 @@ import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:platform_device_id/platform_device_id.dart';
 
 class LoginController extends GetxController {
   ServerConnections serverConnections = ServerConnections();
@@ -24,6 +26,7 @@ class LoginController extends GetxController {
   TextEditingController userPasswordController = TextEditingController();
   var errUserName = ''.obs;
   var errPassword = ''.obs;
+  var fcmId;
 
   LoginController() {
     fetchUserTypeList();
@@ -32,6 +35,8 @@ class LoginController extends GetxController {
     ddSelectedValue.value = appStorage.retrieveValue(AppStorage.USER_GROUP) ?? "";
     dropDownItemChanged(ddSelectedValue);
     if (userNameController.text.toString() != "") rememberMe.value = true;
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    messaging.getToken().then((value) => fcmId = value);
   }
 
   fetchUserTypeList() async {
@@ -214,20 +219,28 @@ class LoginController extends GetxController {
             await appStorage.storeValue(AppStorage.TOKEN, jsonResp["result"]["token"].toString());
             await appStorage.storeValue(AppStorage.SESSIONID, jsonResp["result"]["sessionid"].toString());
             await appStorage.storeValue(AppStorage.USER_NAME, googleUser.email.toString());
+            //remove rememberer data
+            appStorage.remove(AppStorage.USERID);
+            appStorage.remove(AppStorage.USER_PASSWORD);
+            appStorage.remove(AppStorage.USER_GROUP);
             _processLoginAndGoToHomePage();
           }
         } else {
-          Get.snackbar("Error", "Some Error occured", backgroundColor: Colors.red, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM);
+          Get.snackbar("Error", "Some Error occured",
+              backgroundColor: Colors.red, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM);
         }
         // print(resp);
         // print(googleUser);
       }
     } catch (e) {
-      Get.snackbar("Error", "User is not Registered!", snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
+      Get.snackbar("Error", "User is not Registered!",
+          snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
     }
   }
 
   _processLoginAndGoToHomePage() async {
+    //mobile Notification
+    await _callApiForMobileNotification();
     //connect to Axpert
     var connectBody = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
     var cUrl = Const.getFullARMUrl(ServerConnections.API_CONNECTTOAXPERT);
@@ -250,6 +263,18 @@ class LoginController extends GetxController {
   showErrorSnack() {
     Get.snackbar("Error", "Server busy, Please try again later.",
         snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
+  }
+
+  _callApiForMobileNotification() async {
+    var imei = await PlatformDeviceId.getDeviceId ?? '0';
+    var connectBody = {
+      'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID),
+      'firebaseId': fcmId ?? "0",
+      'ImeiNo': imei,
+    };
+    var cUrl = Const.getFullARMUrl(ServerConnections.API_MOBILE_NOTIFICATION);
+    var connectResp = await serverConnections.postToServer(url: cUrl, body: jsonEncode(connectBody), isBearer: true);
+    print("Mobile: " + connectResp);
   }
 
   getVersionName() async {

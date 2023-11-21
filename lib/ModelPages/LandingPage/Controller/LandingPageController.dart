@@ -3,17 +3,22 @@ import 'dart:convert';
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/const.dart';
+import 'package:axpertflutter/ModelPages/InApplicationWebView/page/WebViewActiveList.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Page/MenuActiveListPage.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuCalendarPage/Page/MenuCalendarPage.dart';
+import 'package:axpertflutter/ModelPages/InApplicationWebView/page/WebViewCalendar.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuDashboardPage/Page/MenuDashboardPage.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Page/MenuHomePage.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Page/MenuMorePage.dart';
+import 'package:axpertflutter/ModelPages/LandingPage/Models/FirebaseMessageModel.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetNotification.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:carousel_slider/carousel_controller.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LandingPageController extends GetxController {
   TextEditingController userCtrl = TextEditingController();
@@ -29,20 +34,32 @@ class LandingPageController extends GetxController {
   var userName = 'Demo'.obs; //update with user name
   var bottomIndex = 0.obs;
   var carouselIndex = 0.obs;
+  var needRefreshNotification = false.obs;
+  var notificationPageRefresh = false.obs;
+  var showBadge = false.obs;
+  var badgeCount = 0.obs;
+  var fool = false.obs;
   final CarouselController carouselController = CarouselController();
 
   DateTime currentBackPressTime = DateTime.now();
 
   ServerConnections serverConnections = ServerConnections();
   AppStorage appStorage = AppStorage();
-  var pageList = [MenuHomePage(), MenuActiveListPage(), MenuDashboardPage(), MenuCalendarPage(), MenuMorePage()];
+  var pageList = [
+    MenuHomePage(),
+    WebViewActiveList(),
+    // MenuActiveListPage(),
+    MenuDashboardPage(),
+    // MenuCalendarPage(),
+    WebViewCalendar(),
+    MenuMorePage(),
+  ];
   var list = [
-    WidgetNotification("1"),
-    WidgetNotification("2"),
-    WidgetNotification("3"),
-    WidgetNotification("4"),
-    WidgetNotification("5"),
-    WidgetNotification("6"),
+    WidgetNotification(FirebaseMessageModel("Title 1", "Body 1")),
+    // WidgetNotification(FirebaseMessageModel("Title 2", "Body 2")),
+    // WidgetNotification(FirebaseMessageModel("Title 3", "Body 3")),
+    // WidgetNotification(FirebaseMessageModel("Title 4", "Body 4")),
+    // WidgetNotification(FirebaseMessageModel("Title 5", "Body 5")),
   ];
   get getPage => pageList[bottomIndex.value];
 
@@ -88,83 +105,96 @@ class LandingPageController extends GetxController {
   }
 
   void showNotifications() {
-    Get.dialog(Dialog(
-      backgroundColor: Colors.transparent,
-      child: Container(
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
-        margin: EdgeInsets.only(bottom: 20, top: 50),
-        child: Column(
-          children: [
-            Container(
-              height: 60,
-              decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1))),
-              child: Padding(
-                padding: EdgeInsets.only(left: 30, right: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Icon(
-                      Icons.notifications_active_outlined,
-                      size: 30,
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                        child: Text(
-                      "Messages",
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    )),
-                    IconButton(
+    showBadge.value = false;
+    appStorage.storeValue(AppStorage.NOTIFICATION_UNREAD, "0");
+    if (getNotificationList())
+      Get.dialog(Dialog(
+        backgroundColor: Colors.transparent,
+        child: Container(
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
+          margin: EdgeInsets.only(bottom: 20, top: 50),
+          child: Column(
+            children: [
+              Container(
+                height: 60,
+                decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1))),
+                child: Padding(
+                  padding: EdgeInsets.only(left: 30, right: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Icons.notifications_active_outlined,
+                        size: 30,
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Expanded(
+                          child: Text(
+                        "Messages",
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      )),
+                      IconButton(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          icon: Icon(
+                            Icons.close_rounded,
+                            color: Colors.red,
+                            size: 30,
+                          ))
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: ListView.separated(
+                    itemCount: list.length,
+                    separatorBuilder: (context, index) {
+                      return Container(height: 1, color: Colors.grey.shade300);
+                    },
+                    itemBuilder: (context, index) {
+                      return list[index];
+                    },
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+              Container(
+                height: 60,
+                width: double.maxFinite,
+                decoration: BoxDecoration(border: Border(top: BorderSide(width: 1))),
+                child: Padding(
+                  padding: EdgeInsets.only(left: 30, right: 20),
+                  child: Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
                         onPressed: () {
                           Get.back();
+                          Get.toNamed(Routes.NotificationPage);
                         },
-                        icon: Icon(
-                          Icons.close_rounded,
-                          color: Colors.red,
-                          size: 30,
-                        ))
-                  ],
+                        child: Text("View All"),
+                      )),
                 ),
               ),
-            ),
-            SizedBox(height: 10),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: ListView.separated(
-                  itemCount: list.length,
-                  separatorBuilder: (context, index) {
-                    return Container(height: 1, color: Colors.grey.shade300);
-                  },
-                  itemBuilder: (context, index) {
-                    return list[index];
-                  },
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-            Container(
-              height: 60,
-              width: double.maxFinite,
-              decoration: BoxDecoration(border: Border(top: BorderSide(width: 1))),
-              child: Padding(
-                padding: EdgeInsets.only(left: 30, right: 20),
-                child: Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {
-                        Get.back();
-                      },
-                      child: Text("View All"),
-                    )),
-              ),
-            ),
-            SizedBox(height: 10),
-          ],
+              SizedBox(height: 10),
+            ],
+          ),
         ),
-      ),
-    ));
+      ));
+    else
+      Get.defaultDialog(
+          title: "Alert!",
+          middleText: "No new Notifications",
+          confirm: ElevatedButton(
+              onPressed: () {
+                Get.back();
+              },
+              child: Text("Ok")));
   }
 
   void deleteController(int bottomIndex, value) {
@@ -188,11 +218,17 @@ class LandingPageController extends GetxController {
         middleText: "Are you sure you want to log out?",
         confirm: ElevatedButton(
             onPressed: () async {
+              try {
+                await FirebaseAuth.instance.signOut();
+                await GoogleSignIn().signOut();
+              } catch (e) {}
               var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body));
               // print(resp);
               if (resp != "" && !resp.toString().contains("error")) {
                 var jsonResp = jsonDecode(resp);
                 if (jsonResp['result']['success'].toString() == "true") {
+                  appStorage.remove(AppStorage.SESSIONID);
+                  appStorage.remove(AppStorage.TOKEN);
                   Get.offAllNamed(Routes.Login);
                 } else {
                   error(jsonResp['result']['message'].toString());
@@ -226,5 +262,49 @@ class LandingPageController extends GetxController {
     oPassCtrl.text = "";
     nPassCtrl.text = "";
     Get.back();
+  }
+
+  getNotificationList() {
+    list.clear();
+    // appStorage.remove(AppStorage.NOTIFICATION_LIST);
+    List notList = appStorage.retrieveValue(AppStorage.NOTIFICATION_LIST) ?? [];
+    if (notList.isEmpty) return false;
+    for (var item in notList) {
+      var val = jsonDecode(item);
+      list.add(WidgetNotification(FirebaseMessageModel.fromJson(val)));
+    }
+    // var rList = list.reversed.toList();
+    // list = rList;
+    return true;
+  }
+
+  Future<bool> deleteNotification(int index) async {
+    var value;
+    await Get.defaultDialog(
+        title: "Delete?",
+        middleText: "Do you want to delete this notification?",
+        confirm: ElevatedButton(
+          onPressed: () {
+            Get.back();
+            value = true;
+            _deleteNotificationFromStorage(index);
+          },
+          child: Text("Yes"),
+        ),
+        cancel: TextButton(
+            onPressed: () {
+              Get.back();
+              value = false;
+            },
+            child: Text("No")));
+    return value;
+  }
+
+  _deleteNotificationFromStorage(int index) async {
+    List notiList = await appStorage.retrieveValue(AppStorage.NOTIFICATION_LIST) ?? [];
+    notiList.removeAt(index);
+    await appStorage.storeValue(AppStorage.NOTIFICATION_LIST, notiList);
+    needRefreshNotification.value = true;
+    notificationPageRefresh.value = true;
   }
 }

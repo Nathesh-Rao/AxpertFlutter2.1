@@ -1,23 +1,23 @@
 import 'dart:async';
 
+import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
-import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
+import 'package:axpertflutter/Constants/const.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 
-class InApplicationWebViewer extends StatefulWidget {
-  InApplicationWebViewer(this.data);
-  String data;
+class WebViewCalendar extends StatefulWidget {
+  String weburl = Const.getFullProjectUrl('aspx/AxMain.aspx?pname=hMy%20Calendar&authKey=AXPERT-') +
+      AppStorage().retrieveValue(AppStorage.SESSIONID);
+
+  WebViewCalendar();
   @override
-  State<InApplicationWebViewer> createState() => _InApplicationWebViewerState();
+  _WebViewCalendarState createState() => _WebViewCalendarState();
 }
 
-class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
-  dynamic argumentData = Get.arguments;
-  MenuHomePageController menuHomePageController = Get.find();
+class _WebViewCalendarState extends State<WebViewCalendar> {
   final Completer<InAppWebViewController> _controller = Completer<InAppWebViewController>();
   late InAppWebViewController _webViewController;
   final _key = UniqueKey();
@@ -28,22 +28,17 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
   @override
   void initState() {
     super.initState();
-    try {
-      if (argumentData != null) widget.data = argumentData[0];
-      if (argumentData != null) hasAppBar = argumentData[1] ?? false;
-    } catch (e) {}
-    print(widget.data);
   }
 
   @override
   void dispose() {
-    menuHomePageController.switchPage.value = false;
     //Navigator.pop(context);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    print(widget.weburl);
     return Scaffold(
       appBar: hasAppBar == true
           ? AppBar(
@@ -71,7 +66,7 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
         child: Builder(builder: (BuildContext context) {
           return Stack(children: <Widget>[
             InAppWebView(
-              initialUrlRequest: URLRequest(url: Uri.parse(widget.data)),
+              initialUrlRequest: URLRequest(url: Uri.parse(widget.weburl)),
               initialOptions: InAppWebViewGroupOptions(
                 crossPlatform: InAppWebViewOptions(
                   javaScriptEnabled: true,

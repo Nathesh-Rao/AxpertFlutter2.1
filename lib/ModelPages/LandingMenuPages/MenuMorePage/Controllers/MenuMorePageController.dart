@@ -3,15 +3,12 @@ import 'dart:convert';
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/const.dart';
-import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Models/MenuItemModel.dart';
+import 'package:axpertflutter/Utils/ServerConnections/InternetConnectivity.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
-
-import '../../../../Constants/CommonMethods.dart';
-import '../../../../Utils/ServerConnections/InternetConnectivity.dart';
 
 class MenuMorePageController extends GetxController {
   InternetConnectivity internetConnectivity = Get.find();
@@ -117,10 +114,10 @@ class MenuMorePageController extends GetxController {
   void openItemClick(MenuItemModel itemModel) async {
     if (await internetConnectivity.connectionStatus) {
       if (itemModel.url != "") {
-            // menuHomePageController.webUrl = Const.getFullProjectUrl(itemModel.url);
-            // menuHomePageController.switchPage.value = true;
-            Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(itemModel.url)]);
-          }
+        // menuHomePageController.webUrl = Const.getFullProjectUrl(itemModel.url);
+        // menuHomePageController.switchPage.value = true;
+        Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(itemModel.url)]);
+      }
     }
   }
 }

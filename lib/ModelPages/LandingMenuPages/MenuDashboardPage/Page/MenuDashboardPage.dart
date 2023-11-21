@@ -1,18 +1,14 @@
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuDashboardPage/Controllers/MenuDashboaardController.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuDashboardPage/Widgets/WidgetCharts.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetSlidingNotification.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:hexcolor/hexcolor.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:get/get.dart';
 
 class MenuDashboardPage extends StatelessWidget {
   MenuDashboardPage({super.key});
-  var data = [
-    _ChartData('CHN', 12),
-    _ChartData('GER', 15),
-    _ChartData('RUS', 30),
-    _ChartData('BRZ', 6.4),
-    _ChartData('IND', 14)
-  ];
+  var data = [_ChartData('CHN', 12), _ChartData('GER', 15), _ChartData('RUS', 30), _ChartData('BRZ', 6.4), _ChartData('IND', 14)];
+  final MenuDashboardController menuDashboardController = Get.put(MenuDashboardController());
+  var index = 2;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -20,9 +16,34 @@ class MenuDashboardPage extends StatelessWidget {
         WidgetSlidingNotificationPanel(),
         SizedBox(height: 5),
         Expanded(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.only(left: 10, right: 10),
-            child: Column(
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: ListView.separated(
+              itemCount: menuDashboardController.chartList.length,
+              shrinkWrap: true,
+              physics: ClampingScrollPhysics(),
+              separatorBuilder: (context, index) => SizedBox(height: 20),
+              itemBuilder: (context, index) {
+                return WidgetCharts(menuDashboardController.chartList[index]);
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ChartData {
+  _ChartData(this.x, this.y);
+
+  final String x;
+  final double y;
+}
+
+/*
+
+Column(
               children: [
                 Container(
                   padding: EdgeInsets.all(10),
@@ -32,10 +53,9 @@ class MenuDashboardPage extends StatelessWidget {
                     data: ThemeData().copyWith(dividerColor: Colors.transparent),
                     child: ExpansionTile(
                       initiallyExpanded: true,
-                      title: Text("Chart Title",
+                      title: Text(menuDashboardController.chartList[index].cardname,
                           style: GoogleFonts.nunito(
-                              textStyle:
-                                  TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: HexColor('495057')))),
+                              textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: HexColor('495057')))),
                       children: [
                         SizedBox(height: 3),
                         Container(height: 1, color: Colors.grey.withOpacity(0.4)),
@@ -46,15 +66,12 @@ class MenuDashboardPage extends StatelessWidget {
 
                             // primaryYAxis: NumericAxis(minimum: 0, maximum: 40, interval: 10),
                             legend: Legend(
-                                isVisible: true,
-                                isResponsive: true,
-                                toggleSeriesVisibility: true,
-                                position: LegendPosition.top),
-                            series: <ChartSeries<_ChartData, String>>[
+                                isVisible: true, isResponsive: true, toggleSeriesVisibility: true, position: LegendPosition.top),
+                            series: <ChartSeries<dynamic, String>>[
                               ColumnSeries(
-                                  dataSource: data,
-                                  xValueMapper: (datum, index) => datum.x,
-                                  yValueMapper: (datum, index) => datum.y,
+                                  dataSource: menuDashboardController.chartList[index].dataList,
+                                  xValueMapper: (datum, index) => datum.x_axis,
+                                  yValueMapper: (datum, index) => double.parse(datum.value),
                                   dataLabelSettings: DataLabelSettings(isVisible: true))
                             ],
                           ),
@@ -74,8 +91,7 @@ class MenuDashboardPage extends StatelessWidget {
                       initiallyExpanded: true,
                       title: Text("Chart Title",
                           style: GoogleFonts.nunito(
-                              textStyle:
-                                  TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: HexColor('495057')))),
+                              textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: HexColor('495057')))),
                       children: [
                         SizedBox(height: 3),
                         Container(height: 1, color: Colors.grey.withOpacity(0.4)),
@@ -106,16 +122,4 @@ class MenuDashboardPage extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _ChartData {
-  _ChartData(this.x, this.y);
-
-  final String x;
-  final double y;
-}
+ */

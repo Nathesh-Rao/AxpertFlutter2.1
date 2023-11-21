@@ -106,14 +106,13 @@ class AddConnectionController extends GetxController {
       baseUrl += baseUrl.endsWith("/") ? "" : "/";
       var url = baseUrl + ServerConnections.API_GET_APPSTATUS;
       final data = await serverConnections.getFromServer(url: url);
-      LoadingScreen.dismiss();
 
       if (data != "" && data.toString().toLowerCase().contains("running successfully".toLowerCase())) {
         //check whether the entered Connection name is proper
         Future<bool> isValidConnName = validateConnectionName(baseUrl);
         if (await isValidConnName) {
-          projectModel = ProjectModel(
-              conNameController.text.trim(), webUrlController.text.trim(), armUrlController.text.trim(), conCaptionController.text.trim());
+          projectModel = ProjectModel(conNameController.text.trim(), webUrlController.text.trim(), armUrlController.text.trim(),
+              conCaptionController.text.trim());
           conNameController.text = "";
           webUrlController.text = "";
           armUrlController.text = "";
@@ -122,10 +121,16 @@ class AddConnectionController extends GetxController {
           saveDatAndRedirect(projectModel, json, isQr: true);
         }
       }
+      LoadingScreen.dismiss();
     } else {
       if (isQr) {
-        Get.snackbar("Invalid!", "Please choose a valid QR Code",
-            snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red, colorText: Colors.white);
+        Get.snackbar(
+          "Invalid!",
+          "Please choose a valid QR Code",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
         qrViewController!.resumeCamera();
       }
     }

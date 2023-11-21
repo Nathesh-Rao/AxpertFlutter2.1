@@ -5,6 +5,7 @@ import 'package:axpertflutter/ModelPages/LandingPage/Page/LandingPage.dart';
 import 'package:axpertflutter/ModelPages/LoginPage/Page/ForgetPassword.dart';
 import 'package:axpertflutter/ModelPages/LoginPage/Page/LoginPage.dart';
 import 'package:axpertflutter/ModelPages/LoginPage/Page/SignUp.dart';
+import 'package:axpertflutter/ModelPages/NotificationPage/Pages/NotificationPage.dart';
 import 'package:axpertflutter/ModelPages/ProjectListing/Page/ProjectListingPage.dart';
 import 'package:axpertflutter/ModelPages/SpalshPage/page/SplashPageUI.dart';
 import 'package:get/get.dart';
@@ -19,6 +20,7 @@ class Routes {
   static const String SignUp = "/SignUp";
   static const String ForgetPassword = "/ForgetPassword";
   static const String LandingPage = "/LandingPage";
+  static const String NotificationPage = "/LandingPage/Notifications";
 }
 
 class RoutePages {
@@ -66,6 +68,11 @@ class RoutePages {
     GetPage(
       name: Routes.LandingPage,
       page: () => LandingPage(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: Routes.NotificationPage,
+      page: () => NotificationPage(),
       transition: Transition.rightToLeft,
     ),
   ];

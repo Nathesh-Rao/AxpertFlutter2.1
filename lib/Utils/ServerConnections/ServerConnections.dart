@@ -1,11 +1,10 @@
+import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/Utils/ServerConnections/InternetConnectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-
-import '../../Constants/AppStorage.dart';
 
 class ServerConnections {
   static var client = http.Client();
@@ -23,6 +22,8 @@ class ServerConnections {
   static const String API_GET_HOMEPAGE_CARDS = "api/v1/ARMGetHomePageCards";
   static const String API_GET_HOMEPAGE_CARDSDATASOURCE = "api/v1/ARMGetDataResponse";
   static const String API_GET_PENDING_ACTIVELIST = "api/v1/ARMGetActiveTasks";
+  static const String API_MOBILE_NOTIFICATION = "api/v1/ARMMobileNotification";
+  static const String API_GET_DASHBOARD_DATA = "api/v1/ARMGetCardsData";
 
   static const String API_GET_MENU = "api/v1/ARMGetMenu";
   static const String API_SIGNOUT = "api/v1/ARMSignOut";
@@ -53,8 +54,8 @@ class ServerConnections {
         // print("Post header: $header");
         print("API_POST_BODY:" + body);
         var response = await client.post(Uri.parse(url), headers: header, body: body);
-        print("API_RESPONSE_DATA: ${response.body}\n");
-        print("");
+        // print("API_RESPONSE_DATA: ${response.body}\n");
+        // print("");
         if (response.statusCode == 200) return response.body;
         if (response.statusCode == 404) {
           print("API_ERROR: $API_NAME: ${response.body}");
@@ -71,7 +72,8 @@ class ServerConnections {
         }
       } catch (e) {
         print("API_ERROR: $API_NAME: ${e.toString()}");
-        Get.snackbar("Error ", e.toString(), snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
+        Get.snackbar("Error ", e.toString(),
+            snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
       }
 
     return "";
@@ -115,7 +117,8 @@ class ServerConnections {
             snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
       }
     } catch (e) {
-      Get.snackbar("Error ", e.toString(), snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
+      Get.snackbar("Error ", e.toString(),
+          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
     }
     LoadingScreen.dismiss();
   }

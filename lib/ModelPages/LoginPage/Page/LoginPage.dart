@@ -27,6 +27,7 @@ class _LoginPageState extends State<LoginPage> {
     return Obx(() => Scaffold(
           appBar: Platform.isIOS
               ? AppBar(
+                  elevation: 0,
                   toolbarHeight: 1,
                   backgroundColor: Colors.white,
                 )
@@ -69,10 +70,12 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 SizedBox(height: 25),
                                 Text('Login',
-                                    style: GoogleFonts.poppins(textStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 20, color: Colors.black))),
+                                    style: GoogleFonts.poppins(
+                                        textStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 20, color: Colors.black))),
                                 SizedBox(height: 10),
                                 Text('Enter Your Credentials',
-                                    style: GoogleFonts.poppins(textStyle: TextStyle(fontWeight: FontWeight.w400, fontSize: 12, color: Colors.black))),
+                                    style: GoogleFonts.poppins(
+                                        textStyle: TextStyle(fontWeight: FontWeight.w400, fontSize: 12, color: Colors.black))),
                               ],
                             ),
                             Align(
@@ -92,7 +95,8 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(height: 5),
                         Text(
                           Const.PROJECT_NAME.toString().toUpperCase(),
-                          style: GoogleFonts.poppins(textStyle: TextStyle(fontWeight: FontWeight.w400, fontSize: 10, color: Colors.black)),
+                          style: GoogleFonts.poppins(
+                              textStyle: TextStyle(fontWeight: FontWeight.w400, fontSize: 10, color: Colors.black)),
                         ),
                         SizedBox(height: 20),
                         TextField(
@@ -197,11 +201,13 @@ class _LoginPageState extends State<LoginPage> {
                             },
                             child: Container(
                               height: 50,
-                              decoration: BoxDecoration(color: MyColors.blue1.withOpacity(0.8), borderRadius: BorderRadius.circular(20)),
+                              decoration:
+                                  BoxDecoration(color: MyColors.blue1.withOpacity(0.8), borderRadius: BorderRadius.circular(20)),
                               child: Center(
                                 child: Text(
                                   "Login",
-                                  style: GoogleFonts.poppins(textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: MyColors.white1)),
+                                  style: GoogleFonts.poppins(
+                                      textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: MyColors.white1)),
                                 ),
                               ),
                             ),
@@ -222,7 +228,8 @@ class _LoginPageState extends State<LoginPage> {
                                 icon: Icon(FontAwesomeIcons.google, color: MyColors.red),
                                 label: Text('Sign In With Google',
                                     style: GoogleFonts.poppins(
-                                        textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 12, color: HexColor("#3E4153")))),
+                                        textStyle:
+                                            TextStyle(fontWeight: FontWeight.w500, fontSize: 12, color: HexColor("#3E4153")))),
                                 onPressed: () {
                                   loginController.googleSignInClicked();
                                 }),
@@ -240,7 +247,8 @@ class _LoginPageState extends State<LoginPage> {
                               children: [
                                 Text("New user?  ",
                                     style: GoogleFonts.poppins(
-                                        textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: HexColor("#3E4153")))),
+                                        textStyle:
+                                            TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: HexColor("#3E4153")))),
                                 Text(
                                   "Sign up",
                                   style: GoogleFonts.poppins(
@@ -259,7 +267,8 @@ class _LoginPageState extends State<LoginPage> {
                           child: Text(
                             "By using the software, you agree to the",
                             style: GoogleFonts.poppins(
-                                textStyle: TextStyle(fontWeight: FontWeight.w400, fontSize: 12, letterSpacing: 1, color: Colors.black)),
+                                textStyle:
+                                    TextStyle(fontWeight: FontWeight.w400, fontSize: 12, letterSpacing: 1, color: Colors.black)),
                           ),
                         ),
                         Row(
@@ -279,7 +288,8 @@ class _LoginPageState extends State<LoginPage> {
                             FittedBox(
                               child: Text(" and the",
                                   style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(fontWeight: FontWeight.w400, fontSize: 12, color: Colors.black, letterSpacing: 1),
+                                    textStyle: TextStyle(
+                                        fontWeight: FontWeight.w400, fontSize: 12, color: Colors.black, letterSpacing: 1),
                                   )),
                             ),
                             FittedBox(
@@ -299,7 +309,8 @@ class _LoginPageState extends State<LoginPage> {
                         Text("Powered By",
                             textAlign: TextAlign.center,
                             style: GoogleFonts.poppins(
-                              textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 12, color: Colors.black, letterSpacing: 1),
+                              textStyle:
+                                  TextStyle(fontWeight: FontWeight.w500, fontSize: 12, color: Colors.black, letterSpacing: 1),
                             )),
                         Image.asset(
                           'assets/images/agilelabslogo.png',

@@ -2,15 +2,13 @@ import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Controllers/MenuMorePageController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Models/MenuItemModel.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 class MenuMorePage extends StatelessWidget {
   MenuMorePage({super.key});
-
-  MenuMorePageController menuMorePageController = Get.put(MenuMorePageController());
+  final MenuMorePageController menuMorePageController = Get.put(MenuMorePageController());
 
   @override
   Widget build(BuildContext context) {
@@ -81,28 +79,31 @@ reBuild(MenuMorePageController menuMorePageController) {
             future: menuMorePageController.futureBuilder(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                if (menuMorePageController.fetchList.value.length == 0)
+                if (menuMorePageController.fetchList.length == 0)
                   return Text("Menu is not Initialized");
                 else
                   return ListView.builder(
                     shrinkWrap: true,
                     physics: ClampingScrollPhysics(),
                     controller: ScrollController(),
-                    itemCount: menuMorePageController.fetchList.value.length,
+                    itemCount: menuMorePageController.fetchList.length,
+                    // itemCount: 1,
                     itemBuilder: (context, mainIndex) {
                       //print("valuen: $mainIndex");
                       return Container(
                         margin: EdgeInsets.only(bottom: 15),
-                        decoration: BoxDecoration(border: Border.all(width: 1, color: HexColor('EDF0F8')), borderRadius: BorderRadius.circular(10)),
+                        decoration: BoxDecoration(
+                            border: Border.all(width: 1, color: HexColor('EDF0F8')), borderRadius: BorderRadius.circular(10)),
                         child: Theme(
                           data: ThemeData().copyWith(dividerColor: Colors.transparent),
                           child: ExpansionTile(
                             initiallyExpanded: true,
                             title: Text(
-                              menuMorePageController.fetchList.value[mainIndex].toString(),
+                              menuMorePageController.fetchList[mainIndex].toString(),
                               textAlign: TextAlign.left,
                               overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.poppins(textStyle: TextStyle(color: HexColor("#3E4153"), fontSize: 14, fontWeight: FontWeight.w900)),
+                              style: GoogleFonts.poppins(
+                                  textStyle: TextStyle(color: HexColor("#3E4153"), fontSize: 14, fontWeight: FontWeight.w900)),
                             ),
                             children: [
                               SizedBox(height: 3),
@@ -121,9 +122,11 @@ reBuild(MenuMorePageController menuMorePageController) {
                                 controller: ScrollController(),
                                 physics: ClampingScrollPhysics(),
                                 itemCount: menuMorePageController.getSubmenuItemList(mainIndex).length,
+                                // itemCount: 200,
                                 itemBuilder: (context, index) {
-                                  print("valuen mainIndex, subIndex: $mainIndex $index");
-                                  return getGridItem(menuMorePageController, menuMorePageController.getSubmenuItemList(mainIndex)[index], index);
+                                  print("value mainIndex, subIndex: $mainIndex $index");
+                                  return getGridItem(
+                                      menuMorePageController, menuMorePageController.getSubmenuItemList(mainIndex)[index], index);
                                 },
                               )
                             ],
@@ -134,7 +137,11 @@ reBuild(MenuMorePageController menuMorePageController) {
                   );
               } else {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: Text("Loading...",style: TextStyle(color: MyColors.blue2,fontWeight:FontWeight.bold),)); //Center(child: CircularProgressIndicator());
+                  return Center(
+                      child: Text(
+                    "Loading Please Wait...",
+                    style: TextStyle(color: MyColors.blue2, fontWeight: FontWeight.bold),
+                  )); //Center(child: CircularProgressIndicator());
                 }
               }
               return Text("Menu not Initialized");

@@ -3,7 +3,6 @@ import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Con
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Widgets/WidgetListItem.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 class PendingListPage extends StatelessWidget {
@@ -33,31 +32,32 @@ reBuild(PendingListController pendingListController) {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
-                child: TextField(
-              controller: pendingListController.searchController,
-              onChanged: pendingListController.filterList,
-              decoration: InputDecoration(
-                  prefixIcon: pendingListController.searchController.text.toString() == ""
-                      ? GestureDetector(
-                    child: Icon(
-                      Icons.search,
-                     // color: HexColor("#8E8E8EA3"),
-                    ),
-                  )
-                      : GestureDetector(
-                    onTap: () {
-                      pendingListController.clearCalled();
-                    },
-                    child: Icon(
-                      Icons.clear,
-                      color: HexColor("#8E8E8EA3"),
-                    ),
-                  ),
-                  isDense: true,
-                  contentPadding: EdgeInsets.zero,
-                  hintText: "Search",
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(width: 1))),
-            )),
+              child: TextField(
+                controller: pendingListController.searchController,
+                onChanged: pendingListController.filterList,
+                decoration: InputDecoration(
+                    prefixIcon: pendingListController.searchController.text.toString() == ""
+                        ? GestureDetector(
+                            child: Icon(
+                              Icons.search,
+                              // color: HexColor("#8E8E8EA3"),
+                            ),
+                          )
+                        : GestureDetector(
+                            onTap: () {
+                              pendingListController.clearCalled();
+                            },
+                            child: Icon(
+                              Icons.clear,
+                              color: HexColor("#8E8E8EA3"),
+                            ),
+                          ),
+                    isDense: true,
+                    contentPadding: EdgeInsets.zero,
+                    hintText: "Search",
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(width: 1))),
+              ),
+            ),
             SizedBox(width: 6),
             Material(
               elevation: 2,

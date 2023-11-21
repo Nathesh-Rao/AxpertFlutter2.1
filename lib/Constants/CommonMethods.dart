@@ -1,9 +1,7 @@
 import 'dart:async';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:get/get.dart';
 
 class CommonMethods {
   static String capitalize(String value) {
@@ -29,8 +27,8 @@ class LoadingScreen {
     Timer(Duration(seconds: 20), () {
       if (EasyLoading.isShow) {
         dismiss();
-        Get.snackbar("Error", "Unable to fetch data",
-            snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red, colorText: Colors.white);
+        // Get.snackbar("Error", "Unable to fetch data",
+        //     snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red, colorText: Colors.white);
       }
     });
   }

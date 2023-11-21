@@ -23,7 +23,7 @@ class MenuHomePage extends StatelessWidget {
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
                             childAspectRatio:
-                                MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.shortestSide < 600 ? 1.5 : 2.8),
+                                MediaQueryData.fromView(WidgetsBinding.instance.window).size.shortestSide < 600 ? 1.5 : 2.8),
                         itemCount: menuHomePageController.listOfCards.length,
                         itemBuilder: (context, index) {
                           return Container(

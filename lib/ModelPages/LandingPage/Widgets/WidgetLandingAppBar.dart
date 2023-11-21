@@ -31,17 +31,22 @@ class WidgetLandingAppBar extends StatelessWidget implements PreferredSizeWidget
       ),
       centerTitle: false,
       actions: [
-        IconButton(
-            onPressed: () {
-              landingPageController.showNotifications();
-            },
-            icon: Icon(Icons.notifications_active_outlined)),
+        Obx(() => IconButton(
+              onPressed: () {
+                landingPageController.showNotifications();
+              },
+              icon: Badge(
+                isLabelVisible: landingPageController.showBadge.value,
+                label: Text(landingPageController.badgeCount.value.toString()),
+                child: Icon(Icons.notifications_active_outlined),
+              ),
+            )),
         IconButton(onPressed: () {}, icon: Icon(Icons.dashboard_customize_outlined)),
         InkWell(
           onTap: () {
             Get.dialog(WidgetDisplayProfileDetails());
           },
-          child: Icon(Icons.person_pin, color: MyColors.black, size: 40),
+          child: Icon(Icons.person_pin, color: MyColors.black, size: 35),
           // child: CircleAvatar(
           //   // backgroundImage: AssetImage('assets/images/profpic.jpg'),
           //   backgroundColor: Colors.blue,
