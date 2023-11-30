@@ -42,10 +42,14 @@ Future<void> main() async {
 
 void configureEasyLoading() {
   EasyLoading.instance
-    ..indicatorType = EasyLoadingIndicatorType.ring
-    ..loadingStyle = EasyLoadingStyle.light
-    ..indicatorSize = 45.0
-    ..radius = 10.0;
+    ..indicatorType = EasyLoadingIndicatorType.circle
+    ..progressColor = Colors.red
+    ..indicatorColor = MyColors.blue2
+    ..textColor = MyColors.blue2
+    ..backgroundColor = Colors.white
+    ..loadingStyle = EasyLoadingStyle.custom
+    ..indicatorSize = 55.0
+    ..radius = 20.0;
 }
 
 class MyApp extends StatelessWidget {

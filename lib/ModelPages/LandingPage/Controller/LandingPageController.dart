@@ -18,6 +18,7 @@ import 'package:carousel_slider/carousel_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class LandingPageController extends GetxController {
@@ -246,11 +247,37 @@ class LandingPageController extends GetxController {
             child: Text("No")));
   }
 
-  void changePasswordCalled() {
+  void changePasswordCalled() async {
     //change Password
-
+    if (validForm()) {
+      FocusManager.instance.primaryFocus!.unfocus();
+      var passBody = {
+        "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
+        "CurrentPassword": oPassCtrl.text.trim(),
+        "UpdatedPassword": nPassCtrl.text.trim(),
+      };
+      var url = Const.getFullARMUrl(ServerConnections.API_CHANGE_PASSWORD);
+      var resp = await serverConnections.postToServer(url: url, body: jsonEncode(passBody), isBearer: true);
+      if (resp.toString() != "") {
+        var jsonResp = jsonDecode(resp);
+        if (jsonResp['result']['success'].toString() == 'false') {
+          error(jsonResp['result']['message'].toString());
+        } else {
+          Get.defaultDialog(
+              title: "Success!",
+              middleText: jsonResp['result']['message'].toString(),
+              confirm: ElevatedButton(
+                  onPressed: () {
+                    Get.back();
+                    Get.back();
+                  },
+                  child: Text("Ok")));
+        }
+      }
+      print(resp);
+    }
     // if success
-    closeProfileDialog();
+    // closeProfileDialog();
   }
 
   error(var msg) {
@@ -261,6 +288,7 @@ class LandingPageController extends GetxController {
     cnPassCtrl.text = "";
     oPassCtrl.text = "";
     nPassCtrl.text = "";
+    errOPass.value = errNPass.value = errCNPass.value = '';
     Get.back();
   }
 
@@ -306,5 +334,47 @@ class LandingPageController extends GetxController {
     await appStorage.storeValue(AppStorage.NOTIFICATION_LIST, notiList);
     needRefreshNotification.value = true;
     notificationPageRefresh.value = true;
+  }
+
+  evaluteError(String value) {
+    if (value.trim() == '')
+      return null;
+    else
+      return value;
+  }
+
+  bool validForm() {
+    Pattern pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{7,}$';
+    RegExp regex = RegExp(pattern.toString());
+    errOPass.value = errNPass.value = errCNPass.value = '';
+    if (oPassCtrl.text.trim().toString() == '') {
+      errOPass.value = "Enter old password";
+      return false;
+    }
+    // if (!regex.hasMatch(oPassCtrl.text.trim())) {
+    //   errOPass.value = "Password should contain upper,lower,digit and Special character";
+    //   return false;
+    // }
+    // if (nPassCtrl.text.trim().toString() == '') {
+    //   errNPass.value = "Enter New password";
+    //   return false;
+    // }
+    // if (!regex.hasMatch(nPassCtrl.text.trim())) {
+    //   errNPass.value = "Password should contain upper,lower,digit and Special character";
+    //   return false;
+    // }
+    // if (cnPassCtrl.text.trim().toString() == '') {
+    //   errCNPass.value = "Enter Confirm password";
+    //   return false;
+    // }
+    // if (!regex.hasMatch(cnPassCtrl.text.trim())) {
+    //   errCNPass.value = "Password should contain upper,lower,digit and Special character";
+    //   return false;
+    // }
+    if (nPassCtrl.text.trim() != cnPassCtrl.text.trim()) {
+      errOPass.value = "Password does not match";
+      return false;
+    }
+    return true;
   }
 }

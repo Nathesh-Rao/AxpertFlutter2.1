@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:animated_icon/animated_icon.dart';
+import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/ModelPages/AddConnection/Controllers/AddConnectionController.dart';
@@ -48,6 +49,7 @@ class _ProjectListingPageState extends State<ProjectListingPage> {
   }
 
   buildContentBody() {
+    LoadingScreen.show();
     return Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: MyColors.white1,
@@ -105,9 +107,10 @@ class _ProjectListingPageState extends State<ProjectListingPage> {
                                       Padding(
                                         padding: const EdgeInsets.only(top: 10.0, left: 10),
                                         child: Image.asset(
-                                          'assets/images/buzzily-logo.png',
-                                          height: 35,
-                                          width: 125,
+                                          // 'assets/images/buzzily-logo.png',
+                                          'assets/images/axpert_name.png',
+                                          height: 30,
+                                          width: 120,
                                           fit: BoxFit.cover,
                                         ),
                                       ),

@@ -22,7 +22,8 @@ class WidgetOptionListTile extends StatelessWidget {
         child: Row(
           children: [
             Visibility(
-                visible: cardOptionModel.cardicon.toString() == "" ? false : true, child: Icon(showIcons(cardOptionModel.cardicon.toString()))),
+                visible: cardOptionModel.cardicon.toString() == "" ? false : true,
+                child: Icon(showIcons(cardOptionModel.cardicon.toString()))),
             Expanded(
               child: Center(
                 child: Padding(
@@ -41,7 +42,9 @@ class WidgetOptionListTile extends StatelessWidget {
                           Get.back();
                           menuHomePageController.openBtnAction("button", cardOptionModel.link);
                         },
-                        child: Text(cardOptionModel.text)),
+                        child: Text(
+                          cardOptionModel.text,
+                        )),
                   )
                 : Expanded(
                     child: Center(

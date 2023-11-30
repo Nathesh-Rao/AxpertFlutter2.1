@@ -4,7 +4,7 @@ class ChartCardModel {
   String charttype;
   String cardbgclr;
 
-  List<dynamic> dataList;
+  List<ChartData> dataList;
 
   ChartCardModel(this.cardname, this.cardtype, this.charttype, this.dataList, {this.cardbgclr = 'null'}) {}
 }
@@ -20,6 +20,17 @@ class ChartData {
   String z_axis_data;
   //kpi
   String count;
+
+  ChartData(
+      {this.x_axis = "",
+      this.value = "0",
+      this.count = "0",
+      this.data_label = "",
+      this.link = "",
+      this.group_column = "",
+      this.x_axis_data = "0",
+      this.y_axis_data = "0",
+      this.z_axis_data = "0"}) {}
 
   ChartData.fromJson(Map<String, dynamic> json)
       : x_axis = json['x_axis'].toString() ?? "",

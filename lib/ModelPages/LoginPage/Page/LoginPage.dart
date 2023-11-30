@@ -62,7 +62,8 @@ class _LoginPageState extends State<LoginPage> {
                                 SizedBox(height: 10),
                                 Center(
                                   child: Image.asset(
-                                    'assets/images/buzzily-logo.png',
+                                    'assets/images/axpert_name.png',
+                                    // 'assets/images/buzzily-logo.png',
                                     height: MediaQuery.of(context).size.height * 0.048,
                                     width: MediaQuery.of(context).size.width * 0.38,
                                     fit: BoxFit.fill,
@@ -78,18 +79,18 @@ class _LoginPageState extends State<LoginPage> {
                                         textStyle: TextStyle(fontWeight: FontWeight.w400, fontSize: 12, color: Colors.black))),
                               ],
                             ),
-                            Align(
-                              alignment: Alignment.topRight,
-                              child: Padding(
-                                padding: EdgeInsets.only(right: 30),
-                                child: Image.asset(
-                                  'assets/images/buzzily.png',
-                                  height: MediaQuery.of(context).size.height * 0.13,
-                                  width: MediaQuery.of(context).size.width * 0.24,
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                            ),
+                            // Align(
+                            //   alignment: Alignment.topRight,
+                            //   child: Padding(
+                            //     padding: EdgeInsets.only(right: 30),
+                            //     child: Image.asset(
+                            //       'assets/images/buzzily.png',
+                            //       height: MediaQuery.of(context).size.height * 0.13,
+                            //       width: MediaQuery.of(context).size.width * 0.24,
+                            //       fit: BoxFit.fill,
+                            //     ),
+                            //   ),
+                            // ),
                           ],
                         ),
                         SizedBox(height: 5),
@@ -331,7 +332,7 @@ class _LoginPageState extends State<LoginPage> {
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               return Text(
-                                "${snapshot.data}_testRelease1",
+                                "${snapshot.data}_testRelease2",
                                 style: GoogleFonts.poppins(
                                     textStyle: TextStyle(
                                         color: MyColors.buzzilyblack,

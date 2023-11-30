@@ -14,6 +14,8 @@ class MenuDashboardController extends GetxController {
 
   MenuDashboardController() {
     fetchDataFromServer();
+    print('Session: ${appStorage.retrieveValue(AppStorage.SESSIONID)}');
+    print('Token: ${appStorage.retrieveValue(AppStorage.TOKEN)}');
   }
 
   fetchDataFromServer() async {
@@ -33,15 +35,17 @@ class MenuDashboardController extends GetxController {
               case 'bar':
               case 'stacked-bar':
               case 'donut':
+              case 'semi-donut':
               case 'pie':
               case 'line':
               case 'column':
               case 'stacked-column':
+              case 'stacked-percentage-column':
               case '':
                 try {
                   var jsonSqlData = jsonDecode(card['cardsql']);
                   var rows = jsonSqlData['row'];
-                  var bar = [];
+                  List<ChartData> bar = [];
                   for (var eachData in rows) {
                     ChartData bmodel = ChartData.fromJson(eachData);
                     bar.add(bmodel);

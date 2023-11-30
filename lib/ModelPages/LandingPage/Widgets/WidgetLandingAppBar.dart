@@ -41,7 +41,7 @@ class WidgetLandingAppBar extends StatelessWidget implements PreferredSizeWidget
                 child: Icon(Icons.notifications_active_outlined),
               ),
             )),
-        IconButton(onPressed: () {}, icon: Icon(Icons.dashboard_customize_outlined)),
+        // IconButton(onPressed: () {}, icon: Icon(Icons.dashboard_customize_outlined)),
         InkWell(
           onTap: () {
             Get.dialog(WidgetDisplayProfileDetails());

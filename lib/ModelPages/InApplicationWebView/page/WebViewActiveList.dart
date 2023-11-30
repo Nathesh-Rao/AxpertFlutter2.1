@@ -93,16 +93,17 @@ class _WebViewCalendarState extends State<WebViewActiveList> {
             ),
             _progressBarActive
                 ? Container(
+                    color: Colors.white,
                     child: Center(
-                    child: SpinKitRotatingCircle(
-                      size: 40,
-                      itemBuilder: (context, index) {
-                        final colors = [MyColors.blue2, MyColors.blue2, MyColors.blue2];
-                        final color = colors[index % colors.length];
-                        return DecoratedBox(decoration: BoxDecoration(color: color, shape: BoxShape.circle));
-                      },
-                    ),
-                  ))
+                      child: SpinKitRotatingCircle(
+                        size: 40,
+                        itemBuilder: (context, index) {
+                          final colors = [MyColors.blue2, MyColors.blue2, MyColors.blue2];
+                          final color = colors[index % colors.length];
+                          return DecoratedBox(decoration: BoxDecoration(color: color, shape: BoxShape.circle));
+                        },
+                      ),
+                    ))
                 : Stack(),
           ]);
         }),

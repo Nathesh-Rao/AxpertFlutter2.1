@@ -100,32 +100,34 @@ class WidgetDisplayProfileDetails extends StatelessWidget {
   }
 
   showManageWindow() {
-    return Get.dialog(Dialog(
-        backgroundColor: Colors.transparent,
-        child: Container(
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
-          height: 400,
-          child: Padding(
-            padding: EdgeInsets.all(10),
-            child: DefaultTabController(
-              length: 2,
-              child: Scaffold(
-                appBar: TabBar(unselectedLabelColor: Colors.black, labelColor: Colors.black, tabs: [
-                  Tab(
-                    text: "User Profile",
-                  ),
-                  Tab(text: "Change\nCredentials")
-                ]),
-                body: Padding(
-                  padding: EdgeInsets.only(left: 20, right: 20),
-                  child: TabBarView(
-                    children: [userProfile(), userCredentials()],
+    return Get.dialog(
+        Dialog(
+            backgroundColor: Colors.transparent,
+            child: Container(
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
+              height: 400,
+              child: Padding(
+                padding: EdgeInsets.all(10),
+                child: DefaultTabController(
+                  length: 2,
+                  child: Scaffold(
+                    appBar: TabBar(unselectedLabelColor: Colors.black, labelColor: Colors.black, tabs: [
+                      Tab(
+                        text: "User Profile",
+                      ),
+                      Tab(text: "Change\nCredentials")
+                    ]),
+                    body: Padding(
+                      padding: EdgeInsets.only(left: 20, right: 20),
+                      child: TabBarView(
+                        children: [userProfile(), userCredentials()],
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
-        )));
+            )),
+        barrierDismissible: false);
   }
 
   userProfile() {
@@ -183,6 +185,7 @@ class WidgetDisplayProfileDetails extends StatelessWidget {
               decoration: InputDecoration(
                 labelText: 'Old Password',
                 hintText: 'Enter your old password',
+                errorText: landingPageController.evaluteError(landingPageController.errOPass.value),
                 suffixIcon: IconButton(
                   icon: Icon(
                     landingPageController.showOldPass.value ? Icons.visibility_off : Icons.visibility,
@@ -203,6 +206,7 @@ class WidgetDisplayProfileDetails extends StatelessWidget {
               decoration: InputDecoration(
                 labelText: 'New Password',
                 hintText: 'Enter your new password',
+                errorText: landingPageController.evaluteError(landingPageController.errNPass.value),
                 suffixIcon: IconButton(
                   icon: Icon(
                     landingPageController.showNewPass.value ? Icons.visibility_off : Icons.visibility,
@@ -223,6 +227,7 @@ class WidgetDisplayProfileDetails extends StatelessWidget {
               decoration: InputDecoration(
                 labelText: 'Confrmation Password',
                 hintText: 'Enter your Confrmation password',
+                errorText: landingPageController.evaluteError(landingPageController.errCNPass.value),
                 suffixIcon: IconButton(
                   icon: Icon(
                     landingPageController.showConNewPass.value ? Icons.visibility_off : Icons.visibility,
