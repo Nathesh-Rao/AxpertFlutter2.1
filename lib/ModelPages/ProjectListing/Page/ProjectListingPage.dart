@@ -49,7 +49,6 @@ class _ProjectListingPageState extends State<ProjectListingPage> {
   }
 
   buildContentBody() {
-    LoadingScreen.show();
     return Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: MyColors.white1,
