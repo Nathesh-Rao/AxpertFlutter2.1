@@ -107,21 +107,23 @@ class MenuHomePageController extends GetxController {
 
       actionData.clear();
       for (var items in setOfDatasource) {
-        dataSourceBody["datasource"] = items;
-        // setOfDatasource.remove(items);
-        var dsResp = await serverConnections.postToServer(url: dataSourceUrl, isBearer: true, body: jsonEncode(dataSourceBody));
-        if (dsResp != "") {
-          var jsonDSResp = jsonDecode(dsResp);
-          // print(jsonDSResp);
-          if (jsonDSResp['result']['success'].toString() == "true") {
-            var dsDataList = jsonDSResp['result']['data'];
-            for (var item in dsDataList) {
-              var list = [];
-              list = actionData[item['cardname']] != null ? actionData[item['cardname']] : [];
-              CardOptionModel cardOptionModel = CardOptionModel.fromJson(item);
+        if (items.toString() != "") {
+          dataSourceBody["datasource"] = items;
+          // setOfDatasource.remove(items);
+          var dsResp = await serverConnections.postToServer(url: dataSourceUrl, isBearer: true, body: jsonEncode(dataSourceBody));
+          if (dsResp != "") {
+            var jsonDSResp = jsonDecode(dsResp);
+            // print(jsonDSResp);
+            if (jsonDSResp['result']['success'].toString() == "true") {
+              var dsDataList = jsonDSResp['result']['data'];
+              for (var item in dsDataList) {
+                var list = [];
+                list = actionData[item['cardname']] != null ? actionData[item['cardname']] : [];
+                CardOptionModel cardOptionModel = CardOptionModel.fromJson(item);
 
-              if (list.indexOf(cardOptionModel) < 0) list.add(cardOptionModel);
-              actionData[item['cardname']] = list;
+                if (list.indexOf(cardOptionModel) < 0) list.add(cardOptionModel);
+                actionData[item['cardname']] = list;
+              }
             }
           }
         }
