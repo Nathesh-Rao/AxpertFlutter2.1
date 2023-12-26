@@ -12,6 +12,7 @@ class PendingListController extends GetxController {
   var subPage = true.obs;
   var needRefresh = true.obs;
   var pending_activeList = [].obs;
+  var selectedIconNumber = 1.obs;
   List<ActiveListModel> activeList_Main = [];
   List<StatusModel> StatusList = [
     StatusModel("1", "Ticket Initiation"),

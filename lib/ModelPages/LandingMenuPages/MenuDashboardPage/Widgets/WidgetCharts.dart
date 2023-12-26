@@ -10,7 +10,7 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 
 class WidgetCharts extends StatelessWidget {
   WidgetCharts(this.cardModel, {super.key});
-  ChartCardModel cardModel;
+  final ChartCardModel cardModel;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -106,7 +106,8 @@ Widget getKpi(ChartCardModel cardModel) {
 
 Widget getColumnChart(ChartCardModel cardModel) {
   return SfCartesianChart(
-    primaryXAxis: CategoryAxis(labelIntersectAction: AxisLabelIntersectAction.rotate45),
+    enableAxisAnimation: true,
+    primaryXAxis: CategoryAxis(labelIntersectAction: AxisLabelIntersectAction.rotate45, interval: 1),
 
     // primaryYAxis: NumericAxis(minimum: 0, maximum: 40, interval: 10),
     legend: Legend(isVisible: true, isResponsive: true, toggleSeriesVisibility: true, position: LegendPosition.top),
@@ -126,7 +127,7 @@ Widget getColumnChart(ChartCardModel cardModel) {
 Widget getStackedColumnChart(ChartCardModel cardModel) {
   List<List<ChartData>> newList = getExtractedData(cardModel.dataList);
   return SfCartesianChart(
-    primaryXAxis: CategoryAxis(labelIntersectAction: AxisLabelIntersectAction.rotate45),
+    primaryXAxis: CategoryAxis(labelIntersectAction: AxisLabelIntersectAction.rotate45, interval: 1),
 
     // primaryYAxis: NumericAxis(minimum: 0, maximum: 40, interval: 10),
     legend: Legend(isVisible: true, isResponsive: true, toggleSeriesVisibility: true, position: LegendPosition.top),
@@ -146,7 +147,7 @@ Widget getStackedColumnChart(ChartCardModel cardModel) {
 
 Widget getPercentageColumnChart(ChartCardModel cardModel) {
   return SfCartesianChart(
-    primaryXAxis: CategoryAxis(labelIntersectAction: AxisLabelIntersectAction.rotate45),
+    primaryXAxis: CategoryAxis(labelIntersectAction: AxisLabelIntersectAction.rotate45, interval: 1),
     primaryYAxis: CategoryAxis(
       maximum: 100,
       minimum: 0,
@@ -174,7 +175,7 @@ Widget getPercentageColumnChart(ChartCardModel cardModel) {
 Widget getLineChart(ChartCardModel cardModel) {
   return SfCartesianChart(
     enableAxisAnimation: true,
-    primaryXAxis: CategoryAxis(labelIntersectAction: AxisLabelIntersectAction.rotate45),
+    primaryXAxis: CategoryAxis(labelIntersectAction: AxisLabelIntersectAction.rotate45, interval: 1),
     tooltipBehavior: TooltipBehavior(enable: true),
     // primaryYAxis: NumericAxis(minimum: 0, maximum: 40, interval: 10),
     legend: Legend(isVisible: true, isResponsive: true, toggleSeriesVisibility: true, position: LegendPosition.top),
@@ -222,7 +223,8 @@ Widget getPieChart(ChartCardModel cardModel) {
 
 Widget getBarChart(ChartCardModel cardModel) {
   return SfCartesianChart(
-    primaryXAxis: CategoryAxis(labelIntersectAction: AxisLabelIntersectAction.rotate45),
+    enableAxisAnimation: true,
+    primaryXAxis: CategoryAxis(labelIntersectAction: AxisLabelIntersectAction.rotate45, interval: 1),
 
     // primaryYAxis: NumericAxis(minimum: 0, maximum: 40, interval: 10),
     legend: Legend(isVisible: true, isResponsive: true, toggleSeriesVisibility: true, position: LegendPosition.top),
@@ -244,7 +246,7 @@ Widget getBarChart(ChartCardModel cardModel) {
 Widget getStackedBarChart(ChartCardModel cardModel) {
   List<List<ChartData>> newList = getExtractedData(cardModel.dataList);
   return SfCartesianChart(
-    primaryXAxis: CategoryAxis(labelIntersectAction: AxisLabelIntersectAction.rotate45),
+    primaryXAxis: CategoryAxis(labelIntersectAction: AxisLabelIntersectAction.rotate45, interval: 1),
 
     // primaryYAxis: NumericAxis(minimum: 0, maximum: 40, interval: 10),
     legend: Legend(isVisible: true, isResponsive: true, toggleSeriesVisibility: true, position: LegendPosition.top),

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-class ServerConnections {
+class ServerConnections extends GetConnect {
   static var client = http.Client();
   InternetConnectivity internetConnectivity = Get.find();
   static const String API_GET_USERGROUPS = "api/v1/ARMUserGroups";

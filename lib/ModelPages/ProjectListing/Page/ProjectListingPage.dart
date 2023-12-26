@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:animated_icon/animated_icon.dart';
-import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/ModelPages/AddConnection/Controllers/AddConnectionController.dart';
@@ -103,14 +102,17 @@ class _ProjectListingPageState extends State<ProjectListingPage> {
                                 children: <Widget>[
                                   Row(
                                     children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 10.0, left: 10),
-                                        child: Image.asset(
-                                          // 'assets/images/buzzily-logo.png',
-                                          'assets/images/axpert_name.png',
-                                          height: 30,
-                                          width: 120,
-                                          fit: BoxFit.cover,
+                                      Hero(
+                                        tag: 'axpertImage',
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(top: 10.0, left: 10),
+                                          child: Image.asset(
+                                            // 'assets/images/buzzily-logo.png',
+                                            'assets/images/axpert_name.png',
+                                            height: 30,
+                                            width: 120,
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
                                       ),
                                     ],

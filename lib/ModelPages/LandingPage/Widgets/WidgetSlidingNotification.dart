@@ -24,7 +24,7 @@ class WidgetSlidingNotificationPanel extends StatelessWidget {
   reBuild(context) => Visibility(
         visible: landingPageController.getNotificationList(),
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.only(left: 8, top: 8, right: 8),
           child: Card(
             elevation: 5,
             shadowColor: MyColors.buzzilygrey,

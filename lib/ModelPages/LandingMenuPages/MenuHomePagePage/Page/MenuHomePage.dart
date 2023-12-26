@@ -1,3 +1,4 @@
+import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Widgets/WidgetCard.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetSlidingNotification.dart';
@@ -21,9 +22,7 @@ class MenuHomePage extends StatelessWidget {
                     : GridView.builder(
                         padding: EdgeInsets.only(left: 10),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            childAspectRatio:
-                                MediaQueryData.fromView(WidgetsBinding.instance.window).size.shortestSide < 600 ? 1.5 : 2.8),
+                            crossAxisCount: 2, childAspectRatio: isTablet() ? 1.5 : 2.8),
                         itemCount: menuHomePageController.listOfCards.length,
                         itemBuilder: (context, index) {
                           return Container(

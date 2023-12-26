@@ -18,6 +18,7 @@ class MenuMorePageController extends GetxController {
   ServerConnections serverConnections = ServerConnections();
   List<MenuItemModel> menuListMain = [];
   Set menuHeadersMain = {}; //master
+  var finalMenuHeader; //master
   var headingWiseData = {}; //map  //Master
 
   var fetchData = {}.obs;
@@ -61,10 +62,10 @@ class MenuMorePageController extends GetxController {
         }
       }
     }
-    reOrganise(menuListMain);
+    reOrganise(menuListMain, firstCall: true);
   }
 
-  reOrganise(menuList) {
+  reOrganise(menuList, {firstCall = false}) {
     menuHeadersMain.clear();
     headingWiseData.clear();
     for (var item in menuList) {
@@ -78,6 +79,9 @@ class MenuMorePageController extends GetxController {
     //create for display
     fetchList.value = menuHeadersMain.toList();
     fetchData.value = headingWiseData;
+    if (firstCall) {
+      finalMenuHeader = menuHeadersMain.toList();
+    }
   }
 
   getSubmenuItemList(int mainIndex) {

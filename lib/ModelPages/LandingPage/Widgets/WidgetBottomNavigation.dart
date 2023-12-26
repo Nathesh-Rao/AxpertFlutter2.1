@@ -9,7 +9,19 @@ class AppBottomNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => BottomNavigationBar(
+    return Obx(
+      () => Container(
+        decoration: BoxDecoration(
+          // border: Border.all(width: 1),
+
+          borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+          boxShadow: [
+            BoxShadow(color: Colors.black38, spreadRadius: 0, blurRadius: 1),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+          child: BottomNavigationBar(
             currentIndex: landingPageController.bottomIndex.value,
             fixedColor: MyColors.blue2,
             unselectedItemColor: MyColors.grey,
@@ -18,7 +30,7 @@ class AppBottomNavigation extends StatelessWidget {
             type: BottomNavigationBarType.fixed,
             selectedFontSize: 8,
             unselectedFontSize: 8,
-            backgroundColor: MyColors.white1,
+            backgroundColor: Colors.white,
             elevation: 10,
             onTap: (value) => landingPageController.indexChange(value),
             items: [
@@ -27,6 +39,10 @@ class AppBottomNavigation extends StatelessWidget {
               BottomNavigationBarItem(icon: Icon(Icons.speed_outlined), label: "Dashboard"),
               BottomNavigationBarItem(icon: Icon(Icons.calendar_month_outlined), label: "Calendar"),
               BottomNavigationBarItem(icon: Icon(Icons.dashboard_customize_outlined), label: "More"),
-            ]));
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

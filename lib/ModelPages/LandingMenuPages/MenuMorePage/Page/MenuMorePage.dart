@@ -1,3 +1,4 @@
+import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Controllers/MenuMorePageController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Models/MenuItemModel.dart';
@@ -155,18 +156,14 @@ reBuild_old(MenuMorePageController menuMorePageController) {
 
 reBuild(MenuMorePageController menuMorePageController) {
   return Padding(
-    padding: EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 0),
+    padding: EdgeInsets.only(top: 0, left: 20, right: 20, bottom: 0),
     child: NestedScrollView(
       floatHeaderSlivers: true,
       headerSliverBuilder: (context, innerBoxIsScrolled) => [
-        SliverAppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          floating: true,
-          snap: true,
-          forceElevated: innerBoxIsScrolled,
-          flexibleSpace: FlexibleSpaceBar(
-            background: TextField(
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 10.0),
+            child: TextField(
               controller: menuMorePageController.searchController,
               onChanged: menuMorePageController.filterList,
               enabled: true,
@@ -212,78 +209,56 @@ reBuild(MenuMorePageController menuMorePageController) {
               ),
             ),
           ),
-        )
+        ),
       ],
-      body: FutureBuilder(
-        future: menuMorePageController.futureBuilder(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            if (menuMorePageController.fetchList.length == 0)
-              return Text("Menu is not Initialized");
-            else
-              return ListView.builder(
-                shrinkWrap: true,
-                physics: ClampingScrollPhysics(),
-                controller: ScrollController(),
-                itemCount: menuMorePageController.fetchList.length,
-                // itemCount: 1,
-                itemBuilder: (context, mainIndex) {
-                  //print("valuen: $mainIndex");
-                  return Container(
-                    margin: EdgeInsets.only(bottom: 15),
-                    decoration: BoxDecoration(
-                        border: Border.all(width: 1, color: HexColor('EDF0F8')), borderRadius: BorderRadius.circular(10)),
-                    child: Theme(
-                      data: ThemeData().copyWith(dividerColor: Colors.transparent),
-                      child: ExpansionTile(
-                        initiallyExpanded: true,
-                        title: Text(
-                          menuMorePageController.fetchList[mainIndex].toString(),
-                          textAlign: TextAlign.left,
-                          overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.poppins(
-                              textStyle: TextStyle(color: HexColor("#3E4153"), fontSize: 14, fontWeight: FontWeight.w900)),
-                        ),
-                        children: [
-                          SizedBox(height: 3),
-                          Container(
-                            height: 1,
-                            color: Colors.grey.withOpacity(0.4),
-                          ),
-                          GridView.builder(
-                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                childAspectRatio: 1,
-                                crossAxisCount: 3, // HERE YOU CAN ADD THE NO OF ITEMS PER LINE
-                                mainAxisSpacing: 10,
-                                crossAxisSpacing: 10),
-                            // childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height / 5),
-                            shrinkWrap: true,
-                            controller: ScrollController(),
-                            physics: ClampingScrollPhysics(),
-                            itemCount: menuMorePageController.getSubmenuItemList(mainIndex).length,
-                            // itemCount: 200,
-                            itemBuilder: (context, index) {
-                              print("value mainIndex, subIndex: $mainIndex $index");
-                              return getGridItem(
-                                  menuMorePageController, menuMorePageController.getSubmenuItemList(mainIndex)[index], index);
-                            },
-                          )
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              );
-          } else {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                  child: Text(
-                "Loading Please Wait...",
-                style: TextStyle(color: MyColors.blue2, fontWeight: FontWeight.bold),
-              )); //Center(child: CircularProgressIndicator());
-            }
-          }
-          return Text("Menu not Initialized");
+      body: ListView.builder(
+        shrinkWrap: true,
+        itemCount: menuMorePageController.fetchList.length,
+        itemBuilder: (context, mainIndex) {
+          //print("valuen: $mainIndex");
+          return Container(
+            margin: EdgeInsets.only(bottom: 10, top: 10),
+            decoration:
+                BoxDecoration(border: Border.all(width: 1, color: HexColor('EDF0F8')), borderRadius: BorderRadius.circular(10)),
+            child: Theme(
+              data: ThemeData().copyWith(dividerColor: Colors.transparent),
+              child: ExpansionTile(
+                initiallyExpanded: true,
+                title: Text(
+                  menuMorePageController.fetchList[mainIndex].toString(),
+                  textAlign: TextAlign.left,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.poppins(
+                      textStyle: TextStyle(color: HexColor("#3E4153"), fontSize: 14, fontWeight: FontWeight.w900)),
+                ),
+                children: [
+                  SizedBox(height: 3),
+                  Container(
+                    height: 1,
+                    color: Colors.grey.withOpacity(0.4),
+                  ),
+                  GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        childAspectRatio: 1,
+                        crossAxisCount: isTablet() ? 3 : 5, // HERE YOU CAN ADD THE NO OF ITEMS PER LINE
+                        mainAxisSpacing: 10,
+                        crossAxisSpacing: 10),
+                    // childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height / 5),
+                    shrinkWrap: true,
+                    controller: ScrollController(),
+                    physics: ClampingScrollPhysics(),
+                    itemCount: menuMorePageController.getSubmenuItemList(mainIndex).length,
+                    // itemCount: 200,
+                    itemBuilder: (context, index) {
+                      print("value mainIndex, subIndex: $mainIndex $index");
+                      return getGridItem(
+                          menuMorePageController, menuMorePageController.getSubmenuItemList(mainIndex)[index], index);
+                    },
+                  )
+                ],
+              ),
+            ),
+          );
         },
       ),
     ),

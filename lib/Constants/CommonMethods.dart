@@ -1,7 +1,12 @@
 import 'dart:async';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+
+isTablet() {
+  return MediaQueryData.fromView(WidgetsBinding.instance.window).size.shortestSide < 600 ? true : false;
+}
 
 class CommonMethods {
   static String capitalize(String value) {

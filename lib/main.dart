@@ -103,6 +103,7 @@ handleNotification() async {
   var fcmID = await messaging.getToken();
   print("FCMID: $fcmID");
   await FirebaseMessaging.onMessage.listen(onMessageListener);
+  FirebaseMessaging.onBackgroundMessage(onBackgroundMessageListener);
   await FirebaseMessaging.onMessageOpenedApp.listen(onMessageOpenAppListener);
 }
 
@@ -150,6 +151,12 @@ void onDidReceiveNotificationResponse(NotificationResponse notificationResponse)
   try {
     Get.toNamed(Routes.NotificationPage);
   } catch (e) {}
+}
+
+@pragma('vm:entry-point')
+Future<void> onBackgroundMessageListener(RemoteMessage message) async {
+  // await Firebase.initializeApp();
+  // onMessageListener(message);
 }
 
 onDidReceiveLocalNotification(id, title, body, payload) {}

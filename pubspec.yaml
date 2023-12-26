@@ -3,7 +3,8 @@ description: A new Flutter project.
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 2.1.0+2100
+version: 2.1.1+2101
+
 
 environment:
   sdk: ">=2.18.6 <3.0.0"
@@ -14,6 +15,7 @@ dependencies:
   animated_splash_screen: ^1.3.0
   animated_icon: ^0.0.5
   back_button_interceptor: ^7.0.0
+  build_runner: ^2.4.6
   cached_network_image: ^3.2.3
   carousel_slider: ^4.2.1
   connectivity_plus: ^5.0.1
@@ -26,26 +28,26 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   flutter_local_notifications: ^16.1.0
   flutter_spinkit: ^5.2.0
+  flutter_staggered_animations: ^1.1.1
   font_awesome_flutter: ^10.5.0
   get: ^4.6.6
   get_storage: ^2.1.1
   google_fonts: ^6.1.0
   google_sign_in: ^6.1.5
+  json_serializable: ^6.7.1
   hexcolor: ^3.0.1
   http: ^1.1.0
   image_picker: ^1.0.4
   loading_overlay: ^0.3.0
   otp_text_field: ^1.1.3
+  package_info_plus: ^4.2.0
   permission_handler: ^11.0.1
   platform_device_id: ^1.0.1
   qr_code_scanner: ^1.0.1
   scan: ^1.6.0
   syncfusion_flutter_calendar: ^23.1.41
   syncfusion_flutter_charts: ^23.1.41
-  build_runner: ^2.4.6
-  json_serializable: ^6.7.1
   text_scroll: ^0.2.0
-  package_info_plus: ^4.2.0
 
 
   # The following adds the Cupertino Icons font to your application.

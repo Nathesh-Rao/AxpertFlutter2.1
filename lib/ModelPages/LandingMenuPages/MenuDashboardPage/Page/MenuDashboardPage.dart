@@ -17,7 +17,7 @@ class MenuDashboardPage extends StatelessWidget {
         SizedBox(height: 5),
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.only(left: 10, right: 10),
             child: ListView.separated(
               itemCount: menuDashboardController.chartList.length,
               shrinkWrap: true,

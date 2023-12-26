@@ -1,15 +1,16 @@
 import 'dart:convert';
 
 import 'package:axpertflutter/Constants/AppStorage.dart';
+import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/const.dart';
-import 'package:axpertflutter/ModelPages/InApplicationWebView/page/WebViewActiveList.dart';
-import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Page/MenuActiveListPage.dart';
-import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuCalendarPage/Page/MenuCalendarPage.dart';
 import 'package:axpertflutter/ModelPages/InApplicationWebView/page/WebViewCalendar.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Page/MenuActiveListPage.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuDashboardPage/Page/MenuDashboardPage.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Page/MenuHomePage.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Controllers/MenuMorePageController.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Models/MenuItemModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Page/MenuMorePage.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Models/FirebaseMessageModel.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetNotification.dart';
@@ -18,8 +19,8 @@ import 'package:carousel_slider/carousel_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:text_scroll/text_scroll.dart';
 
 class LandingPageController extends GetxController {
   TextEditingController userCtrl = TextEditingController();
@@ -48,8 +49,8 @@ class LandingPageController extends GetxController {
   AppStorage appStorage = AppStorage();
   var pageList = [
     MenuHomePage(),
-    WebViewActiveList(),
-    // MenuActiveListPage(),
+    // WebViewActiveList(),
+    MenuActiveListPage(),
     MenuDashboardPage(),
     // MenuCalendarPage(),
     WebViewCalendar(),
@@ -376,5 +377,90 @@ class LandingPageController extends GetxController {
       return false;
     }
     return true;
+  }
+
+  getDrawerTileList() {
+    MenuMorePageController menuMorePageController = Get.find();
+
+    List<Widget> menuList = [];
+    menuList.add(
+      Container(
+        height: 70,
+        decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: Colors.black.withOpacity(0.7)))),
+        child: Row(
+          children: [
+            SizedBox(width: 30),
+            Image.asset(
+              'assets/images/axpert.png',
+              width: 40,
+            ),
+            SizedBox(width: 25),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Welcome",
+                  style: TextStyle(fontSize: 18),
+                ),
+                SizedBox(height: 5),
+                TextScroll(
+                  CommonMethods.capitalize(userName.value),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                )
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+    var index;
+    var masterIndex = 0;
+    for (var item in menuMorePageController.finalMenuHeader) {
+      index = 0;
+      // var wid = ListTile(leading: Icon(Icons.access_alarm), title: Text(item.caption.toString()));
+      // menuList.add(wid);
+      var wid2 = ExpansionTile(
+        leading: Icon(menuMorePageController.IconList[masterIndex++ % 8]),
+        title: Text(item.toString()),
+        children: getDrawerInnerListTile(menuMorePageController, item, index).toList(),
+      );
+      menuList.add(wid2);
+    }
+    menuList.add(Container(
+      height: 100,
+      child: Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 20, left: 10),
+            child: Text(
+              'App Version: 2.1.1\n © agile-labs.com 2023',
+              textAlign: TextAlign.center,
+            ),
+          )),
+    ));
+    return menuList;
+  }
+
+  getDrawerInnerListTile(MenuMorePageController menuMorePageController, item, index) {
+    List<Widget> innerTile = [];
+    innerTile.add(Container(
+      height: 1,
+      color: Colors.grey.withOpacity(0.1),
+    ));
+    for (MenuItemModel subMenu in menuMorePageController.headingWiseData[item])
+      innerTile.add(InkWell(
+        onTap: () {
+          menuMorePageController.openItemClick(subMenu);
+          Get.back();
+        },
+        child: Padding(
+          padding: EdgeInsets.only(left: 20),
+          child: ListTile(leading: Icon(menuMorePageController.IconList[index++ % 8]), title: Text(subMenu.caption.toString())),
+        ),
+      ));
+
+    return ListTile.divideTiles(context: Get.context, tiles: innerTile);
+    // return innerTile;
   }
 }

@@ -60,13 +60,16 @@ class _LoginPageState extends State<LoginPage> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 SizedBox(height: 10),
-                                Center(
-                                  child: Image.asset(
-                                    'assets/images/axpert_name.png',
-                                    // 'assets/images/buzzily-logo.png',
-                                    height: MediaQuery.of(context).size.height * 0.048,
-                                    width: MediaQuery.of(context).size.width * 0.38,
-                                    fit: BoxFit.fill,
+                                Hero(
+                                  tag: 'axpertImage',
+                                  child: Center(
+                                    child: Image.asset(
+                                      'assets/images/axpert_name.png',
+                                      // 'assets/images/buzzily-logo.png',
+                                      height: MediaQuery.of(context).size.height * 0.048,
+                                      width: MediaQuery.of(context).size.width * 0.38,
+                                      fit: BoxFit.fill,
+                                    ),
                                   ),
                                 ),
                                 SizedBox(height: 25),

@@ -7,7 +7,7 @@ import 'package:hexcolor/hexcolor.dart';
 
 class PendingListPage extends StatelessWidget {
   PendingListPage({super.key});
-  PendingListController pendingListController = Get.put(PendingListController());
+  final PendingListController pendingListController = Get.put(PendingListController());
 
   @override
   Widget build(BuildContext context) {
@@ -37,20 +37,12 @@ reBuild(PendingListController pendingListController) {
                 onChanged: pendingListController.filterList,
                 decoration: InputDecoration(
                     prefixIcon: pendingListController.searchController.text.toString() == ""
-                        ? GestureDetector(
-                            child: Icon(
-                              Icons.search,
-                              // color: HexColor("#8E8E8EA3"),
-                            ),
-                          )
+                        ? GestureDetector(child: Icon(Icons.search))
                         : GestureDetector(
                             onTap: () {
                               pendingListController.clearCalled();
                             },
-                            child: Icon(
-                              Icons.clear,
-                              color: HexColor("#8E8E8EA3"),
-                            ),
+                            child: Icon(Icons.clear, color: HexColor("#8E8E8EA3")),
                           ),
                     isDense: true,
                     contentPadding: EdgeInsets.zero,
@@ -62,15 +54,24 @@ reBuild(PendingListController pendingListController) {
             Material(
               elevation: 2,
               borderRadius: BorderRadius.circular(10),
-              child: Container(
-                height: 35,
-                width: 30,
-                decoration: BoxDecoration(color: HexColor('0E72FD'), borderRadius: BorderRadius.circular(10)),
-                child: Center(
-                  child: ImageIcon(
-                    AssetImage("assets/images/add_circle.png"),
-                    color: Colors.white,
-                    size: 28,
+              child: GestureDetector(
+                onTap: () {
+                  pendingListController.selectedIconNumber.value = 1;
+                },
+                child: Container(
+                  height: 35,
+                  width: 30,
+                  decoration: BoxDecoration(
+                      color: pendingListController.selectedIconNumber.value == 1 ? HexColor('0E72FD') : Colors.white,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Center(
+                    child: ImageIcon(
+                      AssetImage("assets/images/add_circle.png"),
+                      color: pendingListController.selectedIconNumber.value == 1
+                          ? Colors.white
+                          : HexColor('848D9C').withOpacity(0.7),
+                      size: 28,
+                    ),
                   ),
                 ),
               ),
@@ -79,15 +80,24 @@ reBuild(PendingListController pendingListController) {
             Material(
               elevation: 2,
               borderRadius: BorderRadius.circular(10),
-              child: Container(
-                height: 35,
-                width: 30,
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
-                child: Center(
-                  child: Icon(
-                    Icons.refresh,
-                    color: HexColor('848D9C').withOpacity(0.7),
-                    size: 28,
+              child: GestureDetector(
+                onTap: () {
+                  pendingListController.selectedIconNumber.value = 2;
+                },
+                child: Container(
+                  height: 35,
+                  width: 30,
+                  decoration: BoxDecoration(
+                      color: pendingListController.selectedIconNumber.value == 2 ? HexColor('0E72FD') : Colors.white,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Center(
+                    child: Icon(
+                      Icons.refresh,
+                      color: pendingListController.selectedIconNumber.value == 2
+                          ? Colors.white
+                          : HexColor('848D9C').withOpacity(0.7),
+                      size: 28,
+                    ),
                   ),
                 ),
               ),
