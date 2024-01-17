@@ -220,6 +220,7 @@ class LandingPageController extends GetxController {
         middleText: "Are you sure you want to log out?",
         confirm: ElevatedButton(
             onPressed: () async {
+              Get.back();
               try {
                 await FirebaseAuth.instance.signOut();
                 await GoogleSignIn().signOut();

@@ -1,52 +1,88 @@
 import 'dart:convert';
 
 import 'package:axpertflutter/Constants/AppStorage.dart';
+import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Models/ActiveListModel.dart';
-import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Models/StatusModel.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Models/PendingProcessFlowModel.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Models/PendingTaskModel.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class PendingListController extends GetxController {
   var subPage = true.obs;
   var needRefresh = true.obs;
   var pending_activeList = [].obs;
-  var selectedIconNumber = 1.obs;
-  List<ActiveListModel> activeList_Main = [];
-  List<StatusModel> StatusList = [
-    StatusModel("1", "Ticket Initiation"),
-    StatusModel("2", "Support Check"),
-    StatusModel("3", "RM Approval"),
-    StatusModel("4", "Approval By Developer"),
-  ];
-  TextEditingController searchController = TextEditingController();
-  var statusListActiveIndex = 3;
+  var pendingCount = "0";
 
+  var selectedIconNumber = 1.obs; //1->default, 2-> reload, 3->accesstime, 4-> filter, 5=> checklist
+  PendingTaskModel? pendingTaskModel;
+  List<ActiveListModel> activeList_Main = [];
+  ActiveListModel? openModel;
+  String selectedTaskID = "";
+  var processFlowList = [].obs;
+  TextEditingController searchController = TextEditingController();
+  var statusListActiveIndex = 2;
   ScrollController scrollController = ScrollController(initialScrollOffset: 100 * 3.0);
   ServerConnections serverConnections = ServerConnections();
   AppStorage appStorage = AppStorage();
+  var widgetProcessFlowNeedRefresh = true.obs;
+
+  TextEditingController dateFromController = TextEditingController();
+  TextEditingController dateToController = TextEditingController();
+  TextEditingController searchTextController = TextEditingController();
+  TextEditingController processNameController = TextEditingController();
+  TextEditingController fromUserController = TextEditingController();
+  var errDateFrom = "".obs;
+  var errDateTo = "".obs;
 
   PendingListController() {
-    print("-----------PendingListController Called-------------");
-    getPendingActiveList();
+    // print("-----------PendingListController Called-------------");
+    getNoOfPendingActiveTasks();
+    // getPendingActiveList();
   }
-
-  Future<void> getPendingActiveList() async {
-    var url = Const.getFullARMUrl(ServerConnections.API_GET_PENDING_ACTIVELIST);
+  Future<void> getNoOfPendingActiveTasks() async {
+    LoadingScreen.show();
+    var url = Const.getFullARMUrl_SecondServer(ServerConnections.API_GET_PENDING_ACTIVETASK_COUNT);
     var body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
     var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
     if (resp != "" && !resp.toString().contains("error")) {
       var jsonResp = jsonDecode(resp);
       if (jsonResp['result']['message'].toString() == "success") {
+        pendingCount = jsonResp['result']['data'].toString();
+      }
+    }
+    await getPendingActiveList();
+    LoadingScreen.dismiss();
+  }
+
+  Future<void> getPendingActiveList() async {
+    var url = Const.getFullARMUrl_SecondServer(ServerConnections.API_GET_PENDING_ACTIVETASK);
+    var body = {
+      'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID),
+      "Trace": "false",
+      "AppName": Const.PROJECT_NAME.toString(),
+      "pagesize": int.parse(pendingCount),
+      "pageno": 1,
+    };
+
+    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
+    if (resp != "" && !resp.toString().contains("error")) {
+      var jsonResp = jsonDecode(resp);
+      if (jsonResp['result']['message'].toString() == "success") {
         activeList_Main.clear();
-        var dataList = jsonDecode(jsonResp['result']['data']);
+        var dataList = jsonResp['result']['pendingtasks'];
+
         for (var item in dataList) {
           ActiveListModel activeListModel = ActiveListModel.fromJson(item);
           activeList_Main.add(activeListModel);
         }
       }
       pending_activeList.value = activeList_Main;
+      needRefresh.value = true;
     }
   }
 
@@ -69,7 +105,8 @@ class PendingListController extends GetxController {
     } else {
       needRefresh.value = true;
       var newList = activeList_Main.where((oldValue) {
-        return oldValue.displaytitle.toString().toLowerCase().contains(value.toString().toLowerCase());
+        return oldValue.displaytitle.toString().toLowerCase().contains(value.toString().toLowerCase()) ||
+            oldValue.eventdatetime.toString().toLowerCase().contains(value.toString().toLowerCase());
       });
       // print("new list: " + newList.length.toString());
       pending_activeList.value = newList.toList();

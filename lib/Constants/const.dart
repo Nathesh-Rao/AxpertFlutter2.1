@@ -17,8 +17,7 @@ class Const {
   static final String SET_HYBRID_INFO = "/Webservice.asmx/SetHybridInfo";
   static final String SET_HYBRID_NOTIFICATION_INFO = "/Webservice.asmx/SetHybridNotifiInfo";
   static final String LOGOUT_LINK = "webservice.asmx/SignOut";
-  static String getSQLforClientID(String clientID) =>
-      "select * from tblclientMST where " + "clientid = '" + clientID + "'";
+  static String getSQLforClientID(String clientID) => "select * from tblclientMST where " + "clientid = '" + clientID + "'";
   static String getFullARMUrl(String Entrypoint) {
     if (ARM_URL == "") {
       var data = AppStorage().retrieveValue(AppStorage.ARM_URL) ?? "";
@@ -26,6 +25,16 @@ class Const {
     } else
       return ARM_URL.endsWith("/") ? ARM_URL + Entrypoint : ARM_URL + "/" + Entrypoint;
   }
+
+  //accessing from second server ************************************////////////////////
+  static String getFullARMUrl_SecondServer(String Entrypoint) {
+    if (ARM_URL == "") {
+      String data = AppStorage().retrieveValue(AppStorage.ARM_URL) ?? "";
+      return data.endsWith("/") ? data.substring(0, data.length - 1) + "2/" + Entrypoint : data + "/" + Entrypoint;
+    } else
+      return ARM_URL.endsWith("/") ? ARM_URL.substring(0, ARM_URL.length - 1) + "2/" + Entrypoint : ARM_URL + "2/" + Entrypoint;
+  }
+  //end ************************************////////////////////
 
   static String getFullProjectUrl(String Entrypoint) {
     if (PROJECT_URL == "") {

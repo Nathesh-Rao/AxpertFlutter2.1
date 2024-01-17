@@ -21,13 +21,22 @@ class ServerConnections extends GetConnect {
   static const String API_CONNECTTOAXPERT = "api/v1/ARMConnectToAxpert";
   static const String API_GET_HOMEPAGE_CARDS = "api/v1/ARMGetHomePageCards";
   static const String API_GET_HOMEPAGE_CARDSDATASOURCE = "api/v1/ARMGetDataResponse";
-  static const String API_GET_PENDING_ACTIVELIST = "api/v1/ARMGetActiveTasks";
+  // static const String API_GET_PENDING_ACTIVELIST = "api/v1/ARMGetActiveTasks";       //OLD
   static const String API_MOBILE_NOTIFICATION = "api/v1/ARMMobileNotification";
   static const String API_GET_DASHBOARD_DATA = "api/v1/ARMGetCardsData";
   static const String API_CHANGE_PASSWORD = "api/v1/ARMChangePassword";
 
   static const String API_GET_MENU = "api/v1/ARMGetMenu";
   static const String API_SIGNOUT = "api/v1/ARMSignOut";
+  //ARMTest2 SERVER2
+  static const String API_GET_PENDING_ACTIVETASK = "api/v1/ARMGetPendingActiveTasks";
+  static const String API_GET_PENDING_ACTIVETASK_COUNT = "api/v1/ARMGetPendingActiveTasksCount";
+  static const String API_GET_ACTIVETASK_DETAILS = "api/v1/ARMPEGGetTaskDetails";
+  static const String API_GET_FILTERED_PENDING_TASK = "api/v1/ARMGetFilteredActiveTasks";
+  static const String API_GET_COMPLETED_ACTIVETASK = "api/v1/ARMGetCompletedTasks";
+  static const String API_GET_COMPLETED_ACTIVETASK_COUNT = "api/v1/ARMGetCompletedTasksCount";
+  static const String API_GET_FILTERED_COMPLETED_TASK = "api/v1/ARMGetFilteredCompletedTasks";
+
   AppStorage appStorage = AppStorage();
 
   ServerConnections() {

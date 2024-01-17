@@ -6,8 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:text_scroll/text_scroll.dart';
 
-class WidgetListItem extends StatelessWidget {
-  WidgetListItem(this.pendingActiveListModel, {super.key});
+class WidgetPendingListItem extends StatelessWidget {
+  WidgetPendingListItem(this.pendingActiveListModel, {super.key});
 
   PendingListController pendingListController = Get.find();
 
@@ -53,7 +53,7 @@ class WidgetListItem extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(width: 30),
+          SizedBox(width: 20),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,7 +95,7 @@ class WidgetListItem extends StatelessWidget {
                     SizedBox(width: 10),
                   ],
                 ),
-                SizedBox(height: 10),
+                // SizedBox(height: 10),
                 Text(pendingActiveListModel.displaycontent.toString(),
                     maxLines: 1,
                     style: GoogleFonts.roboto(
@@ -104,10 +104,10 @@ class WidgetListItem extends StatelessWidget {
                         color: HexColor('#495057'),
                       ),
                     )),
-                SizedBox(height: 10),
+                SizedBox(height: 3),
                 Row(
                   children: [
-                    Icon(Icons.calendar_today_outlined, size: 20),
+                    Icon(Icons.calendar_today_outlined, size: 16),
                     SizedBox(width: 10),
                     Text(pendingListController.getDateValue(pendingActiveListModel.eventdatetime),
                         style: GoogleFonts.roboto(
@@ -118,7 +118,7 @@ class WidgetListItem extends StatelessWidget {
                           ),
                         )),
                     Expanded(child: Text("")),
-                    Icon(Icons.access_time, size: 20),
+                    Icon(Icons.access_time, size: 16),
                     SizedBox(width: 10),
                     Text(pendingListController.getTimeValue(pendingActiveListModel.eventdatetime),
                         style: GoogleFonts.roboto(
@@ -136,7 +136,7 @@ class WidgetListItem extends StatelessWidget {
           ),
           SizedBox(width: 5),
           Container(
-            height: 80,
+            height: 60,
             child: Center(
                 child: Icon(
               Icons.chevron_right,
