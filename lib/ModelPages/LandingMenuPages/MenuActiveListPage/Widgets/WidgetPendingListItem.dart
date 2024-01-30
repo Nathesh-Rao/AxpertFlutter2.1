@@ -1,5 +1,5 @@
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Controllers/PendingListController.dart';
-import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Models/ActiveListModel.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Models/PendingListModel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,7 +11,7 @@ class WidgetPendingListItem extends StatelessWidget {
 
   PendingListController pendingListController = Get.find();
 
-  ActiveListModel pendingActiveListModel;
+  PendingListModel pendingActiveListModel;
 
   @override
   Widget build(BuildContext context) {

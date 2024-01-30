@@ -1,3 +1,4 @@
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Controllers/ListItemDetailsController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Controllers/PendingListController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Models/PendingProcessFlowModel.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ class WidgetPendingStatusScrollBar extends StatelessWidget {
   WidgetPendingStatusScrollBar(this.status, {super.key});
   PendingProcessFlowModel status;
   PendingListController pendingListController = Get.find();
+  ListItemDetailsController listItemDetailsController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +22,15 @@ class WidgetPendingStatusScrollBar extends StatelessWidget {
             height: 20,
             width: 20,
             decoration: BoxDecoration(
-                color: (status.taskstatus.toLowerCase() == 'made' || status.taskstatus.toLowerCase() == 'approved')
+                color: (status.taskstatus.toLowerCase() == 'made' ||
+                        status.taskstatus.toLowerCase() == 'approved' ||
+                        status.taskstatus.toLowerCase() == 'approve')
                     ? HexColor("50CD89")
                     : status.taskstatus.toLowerCase() == 'active'
                         ? Colors.orange
-                        : HexColor("DAE3ED").withOpacity(0.4),
+                        : status.taskstatus.toLowerCase() == 'rejected'
+                            ? Colors.red
+                            : HexColor("DAE3ED").withOpacity(0.4),
                 borderRadius: BorderRadius.circular(50)),
             child: Center(
                 child: Text(
@@ -32,6 +38,7 @@ class WidgetPendingStatusScrollBar extends StatelessWidget {
               style: TextStyle(
                   color: (status.taskstatus.toLowerCase() == 'made' ||
                           status.taskstatus.toLowerCase() == 'approved' ||
+                          status.taskstatus.toLowerCase() == 'rejected' ||
                           status.taskstatus.toLowerCase() == 'active')
                       ? Colors.white
                       : Colors.black.withOpacity(0.2)),
@@ -42,7 +49,7 @@ class WidgetPendingStatusScrollBar extends StatelessWidget {
             status.taskname,
             style: GoogleFonts.roboto(
                 textStyle: TextStyle(
-                    color: (pendingListController.selectedTaskID == status.taskid)
+                    color: (listItemDetailsController.selectedTaskID == status.taskid)
                         ? HexColor("333333")
                         : HexColor("495057").withOpacity(0.6),
                     fontWeight: FontWeight.bold)),

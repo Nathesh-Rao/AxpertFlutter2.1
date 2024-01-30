@@ -1,4 +1,5 @@
 import 'package:axpertflutter/Constants/Routes.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Controllers/ListItemDetailsController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Controllers/PendingListController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Models/PendingProcessFlowModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Widgets/WidgetDottedSeparator.dart';
@@ -57,10 +58,7 @@ reBuild(PendingListController pendingListController, BuildContext context) {
               elevation: 2,
               borderRadius: BorderRadius.circular(10),
               child: GestureDetector(
-                onTap: () {
-                  if (pendingListController.selectedIconNumber.value != 1) pendingListController.getNoOfPendingActiveTasks();
-                  pendingListController.selectedIconNumber.value = 1;
-                },
+                onTap: () {},
                 child: Container(
                   height: 35,
                   width: 30,
@@ -134,10 +132,7 @@ reBuild(PendingListController pendingListController, BuildContext context) {
               elevation: 2,
               borderRadius: BorderRadius.circular(10),
               child: GestureDetector(
-                onTap: () {
-                  // selectDate(context);
-                  Get.dialog(showFilterDialog(context, pendingListController));
-                },
+                onTap: () {},
                 child: Container(
                   height: 35,
                   width: 30,
@@ -191,10 +186,11 @@ reBuild(PendingListController pendingListController, BuildContext context) {
               itemBuilder: (context, index) {
                 return ListTile(
                   onTap: () {
-                    print(pendingListController.pending_activeList[index].taskid);
-                    pendingListController.openModel = pendingListController.pending_activeList[index];
+                    // print(pendingListController.pending_activeList[index].taskid);
+                    ListItemDetailsController listItemDetailsController = Get.put(ListItemDetailsController());
+                    listItemDetailsController.openModel = pendingListController.pending_activeList[index];
 
-                    Get.toNamed(Routes.ProjectListingPageDetails);
+                    Get.toNamed(Routes.ProjectListingPageDetailsPending);
                   },
                   title: WidgetPendingListItem(pendingListController.pending_activeList[index]),
                 );
@@ -213,165 +209,4 @@ reBuild(PendingListController pendingListController, BuildContext context) {
               itemCount: pendingListController.pending_activeList.length))
     ],
   );
-}
-
-Widget showFilterDialog(BuildContext context, PendingListController pendingListController) {
-  pendingListController.errDateFrom.value = pendingListController.errDateTo.value = '';
-  return Obx(() => GestureDetector(
-        onTap: () {
-          FocusManager.instance.primaryFocus?.unfocus();
-        },
-        child: Dialog(
-          child: Padding(
-            padding: EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 20),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Center(
-                    child: Text(
-                      "Filter results",
-                      style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Container(margin: EdgeInsets.only(top: 10), height: 1, color: Colors.grey.withOpacity(0.6)),
-                  SizedBox(height: 20),
-                  TextField(
-                    controller: pendingListController.searchTextController,
-                    textInputAction: TextInputAction.next,
-                    decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.grey.withOpacity(0.05),
-                        suffix: GestureDetector(
-                            onTap: () {
-                              pendingListController.searchTextController.text = "";
-                              FocusManager.instance.primaryFocus?.unfocus();
-                            },
-                            child: Container(
-                              child: Text("X"),
-                            )),
-                        border: OutlineInputBorder(borderSide: BorderSide(width: 1), borderRadius: BorderRadius.circular(10)),
-                        hintText: "Search Text "),
-                  ),
-                  Center(
-                      child: Padding(
-                          padding: EdgeInsets.only(top: 10, bottom: 10),
-                          child: Text("OR", style: TextStyle(fontWeight: FontWeight.bold)))),
-                  TextField(
-                    controller: pendingListController.processNameController,
-                    textInputAction: TextInputAction.next,
-                    decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.grey.withOpacity(0.05),
-                        suffix: GestureDetector(
-                            onTap: () {
-                              pendingListController.processNameController.text = "";
-                              FocusManager.instance.primaryFocus?.unfocus();
-                            },
-                            child: Container(
-                              child: Text("X"),
-                            )),
-                        border: OutlineInputBorder(borderSide: BorderSide(width: 1), borderRadius: BorderRadius.circular(10)),
-                        hintText: "Process Name "),
-                  ),
-                  Center(
-                      child: Padding(
-                          padding: EdgeInsets.only(top: 10, bottom: 10),
-                          child: Text("OR", style: TextStyle(fontWeight: FontWeight.bold)))),
-                  TextField(
-                    controller: pendingListController.fromUserController,
-                    decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.grey.withOpacity(0.05),
-                        suffix: GestureDetector(
-                            onTap: () {
-                              pendingListController.fromUserController.text = "";
-                              FocusManager.instance.primaryFocus?.unfocus();
-                            },
-                            child: Container(
-                              child: Text("X"),
-                            )),
-                        border: OutlineInputBorder(borderSide: BorderSide(width: 1), borderRadius: BorderRadius.circular(10)),
-                        hintText: "From User "),
-                  ),
-                  Center(
-                      child: Padding(
-                          padding: EdgeInsets.only(top: 10, bottom: 10),
-                          child: Text("OR", style: TextStyle(fontWeight: FontWeight.bold)))),
-                  TextField(
-                    controller: pendingListController.dateFromController,
-                    textAlign: TextAlign.center,
-                    decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.grey.withOpacity(0.05),
-                        suffix: GestureDetector(
-                            onTap: () {
-                              pendingListController.dateFromController.text = "";
-                            },
-                            child: Container(
-                              child: Text("X"),
-                            )),
-                        border: OutlineInputBorder(borderSide: BorderSide(width: 1), borderRadius: BorderRadius.circular(10)),
-                        hintText: "From Date: DD-MMM-YYYY "),
-                    canRequestFocus: false,
-                    onTap: () {
-                      selectDate(context, pendingListController.dateFromController);
-                    },
-                    enableInteractiveSelection: false,
-                  ),
-                  SizedBox(height: 5),
-                  TextField(
-                    controller: pendingListController.dateToController,
-                    textAlign: TextAlign.center,
-                    decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.grey.withOpacity(0.05),
-                        suffix: GestureDetector(
-                            onTap: () {
-                              pendingListController.dateToController.text = "";
-                            },
-                            child: Container(
-                              child: Text("X"),
-                            )),
-                        border: OutlineInputBorder(borderSide: BorderSide(width: 1), borderRadius: BorderRadius.circular(10)),
-                        hintText: "To Date: DD-MMM-YYYY"),
-                    canRequestFocus: false,
-                    enableInteractiveSelection: false,
-                    onTap: () {
-                      selectDate(context, pendingListController.dateToController);
-                    },
-                  ),
-                  SizedBox(height: 20),
-                  Container(
-                    height: 1,
-                    color: Colors.grey.withOpacity(0.4),
-                  ),
-                  SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      TextButton(
-                          onPressed: () {
-                            Get.back();
-                          },
-                          child: Text("Remove all Filter")),
-                      ElevatedButton(onPressed: () {}, child: Text("Apply Filter"))
-                    ],
-                  )
-                ],
-              ),
-            ),
-          ),
-        ),
-      ));
-}
-
-void selectDate(BuildContext context, TextEditingController text) async {
-  FocusManager.instance.primaryFocus?.unfocus();
-  const months = <String>['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  final DateTime? picked =
-      await showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(1990), lastDate: DateTime.now());
-  if (picked != null)
-    text.text =
-        picked.day.toString().padLeft(2, '0') + "-" + months[picked.month - 1] + "-" + picked.year.toString().padLeft(2, '0');
 }

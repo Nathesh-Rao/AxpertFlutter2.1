@@ -10,24 +10,24 @@ import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class PendingListController extends GetxController {
+class CompletedListController extends GetxController {
   var subPage = true.obs;
   var needRefresh = true.obs;
   var pending_activeList = [].obs;
-  var pendingCount = "0";
+  var completedCount = "0";
 
   var selectedIconNumber = 1.obs; //1->default, 2-> reload, 3->accesstime, 4-> filter, 5=> checklist
-  // PendingTaskModel? pendingTaskModel;
+  PendingTaskModel? completedTaskModel;
   List<PendingListModel> activeList_Main = [];
-  // PendingListModel? openModel;
-  // String selectedTaskID = "";
-  // var processFlowList = [].obs;
+  PendingListModel? openModel;
+  String selectedTaskID = "";
+  var processFlowList = [].obs;
   TextEditingController searchController = TextEditingController();
   var statusListActiveIndex = 2;
-  // ScrollController scrollController = ScrollController(initialScrollOffset: 100 * 3.0);
+  ScrollController scrollController = ScrollController(initialScrollOffset: 100 * 3.0);
   ServerConnections serverConnections = ServerConnections();
   AppStorage appStorage = AppStorage();
-  // var widgetProcessFlowNeedRefresh = true.obs;
+  var widgetProcessFlowNeedRefresh = true.obs;
 
   TextEditingController dateFromController = TextEditingController();
   TextEditingController dateToController = TextEditingController();
@@ -37,20 +37,21 @@ class PendingListController extends GetxController {
   var errDateFrom = "".obs;
   var errDateTo = "".obs;
 
-  PendingListController() {
-    // print("-----------PendingListController Called-------------");
-    getNoOfPendingActiveTasks();
+  CompletedListController() {
+    // print("-----------CompletedListController Called-------------");
+    getNoOfCompletedActiveTasks();
     // getPendingActiveList();
   }
-  Future<void> getNoOfPendingActiveTasks() async {
+
+  Future<void> getNoOfCompletedActiveTasks() async {
     LoadingScreen.show();
-    var url = Const.getFullARMUrl_SecondServer(ServerConnections.API_GET_PENDING_ACTIVETASK_COUNT);
+    var url = Const.getFullARMUrl_SecondServer(ServerConnections.API_GET_COMPLETED_ACTIVETASK_COUNT);
     var body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
     var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
     if (resp != "" && !resp.toString().contains("error")) {
       var jsonResp = jsonDecode(resp);
       if (jsonResp['result']['message'].toString() == "success") {
-        pendingCount = jsonResp['result']['data'].toString();
+        completedCount = jsonResp['result']['data'].toString();
       }
     }
     await getPendingActiveList();
@@ -58,12 +59,12 @@ class PendingListController extends GetxController {
   }
 
   Future<void> getPendingActiveList() async {
-    var url = Const.getFullARMUrl_SecondServer(ServerConnections.API_GET_PENDING_ACTIVETASK);
+    var url = Const.getFullARMUrl_SecondServer(ServerConnections.API_GET_COMPLETED_ACTIVETASK);
     var body = {
       'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID),
       "Trace": "false",
       "AppName": Const.PROJECT_NAME.toString(),
-      "pagesize": int.parse(pendingCount),
+      "pagesize": int.parse(completedCount),
       "pageno": 1,
     };
 
@@ -72,7 +73,7 @@ class PendingListController extends GetxController {
       var jsonResp = jsonDecode(resp);
       if (jsonResp['result']['message'].toString() == "success") {
         activeList_Main.clear();
-        var dataList = jsonResp['result']['pendingtasks'];
+        var dataList = jsonResp['result']['completedtasks'];
 
         for (var item in dataList) {
           PendingListModel pendingActiveListModel = PendingListModel.fromJson(item);

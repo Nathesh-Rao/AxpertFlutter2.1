@@ -1,5 +1,5 @@
-import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Controllers/PendingListController.dart';
-import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Models/ActiveListModel.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Controllers/CompletedListController.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Models/PendingListModel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,11 +7,11 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:text_scroll/text_scroll.dart';
 
 class WidgetCompletedListItem extends StatelessWidget {
-  WidgetCompletedListItem({super.key});
+  WidgetCompletedListItem(this.completedActiveListModel, {super.key});
 
-  PendingListController pendingListController = Get.find();
+  CompletedListController completedListController = Get.find();
 
-  ActiveListModel pendingActiveListModel = ActiveListModel.fromJson({});
+  PendingListModel completedActiveListModel;
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +63,7 @@ class WidgetCompletedListItem extends StatelessWidget {
                   children: [
                     Expanded(
                       child: TextScroll(
-                        pendingActiveListModel.displaytitle.toString(),
+                        completedActiveListModel.displaytitle.toString(),
                         style: GoogleFonts.roboto(
                             textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: HexColor('#495057'))),
                         mode: TextScrollMode.endless,
@@ -84,7 +84,7 @@ class WidgetCompletedListItem extends StatelessWidget {
                     SizedBox(
                       width: 10,
                     ),
-                    Text(pendingActiveListModel.fromuser.toString().capitalize!,
+                    Text(completedActiveListModel.fromuser.toString().capitalize!,
                         style: GoogleFonts.roboto(
                           textStyle: TextStyle(
                             fontSize: 14,
@@ -96,7 +96,7 @@ class WidgetCompletedListItem extends StatelessWidget {
                   ],
                 ),
                 // SizedBox(height: 10),
-                Text(pendingActiveListModel.displaycontent.toString(),
+                Text(completedActiveListModel.displaycontent.toString(),
                     maxLines: 1,
                     style: GoogleFonts.roboto(
                       textStyle: TextStyle(
@@ -109,7 +109,7 @@ class WidgetCompletedListItem extends StatelessWidget {
                   children: [
                     Icon(Icons.calendar_today_outlined, size: 16),
                     SizedBox(width: 10),
-                    Text(pendingListController.getDateValue(pendingActiveListModel.eventdatetime),
+                    Text(completedListController.getDateValue(completedActiveListModel.eventdatetime),
                         style: GoogleFonts.roboto(
                           textStyle: TextStyle(
                             fontSize: 12,
@@ -120,7 +120,7 @@ class WidgetCompletedListItem extends StatelessWidget {
                     Expanded(child: Text("")),
                     Icon(Icons.access_time, size: 16),
                     SizedBox(width: 10),
-                    Text(pendingListController.getTimeValue(pendingActiveListModel.eventdatetime),
+                    Text(completedListController.getTimeValue(completedActiveListModel.eventdatetime),
                         style: GoogleFonts.roboto(
                           textStyle: TextStyle(
                             fontSize: 12,

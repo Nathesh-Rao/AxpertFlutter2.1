@@ -1,4 +1,5 @@
 import 'package:axpertflutter/Constants/CommonMethods.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Controllers/ListItemDetailsController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Controllers/PendingListController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Widgets/WidgetPendingStatusScrollbar.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetLandingAppBar.dart';
@@ -9,14 +10,16 @@ import 'package:hexcolor/hexcolor.dart';
 
 class PendingListItemDetails extends StatelessWidget {
   PendingListItemDetails({super.key});
-  PendingListController pendingListController = Get.find();
+  // PendingListController pendingListController=Get.find();
+  ListItemDetailsController listItemDetailsController = Get.find();
 
   @override
   Widget build(BuildContext context) {
+    listItemDetailsController.fetchDetails();
     var size = MediaQuery.of(context).size;
     return Obx(() {
-      if (pendingListController.widgetProcessFlowNeedRefresh.value == true) {
-        pendingListController.widgetProcessFlowNeedRefresh.toggle();
+      if (listItemDetailsController.widgetProcessFlowNeedRefresh.value == true) {
+        listItemDetailsController.widgetProcessFlowNeedRefresh.toggle();
         return reBuild(size);
       } else
         return reBuild(size);
@@ -40,11 +43,19 @@ class PendingListItemDetails extends StatelessWidget {
                   // color: Colors.red,
                   child: ListView.separated(
                       scrollDirection: Axis.horizontal,
-                      controller: pendingListController.scrollController,
+                      controller: listItemDetailsController.scrollController,
                       itemBuilder: (context, index) {
                         return GestureDetector(
-                          onTap: () {},
-                          child: WidgetPendingStatusScrollBar(pendingListController.processFlowList[index]),
+                          onTap: () {
+                            // print(pendingListController.processFlowList[index].taskid.toString());
+                            if (listItemDetailsController.processFlowList[index].taskid.toString().toLowerCase() != 'null' &&
+                                listItemDetailsController.processFlowList[index].taskid.toString() !=
+                                    listItemDetailsController.selectedTaskID)
+                              listItemDetailsController.fetchDetails(
+                                  hasArgument: true, pendingProcessFlowModel: listItemDetailsController.processFlowList[index]);
+                            // print(pendingListController.processFlowList[index].toJson());
+                          },
+                          child: WidgetPendingStatusScrollBar(listItemDetailsController.processFlowList[index]),
                         );
                       },
                       separatorBuilder: (context, index) {
@@ -54,257 +65,278 @@ class PendingListItemDetails extends StatelessWidget {
                           style: TextStyle(color: HexColor("848D9C").withOpacity(0.4)),
                         ));
                       },
-                      itemCount: pendingListController.processFlowList.length),
+                      itemCount: listItemDetailsController.processFlowList.length),
                 ),
                 SizedBox(height: 10),
-                Container(
-                  padding: EdgeInsets.only(top: 5, bottom: 10),
-                  decoration:
-                      BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 10, right: 10),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        InkWell(
-                            onTap: () {
-                              Get.back();
-                            },
-                            child: Icon(Icons.arrow_back_ios, size: 30)),
+                Visibility(
+                  visible: listItemDetailsController.pendingTaskModel != null ? true : false,
+                  child: Container(
+                    padding: EdgeInsets.only(top: 5, bottom: 10),
+                    decoration:
+                        BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 10, right: 10),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          InkWell(
+                              onTap: () {
+                                Get.back();
+                              },
+                              child: Icon(Icons.arrow_back_ios, size: 30)),
 
-                        // SizedBox(width: 10),
-                        Icon(
-                          Icons.calendar_month_sharp,
-                          size: 35,
-                        ),
-                        // SizedBox(width: 20),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text("Ticket",
-                                style: GoogleFonts.nunitoSans(textStyle: TextStyle(color: HexColor('495057'), fontSize: 16))),
-                            Text(
-                                pendingListController.pendingTaskModel != null
-                                    ? '#' + pendingListController.pendingTaskModel!.taskid ?? ' '
-                                    : '',
-                                style: GoogleFonts.nunitoSans(
-                                    textStyle: TextStyle(color: HexColor('495057'), fontSize: 22, fontWeight: FontWeight.w800))),
-                          ],
-                        ),
-                        Expanded(child: Text("")),
-                        SizedBox(width: 10),
-                        Visibility(
-                          visible: pendingListController.pendingTaskModel != null
-                              ? pendingListController.pendingTaskModel!.tasktype.toLowerCase() == ''
-                                  ? false
-                                  : true
-                              : false,
-                          child: Container(
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular((20)), color: Colors.orange),
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
-                              child: Text(
-                                pendingListController.pendingTaskModel != null
-                                    ? CommonMethods.capitalize(pendingListController.pendingTaskModel!.tasktype ?? ' ')
-                                    : '',
-                                style: GoogleFonts.nunitoSans(textStyle: TextStyle(color: Colors.white, fontSize: 14)),
+                          // SizedBox(width: 10),
+                          Icon(
+                            Icons.calendar_month_sharp,
+                            size: 35,
+                          ),
+                          // SizedBox(width: 20),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("Ticket",
+                                  style: GoogleFonts.nunitoSans(textStyle: TextStyle(color: HexColor('495057'), fontSize: 16))),
+                              Text(
+                                  listItemDetailsController.pendingTaskModel != null
+                                      ? '#' + listItemDetailsController.pendingTaskModel!.taskid ?? ' '
+                                      : '',
+                                  style: GoogleFonts.nunitoSans(
+                                      textStyle:
+                                          TextStyle(color: HexColor('495057'), fontSize: 22, fontWeight: FontWeight.w800))),
+                            ],
+                          ),
+                          Expanded(child: Text("")),
+                          SizedBox(width: 10),
+                          Visibility(
+                            visible: listItemDetailsController.pendingTaskModel != null
+                                ? listItemDetailsController.pendingTaskModel!.tasktype.toLowerCase() == ''
+                                    ? false
+                                    : true
+                                : false,
+                            child: Container(
+                              decoration: BoxDecoration(borderRadius: BorderRadius.circular((20)), color: Colors.orange),
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
+                                child: Text(
+                                  listItemDetailsController.pendingTaskModel != null
+                                      ? CommonMethods.capitalize(listItemDetailsController.pendingTaskModel!.tasktype ?? ' ')
+                                      : '',
+                                  style: GoogleFonts.nunitoSans(textStyle: TextStyle(color: Colors.white, fontSize: 14)),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
                 SizedBox(height: 10),
-                Container(
-                  padding: EdgeInsets.only(top: 5, bottom: 10),
-                  decoration:
-                      BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 10, right: 10),
-                    child: Row(
-                      children: [
-                        Icon(Icons.info, color: HexColor('FF7F79')),
-                        SizedBox(width: 10),
-                        Expanded(
-                          child: Text("Pending Approval",
-                              style: GoogleFonts.roboto(
-                                  textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
-                        ),
-                        SizedBox(
-                            width: size.width * 0.4,
-                            child: Text(
-                                pendingListController.pendingTaskModel != null
-                                    ? CommonMethods.capitalize(pendingListController.pendingTaskModel!.touser ?? ' ')
-                                    : '',
-                                style: GoogleFonts.roboto(
-                                    textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))))),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                Container(
-                  padding: EdgeInsets.only(top: 5, bottom: 10),
-                  decoration:
-                      BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 10, right: 10),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.group,
-                          color: HexColor('616161'),
-                        ),
-                        SizedBox(width: 10),
-                        Expanded(
-                          child: Text("Raised By",
-                              style: GoogleFonts.roboto(
-                                  textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
-                        ),
-                        SizedBox(
-                          width: size.width * 0.4,
-                          child: Text(
-                            pendingListController.pendingTaskModel != null
-                                ? CommonMethods.capitalize(pendingListController.pendingTaskModel!.fromuser ?? ' ')
-                                : '',
-                            style:
-                                GoogleFonts.roboto(textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                Container(
-                  padding: EdgeInsets.only(top: 5, bottom: 10),
-                  decoration:
-                      BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 10, right: 10),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.person,
-                          color: HexColor('616161'),
-                        ),
-                        SizedBox(width: 10),
-                        Expanded(
-                          child: Text("Assigned By",
-                              style: GoogleFonts.roboto(
-                                  textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
-                        ),
-                        SizedBox(
-                          width: size.width * 0.4,
-                          child: Text(
-                            pendingListController.pendingTaskModel != null
-                                ? CommonMethods.capitalize(pendingListController.pendingTaskModel!.initiator ?? ' ')
-                                : '',
-                            style:
-                                GoogleFonts.roboto(textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                Container(
-                  padding: EdgeInsets.only(top: 5, bottom: 10),
-                  decoration:
-                      BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 10, right: 10),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.today,
-                          color: HexColor('616161'),
-                        ),
-                        SizedBox(width: 10),
-                        Expanded(
-                          child: Text("Assigned On",
-                              style: GoogleFonts.roboto(
-                                  textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
-                        ),
-                        SizedBox(
-                          width: size.width * 0.4,
-                          child: Row(
-                            children: [
-                              Text(
-                                pendingListController.pendingTaskModel != null
-                                    ? pendingListController.getDateValue(pendingListController.pendingTaskModel!.eventdatetime)
-                                    : "",
-                                style: GoogleFonts.roboto(
-                                    textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
-                              ),
-                              SizedBox(width: 4),
-                              Visibility(
-                                  visible: pendingListController.pendingTaskModel != null ? true : false,
-                                  child: Icon(Icons.access_time)),
-                              SizedBox(width: 4),
-                              Text(
-                                pendingListController.pendingTaskModel != null
-                                    ? pendingListController.getTimeValue(pendingListController.pendingTaskModel!.eventdatetime)
-                                    : "",
-                                style: GoogleFonts.roboto(
-                                    textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                Container(
-                  padding: EdgeInsets.only(top: 5, bottom: 10),
-                  decoration:
-                      BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 10, right: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Icon(
-                          Icons.description_outlined,
-                          color: HexColor('616161'),
-                        ),
-                        SizedBox(width: 20),
-                        Expanded(
-                            child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Description",
-                                style: GoogleFonts.roboto(
-                                    textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057')))),
-                            SizedBox(height: 15),
-                            Text(
-                                pendingListController.pendingTaskModel != null
-                                    ? pendingListController.pendingTaskModel!.displaymcontent.toLowerCase() != 'null'
-                                        ? pendingListController.pendingTaskModel!.displaymcontent
-                                        : ' '
-                                    : "",
+                Visibility(
+                  visible: listItemDetailsController.pendingTaskModel != null ? true : false,
+                  child: Container(
+                    padding: EdgeInsets.only(top: 5, bottom: 10),
+                    decoration:
+                        BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 10, right: 10),
+                      child: Row(
+                        children: [
+                          Icon(Icons.info, color: HexColor('FF7F79')),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: Text("Pending Approval",
                                 style: GoogleFonts.roboto(
                                     textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
-                            SizedBox(
-                              height: 20,
-                            )
-                          ],
-                        )),
-                      ],
+                          ),
+                          SizedBox(
+                              width: size.width * 0.4,
+                              child: Text(
+                                  listItemDetailsController.pendingTaskModel != null
+                                      ? CommonMethods.capitalize(listItemDetailsController.pendingTaskModel!.touser ?? ' ')
+                                      : '',
+                                  style: GoogleFonts.roboto(
+                                      textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))))),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                Visibility(
+                  visible: listItemDetailsController.pendingTaskModel != null ? true : false,
+                  child: Container(
+                    padding: EdgeInsets.only(top: 5, bottom: 10),
+                    decoration:
+                        BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 10, right: 10),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.group,
+                            color: HexColor('616161'),
+                          ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: Text("Raised By",
+                                style: GoogleFonts.roboto(
+                                    textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
+                          ),
+                          SizedBox(
+                            width: size.width * 0.4,
+                            child: Text(
+                              listItemDetailsController.pendingTaskModel != null
+                                  ? CommonMethods.capitalize(listItemDetailsController.pendingTaskModel!.fromuser ?? ' ')
+                                  : '',
+                              style: GoogleFonts.roboto(
+                                  textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                Visibility(
+                  visible: listItemDetailsController.pendingTaskModel != null ? true : false,
+                  child: Container(
+                    padding: EdgeInsets.only(top: 5, bottom: 10),
+                    decoration:
+                        BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 10, right: 10),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.person,
+                            color: HexColor('616161'),
+                          ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: Text("Assigned By",
+                                style: GoogleFonts.roboto(
+                                    textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
+                          ),
+                          SizedBox(
+                            width: size.width * 0.4,
+                            child: Text(
+                              listItemDetailsController.pendingTaskModel != null
+                                  ? CommonMethods.capitalize(listItemDetailsController.pendingTaskModel!.initiator ?? ' ')
+                                  : '',
+                              style: GoogleFonts.roboto(
+                                  textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                Visibility(
+                  visible: listItemDetailsController.pendingTaskModel != null ? true : false,
+                  child: Container(
+                    padding: EdgeInsets.only(top: 5, bottom: 10),
+                    decoration:
+                        BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 10, right: 10),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.today,
+                            color: HexColor('616161'),
+                          ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: Text("Assigned On",
+                                style: GoogleFonts.roboto(
+                                    textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
+                          ),
+                          SizedBox(
+                            width: size.width * 0.4,
+                            child: Row(
+                              children: [
+                                Text(
+                                  listItemDetailsController.pendingTaskModel != null
+                                      ? listItemDetailsController
+                                          .getDateValue(listItemDetailsController.pendingTaskModel!.eventdatetime)
+                                      : "",
+                                  style: GoogleFonts.roboto(
+                                      textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
+                                ),
+                                SizedBox(width: 4),
+                                Visibility(
+                                    visible: listItemDetailsController.pendingTaskModel != null ? true : false,
+                                    child: Icon(Icons.access_time)),
+                                SizedBox(width: 4),
+                                Text(
+                                  listItemDetailsController.pendingTaskModel != null
+                                      ? listItemDetailsController
+                                          .getTimeValue(listItemDetailsController.pendingTaskModel!.eventdatetime)
+                                      : "",
+                                  style: GoogleFonts.roboto(
+                                      textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                Visibility(
+                  visible: listItemDetailsController.pendingTaskModel != null ? true : false,
+                  child: Container(
+                    padding: EdgeInsets.only(top: 5, bottom: 10),
+                    decoration:
+                        BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 10, right: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.description_outlined,
+                            color: HexColor('616161'),
+                          ),
+                          SizedBox(width: 20),
+                          Expanded(
+                              child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Description",
+                                  style: GoogleFonts.roboto(
+                                      textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057')))),
+                              SizedBox(height: 15),
+                              Text(
+                                  listItemDetailsController.pendingTaskModel != null
+                                      ? listItemDetailsController.pendingTaskModel!.displaymcontent.toLowerCase() != 'null'
+                                          ? listItemDetailsController.pendingTaskModel!.displaymcontent
+                                          : ' '
+                                      : "",
+                                  style: GoogleFonts.roboto(
+                                      textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
+                              SizedBox(
+                                height: 20,
+                              )
+                            ],
+                          )),
+                        ],
+                      ),
                     ),
                   ),
                 ),
                 SizedBox(height: 30),
                 Visibility(
-                  visible: pendingListController.pendingTaskModel != null
-                      ? pendingListController.pendingTaskModel!.showbuttons.toLowerCase() == "t"
+                  visible: listItemDetailsController.pendingTaskModel != null
+                      ? listItemDetailsController.pendingTaskModel!.showbuttons.toLowerCase() == "t"
                           ? true
                           : false
                       : false,
@@ -314,10 +346,10 @@ class PendingListItemDetails extends StatelessWidget {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          if (pendingListController.pendingTaskModel!.cmsg_appcheck.toString() != '') {
+                          if (listItemDetailsController.pendingTaskModel!.cmsg_appcheck.toString() != '') {
                             Get.defaultDialog(
                                 title: 'Approve?',
-                                middleText: pendingListController.pendingTaskModel!.cmsg_appcheck.toString(),
+                                middleText: listItemDetailsController.pendingTaskModel!.cmsg_appcheck.toString(),
                                 barrierDismissible: false,
                                 confirm: ElevatedButton(
                                     onPressed: () {
@@ -358,10 +390,10 @@ class PendingListItemDetails extends StatelessWidget {
                       SizedBox(width: 10),
                       GestureDetector(
                         onTap: () {
-                          if (pendingListController.pendingTaskModel!.cmsg_reject.toString() != '') {
+                          if (listItemDetailsController.pendingTaskModel!.cmsg_reject.toString() != '') {
                             Get.defaultDialog(
                                 title: 'Reject?',
-                                middleText: pendingListController.pendingTaskModel!.cmsg_reject.toString(),
+                                middleText: listItemDetailsController.pendingTaskModel!.cmsg_reject.toString(),
                                 barrierDismissible: false,
                                 confirm: ElevatedButton(
                                     onPressed: () {
@@ -457,6 +489,14 @@ class PendingListItemDetails extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 30),
+                Visibility(
+                    visible: listItemDetailsController.pendingTaskModel == null ? true : false,
+                    child: Container(
+                      height: 200,
+                      child: Center(
+                        child: Text("No data found!!!"),
+                      ),
+                    )),
               ],
             ),
           ),

@@ -1,4 +1,4 @@
-class ActiveListModel {
+class PendingListModel {
   String touser;
   String processname;
   String taskname;
@@ -45,7 +45,7 @@ class ActiveListModel {
   String hlink_transid;
   String hlink_params;
 
-  ActiveListModel.fromJson(Map<String, dynamic> json)
+  PendingListModel.fromJson(Map<String, dynamic> json)
       : touser = json['touser'].toString() ?? "",
         processname = json['processname'].toString() ?? "",
         taskname = json['taskname'].toString() ?? "",
