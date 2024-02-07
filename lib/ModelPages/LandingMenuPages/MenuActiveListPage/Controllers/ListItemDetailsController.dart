@@ -23,7 +23,7 @@ class ListItemDetailsController extends GetxController {
 
   fetchDetails({hasArgument = false, PendingProcessFlowModel? pendingProcessFlowModel = null}) async {
     LoadingScreen.show();
-    var url = Const.getFullARMUrl_SecondServer(ServerConnections.API_GET_ACTIVETASK_DETAILS);
+    var url = Const.getFullARMUrl(ServerConnections.API_GET_ACTIVETASK_DETAILS);
     var body;
     var shouldCall = true;
     if (hasArgument) {

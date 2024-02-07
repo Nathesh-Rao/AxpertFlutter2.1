@@ -15,7 +15,7 @@ class MenuActiveListPage extends StatelessWidget {
         WidgetSlidingNotificationPanel(),
         Expanded(
             child: DefaultTabController(
-          length: 3,
+          length: 2,
           child: Scaffold(
             appBar:
                 TabBar(labelColor: Colors.black, unselectedLabelColor: Colors.black54, indicatorColor: HexColor("1970FF"), tabs: [
@@ -63,24 +63,28 @@ class MenuActiveListPage extends StatelessWidget {
                   ],
                 ),
               ),
-              Tab(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.settings),
-                    SizedBox(width: 10),
-                    Text(
-                      "KPI",
-                      style: TextStyle(
-                        fontSize: 13,
-                      ),
-                    )
-                  ],
-                ),
-              ),
+              // Tab(
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.center,
+              //     children: [
+              //       Icon(Icons.settings),
+              //       SizedBox(width: 10),
+              //       Text(
+              //         "KPI",
+              //         style: TextStyle(
+              //           fontSize: 13,
+              //         ),
+              //       )
+              //     ],
+              //   ),
+              // ),
             ]),
             body: TabBarView(
-              children: [PendingListPage(), CompletedListPage(), KPIPage()],
+              children: [
+                PendingListPage(),
+                CompletedListPage(),
+                // KPIPage(),
+              ],
             ),
           ),
         ))

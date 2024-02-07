@@ -44,7 +44,7 @@ class PendingListController extends GetxController {
   }
   Future<void> getNoOfPendingActiveTasks() async {
     LoadingScreen.show();
-    var url = Const.getFullARMUrl_SecondServer(ServerConnections.API_GET_PENDING_ACTIVETASK_COUNT);
+    var url = Const.getFullARMUrl(ServerConnections.API_GET_PENDING_ACTIVETASK_COUNT);
     var body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
     var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
     if (resp != "" && !resp.toString().contains("error")) {
@@ -58,7 +58,7 @@ class PendingListController extends GetxController {
   }
 
   Future<void> getPendingActiveList() async {
-    var url = Const.getFullARMUrl_SecondServer(ServerConnections.API_GET_PENDING_ACTIVETASK);
+    var url = Const.getFullARMUrl(ServerConnections.API_GET_PENDING_ACTIVETASK);
     var body = {
       'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID),
       "Trace": "false",
@@ -120,7 +120,7 @@ class PendingListController extends GetxController {
   ////////////////////////************************** Pending List Item Details *****************
 
   void applyFilter() async {
-    var url = Const.getFullARMUrl_SecondServer(ServerConnections.API_GET_FILTERED_PENDING_TASK);
+    var url = Const.getFullARMUrl(ServerConnections.API_GET_FILTERED_PENDING_TASK);
     Map<String, dynamic> body = {
       "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
       "AppName": Const.PROJECT_NAME.toString(),

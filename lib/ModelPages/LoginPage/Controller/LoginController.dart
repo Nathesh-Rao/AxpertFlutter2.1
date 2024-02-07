@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/CommonMethods.dart';
+import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
@@ -75,9 +76,9 @@ class LoginController extends GetxController {
       MaterialState.focused,
     };
     if (states.any(interactiveStates.contains)) {
-      return Colors.blue;
+      return MyColors.blue2;
     }
-    return Colors.blue;
+    return MyColors.blue2;
   }
 
   fetchSignInDetail() async {

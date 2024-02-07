@@ -193,10 +193,14 @@ reBuild(PendingListController pendingListController, BuildContext context) {
                 return ListTile(
                   onTap: () {
                     // print(pendingListController.pending_activeList[index].taskid);
-                    ListItemDetailsController listItemDetailsController = Get.put(ListItemDetailsController());
-                    listItemDetailsController.openModel = pendingListController.pending_activeList[index];
+                    print(pendingListController.pending_activeList[index].toJson());
+                    if (pendingListController.pending_activeList[index].tasktype.toString().toLowerCase() != "approve") {
+                    } else {
+                      ListItemDetailsController listItemDetailsController = Get.put(ListItemDetailsController());
+                      listItemDetailsController.openModel = pendingListController.pending_activeList[index];
 
-                    Get.toNamed(Routes.ProjectListingPageDetailsPending);
+                      Get.toNamed(Routes.ProjectListingPageDetailsPending);
+                    }
                   },
                   title: WidgetPendingListItem(pendingListController.pending_activeList[index]),
                 );

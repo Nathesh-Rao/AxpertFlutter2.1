@@ -16,7 +16,7 @@ class WidgetPendingListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: 10, bottom: 10),
+      padding: EdgeInsets.only(top: 5, bottom: 5),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -47,7 +47,7 @@ class WidgetPendingListItem extends StatelessWidget {
                   child: Container(
                     height: 10,
                     width: 10,
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), color: Colors.green),
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), color: Colors.orange),
                   ),
                 )
               ],
@@ -62,40 +62,30 @@ class WidgetPendingListItem extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Expanded(
-                      child: TextScroll(
+                      child: Text(
                         pendingActiveListModel.displaytitle.toString(),
                         style: GoogleFonts.roboto(
                             textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: HexColor('#495057'))),
-                        mode: TextScrollMode.endless,
-                        velocity: Velocity(pixelsPerSecond: Offset(30, 0)),
-                        delayBefore: Duration(milliseconds: 1500),
-                        //numberOfReps: 5,
-                        pauseBetween: Duration(milliseconds: 1500),
+                        // mode: TextScrollMode.endless,
+                        // velocity: Velocity(pixelsPerSecond: Offset(30, 0)),
+                        // delayBefore: Duration(milliseconds: 1500),
+                        // //numberOfReps: 5,
+                        // pauseBetween: Duration(milliseconds: 1500),
                         textAlign: TextAlign.left,
-                        selectable: true,
+                        maxLines: 2,
+                        // selectable: true,
                       ),
                     ),
 
                     //Expanded(child: Text("")),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Icon(Icons.person),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(pendingActiveListModel.fromuser.toString().capitalize!,
-                        style: GoogleFonts.roboto(
-                          textStyle: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: HexColor('#495057'),
-                          ),
-                        )),
-                    SizedBox(width: 10),
+                    // SizedBox(
+                    //   width: 10,
+                    // ),
+
+                    // SizedBox(width: 10),
                   ],
                 ),
-                // SizedBox(height: 10),
+                SizedBox(height: 5),
                 Text(pendingActiveListModel.displaycontent.toString(),
                     maxLines: 1,
                     style: GoogleFonts.roboto(
@@ -104,7 +94,25 @@ class WidgetPendingListItem extends StatelessWidget {
                         color: HexColor('#495057'),
                       ),
                     )),
-                SizedBox(height: 3),
+                SizedBox(height: 5),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(Icons.person),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text(pendingActiveListModel.fromuser.toString().capitalize!,
+                        style: GoogleFonts.roboto(
+                          textStyle: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: HexColor('#495057'),
+                          ),
+                        ))
+                  ],
+                ),
+                SizedBox(height: 5),
                 Row(
                   children: [
                     Icon(Icons.calendar_today_outlined, size: 16),

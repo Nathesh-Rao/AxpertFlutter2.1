@@ -145,29 +145,28 @@ class CompletedListPage extends StatelessWidget {
                   return ListTile(
                     onTap: () {
                       // var url = "";
-                      // print(completedListController.completed_activeList[index].toJson());
-                      // if (completedListController.completed_activeList[index].tasktype.toString().toLowerCase() == "make") {
-                      //   if (completedListController.completed_activeList[index].recordid.toString().toLowerCase() == "" ||
-                      //       completedListController.completed_activeList[index].recordid.toString().toLowerCase() == "null") {
-                      //     url = "aspx/AxMain.aspx?pname=t" +
-                      //         completedListController.completed_activeList[index].transid.toString() +
-                      //         "&authKey=AXPERT-" +
-                      //         AppStorage().retrieveValue(AppStorage.SESSIONID) +
-                      //         completedListController.completed_activeList[index].keyfield.toString() +
-                      //         "=" +
-                      //         completedListController.completed_activeList[index].keyvalue.toString();
-                      //   } else {
-                      //     url = "aspx/AxMain.aspx?pname=t" +
-                      //         completedListController.completed_activeList[index].transid.toString() +
-                      //         "&authKey=AXPERT-" +
-                      //         AppStorage().retrieveValue(AppStorage.SESSIONID) +
-                      //         "&ispegedit=false&act=load&recordid=" +
-                      //         completedListController.completed_activeList[index].recordid.toString();
-                      //   }
-                      //   print(Const.getFullProjectUrl(url));
-                      //   Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(url)]);
-                      // } else
-                      {
+                      print(completedListController.completed_activeList[index].toJson());
+                      if (completedListController.completed_activeList[index].tasktype.toString().toLowerCase() != "approve") {
+                        //   if (completedListController.completed_activeList[index].recordid.toString().toLowerCase() == "" ||
+                        //       completedListController.completed_activeList[index].recordid.toString().toLowerCase() == "null") {
+                        //     url = "aspx/AxMain.aspx?pname=t" +
+                        //         completedListController.completed_activeList[index].transid.toString() +
+                        //         "&authKey=AXPERT-" +
+                        //         AppStorage().retrieveValue(AppStorage.SESSIONID) +
+                        //         completedListController.completed_activeList[index].keyfield.toString() +
+                        //         "=" +
+                        //         completedListController.completed_activeList[index].keyvalue.toString();
+                        //   } else {
+                        //     url = "aspx/AxMain.aspx?pname=t" +
+                        //         completedListController.completed_activeList[index].transid.toString() +
+                        //         "&authKey=AXPERT-" +
+                        //         AppStorage().retrieveValue(AppStorage.SESSIONID) +
+                        //         "&ispegedit=false&act=load&recordid=" +
+                        //         completedListController.completed_activeList[index].recordid.toString();
+                        //   }
+                        //   print(Const.getFullProjectUrl(url));
+                        //   Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(url)]);
+                      } else {
                         ListItemDetailsController listItemDetailsController = Get.put(ListItemDetailsController());
                         listItemDetailsController.openModel = completedListController.completed_activeList[index];
 

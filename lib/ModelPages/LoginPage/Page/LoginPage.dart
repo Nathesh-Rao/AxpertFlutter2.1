@@ -134,11 +134,11 @@ class _LoginPageState extends State<LoginPage> {
                                 icon: loginController.showPassword.value
                                     ? Icon(
                                         Icons.visibility,
-                                        color: Colors.blue,
+                                        color: MyColors.blue2,
                                       )
                                     : Icon(
                                         Icons.visibility_off,
-                                        color: Colors.blue,
+                                        color: MyColors.blue2,
                                       )),
                             // border: OutlineInputBorder(
                             //   borderSide: BorderSide(width: 1),
@@ -205,8 +205,7 @@ class _LoginPageState extends State<LoginPage> {
                             },
                             child: Container(
                               height: 50,
-                              decoration:
-                                  BoxDecoration(color: MyColors.blue1.withOpacity(0.8), borderRadius: BorderRadius.circular(20)),
+                              decoration: BoxDecoration(color: MyColors.blue2, borderRadius: BorderRadius.circular(20)),
                               child: Center(
                                 child: Text(
                                   "Login",
