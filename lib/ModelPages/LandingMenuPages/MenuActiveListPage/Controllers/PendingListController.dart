@@ -116,4 +116,86 @@ class PendingListController extends GetxController {
     filterList("");
     FocusManager.instance.primaryFocus?.unfocus();
   }
+
+  ////////////////////////************************** Pending List Item Details *****************
+
+  void applyFilter() async {
+    var url = Const.getFullARMUrl_SecondServer(ServerConnections.API_GET_FILTERED_PENDING_TASK);
+    Map<String, dynamic> body = {
+      "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
+      "AppName": Const.PROJECT_NAME.toString(),
+      "pagesize": 1000,
+      "pageno": 1,
+    };
+    if (fromUserController.text.trim() != "") body["fromuser"] = fromUserController.text.trim();
+    if (processNameController.text.trim() != "") body["processname"] = processNameController.text.trim();
+    if (searchTextController.text.trim() != "") body["searchtext"] = searchTextController.text.trim();
+    if (dateFromController.text.trim() != "" && dateToController.text.trim() != "") {
+      body["fromdate"] = dateFromController.text.trim();
+      body["todate"] = dateToController.text.trim();
+    } else {
+      if (dateFromController.text.trim() == "" && dateToController.text.trim() != "") {
+        errDateFrom.value = "Enter from Date";
+        return;
+      }
+      if (dateFromController.text.trim() != "" && dateToController.text.trim() == "") {
+        errDateTo.value = "Enter To Date";
+        return;
+      }
+    }
+    Get.back();
+    print(body.length);
+    if (body.length > 4) {
+      selectedIconNumber.value = 4;
+      LoadingScreen.show();
+      var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
+      LoadingScreen.dismiss();
+      if (resp != "" && !resp.toString().contains("error")) {
+        var jsonResp = jsonDecode(resp);
+        if (jsonResp['result']['message'].toString() == "success") {
+          var taskList = jsonResp['result']['pendingtasks'];
+          pending_activeList.clear();
+          for (var item in taskList) {
+            PendingListModel activeListModel = PendingListModel.fromJson(item);
+            pending_activeList.add(activeListModel);
+          }
+          if (pending_activeList.length == 0) {
+            pending_activeList.value = activeList_Main;
+            Get.snackbar("Oops!", "No details found!",
+                duration: Duration(seconds: 1),
+                snackPosition: SnackPosition.BOTTOM,
+                backgroundColor: Colors.redAccent,
+                colorText: Colors.white);
+          }
+          needRefresh.value = true;
+        }
+      }
+    }
+  }
+
+  void removeFilter() {
+    dateFromController.text =
+        dateToController.text = searchTextController.text = processNameController.text = fromUserController.text = "";
+    if (selectedIconNumber != 1) getNoOfPendingActiveTasks();
+    selectedIconNumber.value = 1;
+  }
+
+  errText(String value) {
+    if (value == "")
+      return null;
+    else
+      return value;
+  }
+
+  // void refreshList() async {
+  //   LoadingScreen.show();
+  //   if (selectedIconNumber.value != 1) {
+  //     await getNoOfPendingActiveTasks();
+  //   }
+  //   selectedIconNumber.value = 1;
+  //
+  //   Future.delayed(Duration(milliseconds: 500), () {
+  //     LoadingScreen.dismiss();
+  //   });
+  // }
 }

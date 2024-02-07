@@ -1,4 +1,6 @@
+import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
+import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Controllers/CompletedListController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Controllers/ListItemDetailsController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Page/PendingListPage.dart';
@@ -11,7 +13,7 @@ import 'package:hexcolor/hexcolor.dart';
 class CompletedListPage extends StatelessWidget {
   CompletedListPage({super.key});
 
-  CompletedListController completedListController = Get.put(CompletedListController());
+  final CompletedListController completedListController = Get.put(CompletedListController());
 
   @override
   Widget build(BuildContext context) {
@@ -53,86 +55,42 @@ class CompletedListPage extends StatelessWidget {
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(width: 1))),
                 ),
               ),
-              SizedBox(width: 6),
-              Material(
-                elevation: 2,
-                borderRadius: BorderRadius.circular(10),
-                child: GestureDetector(
-                  onTap: () {},
-                  child: Container(
-                    height: 35,
-                    width: 30,
-                    decoration: BoxDecoration(
-                        color: completedListController.selectedIconNumber.value == 1 ? HexColor('0E72FD') : Colors.white,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Center(
-                      child: ImageIcon(
-                        AssetImage("assets/images/add_circle.png"),
-                        color: completedListController.selectedIconNumber.value == 1
-                            ? Colors.white
-                            : HexColor('848D9C').withOpacity(0.7),
-                        size: 28,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(width: 6),
-              Material(
-                elevation: 2,
-                borderRadius: BorderRadius.circular(10),
-                child: GestureDetector(
-                  onTap: () {},
-                  child: Container(
-                    height: 35,
-                    width: 30,
-                    decoration: BoxDecoration(
-                        color: completedListController.selectedIconNumber.value == 2 ? HexColor('0E72FD') : Colors.white,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Center(
-                      child: Icon(
-                        Icons.refresh,
-                        color: completedListController.selectedIconNumber.value == 2
-                            ? Colors.white
-                            : HexColor('848D9C').withOpacity(0.7),
-                        size: 28,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              // SizedBox(width: 6),
+              // Material(
+              //   elevation: 2,
+              //   borderRadius: BorderRadius.circular(10),
+              //   child: GestureDetector(
+              //     onTap: () {
+              //       if (completedListController.selectedIconNumber.value != 1)
+              //         completedListController.getNoOfCompletedActiveTasks();
+              //       completedListController.selectedIconNumber.value = 1;
+              //     },
+              //     child: Container(
+              //       height: 35,
+              //       width: 30,
+              //       decoration: BoxDecoration(
+              //           color: completedListController.selectedIconNumber.value == 1 ? HexColor('0E72FD') : Colors.white,
+              //           borderRadius: BorderRadius.circular(10)),
+              //       child: Center(
+              //         child: ImageIcon(
+              //           AssetImage("assets/images/add_circle.png"),
+              //           color: completedListController.selectedIconNumber.value == 1
+              //               ? Colors.white
+              //               : HexColor('848D9C').withOpacity(0.7),
+              //           size: 28,
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // ),
               SizedBox(width: 6),
               Material(
                 elevation: 2,
                 borderRadius: BorderRadius.circular(10),
                 child: GestureDetector(
                   onTap: () {
-                    completedListController.selectedIconNumber.value = 3;
+                    Get.dialog(showFilterDialog(context, completedListController));
                   },
-                  child: Container(
-                    height: 35,
-                    width: 30,
-                    decoration: BoxDecoration(
-                        color: completedListController.selectedIconNumber.value == 3 ? HexColor('0E72FD') : Colors.white,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Center(
-                      child: Icon(
-                        Icons.access_time_outlined,
-                        color: completedListController.selectedIconNumber.value == 3
-                            ? Colors.white
-                            : HexColor('848D9C').withOpacity(0.7),
-                        size: 28,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(width: 6),
-              Material(
-                elevation: 2,
-                borderRadius: BorderRadius.circular(10),
-                child: GestureDetector(
-                  onTap: () {},
                   child: Container(
                     height: 35,
                     width: 30,
@@ -186,12 +144,37 @@ class CompletedListPage extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return ListTile(
                     onTap: () {
-                      ListItemDetailsController listItemDetailsController = Get.put(ListItemDetailsController());
-                      listItemDetailsController.openModel = completedListController.pending_activeList[index];
+                      // var url = "";
+                      // print(completedListController.completed_activeList[index].toJson());
+                      // if (completedListController.completed_activeList[index].tasktype.toString().toLowerCase() == "make") {
+                      //   if (completedListController.completed_activeList[index].recordid.toString().toLowerCase() == "" ||
+                      //       completedListController.completed_activeList[index].recordid.toString().toLowerCase() == "null") {
+                      //     url = "aspx/AxMain.aspx?pname=t" +
+                      //         completedListController.completed_activeList[index].transid.toString() +
+                      //         "&authKey=AXPERT-" +
+                      //         AppStorage().retrieveValue(AppStorage.SESSIONID) +
+                      //         completedListController.completed_activeList[index].keyfield.toString() +
+                      //         "=" +
+                      //         completedListController.completed_activeList[index].keyvalue.toString();
+                      //   } else {
+                      //     url = "aspx/AxMain.aspx?pname=t" +
+                      //         completedListController.completed_activeList[index].transid.toString() +
+                      //         "&authKey=AXPERT-" +
+                      //         AppStorage().retrieveValue(AppStorage.SESSIONID) +
+                      //         "&ispegedit=false&act=load&recordid=" +
+                      //         completedListController.completed_activeList[index].recordid.toString();
+                      //   }
+                      //   print(Const.getFullProjectUrl(url));
+                      //   Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(url)]);
+                      // } else
+                      {
+                        ListItemDetailsController listItemDetailsController = Get.put(ListItemDetailsController());
+                        listItemDetailsController.openModel = completedListController.completed_activeList[index];
 
-                      Get.toNamed(Routes.ProjectListingPageDetailsPending);
+                        Get.toNamed(Routes.ProjectListingPageDetailsPending);
+                      }
                     },
-                    title: WidgetCompletedListItem(completedListController.pending_activeList[index]),
+                    title: WidgetCompletedListItem(completedListController.completed_activeList[index]),
                   );
                   // return GestureDetector(
                   //     onTap: () {
@@ -205,7 +188,7 @@ class CompletedListPage extends StatelessWidget {
                     child: WidgetDottedSeparator(),
                   );
                 },
-                itemCount: completedListController.pending_activeList.length))
+                itemCount: completedListController.completed_activeList.length))
       ],
     );
   }

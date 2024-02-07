@@ -80,14 +80,14 @@ class MenuHomePageController extends GetxController {
 
     if (listOfCards.length == 0) {
       print("Length:   0");
-      Get.defaultDialog(
-          title: "Alert!",
-          middleText: "Session Timed Out",
-          confirm: ElevatedButton(
-              onPressed: () {
-                Get.back();
-              },
-              child: Text("Ok")));
+      // Get.defaultDialog(
+      //     title: "Alert!",
+      //     middleText: "Session Timed Out",
+      //     confirm: ElevatedButton(
+      //         onPressed: () {
+      //           Get.back();
+      //         },
+      //         child: Text("Ok")));
     }
     await getCardDataSources();
     listOfCards..sort((a, b) => a.caption.toString().toLowerCase().compareTo(b.caption.toString().toLowerCase()));

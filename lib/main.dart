@@ -65,6 +65,7 @@ class MyApp extends StatelessWidget {
       title: 'Axpert Flutter 2.1',
       theme: ThemeData(
         brightness: Brightness.light,
+        useMaterial3: false,
         elevatedButtonTheme:
             ElevatedButtonThemeData(style: ButtonStyle(backgroundColor: MaterialStateProperty.all(MyColors.blue2))),
         primaryColor: Color(0xff003AA5),
