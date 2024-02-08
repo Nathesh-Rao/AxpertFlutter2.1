@@ -14,80 +14,85 @@ class MenuActiveListPage extends StatelessWidget {
       children: [
         WidgetSlidingNotificationPanel(),
         Expanded(
-            child: DefaultTabController(
-          length: 2,
-          child: Scaffold(
-            appBar:
-                TabBar(labelColor: Colors.black, unselectedLabelColor: Colors.black54, indicatorColor: HexColor("1970FF"), tabs: [
-              Tab(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: 12,
-                      width: 12,
-                      decoration: BoxDecoration(
-                        color: HexColor('FD9700'),
-                        border: Border.all(width: 1, color: Colors.white),
-                      ),
+          child: DefaultTabController(
+            length: 2,
+            child: Scaffold(
+              appBar: TabBar(
+                labelColor: Colors.black,
+                unselectedLabelColor: Colors.black54,
+                indicatorColor: HexColor("1970FF"),
+                tabs: [
+                  Tab(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: 12,
+                          width: 12,
+                          decoration: BoxDecoration(
+                            color: HexColor('FD9700'),
+                            border: Border.all(width: 1, color: Colors.white),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          "Pending",
+                          style: TextStyle(
+                            fontSize: 13,
+                          ),
+                        )
+                      ],
                     ),
-                    SizedBox(width: 10),
-                    Text(
-                      "Pending",
-                      style: TextStyle(
-                        fontSize: 13,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              Tab(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: 12,
-                      width: 12,
-                      decoration: BoxDecoration(
-                        color: HexColor('5AC686'),
-                        border: Border.all(width: 1, color: Colors.white),
-                      ),
+                  ),
+                  Tab(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: 12,
+                          width: 12,
+                          decoration: BoxDecoration(
+                            color: HexColor('5AC686'),
+                            border: Border.all(width: 1, color: Colors.white),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          "Completed",
+                          style: TextStyle(
+                            fontSize: 13,
+                          ),
+                        )
+                      ],
                     ),
-                    SizedBox(width: 10),
-                    Text(
-                      "Completed",
-                      style: TextStyle(
-                        fontSize: 13,
-                      ),
-                    )
-                  ],
-                ),
+                  ),
+                  // Tab(
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.center,
+                  //     children: [
+                  //       Icon(Icons.settings),
+                  //       SizedBox(width: 10),
+                  //       Text(
+                  //         "KPI",
+                  //         style: TextStyle(
+                  //           fontSize: 13,
+                  //         ),
+                  //       )
+                  //     ],
+                  //   ),
+                  // ),
+                ],
               ),
-              // Tab(
-              //   child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.center,
-              //     children: [
-              //       Icon(Icons.settings),
-              //       SizedBox(width: 10),
-              //       Text(
-              //         "KPI",
-              //         style: TextStyle(
-              //           fontSize: 13,
-              //         ),
-              //       )
-              //     ],
-              //   ),
-              // ),
-            ]),
-            body: TabBarView(
-              children: [
-                PendingListPage(),
-                CompletedListPage(),
-                // KPIPage(),
-              ],
+              body: TabBarView(
+                children: [
+                  PendingListPage(),
+                  CompletedListPage(),
+                  // KPIPage(),
+                ],
+              ),
             ),
           ),
-        ))
+        )
       ],
     );
   }
