@@ -70,7 +70,7 @@ class MyApp extends StatelessWidget {
             ElevatedButtonThemeData(style: ButtonStyle(backgroundColor: MaterialStateProperty.all(MyColors.blue2))),
         primaryColor: Color(0xff003AA5),
         scaffoldBackgroundColor: Colors.white,
-        colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.indigo),
+       // colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.indigo),
       ),
       initialRoute: Routes.SplashScreen,
       // initialRoute: Routes.LandingPage,

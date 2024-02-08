@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 
+import '../../../../Constants/CommonMethods.dart';
+
 class CompletedListPage extends StatelessWidget {
   CompletedListPage({super.key});
 
@@ -100,9 +102,7 @@ class CompletedListPage extends StatelessWidget {
                     child: Center(
                       child: Icon(
                         Icons.filter_alt,
-                        color: completedListController.selectedIconNumber.value == 4
-                            ? Colors.white
-                            : HexColor('848D9C').withOpacity(0.7),
+                        color: completedListController.selectedIconNumber.value == 4 ? Colors.white : HexColor('848D9C').withOpacity(0.7),
                         size: 28,
                       ),
                     ),
@@ -126,9 +126,7 @@ class CompletedListPage extends StatelessWidget {
                     child: Center(
                       child: Icon(
                         Icons.checklist,
-                        color: completedListController.selectedIconNumber.value == 5
-                            ? Colors.white
-                            : HexColor('848D9C').withOpacity(0.7),
+                        color: completedListController.selectedIconNumber.value == 5 ? Colors.white : HexColor('848D9C').withOpacity(0.7),
                         size: 28,
                       ),
                     ),
@@ -144,33 +142,27 @@ class CompletedListPage extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return ListTile(
                     onTap: () {
-                      // var url = "";
                       print(completedListController.completed_activeList[index].toJson());
-                      if (completedListController.completed_activeList[index].tasktype.toString().toLowerCase() != "approve") {
-                        //   if (completedListController.completed_activeList[index].recordid.toString().toLowerCase() == "" ||
-                        //       completedListController.completed_activeList[index].recordid.toString().toLowerCase() == "null") {
-                        //     url = "aspx/AxMain.aspx?pname=t" +
-                        //         completedListController.completed_activeList[index].transid.toString() +
-                        //         "&authKey=AXPERT-" +
-                        //         AppStorage().retrieveValue(AppStorage.SESSIONID) +
-                        //         completedListController.completed_activeList[index].keyfield.toString() +
-                        //         "=" +
-                        //         completedListController.completed_activeList[index].keyvalue.toString();
-                        //   } else {
-                        //     url = "aspx/AxMain.aspx?pname=t" +
-                        //         completedListController.completed_activeList[index].transid.toString() +
-                        //         "&authKey=AXPERT-" +
-                        //         AppStorage().retrieveValue(AppStorage.SESSIONID) +
-                        //         "&ispegedit=false&act=load&recordid=" +
-                        //         completedListController.completed_activeList[index].recordid.toString();
-                        //   }
-                        //   print(Const.getFullProjectUrl(url));
-                        //   Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(url)]);
-                      } else {
-                        ListItemDetailsController listItemDetailsController = Get.put(ListItemDetailsController());
-                        listItemDetailsController.openModel = completedListController.completed_activeList[index];
+                      switch (completedListController.completed_activeList[index].tasktype.toString().toUpperCase()) {
+                        case "MAKE":
+                          var URL = CommonMethods.activeList_CreateURL_MAKE(completedListController.completed_activeList[index], index);
+                          if (!URL.isEmpty) Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(URL)]);
+                          break;
 
-                        Get.toNamed(Routes.ProjectListingPageDetailsPending);
+                        case "APPROVE":
+                          ListItemDetailsController listItemDetailsController = Get.put(ListItemDetailsController());
+                          listItemDetailsController.openModel = completedListController.completed_activeList[index];
+                          Get.toNamed(Routes.ProjectListingPageDetailsPending);
+                          break;
+
+                        case "":
+                        case "NULL":
+                        case "CACHED SAVE":
+                          var URL = CommonMethods.activeList_CreateURL_MESSAGE(completedListController.completed_activeList[index], index);
+                          if (!URL.isEmpty) Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(URL)]);
+                          break;
+                        default:
+                          break;
                       }
                     },
                     title: WidgetCompletedListItem(completedListController.completed_activeList[index]),

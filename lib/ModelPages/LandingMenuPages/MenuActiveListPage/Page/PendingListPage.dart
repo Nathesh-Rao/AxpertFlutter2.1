@@ -7,8 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 
+import '../../../../Constants/AppStorage.dart';
+import '../../../../Constants/CommonMethods.dart';
+import '../../../../Constants/const.dart';
+
 class PendingListPage extends StatelessWidget {
   PendingListPage({super.key});
+
   final PendingListController pendingListController = Get.put(PendingListController());
 
   @override
@@ -148,9 +153,7 @@ reBuild(PendingListController pendingListController, BuildContext context) {
                   child: Center(
                     child: Icon(
                       Icons.filter_alt,
-                      color: pendingListController.selectedIconNumber.value == 4
-                          ? Colors.white
-                          : HexColor('848D9C').withOpacity(0.7),
+                      color: pendingListController.selectedIconNumber.value == 4 ? Colors.white : HexColor('848D9C').withOpacity(0.7),
                       size: 28,
                     ),
                   ),
@@ -174,9 +177,7 @@ reBuild(PendingListController pendingListController, BuildContext context) {
                   child: Center(
                     child: Icon(
                       Icons.checklist,
-                      color: pendingListController.selectedIconNumber.value == 5
-                          ? Colors.white
-                          : HexColor('848D9C').withOpacity(0.7),
+                      color: pendingListController.selectedIconNumber.value == 5 ? Colors.white : HexColor('848D9C').withOpacity(0.7),
                       size: 28,
                     ),
                   ),
@@ -192,14 +193,27 @@ reBuild(PendingListController pendingListController, BuildContext context) {
               itemBuilder: (context, index) {
                 return ListTile(
                   onTap: () {
-                    // print(pendingListController.pending_activeList[index].taskid);
                     print(pendingListController.pending_activeList[index].toJson());
-                    if (pendingListController.pending_activeList[index].tasktype.toString().toLowerCase() != "approve") {
-                    } else {
-                      ListItemDetailsController listItemDetailsController = Get.put(ListItemDetailsController());
-                      listItemDetailsController.openModel = pendingListController.pending_activeList[index];
+                    switch (pendingListController.pending_activeList[index].tasktype.toString().toUpperCase()) {
+                      case "MAKE":
+                        var URL = CommonMethods.activeList_CreateURL_MAKE(pendingListController.pending_activeList[index], index);
+                        if (!URL.isEmpty) Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(URL)]);
+                        break;
+                        break;
+                      case "APPROVE":
+                        ListItemDetailsController listItemDetailsController = Get.put(ListItemDetailsController());
+                        listItemDetailsController.openModel = pendingListController.pending_activeList[index];
 
-                      Get.toNamed(Routes.ProjectListingPageDetailsPending);
+                        Get.toNamed(Routes.ProjectListingPageDetailsPending);
+                        break;
+                      case "":
+                      case "NULL":
+                      case "CACHED SAVE":
+                        var URL = CommonMethods.activeList_CreateURL_MESSAGE(pendingListController.pending_activeList[index], index);
+                        if (!URL.isEmpty) Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(URL)]);
+                        break;
+                      default:
+                        break;
                     }
                   },
                   title: WidgetPendingListItem(pendingListController.pending_activeList[index]),
@@ -281,9 +295,8 @@ Widget showFilterDialog(BuildContext context, var pendingListController) {
                         hintText: "Process Name "),
                   ),
                   Center(
-                      child: Padding(
-                          padding: EdgeInsets.only(top: 10, bottom: 10),
-                          child: Text("OR", style: TextStyle(fontWeight: FontWeight.bold)))),
+                      child:
+                          Padding(padding: EdgeInsets.only(top: 10, bottom: 10), child: Text("OR", style: TextStyle(fontWeight: FontWeight.bold)))),
                   TextField(
                     controller: pendingListController.fromUserController,
                     decoration: InputDecoration(
@@ -301,9 +314,8 @@ Widget showFilterDialog(BuildContext context, var pendingListController) {
                         hintText: "From User "),
                   ),
                   Center(
-                      child: Padding(
-                          padding: EdgeInsets.only(top: 10, bottom: 10),
-                          child: Text("OR", style: TextStyle(fontWeight: FontWeight.bold)))),
+                      child:
+                          Padding(padding: EdgeInsets.only(top: 10, bottom: 10), child: Text("OR", style: TextStyle(fontWeight: FontWeight.bold)))),
                   TextField(
                     controller: pendingListController.dateFromController,
                     textAlign: TextAlign.center,
@@ -382,9 +394,7 @@ Widget showFilterDialog(BuildContext context, var pendingListController) {
 void selectDate(BuildContext context, TextEditingController text) async {
   FocusManager.instance.primaryFocus?.unfocus();
   const months = <String>['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  final DateTime? picked =
-      await showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(1990), lastDate: DateTime.now());
+  final DateTime? picked = await showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(1990), lastDate: DateTime.now());
   if (picked != null)
-    text.text =
-        picked.day.toString().padLeft(2, '0') + "-" + months[picked.month - 1] + "-" + picked.year.toString().padLeft(2, '0');
+    text.text = picked.day.toString().padLeft(2, '0') + "-" + months[picked.month - 1] + "-" + picked.year.toString().padLeft(2, '0');
 }
