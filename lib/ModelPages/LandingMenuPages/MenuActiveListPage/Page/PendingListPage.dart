@@ -200,6 +200,7 @@ reBuild(PendingListController pendingListController, BuildContext context) {
                         if (!URL.isEmpty) Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(URL)]);
                         break;
                         break;
+                      case "CHECK":
                       case "APPROVE":
                         ListItemDetailsController listItemDetailsController = Get.put(ListItemDetailsController());
                         listItemDetailsController.openModel = pendingListController.pending_activeList[index];

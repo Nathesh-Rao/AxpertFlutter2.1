@@ -148,7 +148,7 @@ class CompletedListPage extends StatelessWidget {
                           var URL = CommonMethods.activeList_CreateURL_MAKE(completedListController.completed_activeList[index], index);
                           if (!URL.isEmpty) Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(URL)]);
                           break;
-
+                        case "CHECK":
                         case "APPROVE":
                           ListItemDetailsController listItemDetailsController = Get.put(ListItemDetailsController());
                           listItemDetailsController.openModel = completedListController.completed_activeList[index];

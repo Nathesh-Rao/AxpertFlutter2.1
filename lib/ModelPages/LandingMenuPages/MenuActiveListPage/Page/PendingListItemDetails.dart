@@ -10,6 +10,7 @@ import 'package:hexcolor/hexcolor.dart';
 
 class PendingListItemDetails extends StatelessWidget {
   PendingListItemDetails({super.key});
+
   // PendingListController pendingListController=Get.find();
   ListItemDetailsController listItemDetailsController = Get.find();
 
@@ -38,8 +39,7 @@ class PendingListItemDetails extends StatelessWidget {
                 Container(
                   height: 50,
                   width: double.maxFinite,
-                  decoration:
-                      BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
+                  decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
                   // color: Colors.red,
                   child: ListView.separated(
                       scrollDirection: Axis.horizontal,
@@ -49,8 +49,7 @@ class PendingListItemDetails extends StatelessWidget {
                           onTap: () {
                             // print(pendingListController.processFlowList[index].taskid.toString());
                             if (listItemDetailsController.processFlowList[index].taskid.toString().toLowerCase() != 'null' &&
-                                listItemDetailsController.processFlowList[index].taskid.toString() !=
-                                    listItemDetailsController.selectedTaskID)
+                                listItemDetailsController.processFlowList[index].taskid.toString() != listItemDetailsController.selectedTaskID)
                               listItemDetailsController.fetchDetails(
                                   hasArgument: true, pendingProcessFlowModel: listItemDetailsController.processFlowList[index]);
                             // print(pendingListController.processFlowList[index].toJson());
@@ -72,8 +71,7 @@ class PendingListItemDetails extends StatelessWidget {
                   visible: listItemDetailsController.pendingTaskModel != null ? true : false,
                   child: Container(
                     padding: EdgeInsets.only(top: 5, bottom: 10),
-                    decoration:
-                        BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
+                    decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
                     child: Padding(
                       padding: EdgeInsets.only(left: 10, right: 10),
                       child: Row(
@@ -95,15 +93,13 @@ class PendingListItemDetails extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text("Ticket",
-                                  style: GoogleFonts.nunitoSans(textStyle: TextStyle(color: HexColor('495057'), fontSize: 16))),
+                              Text("Ticket", style: GoogleFonts.nunitoSans(textStyle: TextStyle(color: HexColor('495057'), fontSize: 16))),
                               Text(
                                   listItemDetailsController.pendingTaskModel != null
                                       ? '#' + listItemDetailsController.pendingTaskModel!.taskid ?? ' '
                                       : '',
                                   style: GoogleFonts.nunitoSans(
-                                      textStyle:
-                                          TextStyle(color: HexColor('495057'), fontSize: 22, fontWeight: FontWeight.w800))),
+                                      textStyle: TextStyle(color: HexColor('495057'), fontSize: 22, fontWeight: FontWeight.w800))),
                             ],
                           ),
                           Expanded(child: Text("")),
@@ -137,8 +133,7 @@ class PendingListItemDetails extends StatelessWidget {
                   visible: listItemDetailsController.pendingTaskModel != null ? true : false,
                   child: Container(
                     padding: EdgeInsets.only(top: 5, bottom: 10),
-                    decoration:
-                        BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
+                    decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
                     child: Padding(
                       padding: EdgeInsets.only(left: 10, right: 10),
                       child: Row(
@@ -147,8 +142,7 @@ class PendingListItemDetails extends StatelessWidget {
                           SizedBox(width: 10),
                           Expanded(
                             child: Text("Pending Approval",
-                                style: GoogleFonts.roboto(
-                                    textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
+                                style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
                           ),
                           SizedBox(
                               width: size.width * 0.4,
@@ -156,8 +150,7 @@ class PendingListItemDetails extends StatelessWidget {
                                   listItemDetailsController.pendingTaskModel != null
                                       ? CommonMethods.capitalize(listItemDetailsController.pendingTaskModel!.touser ?? ' ')
                                       : '',
-                                  style: GoogleFonts.roboto(
-                                      textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))))),
+                                  style: GoogleFonts.roboto(textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))))),
                         ],
                       ),
                     ),
@@ -168,8 +161,7 @@ class PendingListItemDetails extends StatelessWidget {
                   visible: listItemDetailsController.pendingTaskModel != null ? true : false,
                   child: Container(
                     padding: EdgeInsets.only(top: 5, bottom: 10),
-                    decoration:
-                        BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
+                    decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
                     child: Padding(
                       padding: EdgeInsets.only(left: 10, right: 10),
                       child: Row(
@@ -181,8 +173,7 @@ class PendingListItemDetails extends StatelessWidget {
                           SizedBox(width: 10),
                           Expanded(
                             child: Text("Raised By",
-                                style: GoogleFonts.roboto(
-                                    textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
+                                style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
                           ),
                           SizedBox(
                             width: size.width * 0.4,
@@ -190,8 +181,7 @@ class PendingListItemDetails extends StatelessWidget {
                               listItemDetailsController.pendingTaskModel != null
                                   ? CommonMethods.capitalize(listItemDetailsController.pendingTaskModel!.fromuser ?? ' ')
                                   : '',
-                              style: GoogleFonts.roboto(
-                                  textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
+                              style: GoogleFonts.roboto(textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
                             ),
                           ),
                         ],
@@ -204,8 +194,7 @@ class PendingListItemDetails extends StatelessWidget {
                   visible: listItemDetailsController.pendingTaskModel != null ? true : false,
                   child: Container(
                     padding: EdgeInsets.only(top: 5, bottom: 10),
-                    decoration:
-                        BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
+                    decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
                     child: Padding(
                       padding: EdgeInsets.only(left: 10, right: 10),
                       child: Row(
@@ -217,8 +206,7 @@ class PendingListItemDetails extends StatelessWidget {
                           SizedBox(width: 10),
                           Expanded(
                             child: Text("Assigned By",
-                                style: GoogleFonts.roboto(
-                                    textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
+                                style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
                           ),
                           SizedBox(
                             width: size.width * 0.4,
@@ -226,8 +214,7 @@ class PendingListItemDetails extends StatelessWidget {
                               listItemDetailsController.pendingTaskModel != null
                                   ? CommonMethods.capitalize(listItemDetailsController.pendingTaskModel!.initiator ?? ' ')
                                   : '',
-                              style: GoogleFonts.roboto(
-                                  textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
+                              style: GoogleFonts.roboto(textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
                             ),
                           ),
                         ],
@@ -240,8 +227,7 @@ class PendingListItemDetails extends StatelessWidget {
                   visible: listItemDetailsController.pendingTaskModel != null ? true : false,
                   child: Container(
                     padding: EdgeInsets.only(top: 5, bottom: 10),
-                    decoration:
-                        BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
+                    decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
                     child: Padding(
                       padding: EdgeInsets.only(left: 10, right: 10),
                       child: Row(
@@ -253,8 +239,7 @@ class PendingListItemDetails extends StatelessWidget {
                           SizedBox(width: 10),
                           Expanded(
                             child: Text("Assigned On",
-                                style: GoogleFonts.roboto(
-                                    textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
+                                style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
                           ),
                           SizedBox(
                             width: size.width * 0.4,
@@ -262,24 +247,23 @@ class PendingListItemDetails extends StatelessWidget {
                               children: [
                                 Text(
                                   listItemDetailsController.pendingTaskModel != null
-                                      ? listItemDetailsController
-                                          .getDateValue(listItemDetailsController.pendingTaskModel!.eventdatetime)
+                                      ? listItemDetailsController.getDateValue(listItemDetailsController.pendingTaskModel!.eventdatetime)
                                       : "",
-                                  style: GoogleFonts.roboto(
-                                      textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
+                                  style: GoogleFonts.roboto(textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
                                 ),
                                 SizedBox(width: 4),
                                 Visibility(
                                     visible: listItemDetailsController.pendingTaskModel != null ? true : false,
-                                    child: Icon(Icons.access_time)),
-                                SizedBox(width: 4),
+                                    child: Icon(
+                                      Icons.access_time,
+                                      size: 15,
+                                    )),
+                                SizedBox(width: 1),
                                 Text(
                                   listItemDetailsController.pendingTaskModel != null
-                                      ? listItemDetailsController
-                                          .getTimeValue(listItemDetailsController.pendingTaskModel!.eventdatetime)
+                                      ? listItemDetailsController.getTimeValue(listItemDetailsController.pendingTaskModel!.eventdatetime)
                                       : "",
-                                  style: GoogleFonts.roboto(
-                                      textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
+                                  style: GoogleFonts.roboto(textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
                                 ),
                               ],
                             ),
@@ -294,8 +278,7 @@ class PendingListItemDetails extends StatelessWidget {
                   visible: listItemDetailsController.pendingTaskModel != null ? true : false,
                   child: Container(
                     padding: EdgeInsets.only(top: 5, bottom: 10),
-                    decoration:
-                        BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
+                    decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
                     child: Padding(
                       padding: EdgeInsets.only(left: 10, right: 10),
                       child: Row(
@@ -312,8 +295,7 @@ class PendingListItemDetails extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text("Description",
-                                  style: GoogleFonts.roboto(
-                                      textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057')))),
+                                  style: GoogleFonts.roboto(textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057')))),
                               SizedBox(height: 15),
                               Text(
                                   listItemDetailsController.pendingTaskModel != null
@@ -321,8 +303,7 @@ class PendingListItemDetails extends StatelessWidget {
                                           ? listItemDetailsController.pendingTaskModel!.displaymcontent
                                           : ' '
                                       : "",
-                                  style: GoogleFonts.roboto(
-                                      textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
+                                  style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
                               SizedBox(
                                 height: 20,
                               )
