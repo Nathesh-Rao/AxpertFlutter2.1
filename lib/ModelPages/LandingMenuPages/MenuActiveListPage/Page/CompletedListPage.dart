@@ -110,24 +110,27 @@ class CompletedListPage extends StatelessWidget {
                 ),
               ),
               SizedBox(width: 6),
-              Material(
-                elevation: 2,
-                borderRadius: BorderRadius.circular(10),
-                child: GestureDetector(
-                  onTap: () {
-                    completedListController.selectedIconNumber.value = 5;
-                  },
-                  child: Container(
-                    height: 35,
-                    width: 30,
-                    decoration: BoxDecoration(
-                        color: completedListController.selectedIconNumber.value == 5 ? HexColor('0E72FD') : Colors.white,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Center(
-                      child: Icon(
-                        Icons.checklist,
-                        color: completedListController.selectedIconNumber.value == 5 ? Colors.white : HexColor('848D9C').withOpacity(0.7),
-                        size: 28,
+              Visibility(
+                visible: false,
+                child: Material(
+                  elevation: 2,
+                  borderRadius: BorderRadius.circular(10),
+                  child: GestureDetector(
+                    onTap: () {
+                      completedListController.selectedIconNumber.value = 5;
+                    },
+                    child: Container(
+                      height: 35,
+                      width: 30,
+                      decoration: BoxDecoration(
+                          color: completedListController.selectedIconNumber.value == 5 ? HexColor('0E72FD') : Colors.white,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Center(
+                        child: Icon(
+                          Icons.checklist,
+                          color: completedListController.selectedIconNumber.value == 5 ? Colors.white : HexColor('848D9C').withOpacity(0.7),
+                          size: 28,
+                        ),
                       ),
                     ),
                   ),

@@ -22,6 +22,7 @@ class ListItemDetailsController extends GetxController {
   ScrollController scrollController = ScrollController(initialScrollOffset: 100 * 3.0);
   TextEditingController comments = TextEditingController();
   var errCom = ''.obs;
+  var selected_processFlow_taskType = ''.obs;
 
   fetchDetails({hasArgument = false, PendingProcessFlowModel? pendingProcessFlowModel = null}) async {
     LoadingScreen.show();
@@ -29,8 +30,7 @@ class ListItemDetailsController extends GetxController {
     var body;
     var shouldCall = true;
     if (hasArgument) {
-      if (pendingProcessFlowModel!.taskid.toString() == "" || pendingProcessFlowModel!.taskid.toString().toLowerCase() == "null")
-        shouldCall = false;
+      if (pendingProcessFlowModel!.taskid.toString() == "" || pendingProcessFlowModel!.taskid.toString().toLowerCase() == "null") shouldCall = false;
 
       body = {
         'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID),
@@ -41,6 +41,7 @@ class ListItemDetailsController extends GetxController {
         "keyvalue": pendingProcessFlowModel!.keyvalue,
       };
       selectedTaskID = pendingProcessFlowModel!.taskid;
+      selected_processFlow_taskType.value = pendingProcessFlowModel!.tasktype;
     } else {
       if (openModel!.taskid.toString() == "" || openModel!.taskid.toString().toLowerCase() == "null") shouldCall = false;
       body = {
@@ -52,6 +53,7 @@ class ListItemDetailsController extends GetxController {
         "keyvalue": openModel!.keyvalue
       };
       selectedTaskID = openModel!.taskid;
+      selected_processFlow_taskType.value = openModel!.tasktype;
     }
     if (!shouldCall) {
       widgetProcessFlowNeedRefresh.value = true;
@@ -79,16 +81,21 @@ class ListItemDetailsController extends GetxController {
         // for (var task in taskList) {
         //
         // }
-        var task = jsonResp['result']['taskdetails'][0];
-        if (task != null)
-          pendingTaskModel = PendingTaskModel.fromJson(task);
-        else {
+
+        try {
+          var task = jsonResp['result']['taskdetails'][0];
+          if (task != null)
+            pendingTaskModel = PendingTaskModel.fromJson(task);
+          else {
+            pendingTaskModel = null;
+            // Get.snackbar("Oops!", "No details found!",
+            //     duration: Duration(seconds: 1),
+            //     snackPosition: SnackPosition.BOTTOM,
+            //     backgroundColor: Colors.redAccent,
+            //     colorText: Colors.white);
+          }
+        } catch (e) {
           pendingTaskModel = null;
-          // Get.snackbar("Oops!", "No details found!",
-          //     duration: Duration(seconds: 1),
-          //     snackPosition: SnackPosition.BOTTOM,
-          //     backgroundColor: Colors.redAccent,
-          //     colorText: Colors.white);
         }
       }
     }
@@ -122,5 +129,9 @@ class ListItemDetailsController extends GetxController {
       "StatusText": "'+comments.text'"
     };
     var url = Const.getFullARMUrl(ServerConnections.API_DO_TASK_ACTIONS);
+  }
+
+  void onProcessFlowItemTap(int index) {
+    selected_processFlow_taskType.value = processFlowList[index].tasktype.toString();
   }
 }
