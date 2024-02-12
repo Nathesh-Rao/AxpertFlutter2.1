@@ -39,7 +39,8 @@ class PendingListItemDetails extends StatelessWidget {
                 Container(
                   height: 50,
                   width: double.maxFinite,
-                  decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
+                  decoration:
+                      BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
                   // color: Colors.red,
                   child: ListView.separated(
                       scrollDirection: Axis.horizontal,
@@ -49,7 +50,8 @@ class PendingListItemDetails extends StatelessWidget {
                           onTap: () {
                             // print(pendingListController.processFlowList[index].taskid.toString());
                             if (listItemDetailsController.processFlowList[index].taskid.toString().toLowerCase() != 'null' &&
-                                listItemDetailsController.processFlowList[index].taskid.toString() != listItemDetailsController.selectedTaskID)
+                                listItemDetailsController.processFlowList[index].taskid.toString() !=
+                                    listItemDetailsController.selectedTaskID)
                               listItemDetailsController.fetchDetails(
                                   hasArgument: true, pendingProcessFlowModel: listItemDetailsController.processFlowList[index]);
                             // print(pendingListController.processFlowList[index].toJson());
@@ -71,7 +73,8 @@ class PendingListItemDetails extends StatelessWidget {
                   visible: listItemDetailsController.pendingTaskModel != null ? true : false,
                   child: Container(
                     padding: EdgeInsets.only(top: 5, bottom: 10),
-                    decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
+                    decoration:
+                        BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
                     child: Padding(
                       padding: EdgeInsets.only(left: 10, right: 10),
                       child: Row(
@@ -93,13 +96,15 @@ class PendingListItemDetails extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text("Ticket", style: GoogleFonts.nunitoSans(textStyle: TextStyle(color: HexColor('495057'), fontSize: 16))),
+                              Text("Ticket",
+                                  style: GoogleFonts.nunitoSans(textStyle: TextStyle(color: HexColor('495057'), fontSize: 16))),
                               Text(
                                   listItemDetailsController.pendingTaskModel != null
                                       ? '#' + listItemDetailsController.pendingTaskModel!.taskid ?? ' '
                                       : '',
                                   style: GoogleFonts.nunitoSans(
-                                      textStyle: TextStyle(color: HexColor('495057'), fontSize: 22, fontWeight: FontWeight.w800))),
+                                      textStyle:
+                                          TextStyle(color: HexColor('495057'), fontSize: 22, fontWeight: FontWeight.w800))),
                             ],
                           ),
                           Expanded(child: Text("")),
@@ -133,7 +138,8 @@ class PendingListItemDetails extends StatelessWidget {
                   visible: listItemDetailsController.pendingTaskModel != null ? true : false,
                   child: Container(
                     padding: EdgeInsets.only(top: 5, bottom: 10),
-                    decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
+                    decoration:
+                        BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
                     child: Padding(
                       padding: EdgeInsets.only(left: 10, right: 10),
                       child: Row(
@@ -142,7 +148,8 @@ class PendingListItemDetails extends StatelessWidget {
                           SizedBox(width: 10),
                           Expanded(
                             child: Text("Pending Approval",
-                                style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
+                                style: GoogleFonts.roboto(
+                                    textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
                           ),
                           SizedBox(
                               width: size.width * 0.4,
@@ -150,7 +157,8 @@ class PendingListItemDetails extends StatelessWidget {
                                   listItemDetailsController.pendingTaskModel != null
                                       ? CommonMethods.capitalize(listItemDetailsController.pendingTaskModel!.touser ?? ' ')
                                       : '',
-                                  style: GoogleFonts.roboto(textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))))),
+                                  style: GoogleFonts.roboto(
+                                      textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))))),
                         ],
                       ),
                     ),
@@ -161,7 +169,8 @@ class PendingListItemDetails extends StatelessWidget {
                   visible: listItemDetailsController.pendingTaskModel != null ? true : false,
                   child: Container(
                     padding: EdgeInsets.only(top: 5, bottom: 10),
-                    decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
+                    decoration:
+                        BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
                     child: Padding(
                       padding: EdgeInsets.only(left: 10, right: 10),
                       child: Row(
@@ -173,7 +182,8 @@ class PendingListItemDetails extends StatelessWidget {
                           SizedBox(width: 10),
                           Expanded(
                             child: Text("Raised By",
-                                style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
+                                style: GoogleFonts.roboto(
+                                    textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
                           ),
                           SizedBox(
                             width: size.width * 0.4,
@@ -181,7 +191,8 @@ class PendingListItemDetails extends StatelessWidget {
                               listItemDetailsController.pendingTaskModel != null
                                   ? CommonMethods.capitalize(listItemDetailsController.pendingTaskModel!.fromuser ?? ' ')
                                   : '',
-                              style: GoogleFonts.roboto(textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
+                              style: GoogleFonts.roboto(
+                                  textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
                             ),
                           ),
                         ],
@@ -194,7 +205,8 @@ class PendingListItemDetails extends StatelessWidget {
                   visible: listItemDetailsController.pendingTaskModel != null ? true : false,
                   child: Container(
                     padding: EdgeInsets.only(top: 5, bottom: 10),
-                    decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
+                    decoration:
+                        BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
                     child: Padding(
                       padding: EdgeInsets.only(left: 10, right: 10),
                       child: Row(
@@ -206,7 +218,8 @@ class PendingListItemDetails extends StatelessWidget {
                           SizedBox(width: 10),
                           Expanded(
                             child: Text("Assigned By",
-                                style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
+                                style: GoogleFonts.roboto(
+                                    textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
                           ),
                           SizedBox(
                             width: size.width * 0.4,
@@ -214,7 +227,8 @@ class PendingListItemDetails extends StatelessWidget {
                               listItemDetailsController.pendingTaskModel != null
                                   ? CommonMethods.capitalize(listItemDetailsController.pendingTaskModel!.initiator ?? ' ')
                                   : '',
-                              style: GoogleFonts.roboto(textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
+                              style: GoogleFonts.roboto(
+                                  textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
                             ),
                           ),
                         ],
@@ -227,7 +241,8 @@ class PendingListItemDetails extends StatelessWidget {
                   visible: listItemDetailsController.pendingTaskModel != null ? true : false,
                   child: Container(
                     padding: EdgeInsets.only(top: 5, bottom: 10),
-                    decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
+                    decoration:
+                        BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
                     child: Padding(
                       padding: EdgeInsets.only(left: 10, right: 10),
                       child: Row(
@@ -239,7 +254,8 @@ class PendingListItemDetails extends StatelessWidget {
                           SizedBox(width: 10),
                           Expanded(
                             child: Text("Assigned On",
-                                style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
+                                style: GoogleFonts.roboto(
+                                    textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
                           ),
                           SizedBox(
                             width: size.width * 0.4,
@@ -247,9 +263,11 @@ class PendingListItemDetails extends StatelessWidget {
                               children: [
                                 Text(
                                   listItemDetailsController.pendingTaskModel != null
-                                      ? listItemDetailsController.getDateValue(listItemDetailsController.pendingTaskModel!.eventdatetime)
+                                      ? listItemDetailsController
+                                          .getDateValue(listItemDetailsController.pendingTaskModel!.eventdatetime)
                                       : "",
-                                  style: GoogleFonts.roboto(textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
+                                  style: GoogleFonts.roboto(
+                                      textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
                                 ),
                                 SizedBox(width: 4),
                                 Visibility(
@@ -261,9 +279,11 @@ class PendingListItemDetails extends StatelessWidget {
                                 SizedBox(width: 1),
                                 Text(
                                   listItemDetailsController.pendingTaskModel != null
-                                      ? listItemDetailsController.getTimeValue(listItemDetailsController.pendingTaskModel!.eventdatetime)
+                                      ? listItemDetailsController
+                                          .getTimeValue(listItemDetailsController.pendingTaskModel!.eventdatetime)
                                       : "",
-                                  style: GoogleFonts.roboto(textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
+                                  style: GoogleFonts.roboto(
+                                      textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057'))),
                                 ),
                               ],
                             ),
@@ -278,7 +298,8 @@ class PendingListItemDetails extends StatelessWidget {
                   visible: listItemDetailsController.pendingTaskModel != null ? true : false,
                   child: Container(
                     padding: EdgeInsets.only(top: 5, bottom: 10),
-                    decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
+                    decoration:
+                        BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
                     child: Padding(
                       padding: EdgeInsets.only(left: 10, right: 10),
                       child: Row(
@@ -295,7 +316,8 @@ class PendingListItemDetails extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text("Description",
-                                  style: GoogleFonts.roboto(textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057')))),
+                                  style: GoogleFonts.roboto(
+                                      textStyle: TextStyle(fontWeight: FontWeight.bold, color: HexColor('495057')))),
                               SizedBox(height: 15),
                               Text(
                                   listItemDetailsController.pendingTaskModel != null
@@ -303,7 +325,8 @@ class PendingListItemDetails extends StatelessWidget {
                                           ? listItemDetailsController.pendingTaskModel!.displaymcontent
                                           : ' '
                                       : "",
-                                  style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
+                                  style: GoogleFonts.roboto(
+                                      textStyle: TextStyle(fontSize: 13, color: HexColor('495057').withOpacity(0.8)))),
                               SizedBox(
                                 height: 20,
                               )
@@ -321,152 +344,24 @@ class PendingListItemDetails extends StatelessWidget {
                           ? true
                           : false
                       : false,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          if (listItemDetailsController.pendingTaskModel!.cmsg_appcheck.toString() != '') {
-                            Get.defaultDialog(
-                                title: 'Approve?',
-                                middleText: listItemDetailsController.pendingTaskModel!.cmsg_appcheck.toString(),
-                                barrierDismissible: false,
-                                confirm: ElevatedButton(
-                                    onPressed: () {
-                                      Get.back();
-                                    },
-                                    child: Text("Yes")),
-                                cancel: ElevatedButton(
-                                    onPressed: () {
-                                      Get.back();
-                                    },
-                                    child: Text("No")));
-                          }
-                        },
-                        child: Material(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                          elevation: 5,
-                          child: Container(
-                            height: 60,
-                            width: size.width * 0.2,
-                            constraints: BoxConstraints(maxWidth: 100),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.check_circle,
-                                  color: HexColor('4ABF7F'),
-                                ),
-                                Text(
-                                  "Approve",
-                                  style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 13)),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
+                  child: Center(
+                    child: Container(
+                      height: 80,
+                      child: ListView(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        children: [
+                          widgetApproveButton(size),
+                          widgetRejectButton(size),
+                          listItemDetailsController.pendingTaskModel!.returnable.toLowerCase() != "t"
+                              ? widgetReturnButton(size)
+                              : Container(),
+                          widgetViewButton(size),
+                          widgetHistoryButton(size),
+                          SizedBox(width: 10),
+                        ],
                       ),
-                      SizedBox(width: 10),
-                      GestureDetector(
-                        onTap: () {
-                          if (listItemDetailsController.pendingTaskModel!.cmsg_reject.toString() != '') {
-                            Get.defaultDialog(
-                                title: 'Reject?',
-                                middleText: listItemDetailsController.pendingTaskModel!.cmsg_reject.toString(),
-                                barrierDismissible: false,
-                                confirm: ElevatedButton(
-                                    onPressed: () {
-                                      Get.back();
-                                    },
-                                    child: Text("Yes")),
-                                cancel: ElevatedButton(
-                                    onPressed: () {
-                                      Get.back();
-                                    },
-                                    child: Text("No")));
-                          }
-                        },
-                        child: Material(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                          elevation: 5,
-                          child: Container(
-                            height: 60,
-                            width: size.width * 0.2,
-                            constraints: BoxConstraints(maxWidth: 100),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.close_rounded,
-                                  color: HexColor('FF0000'),
-                                ),
-                                Text(
-                                  "Reject",
-                                  style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 13)),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      GestureDetector(
-                        onTap: () {},
-                        child: Material(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                          elevation: 5,
-                          child: Container(
-                            height: 60,
-                            width: size.width * 0.2,
-                            constraints: BoxConstraints(maxWidth: 100),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.remove_red_eye,
-                                  color: HexColor('951895'),
-                                ),
-                                Text(
-                                  "View",
-                                  style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 13)),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      GestureDetector(
-                        onTap: () {},
-                        child: Material(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                          elevation: 5,
-                          child: Container(
-                            height: 60,
-                            width: size.width * 0.2,
-                            constraints: BoxConstraints(maxWidth: 100),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.restore,
-                                  color: HexColor('0000FF'),
-                                ),
-                                Text(
-                                  "History",
-                                  style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 13)),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
                 SizedBox(height: 30),
@@ -483,4 +378,427 @@ class PendingListItemDetails extends StatelessWidget {
           ),
         ),
       );
+  widgetApproveButton(size) {
+    var hasComments = listItemDetailsController.pendingTaskModel!.approvalcomments.toString().toLowerCase() == 't' ? true : false;
+    listItemDetailsController.comments.text = "";
+    listItemDetailsController.errCom.value = "";
+    return AspectRatio(
+      aspectRatio: 2 / 1.5,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10),
+        child: GestureDetector(
+          onTap: () {
+            Get.dialog(Dialog(
+              child: Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Center(
+                          child: Text(
+                        'Approve?',
+                        style: TextStyle(fontSize: 20),
+                      )),
+                      Container(
+                        margin: EdgeInsets.only(top: 10, bottom: 20),
+                        height: 1,
+                        color: Colors.grey.shade300,
+                      ),
+                      Visibility(
+                        visible: listItemDetailsController.pendingTaskModel!.cmsg_reject.toString() != '' ? true : false,
+                        child: Center(
+                            child: Text(
+                          listItemDetailsController.pendingTaskModel!.cmsg_appcheck.toString(),
+                        )),
+                      ),
+                      Visibility(
+                        visible: true,
+                        child: Obx(() => Container(
+                              margin: EdgeInsets.only(top: 10),
+                              child: TextField(
+                                decoration: InputDecoration(
+                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                                    hintText: "Enter Comments",
+                                    labelText: "Enter Comments",
+                                    errorText: listItemDetailsController.errCom.value == ''
+                                        ? null
+                                        : listItemDetailsController.errCom.value,
+                                    filled: true,
+                                    fillColor: Colors.grey.shade100),
+                              ),
+                            )),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                Get.back();
+                              },
+                              child: Text("Cancel"),
+                              style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.grey.shade200)),
+                            ),
+                            ElevatedButton(
+                                onPressed: () {
+                                  listItemDetailsController.approve(hasComments);
+                                },
+                                child: Text("Approve"))
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ));
+            // Get.defaultDialog(
+            //     title: 'Approve?',
+            //     middleText: ,
+            //     barrierDismissible: false,
+            //     confirm: ElevatedButton(
+            //         onPressed: () {
+            //           Get.back();
+            //         },
+            //         child: Text("Yes")),
+            //     cancel: ElevatedButton(
+            //         onPressed: () {
+            //           Get.back();
+            //         },
+            //         child: Text("No")));
+          },
+          child: Material(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            elevation: 5,
+            child: Container(
+              height: 60,
+              width: size.width * 0.2,
+              constraints: BoxConstraints(maxWidth: 100),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.check_circle,
+                    color: HexColor('4ABF7F'),
+                  ),
+                  Text(
+                    "Approve",
+                    style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 13)),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  widgetRejectButton(size) {
+    var hasComments = listItemDetailsController.pendingTaskModel!.approvalcomments.toString().toLowerCase() != 't' ? true : false;
+    listItemDetailsController.comments.text = "";
+    listItemDetailsController.errCom.value = "";
+    return AspectRatio(
+      aspectRatio: 2 / 1.5,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10),
+        child: GestureDetector(
+          onTap: () {
+            Get.dialog(Dialog(
+              child: Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Center(
+                          child: Text(
+                        'Approve?',
+                        style: TextStyle(fontSize: 20),
+                      )),
+                      Container(
+                        margin: EdgeInsets.only(top: 10, bottom: 20),
+                        height: 1,
+                        color: Colors.grey.shade300,
+                      ),
+                      Visibility(
+                        visible: listItemDetailsController.pendingTaskModel!.cmsg_reject.toString() != '' ? true : false,
+                        child: Center(
+                            child: Text(
+                          listItemDetailsController.pendingTaskModel!.cmsg_appcheck.toString(),
+                        )),
+                      ),
+                      Visibility(
+                        visible: hasComments,
+                        child: Obx(() => Container(
+                              margin: EdgeInsets.only(top: 10),
+                              child: TextField(
+                                decoration: InputDecoration(
+                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                                    hintText: "Enter Comments",
+                                    labelText: "Enter Comments",
+                                    errorText: listItemDetailsController.errCom.value == ''
+                                        ? null
+                                        : listItemDetailsController.errCom.value,
+                                    filled: true,
+                                    fillColor: Colors.grey.shade100),
+                              ),
+                            )),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                Get.back();
+                              },
+                              child: Text("Cancel"),
+                              style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.grey.shade200)),
+                            ),
+                            ElevatedButton(
+                                onPressed: () {
+                                  listItemDetailsController.approve(hasComments);
+                                },
+                                child: Text("Approve"))
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ));
+            // if (listItemDetailsController.pendingTaskModel!.cmsg_reject.toString() != '') {
+            //   Get.defaultDialog(
+            //       title: 'Reject?',
+            //       middleText: listItemDetailsController.pendingTaskModel!.cmsg_reject.toString(),
+            //       barrierDismissible: false,
+            //       confirm: ElevatedButton(
+            //           onPressed: () {
+            //             Get.back();
+            //           },
+            //           child: Text("Yes")),
+            //       cancel: ElevatedButton(
+            //           onPressed: () {
+            //             Get.back();
+            //           },
+            //           child: Text("No")));
+            // }
+          },
+          child: Material(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            elevation: 5,
+            child: Container(
+              height: 60,
+              width: size.width * 0.2,
+              constraints: BoxConstraints(maxWidth: 100),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.close_rounded,
+                    color: HexColor('FF0000'),
+                  ),
+                  Text(
+                    "Reject",
+                    style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 13)),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  widgetReturnButton(size) {
+    var hasComments = listItemDetailsController.pendingTaskModel!.approvalcomments.toString().toLowerCase() != 't' ? true : false;
+    listItemDetailsController.comments.text = "";
+    listItemDetailsController.errCom.value = "";
+    return AspectRatio(
+      aspectRatio: 2 / 1.5,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10),
+        child: GestureDetector(
+          onTap: () {
+            Get.dialog(Dialog(
+              child: Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Center(
+                          child: Text(
+                        'Approve?',
+                        style: TextStyle(fontSize: 20),
+                      )),
+                      Container(
+                        margin: EdgeInsets.only(top: 10, bottom: 20),
+                        height: 1,
+                        color: Colors.grey.shade300,
+                      ),
+                      Visibility(
+                        visible: listItemDetailsController.pendingTaskModel!.cmsg_reject.toString() != '' ? true : false,
+                        child: Center(
+                            child: Text(
+                          listItemDetailsController.pendingTaskModel!.cmsg_appcheck.toString(),
+                        )),
+                      ),
+                      Visibility(
+                        visible: hasComments,
+                        child: Obx(() => Container(
+                              margin: EdgeInsets.only(top: 10),
+                              child: TextField(
+                                decoration: InputDecoration(
+                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                                    hintText: "Enter Comments",
+                                    labelText: "Enter Comments",
+                                    errorText: listItemDetailsController.errCom.value == ''
+                                        ? null
+                                        : listItemDetailsController.errCom.value,
+                                    filled: true,
+                                    fillColor: Colors.grey.shade100),
+                              ),
+                            )),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                Get.back();
+                              },
+                              child: Text("Cancel"),
+                              style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.grey.shade200)),
+                            ),
+                            ElevatedButton(
+                                onPressed: () {
+                                  listItemDetailsController.approve(hasComments);
+                                },
+                                child: Text("Approve"))
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ));
+          },
+          child: Material(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            elevation: 5,
+            child: Container(
+              height: 60,
+              width: size.width * 0.2,
+              constraints: BoxConstraints(maxWidth: 100),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.keyboard_return,
+                    color: HexColor('951895'),
+                  ),
+                  Text(
+                    "Return",
+                    style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 13)),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  widgetViewButton(size) {
+    return AspectRatio(
+      aspectRatio: 2 / 1.5,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10),
+        child: GestureDetector(
+          onTap: () {},
+          child: Material(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            elevation: 5,
+            child: Container(
+              height: 60,
+              width: size.width * 0.2,
+              constraints: BoxConstraints(maxWidth: 100),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.remove_red_eye,
+                    color: HexColor('951895'),
+                  ),
+                  Text(
+                    "View",
+                    style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 13)),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  widgetHistoryButton(size) {
+    return AspectRatio(
+      aspectRatio: 2 / 1.5,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10),
+        child: GestureDetector(
+          onTap: () {},
+          child: Material(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            elevation: 5,
+            child: Container(
+              height: 60,
+              width: size.width * 0.2,
+              constraints: BoxConstraints(maxWidth: 100),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.restore,
+                    color: HexColor('0000FF'),
+                  ),
+                  Text(
+                    "History",
+                    style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 13)),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

@@ -20,6 +20,8 @@ class ListItemDetailsController extends GetxController {
   ServerConnections serverConnections = ServerConnections();
   var processFlowList = [].obs;
   ScrollController scrollController = ScrollController(initialScrollOffset: 100 * 3.0);
+  TextEditingController comments = TextEditingController();
+  var errCom = ''.obs;
 
   fetchDetails({hasArgument = false, PendingProcessFlowModel? pendingProcessFlowModel = null}) async {
     LoadingScreen.show();
@@ -103,5 +105,22 @@ class ListItemDetailsController extends GetxController {
   String getTimeValue(String? eventdatetime) {
     var parts = eventdatetime!.split(' ');
     return parts[1].trim() ?? "";
+  }
+
+  void approve(bool hasComments) {
+    errCom.value = "";
+    if (hasComments) {
+      if (comments.text.toString().trim() == "") errCom.value = "Please enter comments";
+      return;
+    }
+    var body = {
+      "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
+      "TaskId": pendingTaskModel!.taskid ?? "",
+      "TaskType": pendingTaskModel!.tasktype ?? "",
+      "Action": "'+menuclick+'",
+      "StatusReason": "'+status +'",
+      "StatusText": "'+comments.text'"
+    };
+    var url = Const.getFullARMUrl(ServerConnections.API_DO_TASK_ACTIONS);
   }
 }
