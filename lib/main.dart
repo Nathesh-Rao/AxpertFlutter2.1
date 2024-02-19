@@ -69,6 +69,16 @@ class MyApp extends StatelessWidget {
         elevatedButtonTheme:
             ElevatedButtonThemeData(style: ButtonStyle(backgroundColor: MaterialStateProperty.all(MyColors.blue2))),
         primaryColor: Color(0xff003AA5),
+       /* inputDecorationTheme: InputDecorationTheme(
+            labelStyle: TextStyle(color: MyColors.blue2),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(
+                  style: BorderStyle.solid,
+                  color: MyColors.blue2
+              ),
+            )
+        ),*/
+
         scaffoldBackgroundColor: Colors.white,
        // colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.indigo),
       ),

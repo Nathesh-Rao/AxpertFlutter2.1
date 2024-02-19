@@ -6,14 +6,16 @@ import 'package:get/get.dart';
 
 class MenuDashboardPage extends StatelessWidget {
   MenuDashboardPage({super.key});
+
   var data = [_ChartData('CHN', 12), _ChartData('GER', 15), _ChartData('RUS', 30), _ChartData('BRZ', 6.4), _ChartData('IND', 14)];
   final MenuDashboardController menuDashboardController = Get.put(MenuDashboardController());
   var index = 2;
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        WidgetSlidingNotificationPanel(),
+        Visibility(visible: false, child: WidgetSlidingNotificationPanel()),
         SizedBox(height: 5),
         Expanded(
           child: Padding(

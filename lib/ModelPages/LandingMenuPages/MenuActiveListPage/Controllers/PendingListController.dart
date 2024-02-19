@@ -4,29 +4,36 @@ import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Models/PendingListModel.dart';
-import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Models/PendingProcessFlowModel.dart';
-import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Models/PendingTaskModel.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../Models/BulkApprovalCountModel.dart';
 
 class PendingListController extends GetxController {
   var subPage = true.obs;
   var needRefresh = true.obs;
   var pending_activeList = [].obs;
+  var bulkApprovalCount_list = [].obs;
+  var bulkApproval_activeList = [].obs;
   var pendingCount = "0";
 
   var selectedIconNumber = 1.obs; //1->default, 2-> reload, 3->accesstime, 4-> filter, 5=> checklist
+  var isBulkAppr_SelectAll = false.obs;
+
   // PendingTaskModel? pendingTaskModel;
   List<PendingListModel> activeList_Main = [];
+
   // PendingListModel? openModel;
   // String selectedTaskID = "";
   // var processFlowList = [].obs;
   TextEditingController searchController = TextEditingController();
   var statusListActiveIndex = 2;
+
   // ScrollController scrollController = ScrollController(initialScrollOffset: 100 * 3.0);
   ServerConnections serverConnections = ServerConnections();
   AppStorage appStorage = AppStorage();
+
   // var widgetProcessFlowNeedRefresh = true.obs;
 
   TextEditingController dateFromController = TextEditingController();
@@ -41,7 +48,10 @@ class PendingListController extends GetxController {
     // print("-----------PendingListController Called-------------");
     getNoOfPendingActiveTasks();
     // getPendingActiveList();
+    getBulkApprovalCount();
+    //getBulkActiveTasks("PEG");
   }
+
   Future<void> getNoOfPendingActiveTasks() async {
     LoadingScreen.show();
     var url = Const.getFullARMUrl(ServerConnections.API_GET_PENDING_ACTIVETASK_COUNT);
@@ -162,10 +172,7 @@ class PendingListController extends GetxController {
           if (pending_activeList.length == 0) {
             pending_activeList.value = activeList_Main;
             Get.snackbar("Oops!", "No details found!",
-                duration: Duration(seconds: 1),
-                snackPosition: SnackPosition.BOTTOM,
-                backgroundColor: Colors.redAccent,
-                colorText: Colors.white);
+                duration: Duration(seconds: 1), snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
           }
           needRefresh.value = true;
         }
@@ -174,8 +181,7 @@ class PendingListController extends GetxController {
   }
 
   void removeFilter() {
-    dateFromController.text =
-        dateToController.text = searchTextController.text = processNameController.text = fromUserController.text = "";
+    dateFromController.text = dateToController.text = searchTextController.text = processNameController.text = fromUserController.text = "";
     if (selectedIconNumber != 1) getNoOfPendingActiveTasks();
     selectedIconNumber.value = 1;
   }
@@ -198,4 +204,75 @@ class PendingListController extends GetxController {
   //     LoadingScreen.dismiss();
   //   });
   // }
+
+  Future<void> getBulkApprovalCount() async {
+    var url = Const.getFullARMUrl(ServerConnections.API_GET_BULK_APPROVAL_COUNT);
+    var body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
+
+    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
+    if (resp != "" && !resp.toString().contains("error")) {
+      var jsonResp = jsonDecode(resp);
+      if (jsonResp['result']['message'].toString() == "success") {
+        bulkApprovalCount_list.clear();
+        var dataList = jsonResp['result']['data'];
+
+        for (var item in dataList) {
+          BulkApprovalCountModel bulkApprovalCountModel = BulkApprovalCountModel.fromJson(item);
+          bulkApprovalCount_list.add(bulkApprovalCountModel);
+        }
+      }
+    }
+  }
+
+  Future<void> getBulkActiveTasks(String? processname) async {
+    bulkApproval_activeList.clear();
+    isBulkAppr_SelectAll.value = false;
+    var url = Const.getFullARMUrl(ServerConnections.API_GET_BULK_ACTIVETASKS);
+    var body = {
+      'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID),
+      "AppName": Const.PROJECT_NAME.toString(),
+      "tasktype": "Approve",
+      "processname": processname,
+      "touser": appStorage.retrieveValue(AppStorage.USER_NAME)
+    };
+
+    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
+    if (resp != "" && !resp.toString().contains("error")) {
+      var jsonResp = jsonDecode(resp);
+      if (jsonResp['result']['message'].toString() == "success") {
+        var dataList = jsonResp['result']['data'];
+
+        for (var item in dataList) {
+          PendingListModel bulkApproval_activeTaskModel = PendingListModel.fromJson(item);
+          bulkApproval_activeList.add(bulkApproval_activeTaskModel);
+        }
+      }
+    }
+  }
+
+  selectAll_BulkApproveList_item(value) {
+    isBulkAppr_SelectAll.value = value;
+    for (var item in bulkApproval_activeList) {
+      value == true ? item.bulkApprove_isSelected.value = true : item.bulkApprove_isSelected.value = false;
+    }
+  }
+
+  onChange_BulkApprItem(index, value) {
+    if (isBulkAppr_SelectAll.value == true) isBulkAppr_SelectAll.value = false;
+    print("ON_TAP: $value");
+    bulkApproval_activeList[index].bulkApprove_isSelected.value = value;
+    bulkApproval_activeList.refresh();
+  }
+
+  doBulkApprove() {
+    var list_taskId = "";
+    for (var item in bulkApproval_activeList) {
+      if (item.bulkApprove_isSelected.value == true) list_taskId.isEmpty ? list_taskId += item.taskid : list_taskId += "," + item.taskid;
+    }
+    print("list_taskId: $list_taskId");
+    if (list_taskId.isEmpty) {
+      Get.snackbar("Oops!", "Select atleast one task for approval.",
+          backgroundColor: Colors.redAccent, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM, duration: Duration(seconds: 3));
+    }
+  }
 }

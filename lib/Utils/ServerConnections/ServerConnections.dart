@@ -37,6 +37,9 @@ class ServerConnections extends GetConnect {
   static const String API_GET_COMPLETED_ACTIVETASK_COUNT = "api/v1/ARMGetCompletedTasksCount";
   static const String API_GET_FILTERED_COMPLETED_TASK = "api/v1/ARMGetFilteredCompletedTasks";
   static const String API_DO_TASK_ACTIONS = "api/v1/ARMDoTaskAction";
+  static const String API_GET_BULK_APPROVAL_COUNT = "api/v1/ARMGetBulkApprovalCount";
+  static const String API_GET_BULK_ACTIVETASKS = "api/v1/ARMGetBulkActiveTasks";
+
 
   AppStorage appStorage = AppStorage();
 

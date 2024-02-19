@@ -25,15 +25,46 @@ class MenuHomePage extends StatelessWidget {
                             crossAxisCount: 2, childAspectRatio: isTablet() ? 1.5 : 2.8),
                         itemCount: menuHomePageController.listOfCards.length,
                         itemBuilder: (context, index) {
-                          return Container(
-                              height: 600,
-                              margin: EdgeInsets.only(top: 10, right: 20, bottom: 10),
-                              child: WidgetCard(menuHomePageController.listOfCards[index]));
+                          return GestureDetector(
+                            onTap: () {
+                              captionOnTapFunction(menuHomePageController.listOfCards[index]);
+                            },
+                            child: Container(
+                                height: 600,
+                                margin: EdgeInsets.only(top: 10, right: 20, bottom: 10),
+                                child: WidgetCard(menuHomePageController.listOfCards[index])),
+                          );
                         },
                       ),
               )),
         ),
       ],
     );
+  }
+
+  captionOnTapFunction(cardModel) {
+    var link_id = cardModel.stransid;
+    var validity = false;
+    if (link_id.toLowerCase().startsWith('h')) {
+      if (link_id.toLowerCase().contains("hp")) {
+        link_id = link_id.toLowerCase().replaceAll("hp", "h");
+      }
+      validity = true;
+    } else {
+      if (link_id.toLowerCase().startsWith('i')) {
+        validity = true;
+      } else {
+        if (link_id.toLowerCase().startsWith('t')) {
+          validity = true;
+        } else
+          validity = false;
+      }
+    }
+    if (validity) {
+      // print(
+      //     "https://app.buzzily.com/run/aspx/AxMain.aspx?authKey=AXPERT-ARMSESSION-1ed2b2a1-e6f9-4081-b7cc-5ddcf50d8690&pname=" +
+      //         cardModel.stransid);
+      menuHomePageController.openBtnAction("button", link_id);
+    }
   }
 }

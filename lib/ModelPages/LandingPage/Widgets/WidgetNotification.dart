@@ -13,7 +13,7 @@ class WidgetNotification extends StatelessWidget {
         child: Row(
           children: [
             Image.asset(
-              'assets/images/announce.png',
+              'assets/images/announce2.png',
               width: 50,
               height: 50,
             ),

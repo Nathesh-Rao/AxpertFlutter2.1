@@ -27,8 +27,8 @@ class WidgetCard extends StatelessWidget {
           color: HexColor(menuHomePageController.getCardBackgroundColor(cardModel.colorcode.trim())), // ?? "ffffff"),
           borderRadius: BorderRadius.circular(10),
           // boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 20)] ,
-          border:
-              Border.all(width: 2, color: HexColor(menuHomePageController.getCardBackgroundColor(cardModel.colorcode.trim())))),
+          /*border:
+              Border.all(width: 2, color: HexColor(menuHomePageController.getCardBackgroundColor(cardModel.colorcode.trim())))*/),
       child: Padding(
         padding: EdgeInsets.only(left: 20, top: 10, right: 2),
         child: Column(
@@ -58,17 +58,14 @@ class WidgetCard extends StatelessWidget {
               ],
             ),
             menuHomePageController.actionData[cardModel.caption] == null ? SizedBox(height: 10) : SizedBox(height: 4),
-            GestureDetector(
-              onTap: () => captionOnTapFunction(cardModel),
-              child: Padding(
-                padding: const EdgeInsets.only(top: 5, bottom: 2, right: 5),
-                child: FittedBox(
-                  fit: BoxFit.fitWidth,
-                  child: Text(
-                    cardModel.caption,
-                    style: GoogleFonts.roboto(
-                        textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: HexColor("#444444"))),
-                  ),
+            Padding(
+              padding: const EdgeInsets.only(top: 5, bottom: 2, right: 5),
+              child: FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Text(
+                  cardModel.caption,
+                  style: GoogleFonts.roboto(
+                      textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: HexColor("#444444"))),
                 ),
               ),
             ),
@@ -194,31 +191,5 @@ class WidgetCard extends StatelessWidget {
       }
     }
     return widgeList;
-  }
-
-  captionOnTapFunction(CardModel cardModel) {
-    var link_id = cardModel.stransid;
-    var validity = false;
-    if (link_id.toLowerCase().startsWith('h')) {
-      if (link_id.toLowerCase().contains("hp")) {
-        link_id = link_id.toLowerCase().replaceAll("hp", "h");
-      }
-      validity = true;
-    } else {
-      if (link_id.toLowerCase().startsWith('i')) {
-        validity = true;
-      } else {
-        if (link_id.toLowerCase().startsWith('t')) {
-          validity = true;
-        } else
-          validity = false;
-      }
-    }
-    if (validity) {
-      // print(
-      //     "https://app.buzzily.com/run/aspx/AxMain.aspx?authKey=AXPERT-ARMSESSION-1ed2b2a1-e6f9-4081-b7cc-5ddcf50d8690&pname=" +
-      //         cardModel.stransid);
-      menuHomePageController.openBtnAction("button", link_id);
-    }
   }
 }

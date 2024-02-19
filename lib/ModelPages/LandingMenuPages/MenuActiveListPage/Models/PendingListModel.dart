@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+
 class PendingListModel {
   String touser;
   String processname;
@@ -44,6 +46,8 @@ class PendingListModel {
   String showbuttons;
   String hlink_transid;
   String hlink_params;
+
+  var bulkApprove_isSelected = false.obs;
 
   PendingListModel.fromJson(Map<String, dynamic> json)
       : touser = json['touser'].toString() ?? "",

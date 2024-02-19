@@ -98,7 +98,7 @@ class WidgetPendingListItem extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Icon(Icons.person),
+                    Icon(Icons.person,),
                     SizedBox(
                       width: 5,
                     ),

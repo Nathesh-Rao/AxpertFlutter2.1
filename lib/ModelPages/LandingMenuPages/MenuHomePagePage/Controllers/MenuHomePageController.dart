@@ -103,7 +103,7 @@ class MenuHomePageController extends GetxController {
       // var dataSourceUrl = baseUrl + GlobalConfiguration().get("HomeCardDataResponse").toString();
       var dataSourceUrl = Const.getFullARMUrl(ServerConnections.API_GET_HOMEPAGE_CARDSDATASOURCE);
       var dataSourceBody = body;
-      dataSourceBody["sqlParams"] = {"param": "value"};
+      dataSourceBody["sqlParams"] = {"param": "value", "username": appStorage.retrieveValue(AppStorage.USER_NAME)};
 
       actionData.clear();
       for (var items in setOfDatasource) {
