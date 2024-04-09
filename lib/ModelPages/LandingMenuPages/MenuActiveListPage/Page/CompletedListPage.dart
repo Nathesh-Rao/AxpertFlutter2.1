@@ -102,7 +102,9 @@ class CompletedListPage extends StatelessWidget {
                     child: Center(
                       child: Icon(
                         Icons.filter_alt,
-                        color: completedListController.selectedIconNumber.value == 4 ? Colors.white : HexColor('848D9C').withOpacity(0.7),
+                        color: completedListController.selectedIconNumber.value == 4
+                            ? Colors.white
+                            : HexColor('848D9C').withOpacity(0.7),
                         size: 28,
                       ),
                     ),
@@ -128,7 +130,9 @@ class CompletedListPage extends StatelessWidget {
                       child: Center(
                         child: Icon(
                           Icons.checklist,
-                          color: completedListController.selectedIconNumber.value == 5 ? Colors.white : HexColor('848D9C').withOpacity(0.7),
+                          color: completedListController.selectedIconNumber.value == 5
+                              ? Colors.white
+                              : HexColor('848D9C').withOpacity(0.7),
                           size: 28,
                         ),
                       ),
@@ -148,20 +152,22 @@ class CompletedListPage extends StatelessWidget {
                       print(completedListController.completed_activeList[index].toJson());
                       switch (completedListController.completed_activeList[index].tasktype.toString().toUpperCase()) {
                         case "MAKE":
-                          var URL = CommonMethods.activeList_CreateURL_MAKE(completedListController.completed_activeList[index], index);
+                          var URL =
+                              CommonMethods.activeList_CreateURL_MAKE(completedListController.completed_activeList[index], index);
                           if (!URL.isEmpty) Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(URL)]);
                           break;
                         case "CHECK":
                         case "APPROVE":
                           ListItemDetailsController listItemDetailsController = Get.put(ListItemDetailsController());
                           listItemDetailsController.openModel = completedListController.completed_activeList[index];
-                          Get.toNamed(Routes.ProjectListingPageDetailsPending);
+                          Get.toNamed(Routes.ProjectListingPageDetails);
                           break;
 
                         case "":
                         case "NULL":
                         case "CACHED SAVE":
-                          var URL = CommonMethods.activeList_CreateURL_MESSAGE(completedListController.completed_activeList[index], index);
+                          var URL = CommonMethods.activeList_CreateURL_MESSAGE(
+                              completedListController.completed_activeList[index], index);
                           if (!URL.isEmpty) Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(URL)]);
                           break;
                         default:

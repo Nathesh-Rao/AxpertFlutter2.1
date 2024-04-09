@@ -154,7 +154,9 @@ reBuild(PendingListController pendingListController, BuildContext context) {
                   child: Center(
                     child: Icon(
                       Icons.filter_alt,
-                      color: pendingListController.selectedIconNumber.value == 4 ? Colors.white : HexColor('848D9C').withOpacity(0.7),
+                      color: pendingListController.selectedIconNumber.value == 4
+                          ? Colors.white
+                          : HexColor('848D9C').withOpacity(0.7),
                       size: 28,
                     ),
                   ),
@@ -179,7 +181,9 @@ reBuild(PendingListController pendingListController, BuildContext context) {
                   child: Center(
                     child: Icon(
                       Icons.checklist,
-                      color: pendingListController.selectedIconNumber.value == 5 ? Colors.white : HexColor('848D9C').withOpacity(0.7),
+                      color: pendingListController.selectedIconNumber.value == 5
+                          ? Colors.white
+                          : HexColor('848D9C').withOpacity(0.7),
                       size: 28,
                     ),
                   ),
@@ -207,12 +211,13 @@ reBuild(PendingListController pendingListController, BuildContext context) {
                         ListItemDetailsController listItemDetailsController = Get.put(ListItemDetailsController());
                         listItemDetailsController.openModel = pendingListController.pending_activeList[index];
 
-                        Get.toNamed(Routes.ProjectListingPageDetailsPending);
+                        Get.toNamed(Routes.ProjectListingPageDetails);
                         break;
                       case "":
                       case "NULL":
                       case "CACHED SAVE":
-                        var URL = CommonMethods.activeList_CreateURL_MESSAGE(pendingListController.pending_activeList[index], index);
+                        var URL =
+                            CommonMethods.activeList_CreateURL_MESSAGE(pendingListController.pending_activeList[index], index);
                         if (!URL.isEmpty) Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(URL)]);
                         break;
                       default:
@@ -298,8 +303,9 @@ Widget showFilterDialog(BuildContext context, var pendingListController) {
                         hintText: "Process Name "),
                   ),
                   Center(
-                      child:
-                          Padding(padding: EdgeInsets.only(top: 10, bottom: 10), child: Text("OR", style: TextStyle(fontWeight: FontWeight.bold)))),
+                      child: Padding(
+                          padding: EdgeInsets.only(top: 10, bottom: 10),
+                          child: Text("OR", style: TextStyle(fontWeight: FontWeight.bold)))),
                   TextField(
                     controller: pendingListController.fromUserController,
                     decoration: InputDecoration(
@@ -317,8 +323,9 @@ Widget showFilterDialog(BuildContext context, var pendingListController) {
                         hintText: "From User "),
                   ),
                   Center(
-                      child:
-                          Padding(padding: EdgeInsets.only(top: 10, bottom: 10), child: Text("OR", style: TextStyle(fontWeight: FontWeight.bold)))),
+                      child: Padding(
+                          padding: EdgeInsets.only(top: 10, bottom: 10),
+                          child: Text("OR", style: TextStyle(fontWeight: FontWeight.bold)))),
                   TextField(
                     controller: pendingListController.dateFromController,
                     textAlign: TextAlign.center,
@@ -397,9 +404,11 @@ Widget showFilterDialog(BuildContext context, var pendingListController) {
 void selectDate(BuildContext context, TextEditingController text) async {
   FocusManager.instance.primaryFocus?.unfocus();
   const months = <String>['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  final DateTime? picked = await showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(1990), lastDate: DateTime.now());
+  final DateTime? picked =
+      await showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(1990), lastDate: DateTime.now());
   if (picked != null)
-    text.text = picked.day.toString().padLeft(2, '0') + "-" + months[picked.month - 1] + "-" + picked.year.toString().padLeft(2, '0');
+    text.text =
+        picked.day.toString().padLeft(2, '0') + "-" + months[picked.month - 1] + "-" + picked.year.toString().padLeft(2, '0');
 }
 
 Widget showBulkApprovalProcessDialog(BuildContext context, PendingListController pendingListController) {
@@ -433,7 +442,8 @@ Widget showBulkApprovalProcessDialog(BuildContext context, PendingListController
                         return ListTile(
                           onTap: () {
                             Get.back();
-                            pendingListController.getBulkActiveTasks(pendingListController.bulkApprovalCount_list[index].processname.toString());
+                            pendingListController
+                                .getBulkActiveTasks(pendingListController.bulkApprovalCount_list[index].processname.toString());
                             Get.dialog(showBulkApproval_DetailDialog(context, pendingListController));
                           },
                           title: WidgetBulkAppr_CountItem(pendingListController.bulkApprovalCount_list[index]),
@@ -565,7 +575,8 @@ Widget showBulkApproval_DetailDialog(BuildContext context, PendingListController
                         onChanged: (value) {
                           pendingListController.onChange_BulkApprItem(index, value);
                         },
-                        title: widgetBulkApproval_ListItem(pendingListController, pendingListController.bulkApproval_activeList[index]),
+                        title: widgetBulkApproval_ListItem(
+                            pendingListController, pendingListController.bulkApproval_activeList[index]),
                       );
                     },
                     separatorBuilder: (context, index) {
@@ -625,7 +636,8 @@ Widget widgetBulkApproval_ListItem(PendingListController pendingListController, 
             Expanded(
               child: Text(
                 itemModel.displaytitle.toString(),
-                style: GoogleFonts.roboto(textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: HexColor('#495057'))),
+                style: GoogleFonts.roboto(
+                    textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: HexColor('#495057'))),
                 textAlign: TextAlign.left,
                 maxLines: 2,
                 // selectable: true,

@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class WidgetNotification extends StatelessWidget {
   WidgetNotification(FirebaseMessageModel this.model, {super.key});
-  FirebaseMessageModel model;
+  final FirebaseMessageModel model;
   @override
   Widget build(BuildContext context) {
     return Padding(

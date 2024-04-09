@@ -7,7 +7,7 @@ import 'package:hexcolor/hexcolor.dart';
 
 class WidgetLandingAppBar extends StatelessWidget implements PreferredSizeWidget {
   WidgetLandingAppBar({super.key});
-  LandingPageController landingPageController = Get.find();
+  final LandingPageController landingPageController = Get.find();
 
   @override
   Widget build(BuildContext context) {

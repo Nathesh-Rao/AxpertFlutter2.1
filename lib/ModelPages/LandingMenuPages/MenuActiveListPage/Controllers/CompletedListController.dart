@@ -9,8 +9,6 @@ import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../Constants/Routes.dart';
-
 class CompletedListController extends GetxController {
   var subPage = true.obs;
   var needRefresh = true.obs;
@@ -49,13 +47,13 @@ class CompletedListController extends GetxController {
     var url = Const.getFullARMUrl(ServerConnections.API_GET_COMPLETED_ACTIVETASK_COUNT);
     var body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
     var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
-    if (resp != "" && !resp.toString().contains("error")) {
+    if (resp != "") {
       var jsonResp = jsonDecode(resp);
       if (jsonResp['result']['message'].toString() == "success") {
         completedCount = jsonResp['result']['data'].toString();
       }
+      await getPendingActiveList();
     }
-    await getPendingActiveList();
     LoadingScreen.dismiss();
   }
 
@@ -70,7 +68,7 @@ class CompletedListController extends GetxController {
     };
 
     var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
-    if (resp != "" && !resp.toString().contains("error")) {
+    if (resp != "") {
       var jsonResp = jsonDecode(resp);
       if (jsonResp['result']['message'].toString() == "success") {
         activeList_Main.clear();
@@ -159,7 +157,7 @@ class CompletedListController extends GetxController {
   //   }
   //
   //   var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
-  //   if (resp != "" && !resp.toString().contains("error")) {
+  //   if (resp != "" ) {
   //     var jsonResp = jsonDecode(resp);
   //     if (jsonResp['result']['message'].toString() == "success") {
   //       //process Flow ********************************
@@ -226,7 +224,7 @@ class CompletedListController extends GetxController {
       LoadingScreen.show();
       var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
       LoadingScreen.dismiss();
-      if (resp != "" && !resp.toString().contains("error")) {
+      if (resp != "") {
         var jsonResp = jsonDecode(resp);
         if (jsonResp['result']['message'].toString() == "success") {
           var taskList = jsonResp['result']['completedtasks'];
@@ -238,7 +236,10 @@ class CompletedListController extends GetxController {
           if (completed_activeList.length == 0) {
             completed_activeList.value = activeList_Main;
             Get.snackbar("Oops!", "No details found!",
-                duration: Duration(seconds: 1), snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
+                duration: Duration(seconds: 1),
+                snackPosition: SnackPosition.BOTTOM,
+                backgroundColor: Colors.redAccent,
+                colorText: Colors.white);
           }
           needRefresh.value = true;
         }
@@ -247,7 +248,8 @@ class CompletedListController extends GetxController {
   }
 
   void removeFilter() {
-    dateFromController.text = dateToController.text = searchTextController.text = processNameController.text = fromUserController.text = "";
+    dateFromController.text =
+        dateToController.text = searchTextController.text = processNameController.text = fromUserController.text = "";
     if (selectedIconNumber != 1) getNoOfCompletedActiveTasks();
     selectedIconNumber.value = 1;
   }
@@ -270,5 +272,4 @@ class CompletedListController extends GetxController {
       LoadingScreen.dismiss();
     });
   }
-
 }

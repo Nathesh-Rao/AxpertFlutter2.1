@@ -284,25 +284,25 @@ class _LoginPageState extends State<LoginPage> {
                                         decoration: TextDecoration.underline,
                                         fontWeight: FontWeight.w400,
                                         fontSize: 12,
-                                        color: Colors.blue,
+                                        color: MyColors.blue2,
                                         letterSpacing: 1),
                                   )),
                             ),
                             FittedBox(
-                              child: Text(" and the",
+                              child: Text(" and the ",
                                   style: GoogleFonts.poppins(
                                     textStyle: TextStyle(
                                         fontWeight: FontWeight.w400, fontSize: 12, color: Colors.black, letterSpacing: 1),
                                   )),
                             ),
                             FittedBox(
-                              child: Text(" Terms of Use",
+                              child: Text("Terms of Use",
                                   style: GoogleFonts.poppins(
                                     textStyle: TextStyle(
                                         decoration: TextDecoration.underline,
                                         fontWeight: FontWeight.w400,
                                         fontSize: 12,
-                                        color: Colors.blue,
+                                        color: MyColors.blue2,
                                         letterSpacing: 1),
                                   )),
                             ),
@@ -321,6 +321,24 @@ class _LoginPageState extends State<LoginPage> {
                           // width: MediaQuery.of(context).size.width * 0.075,
                           fit: BoxFit.fill,
                         ),
+
+                        Visibility(
+                          visible: loginController.willAuthenticate.value,
+                          child: GestureDetector(
+                            onTap: () {
+                              loginController.displayAuthenticationDialog();
+                            },
+                            child: Container(
+                              color: Colors.transparent,
+                              padding: EdgeInsets.all(20),
+                              child: Icon(
+                                Icons.fingerprint_outlined,
+                                color: MyColors.blue2,
+                                size: MediaQuery.of(context).size.height * 0.04,
+                              ),
+                            ),
+                          ),
+                        )
                       ],
                     ),
                   ),

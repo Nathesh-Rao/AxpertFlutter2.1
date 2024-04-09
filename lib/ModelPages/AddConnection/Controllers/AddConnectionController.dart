@@ -235,7 +235,7 @@ class AddConnectionController extends GetxController {
     conNameController.text = projectModel.projectname;
     conCaptionController.text = projectModel.projectCaption;
     tempProjectName = projectModel.projectname;
-
+    errArmUrl.value = errCaption.value = errCode.value = errName.value = errWebUrl.value = '';
     Get.toNamed(Routes.AddNewConnection, arguments: [2]);
   }
 
@@ -273,9 +273,25 @@ class AddConnectionController extends GetxController {
         if (cached == projectName) appStorage.remove(AppStorage.CACHED);
       }
     }
+    deleteCredentials(projectName);
     projectListingController.getConnections();
     deleted.value = true;
     projectListingController.needRefresh.value = true;
+  }
+
+  void deleteCredentials(projectName) {
+    print("project name to delete: $projectName");
+    Map users = appStorage.retrieveValue(AppStorage.USERID) ?? {};
+    users.remove(projectName);
+    appStorage.storeValue(AppStorage.USERID, users);
+
+    var passes = appStorage.retrieveValue(AppStorage.USER_PASSWORD) ?? {};
+    passes.remove(projectName);
+    appStorage.storeValue(AppStorage.USER_PASSWORD, passes);
+
+    var groups = appStorage.retrieveValue(AppStorage.USER_GROUP) ?? {};
+    groups.remove(projectName);
+    appStorage.storeValue(AppStorage.USER_GROUP, groups);
   }
 
   void decodeQRResult(String data) {

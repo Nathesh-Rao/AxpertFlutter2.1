@@ -31,6 +31,7 @@ class _ConnectCodeState extends State<ConnectCode> {
                 SizedBox(height: 20),
                 TextField(
                   controller: addConnectionController.connectionCodeController,
+                  onSubmitted: (value) => addConnectionController.connectionCodeClick(),
                   decoration: InputDecoration(
                       border: OutlineInputBorder(borderSide: BorderSide(width: 1), borderRadius: BorderRadius.circular(10)),
                       hintText: "Enter Connection Code",

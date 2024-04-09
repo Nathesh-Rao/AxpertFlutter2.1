@@ -282,7 +282,7 @@ getGridItem(MenuMorePageController menuMorePageController, MenuItemModel model, 
             child: Padding(
               padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
               child: Icon(
-                menuMorePageController.IconList[index % 8], //icon
+                menuMorePageController.generateIcon(model, index), //icon
                 color: MyColors.white1,
                 size: 25,
               ),

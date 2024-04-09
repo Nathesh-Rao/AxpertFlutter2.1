@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 
 class MenuHomePage extends StatelessWidget {
   MenuHomePage({super.key});
-  MenuHomePageController menuHomePageController = Get.put(MenuHomePageController());
+  final MenuHomePageController menuHomePageController = Get.put(MenuHomePageController());
 
   @override
   Widget build(BuildContext context) {

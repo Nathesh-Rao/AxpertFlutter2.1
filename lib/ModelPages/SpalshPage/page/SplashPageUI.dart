@@ -1,9 +1,11 @@
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
+import 'package:axpertflutter/Constants/VersionUpdateClearOldData.dart';
 import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/ModelPages/ProjectListing/Model/ProjectModel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:local_auth/local_auth.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -22,6 +24,8 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
     super.initState();
     _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 800));
     _animationController.forward();
+    VersionUpdateClearOldData.clearAllOldData();
+    checkIfDeviceSupportBiometric();
     Future.delayed(Duration(milliseconds: 1800), () {
       _animationController.stop();
       var cached = appStorage.retrieveValue(AppStorage.CACHED);
@@ -70,6 +74,25 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
         ],
       ),
     );
+  }
+
+  void checkIfDeviceSupportBiometric() async {
+    final LocalAuthentication auth = LocalAuthentication();
+    final bool canAuthenticateWithBiometrics = await auth.canCheckBiometrics;
+    final bool canAuthenticate = canAuthenticateWithBiometrics || await auth.isDeviceSupported();
+    print("canAuthenticate: $canAuthenticate");
+    if (canAuthenticate) {
+      final List<BiometricType> availableBiometrics = await auth.getAvailableBiometrics();
+      print("List: $availableBiometrics");
+      // if (availableBiometrics.contains(BiometricType.fingerprint) ||
+      //     availableBiometrics.contains(BiometricType.weak) ||
+      //     availableBiometrics.contains(BiometricType.strong))
+      if (availableBiometrics.isNotEmpty) {
+        AppStorage().storeValue(AppStorage.CAN_AUTHENTICATE, canAuthenticate);
+      } else {
+        AppStorage().remove(AppStorage.CAN_AUTHENTICATE);
+      }
+    }
   }
 }
 /*

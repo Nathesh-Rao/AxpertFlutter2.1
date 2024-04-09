@@ -9,6 +9,7 @@ import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:material_icons_named/material_icons_named.dart';
 
 class MenuMorePageController extends GetxController {
   InternetConnectivity internetConnectivity = Get.find();
@@ -20,6 +21,7 @@ class MenuMorePageController extends GetxController {
   Set menuHeadersMain = {}; //master
   var finalMenuHeader; //master
   var headingWiseData = {}; //map  //Master
+  var finalHeadingWiseData = {}; //map  //Master
 
   var fetchData = {}.obs;
   var fetchList = [].obs;
@@ -53,7 +55,7 @@ class MenuMorePageController extends GetxController {
     var mUrl = Const.getFullARMUrl(ServerConnections.API_GET_MENU);
     var conectBody = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
     var menuResp = await serverConnections.postToServer(url: mUrl, body: jsonEncode(conectBody), isBearer: true);
-    if (menuResp != "" && !menuResp.toString().contains("error")) {
+    if (menuResp != "") {
       var menuJson = jsonDecode(menuResp);
       if (menuJson['result']['success'].toString() == "true") {
         for (var menuItem in menuJson['result']["pages"]) {
@@ -62,6 +64,7 @@ class MenuMorePageController extends GetxController {
         }
       }
     }
+    menuListMain..sort((a, b) => a.rootnode.toString().toLowerCase().compareTo(b.rootnode.toString().toLowerCase()));
     reOrganise(menuListMain, firstCall: true);
   }
 
@@ -70,11 +73,20 @@ class MenuMorePageController extends GetxController {
     headingWiseData.clear();
     for (var item in menuList) {
       var rootNode = item.rootnode == "" ? "Home" : item.rootnode;
+      if (item.caption.toString() == "") item.caption = "No Name";
       menuHeadersMain.add(rootNode);
       List<MenuItemModel> list = [];
       list = headingWiseData[rootNode] ?? [];
       list.add(item);
+      list..sort((a, b) => a.caption.toString().toLowerCase().compareTo(b.caption.toString().toLowerCase()));
       headingWiseData[rootNode] = list;
+      if (firstCall) {
+        List<MenuItemModel> list2 = [];
+        list2 = finalHeadingWiseData[rootNode] ?? [];
+        list2.add(item);
+        list2..sort((a, b) => a.caption.toString().toLowerCase().compareTo(b.caption.toString().toLowerCase()));
+        finalHeadingWiseData[rootNode] = list2;
+      }
     }
     //create for display
     fetchList.value = menuHeadersMain.toList();
@@ -123,5 +135,44 @@ class MenuMorePageController extends GetxController {
         Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(itemModel.url)]);
       }
     }
+  }
+
+  IconData? generateIcon(MenuItemModel subMenu, index) {
+    var iconName = subMenu.icon;
+
+    if (iconName.contains("material-icons")) {
+      iconName = iconName.replaceAll("|material-icons", "");
+      return materialIcons[iconName];
+    } else {
+      switch (subMenu.pagetype.trim().toUpperCase()[0]) {
+        case "T":
+          return Icons.assignment;
+        case "I":
+          return Icons.view_list;
+        case "W":
+        case "H":
+          return Icons.code;
+        default:
+          return IconList[index++ % 8];
+      }
+    }
+    return IconList[index++ % 8];
+    if (iconName.contains(".png")) {
+      return null;
+    }
+    switch (subMenu.type.toUpperCase()) {
+      case "T":
+        return null;
+      case "P":
+        return null;
+      case "I":
+        return null;
+      case "H":
+        return null;
+      default:
+        return null;
+    }
+
+    return null;
   }
 }
