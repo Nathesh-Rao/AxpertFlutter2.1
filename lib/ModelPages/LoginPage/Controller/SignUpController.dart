@@ -121,7 +121,8 @@ class SignUpController extends GetxController {
   }
 
   validateForm() {
-    errUserId.value = errUserName.value = errUserPass.value = errUserConPass.value = errUserEmail.value = errUserMobile.value = '';
+    errUserId.value =
+        errUserName.value = errUserPass.value = errUserConPass.value = errUserEmail.value = errUserMobile.value = '';
     Pattern pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{7,}$';
     RegExp regex = RegExp(pattern.toString());
 
@@ -202,7 +203,7 @@ class SignUpController extends GetxController {
       var url = Const.getFullARMUrl(ServerConnections.API_ADDUSER);
       var responses = await serverConnections.postToServer(url: url, body: body);
       try {
-        if (responses != "" && !responses.toString().toLowerCase().contains("error")) {
+        if (responses != "") {
           var jsonResponse = jsonDecode(responses);
           if (responses.toString().toLowerCase().contains("otp")) {
             otpAttempts.value = jsonResponse["result"]["otpattemptsleft"];
@@ -265,7 +266,7 @@ class SignUpController extends GetxController {
     var url = Const.getFullARMUrl(ServerConnections.API_OTP_VALIDATE_USER);
     var responses = await serverConnections.postToServer(url: url, body: jsonEncode(otpBody));
 
-    if (responses != "" && !responses.toString().toLowerCase().contains("error")) {
+    if (responses != "") {
       var jsonResp = jsonDecode(responses);
       if (jsonResp['result']['success'].toString() == "false") {
         errOtp.value = jsonResp['result']['message'];
@@ -281,7 +282,8 @@ class SignUpController extends GetxController {
                 child: Text("Ok")));
       }
     } else {
-      Get.snackbar("Alert!", "Some error occured", snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red, colorText: Colors.white);
+      Get.snackbar("Alert!", "Some error occured",
+          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red, colorText: Colors.white);
     }
     reSendOtpCount++;
     LoadingScreen.dismiss();

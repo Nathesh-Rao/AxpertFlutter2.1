@@ -1,12 +1,10 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/const.dart';
-import 'package:axpertflutter/ModelPages/InApplicationWebView/page/WebViewActiveList.dart';
 import 'package:axpertflutter/ModelPages/InApplicationWebView/page/WebViewCalendar.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Page/MenuActiveListPage.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuDashboardPage/Page/MenuDashboardPage.dart';
@@ -25,9 +23,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:text_scroll/text_scroll.dart';
-import 'package:path_provider/path_provider.dart';
 
 class LandingPageController extends GetxController with WidgetsBindingObserver {
   TextEditingController userCtrl = TextEditingController();
@@ -345,7 +343,6 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
               } catch (e) {}
               appStorage.storeValue(AppStorage.USER_NAME, "");
               await serverConnections.postToServer(url: url, body: jsonEncode(body));
-              // print(resp);
               LoadingScreen.dismiss();
               Get.offAllNamed(Routes.Login);
               // if (resp != "" && !resp.toString().contains("error")) {
@@ -669,16 +666,12 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
       menuList.add(wid2);
     }
     menuList.add(Container(
-      height: 100,
-      child: Align(
-          alignment: Alignment.bottomCenter,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 20, left: 10),
-            child: Text(
-              ' App Version: 2.1.1\n© agile-labs.com 2023',
-              textAlign: TextAlign.center,
-            ),
-          )),
+      height: 70,
+      child: Center(
+          child: Text(
+        'App Version: ${Const.APP_VERSION}\n© agile-labs.com 2023',
+        textAlign: TextAlign.center,
+      )),
     ));
     return menuList;
   }

@@ -34,16 +34,8 @@ class LoginController extends GetxController {
     fetchUserTypeList();
     fetchRememberedData();
     dropDownItemChanged(ddSelectedValue);
-    if (userNameController.text.toString().trim() != "") {
-      rememberMe.value = true;
-      // if ((AppStorage().retrieveValue(AppStorage.CAN_AUTHENTICATE) ?? false)) {
-      //   AppStorage().storeValue(AppStorage.WILL_AUTHENTICATE, true);
-      //   willAuthenticate = true;
-      // } else {
-      //   AppStorage().storeValue(AppStorage.WILL_AUTHENTICATE, false);
-      //   willAuthenticate = false;
-      // }
-    }
+    if (userNameController.text.toString().trim() != "") rememberMe.value = true;
+
     setWillAuthenticate();
 
     FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -103,7 +95,7 @@ class LoginController extends GetxController {
   //   LoadingScreen.show();
   //   var url = Const.getFullARMUrl(ServerConnections.API_GET_SIGNINDETAILS);
   //   var body = Const.getAppBody();
-  //    await serverConnections.postToServer(url: url, body: body);
+  //   await serverConnections.postToServer(url: url, body: body);
   //   LoadingScreen.dismiss();
   // }
 
@@ -169,7 +161,7 @@ class LoginController extends GetxController {
       // var data = serverConnections.parseData(response);
       var response = await serverConnections.postToServer(url: url, body: body);
 
-      if (response != "" || !response.toString().toLowerCase().contains("error")) {
+      if (response != "") {
         var json = jsonDecode(response);
         // print(json["result"]["sessionid"].toString());
         if (json["result"]["success"].toString().toLowerCase() == "true") {
@@ -220,7 +212,6 @@ class LoginController extends GetxController {
 
         var url = Const.getFullARMUrl(ServerConnections.API_GOOGLESIGNIN_SSO);
         var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body));
-        // LoadingScreen.dismiss();
         if (resp != "") {
           var jsonResp = jsonDecode(resp);
           // print(jsonResp);
@@ -288,12 +279,11 @@ class LoginController extends GetxController {
 
   getVersionName() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    // String appName = packageInfo.appName;
-    // String packageName = packageInfo.packageName;
+    String appName = packageInfo.appName;
+    String packageName = packageInfo.packageName;
     var version = packageInfo.version;
-    // String buildNumber = packageInfo.buildNumber;
-
-    return version;
+    String buildNumber = packageInfo.buildNumber;
+    Const.APP_VERSION = version;
   }
 
   void rememberCredentials() {

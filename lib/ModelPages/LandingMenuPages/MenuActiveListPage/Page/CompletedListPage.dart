@@ -6,6 +6,7 @@ import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Con
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Page/PendingListPage.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Widgets/WidgetCompletedListItem.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Widgets/WidgetDottedSeparator.dart';
+import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetNoDataFound.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -144,6 +145,12 @@ class CompletedListPage extends StatelessWidget {
           ),
         ),
         // SizedBox(height: 10),
+        Visibility(
+            visible: (completedListController.completed_activeList.length == 0 && !completedListController.isLoading.value)
+                ? true
+                : false,
+            child: WidgetNoDataFound()),
+
         Expanded(
             child: ListView.separated(
                 itemBuilder: (context, index) {

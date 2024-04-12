@@ -392,7 +392,7 @@ class _SignUpUserState extends State<SignUpUser> {
                               },
                               child: Container(
                                 height: 50,
-                                decoration: BoxDecoration(color: Colors.blue.shade400, borderRadius: BorderRadius.circular(20)),
+                                decoration: BoxDecoration(color: MyColors.blue2, borderRadius: BorderRadius.circular(20)),
                                 child: Center(
                                   child: Text('Register',
                                       style: TextStyle(

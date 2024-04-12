@@ -68,7 +68,7 @@ class MenuHomePageController extends GetxController {
     var url = Const.getFullARMUrl(ServerConnections.API_GET_HOMEPAGE_CARDS);
     var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
     // print(resp);
-    if (resp != "" ) {
+    if (resp != "") {
       var jsonResp = jsonDecode(resp);
       if (jsonResp['result']['success'].toString() == "true") {
         listOfCards.clear();
@@ -82,7 +82,7 @@ class MenuHomePageController extends GetxController {
         //error
       }
     }
-  // if (listOfCards.length == 0) {
+    // if (listOfCards.length == 0) {
     //   print("Length:   0");
     //   Get.defaultDialog(
     //       title: "Alert!",
@@ -114,7 +114,6 @@ class MenuHomePageController extends GetxController {
         if (items.toString() != "") {
           dataSourceBody["datasource"] = items;
           // setOfDatasource.remove(items);
-  print("dataSourceBody: ${dataSourceBody.toString()}");
           var dsResp = await serverConnections.postToServer(url: dataSourceUrl, isBearer: true, body: jsonEncode(dataSourceBody));
           if (dsResp != "") {
             var jsonDSResp = jsonDecode(dsResp);
@@ -311,4 +310,3 @@ class MenuHomePageController extends GetxController {
     LoadingScreen.dismiss();
   }
 }
-

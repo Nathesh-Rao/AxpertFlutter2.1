@@ -1,5 +1,6 @@
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuDashboardPage/Controllers/MenuDashboaardController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuDashboardPage/Widgets/WidgetCharts.dart';
+import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetNoDataFound.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetSlidingNotification.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,6 +15,7 @@ class MenuDashboardPage extends StatelessWidget {
       children: [
         WidgetSlidingNotificationPanel(),
         SizedBox(height: 5),
+        Visibility(visible: menuDashboardController.chartList.length == 0 ? true : false, child: WidgetNoDataFound()),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.all(10),

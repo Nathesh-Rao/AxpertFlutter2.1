@@ -8,6 +8,7 @@ class Const {
   static String PROJECT_NAME = "axpertqa11";
   static String ARM_URL = "";
   static String GUID = "";
+  static String APP_VERSION = "";
   static String FIREBASE_TOKEN = "";
   static const String CLOUD_PROJECT = "axpmobileclient";
   static const String CLOUD_URL = "";

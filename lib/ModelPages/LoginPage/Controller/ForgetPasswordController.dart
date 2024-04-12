@@ -88,7 +88,7 @@ class ForgetPasswordController extends GetxController {
       var url = Const.getFullARMUrl(ServerConnections.API_FORGETPASSWORD);
       var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body));
       LoadingScreen.dismiss();
-      if (resp.toString() != "" && !resp.toString().toLowerCase().contains("error")) {
+      if (resp.toString() != "") {
         var jsonMsg = jsonDecode(resp);
         print(jsonMsg);
         if (jsonMsg['result']['success'].toString() == "false") {
@@ -128,7 +128,7 @@ class ForgetPasswordController extends GetxController {
     var url = Const.getFullARMUrl(ServerConnections.API_OTP_VALIDATE_USER);
     var responses = await serverConnections.postToServer(url: url, body: jsonEncode(otpBody));
     //print(responses);
-    if (responses != "" && !responses.toString().toLowerCase().contains("error")) {
+    if (responses != "") {
       var jsonResp = jsonDecode(responses);
       if (jsonResp['result']['success'].toString() == "false") {
         otpError.value = jsonResp['result']['message'];

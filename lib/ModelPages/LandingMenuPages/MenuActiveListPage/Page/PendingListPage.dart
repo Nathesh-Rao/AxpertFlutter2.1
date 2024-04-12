@@ -3,6 +3,7 @@ import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Con
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Controllers/PendingListController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Widgets/WidgetDottedSeparator.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Widgets/WidgetPendingListItem.dart';
+import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetNoDataFound.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -194,6 +195,11 @@ reBuild(PendingListController pendingListController, BuildContext context) {
         ),
       ),
       // SizedBox(height: 10),
+      Visibility(
+          visible:
+              (pendingListController.pending_activeList.length == 0 && !pendingListController.isLoading.value) ? true : false,
+          child: WidgetNoDataFound()),
+
       Expanded(
           child: ListView.separated(
               itemBuilder: (context, index) {

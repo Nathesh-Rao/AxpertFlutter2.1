@@ -17,6 +17,7 @@ class PendingListController extends GetxController {
   var bulkApprovalCount_list = [].obs;
   var bulkApproval_activeList = [].obs;
   var pendingCount = "0";
+  var isLoading = false.obs;
 
   var selectedIconNumber = 1.obs; //1->default, 2-> reload, 3->accesstime, 4-> filter, 5=> checklist
   var isBulkAppr_SelectAll = false.obs;
@@ -54,6 +55,7 @@ class PendingListController extends GetxController {
 
   Future<void> getNoOfPendingActiveTasks() async {
     LoadingScreen.show();
+    isLoading.value = true;
     var url = Const.getFullARMUrl(ServerConnections.API_GET_PENDING_ACTIVETASK_COUNT);
     var body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
     var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
@@ -64,6 +66,7 @@ class PendingListController extends GetxController {
       }
       await getPendingActiveList();
     }
+    isLoading.value = false;
     LoadingScreen.dismiss();
   }
 

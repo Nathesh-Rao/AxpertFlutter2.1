@@ -345,7 +345,7 @@ class AddConnectionController extends GetxController {
     var url = baseUrl + ServerConnections.API_GET_SIGNINDETAILS;
     var body = "{\"appname\":\"" + conNameController.text.trim() + "\"}";
     final response = await serverConnections.postToServer(url: url, body: body);
-    if (response != "" || !response.toString().toLowerCase().contains("error")) {
+    if (response != "") {
       var json = jsonDecode(response);
       if (json["result"]["message"].toString().toLowerCase() == "success")
         return true;

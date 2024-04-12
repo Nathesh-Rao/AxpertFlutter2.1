@@ -14,6 +14,7 @@ class CompletedListController extends GetxController {
   var needRefresh = true.obs;
   var completed_activeList = [].obs;
   var completedCount = "0";
+  var isLoading = false.obs;
 
   var selectedIconNumber = 1.obs; //1->default, 2-> reload, 3->accesstime, 4-> filter, 5=> checklist
   PendingTaskModel? completedTaskModel;
@@ -44,6 +45,7 @@ class CompletedListController extends GetxController {
 
   Future<void> getNoOfCompletedActiveTasks() async {
     LoadingScreen.show();
+    isLoading.value = true;
     var url = Const.getFullARMUrl(ServerConnections.API_GET_COMPLETED_ACTIVETASK_COUNT);
     var body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
     var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
@@ -54,6 +56,7 @@ class CompletedListController extends GetxController {
       }
       await getPendingActiveList();
     }
+    isLoading.value = false;
     LoadingScreen.dismiss();
   }
 
