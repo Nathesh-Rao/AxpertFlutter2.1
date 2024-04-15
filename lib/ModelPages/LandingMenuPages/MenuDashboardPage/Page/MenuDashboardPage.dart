@@ -1,25 +1,24 @@
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuDashboardPage/Controllers/MenuDashboaardController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuDashboardPage/Widgets/WidgetCharts.dart';
+import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetNoDataFound.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetSlidingNotification.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class MenuDashboardPage extends StatelessWidget {
   MenuDashboardPage({super.key});
-
-  var data = [_ChartData('CHN', 12), _ChartData('GER', 15), _ChartData('RUS', 30), _ChartData('BRZ', 6.4), _ChartData('IND', 14)];
   final MenuDashboardController menuDashboardController = Get.put(MenuDashboardController());
-  var index = 2;
-
+  final index = 2;
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Visibility(visible: false, child: WidgetSlidingNotificationPanel()),
+        WidgetSlidingNotificationPanel(),
         SizedBox(height: 5),
+        Visibility(visible: menuDashboardController.chartList.length == 0 ? true : false, child: WidgetNoDataFound()),
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10),
+            padding: const EdgeInsets.all(10),
             child: ListView.separated(
               itemCount: menuDashboardController.chartList.length,
               shrinkWrap: true,
@@ -34,13 +33,6 @@ class MenuDashboardPage extends StatelessWidget {
       ],
     );
   }
-}
-
-class _ChartData {
-  _ChartData(this.x, this.y);
-
-  final String x;
-  final double y;
 }
 
 /*

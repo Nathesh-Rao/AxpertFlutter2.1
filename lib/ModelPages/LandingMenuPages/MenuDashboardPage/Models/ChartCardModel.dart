@@ -34,7 +34,7 @@ class ChartData {
 
   ChartData.fromJson(Map<String, dynamic> json)
       : x_axis = json['x_axis'].toString() ?? "",
-        value = (json['value'].toString() == '' ? "-1" : json['value'].toString() ?? "-1"),
+        value = (json['value'].toString() == '' ? "-1" : (json['value'].toString() ?? "-1")),
         link = json['link'].toString() ?? "",
         data_label = json['data_label'].toString() ?? "",
         group_column = json['group_column'].toString() ?? "",

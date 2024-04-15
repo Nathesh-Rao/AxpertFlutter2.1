@@ -75,8 +75,8 @@ doRefresh(String currentRoute) {
   print(currentRoute);
   switch (currentRoute) {
     case Routes.Login:
-      LoginController loginController = Get.find();
-      loginController.fetchUserTypeList();
+      // LoginController loginController = Get.find();
+      // loginController.fetchUserTypeList();
       break;
     default:
       break;

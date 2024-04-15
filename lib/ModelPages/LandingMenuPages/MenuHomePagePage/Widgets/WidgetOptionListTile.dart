@@ -6,11 +6,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 class WidgetOptionListTile extends StatelessWidget {
-  CardOptionModel cardOptionModel;
+  final CardOptionModel cardOptionModel;
 
   WidgetOptionListTile(CardOptionModel this.cardOptionModel, {super.key});
 
-  MenuHomePageController menuHomePageController = Get.find();
+  final MenuHomePageController menuHomePageController = Get.find();
 
   @override
   Widget build(BuildContext context) {

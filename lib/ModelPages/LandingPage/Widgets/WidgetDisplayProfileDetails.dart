@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 class WidgetDisplayProfileDetails extends StatelessWidget {
   WidgetDisplayProfileDetails({super.key});
 
-  LandingPageController landingPageController = Get.find();
+  final LandingPageController landingPageController = Get.find();
 
   @override
   Widget build(BuildContext context) {

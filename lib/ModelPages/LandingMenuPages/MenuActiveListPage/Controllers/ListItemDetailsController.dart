@@ -71,7 +71,7 @@ class ListItemDetailsController extends GetxController {
     }
 
     var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
-    if (resp != "" && !resp.toString().contains("error")) {
+    if (resp != "") {
       var jsonResp = jsonDecode(resp);
       if (jsonResp['result']['message'].toString() == "success") {
         //process Flow ********************************

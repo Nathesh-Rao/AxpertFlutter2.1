@@ -15,8 +15,7 @@ class Routes {
   static const String AddNewConnection = "/AddConnection";
   static const String InApplicationWebViewer = "/InApplicationWebViewer";
   static const String ProjectListingPage = "/ProjectListingPage";
-  static const String ProjectListingPageDetailsPending = "/ProjectListingPage/PendingDetails";
-  // static const String ProjectListingPageDetailsCompleted = "/ProjectListingPage/CompletedDetails";
+  static const String ProjectListingPageDetails = "/ProjectListingPage/Details";
   static const String Login = "/Login";
   static const String SignUp = "/SignUp";
   static const String ForgetPassword = "/ForgetPassword";
@@ -47,15 +46,10 @@ class RoutePages {
       transition: Transition.rightToLeft,
     ),
     GetPage(
-      name: Routes.ProjectListingPageDetailsPending,
+      name: Routes.ProjectListingPageDetails,
       page: () => PendingListItemDetails(),
       transition: Transition.rightToLeft,
     ),
-    // GetPage(
-    //   name: Routes.ProjectListingPageDetailsCompleted,
-    //   page: () => CompletedListItemDetails(),
-    //   transition: Transition.rightToLeft,
-    // ),
     GetPage(
       name: Routes.Login,
       page: () => LoginPage(),

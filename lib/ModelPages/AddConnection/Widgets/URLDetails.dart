@@ -34,36 +34,37 @@ class _URLDetailsState extends State<URLDetails> {
                   SizedBox(height: 20),
                   TextField(
                       controller: addConnectionController.webUrlController,
+                      textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                              borderSide: BorderSide(width: 1), borderRadius: BorderRadius.circular(10)),
+                          border: OutlineInputBorder(borderSide: BorderSide(width: 1), borderRadius: BorderRadius.circular(10)),
                           hintText: "https://",
                           errorText: addConnectionController.evaluateErrorText(addConnectionController.errWebUrl),
                           label: Text("Web URL"))),
                   SizedBox(height: 20),
                   TextField(
                       controller: addConnectionController.armUrlController,
+                      textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                              borderSide: BorderSide(width: 1), borderRadius: BorderRadius.circular(10)),
+                          border: OutlineInputBorder(borderSide: BorderSide(width: 1), borderRadius: BorderRadius.circular(10)),
                           hintText: "Enter Arm Url",
                           errorText: addConnectionController.evaluateErrorText(addConnectionController.errArmUrl),
                           label: Text("ARM URL"))),
                   SizedBox(height: 20),
                   TextField(
                       controller: addConnectionController.conNameController,
+                      textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                              borderSide: BorderSide(width: 1), borderRadius: BorderRadius.circular(10)),
+                          border: OutlineInputBorder(borderSide: BorderSide(width: 1), borderRadius: BorderRadius.circular(10)),
                           hintText: "Enter Connection Name",
                           errorText: addConnectionController.evaluateErrorText(addConnectionController.errName),
                           label: Text("Connection Name"))),
                   SizedBox(height: 20),
                   TextField(
                       controller: addConnectionController.conCaptionController,
+                      textInputAction: TextInputAction.done,
+                      onSubmitted: (value) => addConnectionController.projectDetailsClicked(),
                       decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                              borderSide: BorderSide(width: 1), borderRadius: BorderRadius.circular(10)),
+                          border: OutlineInputBorder(borderSide: BorderSide(width: 1), borderRadius: BorderRadius.circular(10)),
                           hintText: "Enter Connection Caption",
                           errorText: addConnectionController.evaluateErrorText(addConnectionController.errCaption),
                           label: Text("Connection Caption"))),

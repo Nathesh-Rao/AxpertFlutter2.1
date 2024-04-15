@@ -17,6 +17,7 @@ class PendingListController extends GetxController {
   var bulkApprovalCount_list = [].obs;
   var bulkApproval_activeList = [].obs;
   var pendingCount = "0";
+  var isLoading = false.obs;
 
   var selectedIconNumber = 1.obs; //1->default, 2-> reload, 3->accesstime, 4-> filter, 5=> checklist
   var isBulkAppr_SelectAll = false.obs;
@@ -54,16 +55,18 @@ class PendingListController extends GetxController {
 
   Future<void> getNoOfPendingActiveTasks() async {
     LoadingScreen.show();
+    isLoading.value = true;
     var url = Const.getFullARMUrl(ServerConnections.API_GET_PENDING_ACTIVETASK_COUNT);
     var body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
     var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
-    if (resp != "" && !resp.toString().contains("error")) {
+    if (resp != "") {
       var jsonResp = jsonDecode(resp);
       if (jsonResp['result']['message'].toString() == "success") {
         pendingCount = jsonResp['result']['data'].toString();
       }
+      await getPendingActiveList();
     }
-    await getPendingActiveList();
+    isLoading.value = false;
     LoadingScreen.dismiss();
   }
 
@@ -78,7 +81,7 @@ class PendingListController extends GetxController {
     };
 
     var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
-    if (resp != "" && !resp.toString().contains("error")) {
+    if (resp != "") {
       var jsonResp = jsonDecode(resp);
       if (jsonResp['result']['message'].toString() == "success") {
         activeList_Main.clear();
@@ -160,7 +163,7 @@ class PendingListController extends GetxController {
       LoadingScreen.show();
       var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
       LoadingScreen.dismiss();
-      if (resp != "" && !resp.toString().contains("error")) {
+      if (resp != "") {
         var jsonResp = jsonDecode(resp);
         if (jsonResp['result']['message'].toString() == "success") {
           var taskList = jsonResp['result']['pendingtasks'];
@@ -172,7 +175,10 @@ class PendingListController extends GetxController {
           if (pending_activeList.length == 0) {
             pending_activeList.value = activeList_Main;
             Get.snackbar("Oops!", "No details found!",
-                duration: Duration(seconds: 1), snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
+                duration: Duration(seconds: 1),
+                snackPosition: SnackPosition.BOTTOM,
+                backgroundColor: Colors.redAccent,
+                colorText: Colors.white);
           }
           needRefresh.value = true;
         }
@@ -181,7 +187,8 @@ class PendingListController extends GetxController {
   }
 
   void removeFilter() {
-    dateFromController.text = dateToController.text = searchTextController.text = processNameController.text = fromUserController.text = "";
+    dateFromController.text =
+        dateToController.text = searchTextController.text = processNameController.text = fromUserController.text = "";
     if (selectedIconNumber != 1) getNoOfPendingActiveTasks();
     selectedIconNumber.value = 1;
   }
@@ -210,7 +217,7 @@ class PendingListController extends GetxController {
     var body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
 
     var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
-    if (resp != "" && !resp.toString().contains("error")) {
+    if (resp != "") {
       var jsonResp = jsonDecode(resp);
       if (jsonResp['result']['message'].toString() == "success") {
         bulkApprovalCount_list.clear();
@@ -237,7 +244,7 @@ class PendingListController extends GetxController {
     };
 
     var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
-    if (resp != "" && !resp.toString().contains("error")) {
+    if (resp != "") {
       var jsonResp = jsonDecode(resp);
       if (jsonResp['result']['message'].toString() == "success") {
         var dataList = jsonResp['result']['data'];
@@ -267,12 +274,16 @@ class PendingListController extends GetxController {
   doBulkApprove() {
     var list_taskId = "";
     for (var item in bulkApproval_activeList) {
-      if (item.bulkApprove_isSelected.value == true) list_taskId.isEmpty ? list_taskId += item.taskid : list_taskId += "," + item.taskid;
+      if (item.bulkApprove_isSelected.value == true)
+        list_taskId.isEmpty ? list_taskId += item.taskid : list_taskId += "," + item.taskid;
     }
     print("list_taskId: $list_taskId");
     if (list_taskId.isEmpty) {
       Get.snackbar("Oops!", "Select atleast one task for approval.",
-          backgroundColor: Colors.redAccent, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM, duration: Duration(seconds: 3));
+          backgroundColor: Colors.redAccent,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+          duration: Duration(seconds: 3));
     }
   }
 }

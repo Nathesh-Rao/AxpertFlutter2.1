@@ -12,9 +12,9 @@ import 'package:hexcolor/hexcolor.dart';
 class WidgetCard extends StatelessWidget {
   WidgetCard(this.cardModel, {super.key});
 
-  CardModel cardModel;
-  AppStorage appStorage = AppStorage();
-  MenuHomePageController menuHomePageController = Get.find();
+  final CardModel cardModel;
+  final AppStorage appStorage = AppStorage();
+  final MenuHomePageController menuHomePageController = Get.find();
 
   // MenuHomePageController menuHomePageController = Get.find();
 
@@ -26,9 +26,8 @@ class WidgetCard extends StatelessWidget {
       decoration: BoxDecoration(
           color: HexColor(menuHomePageController.getCardBackgroundColor(cardModel.colorcode.trim())), // ?? "ffffff"),
           borderRadius: BorderRadius.circular(10),
-          // boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 20)] ,
-          /*border:
-              Border.all(width: 2, color: HexColor(menuHomePageController.getCardBackgroundColor(cardModel.colorcode.trim())))*/),
+          // boxShadow: [BoxShadow(color: Colors.grey.shade400, blurRadius: 7)] ,
+                    border: Border.all(width: 1, color: Colors.grey.withOpacity(0.4))),
       child: Padding(
         padding: EdgeInsets.only(left: 20, top: 10, right: 2),
         child: Column(
@@ -47,7 +46,8 @@ class WidgetCard extends StatelessWidget {
                   ),
                 ),
                 Visibility(
-                  visible: menuHomePageController.actionData[cardModel.caption] == null ? false : true,
+                  visible:
+                      menuHomePageController.actionData[cardModel.caption] == null && cardModel.moreoption.isEmpty ? false : true,
                   child: Align(
                       alignment: Alignment.topRight,
                       child: IconButton(
@@ -75,10 +75,15 @@ class WidgetCard extends StatelessWidget {
     );
   }
 
-  showMenuDialog(CardModel cardModel) {
+ showMenuDialog(CardModel cardModel) async {
+    //call api if needed
+    if (cardModel.caption.toLowerCase().contains("attendance")) {
+      await menuHomePageController.getPunchINData();
+    }
+    //ends
     List optionLists =
         menuHomePageController.actionData[cardModel.caption] == null ? [] : menuHomePageController.actionData[cardModel.caption];
-    if (!optionLists.isEmpty) {
+    if (!optionLists.isEmpty || !cardModel.moreoption.isEmpty) {
       Get.dialog(Dialog(
         backgroundColor: Colors.transparent,
         child: SingleChildScrollView(
@@ -162,8 +167,7 @@ class WidgetCard extends StatelessWidget {
         stIndex = item.indexOf("\"", endIndex + 1);
       }
       var singleList = item.split(' ');
-      var btnID = "", btnType = "", btnName = "", btnOpen = "", btnexeJs = "";
-      btnID = singleList[0];
+      var btnType = "", btnName = "", btnOpen = "", btnexeJs = "";
       btnType = singleList[1];
       //if (singleList.indexOf("button") >= 0) btnType = singleList[singleList.indexOf("button") - 1];
       if (singleList.indexOf("open") >= 0) btnOpen = singleList[singleList.indexOf("open") + 1];
@@ -175,17 +179,57 @@ class WidgetCard extends StatelessWidget {
       btnexeJs = btnexeJs.replaceAll('^', ' ');
 
       if (btnName != "") {
-        widget = ElevatedButton(
-            style: btnOpen == ""
-                ? ButtonStyle(
-                    padding: MaterialStateProperty.all(EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5)),
-                    backgroundColor: MaterialStateColor.resolveWith((states) => Colors.grey))
-                : ButtonStyle(padding: MaterialStateProperty.all(EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5))),
-            onPressed: () {
-              if (btnOpen != "") Get.back();
-              menuHomePageController.openBtnAction(btnType, btnOpen);
-            },
-            child: FittedBox(fit: BoxFit.fitWidth, child: Text(btnName)));
+        // widget = Container();
+        if (btnName.toUpperCase() == "PUNCH IN") {
+          widget = ElevatedButton(
+              style: !menuHomePageController.isShowPunchIn.value
+                  ? ButtonStyle(
+                      padding: MaterialStateProperty.all(EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5)),
+                      backgroundColor: MaterialStateColor.resolveWith((states) => Colors.grey))
+                  : ButtonStyle(padding: MaterialStateProperty.all(EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5))),
+              onPressed: menuHomePageController.isShowPunchIn.value
+                  ? () {
+                      menuHomePageController.onClick_PunchIn();
+                    }
+                  : null,
+              // onPressed: () {
+              //   // if (btnOpen != "") Get.back();
+              //   // menuHomePageController.openBtnAction(btnType, btnOpen);
+              // },
+              child: FittedBox(fit: BoxFit.fitWidth, child: Text(btnName)));
+        } else {
+          if (btnName.toUpperCase() == "PUNCH OUT") {
+            widget = ElevatedButton(
+                style: !menuHomePageController.isShowPunchOut.value
+                    ? ButtonStyle(
+                        padding: MaterialStateProperty.all(EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5)),
+                        backgroundColor: MaterialStateColor.resolveWith((states) => Colors.grey))
+                    : ButtonStyle(padding: MaterialStateProperty.all(EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5))),
+                onPressed: menuHomePageController.isShowPunchOut.value
+                    ? () {
+                        menuHomePageController.onClick_PunchOut();
+                      }
+                    : null,
+                // onPressed: () {
+                //   // if (btnOpen != "") Get.back();
+                //   // menuHomePageController.openBtnAction(btnType, btnOpen);
+                // },
+                child: FittedBox(fit: BoxFit.fitWidth, child: Text(btnName)));
+          } else {
+            widget = ElevatedButton(
+                style: btnOpen == ""
+                    ? ButtonStyle(
+                        padding: MaterialStateProperty.all(EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5)),
+                        backgroundColor: MaterialStateColor.resolveWith((states) => Colors.grey))
+                    : ButtonStyle(padding: MaterialStateProperty.all(EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5))),
+                onPressed: () {
+                  if (btnOpen != "") Get.back();
+                  menuHomePageController.openBtnAction(btnType, btnOpen);
+                },
+                child: FittedBox(fit: BoxFit.fitWidth, child: Text(btnName)));
+          }
+        }
+
         widgeList.add(widget);
         widgeList.add(SizedBox(width: 10));
       }

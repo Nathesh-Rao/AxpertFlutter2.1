@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-class ServerConnections extends GetConnect {
+class ServerConnections {
   static var client = http.Client();
   InternetConnectivity internetConnectivity = Get.find();
   static const String API_GET_USERGROUPS = "api/v1/ARMUserGroups";
@@ -21,14 +21,19 @@ class ServerConnections extends GetConnect {
   static const String API_CONNECTTOAXPERT = "api/v1/ARMConnectToAxpert";
   static const String API_GET_HOMEPAGE_CARDS = "api/v1/ARMGetHomePageCards";
   static const String API_GET_HOMEPAGE_CARDSDATASOURCE = "api/v1/ARMGetDataResponse";
-  // static const String API_GET_PENDING_ACTIVELIST = "api/v1/ARMGetActiveTasks";       //OLD
+  // static const String API_GET_PENDING_ACTIVELIST = "api/v1/ARMGetActiveTasks"; //OLD
   static const String API_MOBILE_NOTIFICATION = "api/v1/ARMMobileNotification";
   static const String API_GET_DASHBOARD_DATA = "api/v1/ARMGetCardsData";
   static const String API_CHANGE_PASSWORD = "api/v1/ARMChangePassword";
 
   static const String API_GET_MENU = "api/v1/ARMGetMenu";
   static const String API_SIGNOUT = "api/v1/ARMSignOut";
-  //ARMTest2 SERVER2
+  static const String API_GET_ENCRYPTED_SECRET_KEY = "api/v1/ARMGetEncryptedSecret";
+  static const String API_ARM_EXECUTE = "api/v1/ARMExecuteAPI";
+  static const String API_SECRETKEY_GET_PUNCHIN_DATA = "5246994904522510";
+  static const String API_SECRETKEY_GET_DO_PUNCHIN = "1408279244140740";
+  static const String API_SECRETKEY_GET_DO_PUNCHOUT = "1408279244140740";
+
   static const String API_GET_PENDING_ACTIVETASK = "api/v1/ARMGetPendingActiveTasks";
   static const String API_GET_PENDING_ACTIVETASK_COUNT = "api/v1/ARMGetPendingActiveTasksCount";
   static const String API_GET_ACTIVETASK_DETAILS = "api/v1/ARMPEGGetTaskDetails";
@@ -40,7 +45,6 @@ class ServerConnections extends GetConnect {
   static const String API_GET_BULK_APPROVAL_COUNT = "api/v1/ARMGetBulkApprovalCount";
   static const String API_GET_BULK_ACTIVETASKS = "api/v1/ARMGetBulkActiveTasks";
   static const String API_GET_SENDTOUSERS = "api/v1/ARMGetSendToUsers";
-
 
   AppStorage appStorage = AppStorage();
 

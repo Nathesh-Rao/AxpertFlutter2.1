@@ -2,6 +2,7 @@ import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Controllers/MenuMorePageController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Models/MenuItemModel.dart';
+import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetNoDataFound.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -76,6 +77,7 @@ reBuild_old(MenuMorePageController menuMorePageController) {
             ),
           ),
           SizedBox(height: 10),
+          Visibility(visible: menuMorePageController.fetchList.length == 0 ? true : false, child: WidgetNoDataFound()),
           FutureBuilder(
             future: menuMorePageController.futureBuilder(),
             builder: (context, snapshot) {
@@ -282,7 +284,7 @@ getGridItem(MenuMorePageController menuMorePageController, MenuItemModel model, 
             child: Padding(
               padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
               child: Icon(
-                menuMorePageController.IconList[index % 8], //icon
+                menuMorePageController.generateIcon(model, index), //icon
                 color: MyColors.white1,
                 size: 25,
               ),

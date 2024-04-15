@@ -1,4 +1,6 @@
 import 'package:axpertflutter/Constants/AppStorage.dart';
+import 'package:axpertflutter/Constants/MyColors.dart';
+import 'package:flutter/material.dart';
 
 class Const {
   static String DEVICE_ID = "";
@@ -6,6 +8,7 @@ class Const {
   static String PROJECT_NAME = "axpertqa11";
   static String ARM_URL = "";
   static String GUID = "";
+  static String APP_VERSION = "";
   static String FIREBASE_TOKEN = "";
   static const String CLOUD_PROJECT = "axpmobileclient";
   static const String CLOUD_URL = "";
@@ -26,15 +29,9 @@ class Const {
       return ARM_URL.endsWith("/") ? ARM_URL + Entrypoint : ARM_URL + "/" + Entrypoint;
   }
 
-  //accessing from second server ************************************////////////////////
-  static String getFullARMUrl_SecondServer(String Entrypoint) {
-    if (ARM_URL == "") {
-      String data = AppStorage().retrieveValue(AppStorage.ARM_URL) ?? "";
-      return data.endsWith("/") ? data.substring(0, data.length - 1) + "2/" + Entrypoint : data + "/" + Entrypoint;
-    } else
-      return ARM_URL.endsWith("/") ? ARM_URL.substring(0, ARM_URL.length - 1) + "2/" + Entrypoint : ARM_URL + "2/" + Entrypoint;
+  static String getFullARMUrl_HardCoded(String Entrypoint) {
+    return "http://20.244.123.19/ARM113/" + Entrypoint;
   }
-  //end ************************************////////////////////
 
   static String getFullProjectUrl(String Entrypoint) {
     if (PROJECT_URL == "") {
@@ -50,4 +47,13 @@ class Const {
   // static String getSQLforClientID(String clientID) =>
   //     "select projectname, scripts_uri,dbtype, expirydate, notify_uri,web_url,arm_url from tblclientMST   where " +
   //         "clientid = '" + clientID + "'";
+
+  static final THEMEDATA = ThemeData.light(useMaterial3: false).copyWith(
+    // useMaterial3: false,
+    brightness: Brightness.light,
+    elevatedButtonTheme: ElevatedButtonThemeData(style: ButtonStyle(backgroundColor: MaterialStateProperty.all(MyColors.blue2))),
+    primaryColor: Color(0xff003AA5),
+    scaffoldBackgroundColor: Colors.white,
+    colorScheme: ThemeData().colorScheme.copyWith(primary: MyColors.blue2),
+  );
 }

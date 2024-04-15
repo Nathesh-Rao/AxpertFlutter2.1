@@ -1,19 +1,23 @@
 import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Widgets/WidgetCard.dart';
+import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetNoDataFound.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetSlidingNotification.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class MenuHomePage extends StatelessWidget {
   MenuHomePage({super.key});
-  MenuHomePageController menuHomePageController = Get.put(MenuHomePageController());
+  final MenuHomePageController menuHomePageController = Get.put(MenuHomePageController());
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         WidgetSlidingNotificationPanel(),
+        Obx(() => Visibility(
+            visible: (menuHomePageController.listOfCards.length == 0 && !menuHomePageController.isLoading.value) ? true : false,
+            child: WidgetNoDataFound())),
         Expanded(
           child: Obx(() => Padding(
                 padding: EdgeInsets.only(left: 10, right: 10),

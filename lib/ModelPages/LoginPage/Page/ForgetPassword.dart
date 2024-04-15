@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 
 class ForgetPassword extends StatelessWidget {
   ForgetPassword({super.key});
-  ForgetPasswordController forgetPasswordController = Get.put(ForgetPasswordController());
+  final ForgetPasswordController forgetPasswordController = Get.put(ForgetPasswordController());
 
   @override
   Widget build(BuildContext context) {
@@ -351,7 +351,7 @@ class ForgetPassword extends StatelessWidget {
                               },
                               child: Container(
                                 height: 50,
-                                decoration: BoxDecoration(color: Colors.blue.shade400, borderRadius: BorderRadius.circular(20)),
+                                decoration: BoxDecoration(color: MyColors.blue2, borderRadius: BorderRadius.circular(20)),
                                 child: Center(
                                   child: Text(
                                     'Proceed',
