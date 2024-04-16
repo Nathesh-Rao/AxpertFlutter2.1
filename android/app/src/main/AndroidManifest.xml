@@ -30,7 +30,7 @@
 
     <application
         android:exported="true"
-        android:label="Axpert Flutter 2.1"
+        android:label="Axpert Flutter"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="false"
