@@ -9,10 +9,12 @@ import 'package:get/get.dart';
 
 class ForgetPasswordController extends GetxController {
   TextEditingController emailController = TextEditingController();
+  TextEditingController userNameController = TextEditingController();
   TextEditingController otpController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
   ServerConnections serverConnections = ServerConnections();
+  var errUserName = ''.obs;
   var showPass = false.obs;
   var showConPass = false.obs;
   var showOTP = false.obs;
@@ -33,8 +35,57 @@ class ForgetPasswordController extends GetxController {
   var showTimer = true.obs;
   var reSendOtpCount = 0;
 
+  var userTypeList = [].obs;
+  var ddSelectedValue = ''.obs;
+
+  ForgetPasswordController() {
+    fetchUserTypeList();
+  }
+
+  fetchUserTypeList() async {
+    LoadingScreen.show();
+
+    var url = Const.getFullARMUrl(ServerConnections.API_GET_USERGROUPS);
+    var body = Const.getAppBody();
+    var data = await serverConnections.postToServer(url: url, body: body);
+    LoadingScreen.dismiss();
+
+    data = data.toString().replaceAll("null", "\"\"");
+
+    var jsopnData = jsonDecode(data)['result']['data'] as List;
+    userTypeList.clear();
+    for (var item in jsopnData) {
+      String val = item["usergroup"].toString();
+      userTypeList.add(CommonMethods.capitalize(val));
+    }
+    userTypeList..sort((a, b) => a.toString().toLowerCase().compareTo(b.toString().toLowerCase()));
+    userTypeList.contains("Power") ? ddSelectedValue.value = "Power" : ddSelectedValue.value = userTypeList[0];
+    //dropDownItemChanged(ddSelectedValue);
+  }
+
+  dropdownMenuItem() {
+    List<DropdownMenuItem<String>> myList = [];
+    for (var item in userTypeList) {
+      DropdownMenuItem<String> dditem = DropdownMenuItem(
+        value: item.toString(),
+        child: Text(item),
+      );
+      myList.add(dditem);
+    }
+    // print(myList);
+    return myList;
+  }
+
+  dropDownItemChanged(Object? value) {
+    ddSelectedValue.value = value.toString();
+  }
+
   bool vaidateForm() {
     emailError.value = '';
+    if (userNameController.text.toString().trim() == "") {
+      errUserName.value = "Enter User Name";
+      return false;
+    }
     if (emailController.text.trim() == "") {
       emailError.value = "Please Enter Email ID";
       return false;
@@ -84,8 +135,13 @@ class ForgetPasswordController extends GetxController {
   void proceedButtonClicked() async {
     if (vaidateForm()) {
       LoadingScreen.show();
-      Map body = {'email': emailController.text.trim().toString()};
-      var url = Const.getFullARMUrl(ServerConnections.API_FORGETPASSWORD);
+      Map body = {
+        "appname": Const.PROJECT_NAME,
+        "username": userNameController.text.toString().trim(),
+        "usergroup": ddSelectedValue.value.toString().toLowerCase(),
+        'email': emailController.text.trim().toString()
+      };
+      var url = Const.getFullARMUrl(ServerConnections.API_FORGOTPASSWORD);
       var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body));
       LoadingScreen.dismiss();
       if (resp.toString() != "") {
@@ -95,11 +151,21 @@ class ForgetPasswordController extends GetxController {
           Get.snackbar("Alert!", jsonMsg['result']['message'],
               snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
         } else {
-          otpAttempts.value = jsonMsg["result"]["otpattemptsleft"];
+          Get.defaultDialog(
+              title: "Success",
+              middleText: "Password is reset and sent to your email",
+              confirm: ElevatedButton(
+                  onPressed: () {
+                    Get.back();
+                    Get.back();
+                  },
+                  child: Text("Ok")));
+
+          /*  otpAttempts.value = jsonMsg["result"]["otpattemptsleft"];
           regID.value = jsonMsg["result"]["regid"];
           otpLength.value = jsonMsg["result"]["otplength"];
           OTPSent.value = true;
-          startTimer();
+          startTimer();*/
         }
       }
     }

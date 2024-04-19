@@ -15,7 +15,7 @@ class ServerConnections {
   static const String API_GET_APPSTATUS = "api/v1/ARMAppStatus";
   static const String API_ADDUSER = "api/v1/ARMAddUser";
   static const String API_OTP_VALIDATE_USER = "api/v1/ARMValidateAddUser";
-  static const String API_FORGETPASSWORD = "api/v1/ARMForgetPassword";
+  static const String API_FORGOTPASSWORD = "api/v1/ARMForgotPassword";
   static const String API_VALIDATE_FORGETPASSWORD = "api/v1/ARMValidateForgotPassword";
   static const String API_GOOGLESIGNIN_SSO = "api/v1/ARMSigninSSO";
   static const String API_CONNECTTOAXPERT = "api/v1/ARMConnectToAxpert";

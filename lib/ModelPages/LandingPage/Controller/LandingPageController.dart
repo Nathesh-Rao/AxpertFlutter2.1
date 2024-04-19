@@ -71,6 +71,8 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
   LandingPageController() {
     userName.value = appStorage.retrieveValue(AppStorage.USER_NAME) ?? userName.value;
     userCtrl.text = userName.value;
+    showChangePassword_PopUp();
+
     getBiometricStatus();
   }
 
@@ -111,8 +113,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
                 SizedBox(height: 20),
                 Text(
                   "Log in to your Buzzily account using your phone's biometric credentials.",
-                  style: GoogleFonts.poppins(
-                      textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.grey.shade600)),
+                  style: GoogleFonts.poppins(textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.grey.shade600)),
                   textAlign: TextAlign.center,
                   maxLines: 2,
                 ),
@@ -526,8 +527,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
         var projectDet = jsonDecode(val['project_details']);
         // print("notiiii: " + projectDet["projectname"].toString());
         if (projectDet["projectname"].toString() == appStorage.retrieveValue(AppStorage.PROJECT_NAME).toString() &&
-            notify_to.contains(userName.toString().toLowerCase()))
-          list.add(WidgetNotification(FirebaseMessageModel.fromJson(val)));
+            notify_to.contains(userName.toString().toLowerCase())) list.add(WidgetNotification(FirebaseMessageModel.fromJson(val)));
       } catch (e) {
         print(e.toString());
       }
@@ -587,13 +587,13 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
     RegExp regex = RegExp(pattern.toString());
     errOPass.value = errNPass.value = errCNPass.value = '';
     if (oPassCtrl.text.trim().toString() == '') {
-      errOPass.value = "Enter old password";
+      errOPass.value = "Enter Existing password";
       return false;
     }
-    if (!regex.hasMatch(oPassCtrl.text.trim())) {
+    /* if (!regex.hasMatch(oPassCtrl.text.trim())) {
       errOPass.value = "Password should contain upper,lower,digit and Special character";
       return false;
-    }
+    }*/
     if (nPassCtrl.text.trim().toString() == '') {
       errNPass.value = "Enter New password";
       return false;
@@ -611,7 +611,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
       return false;
     }
     if (nPassCtrl.text.trim() != cnPassCtrl.text.trim()) {
-      errOPass.value = "Password does not match";
+      errCNPass.value = "Password does not match";
       return false;
     }
     return true;
@@ -691,8 +691,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
         child: Padding(
           padding: EdgeInsets.only(left: 20),
           // menuMorePageController.IconList[index++ % 8]
-          child: ListTile(
-              leading: Icon(menuMorePageController.generateIcon(subMenu, index++)), title: Text(subMenu.caption.toString())),
+          child: ListTile(leading: Icon(menuMorePageController.generateIcon(subMenu, index++)), title: Text(subMenu.caption.toString())),
         ),
       ));
 
@@ -851,6 +850,129 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
           if (auth) Get.back();
         }
       });
+    }
+  }
+
+  showChangePassword_PopUp() async {
+    AppStorage appStorage = AppStorage();
+    var isChangePassword = await appStorage.retrieveValue(AppStorage.USER_CHANGE_PASSWORD);
+    if (isChangePassword.toString().toLowerCase() == "true") {
+      Get.dialog(
+        barrierDismissible: false,
+        PopScope(
+          canPop: false,
+          child: Dialog(
+            child: Padding(
+              padding: EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 20),
+              child: SingleChildScrollView(
+                child: Obx(() => Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Center(
+                          child: Text(
+                            "Reset Password",
+                            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        TextFormField(
+                          controller: oPassCtrl,
+                          obscureText: !showOldPass.value,
+                          keyboardType: TextInputType.text,
+                          onChanged: (value) {},
+                          style: const TextStyle(fontFamily: "nunitobold", fontSize: 14.0),
+                          decoration: InputDecoration(
+                            labelText: 'Existing Password',
+                            hintText: 'Enter your old password',
+                            errorText: this.evaluteError(errOPass.value),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                showOldPass.value ? Icons.visibility_off : Icons.visibility,
+                              ),
+                              onPressed: () {
+                                showOldPass.toggle();
+                              },
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        TextFormField(
+                          controller: nPassCtrl,
+                          obscureText: !showNewPass.value,
+                          keyboardType: TextInputType.text,
+                          onChanged: (value) {},
+                          style: const TextStyle(fontFamily: "nunitobold", fontSize: 14.0),
+                          decoration: InputDecoration(
+                            labelText: 'New Password',
+                            hintText: 'Enter your new password',
+                            errorText: evaluteError(errNPass.value),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                showNewPass.value ? Icons.visibility_off : Icons.visibility,
+                              ),
+                              onPressed: () {
+                                showNewPass.toggle();
+                              },
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        TextFormField(
+                          controller: cnPassCtrl,
+                          obscureText: !showConNewPass.value,
+                          keyboardType: TextInputType.text,
+                          onChanged: (value) {},
+                          style: const TextStyle(fontFamily: "nunitobold", fontSize: 14.0),
+                          decoration: InputDecoration(
+                            labelText: 'Confrmation Password',
+                            hintText: 'Enter your Confrmation password',
+                            errorText: evaluteError(errCNPass.value),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                showConNewPass.value ? Icons.visibility_off : Icons.visibility,
+                              ),
+                              onPressed: () {
+                                showConNewPass.toggle();
+                              },
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+                          SizedBox(
+                            height: 30.0,
+                            width: 100.0,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                //Get.back();
+                                changePasswordCalled();
+                              },
+                              child: Container(
+                                width: 600.0,
+                                height: 30,
+                                decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(5),
+                                  ),
+                                ),
+                                padding: const EdgeInsets.fromLTRB(3.0, 6.0, 3.0, 3.0),
+                                child: Text(
+                                  'Save',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: Colors.white, fontSize: 14, fontFamily: "nunitoreg"),
+                                ),
+                              ),
+                            ),
+                          )
+                        ]),
+                        SizedBox(height: 10),
+                      ],
+                    )),
+              ),
+            ),
+          ),
+        ),
+      );
     }
   }
 }
