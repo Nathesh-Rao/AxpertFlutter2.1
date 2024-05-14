@@ -38,6 +38,7 @@ class ProjectItemListTile extends StatelessWidget {
         shadowColor: MyColors.white1,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
+          side: BorderSide(width: 1, color: Colors.grey.shade300),
         ),
         child: Padding(
             padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),

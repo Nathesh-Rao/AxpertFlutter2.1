@@ -56,6 +56,7 @@ class MenuMorePageController extends GetxController {
     var conectBody = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
     var menuResp = await serverConnections.postToServer(url: mUrl, body: jsonEncode(conectBody), isBearer: true);
     if (menuResp != "") {
+      print("menuResp ${menuResp}");
       var menuJson = jsonDecode(menuResp);
       if (menuJson['result']['success'].toString() == "true") {
         for (var menuItem in menuJson['result']["pages"]) {

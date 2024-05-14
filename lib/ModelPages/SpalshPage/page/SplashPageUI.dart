@@ -4,6 +4,7 @@ import 'package:axpertflutter/Constants/VersionUpdateClearOldData.dart';
 import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/ModelPages/ProjectListing/Model/ProjectModel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:local_auth/local_auth.dart';
 
@@ -22,6 +23,8 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
+    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual);
+    // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
     _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 800));
     _animationController.forward();
     VersionUpdateClearOldData.clearAllOldData();
@@ -47,8 +50,17 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+    // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // color: Colors.red,
       body: Stack(
         children: [
           Center(

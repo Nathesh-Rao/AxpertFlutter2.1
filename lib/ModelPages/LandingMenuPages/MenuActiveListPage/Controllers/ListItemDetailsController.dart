@@ -10,10 +10,8 @@ import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Mod
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Models/PendingProcessFlowModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Models/PendingTaskModel.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
 
 class ListItemDetailsController extends GetxController {
   AppStorage appStorage = AppStorage();
@@ -38,7 +36,8 @@ class ListItemDetailsController extends GetxController {
     var body;
     var shouldCall = true;
     if (hasArgument) {
-      if (pendingProcessFlowModel!.taskid.toString() == "" || pendingProcessFlowModel!.taskid.toString().toLowerCase() == "null") shouldCall = false;
+      if (pendingProcessFlowModel!.taskid.toString() == "" || pendingProcessFlowModel!.taskid.toString().toLowerCase() == "null")
+        shouldCall = false;
 
       body = {
         'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID),
@@ -244,12 +243,18 @@ class ListItemDetailsController extends GetxController {
 
   showSuccessSnack(title, Message) {
     Get.snackbar(title, Message,
-        duration: Duration(seconds: 3), backgroundColor: Colors.green.shade300, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM);
+        duration: Duration(seconds: 3),
+        backgroundColor: Colors.green.shade300,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM);
   }
 
   showErrorSnack(title, Message) {
     Get.snackbar(title, Message,
-        duration: Duration(seconds: 3), backgroundColor: Colors.red.shade300, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM);
+        duration: Duration(seconds: 3),
+        backgroundColor: Colors.red.shade300,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM);
   }
 
   dropdownMenuItem() {

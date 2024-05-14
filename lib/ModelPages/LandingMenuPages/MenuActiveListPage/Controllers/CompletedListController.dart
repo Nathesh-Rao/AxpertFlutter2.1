@@ -52,6 +52,7 @@ class CompletedListController extends GetxController {
     if (resp != "") {
       var jsonResp = jsonDecode(resp);
       if (jsonResp['result']['message'].toString() == "success") {
+        print("jsonResp['result']['data'].toString() ${jsonResp['result']['data'].toString()}");
         completedCount = jsonResp['result']['data'].toString();
       }
       await getPendingActiveList();
@@ -66,13 +67,14 @@ class CompletedListController extends GetxController {
       'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID),
       "Trace": "false",
       "AppName": Const.PROJECT_NAME.toString(),
-      "pagesize": int.parse(completedCount),
+      "pagesize": double.parse(completedCount).toInt(),
       "pageno": 1,
     };
 
     var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
     if (resp != "") {
       var jsonResp = jsonDecode(resp);
+      print(jsonResp);
       if (jsonResp['result']['message'].toString() == "success") {
         activeList_Main.clear();
         var dataList = jsonResp['result']['completedtasks'];

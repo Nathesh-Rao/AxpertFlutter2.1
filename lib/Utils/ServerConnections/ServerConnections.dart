@@ -28,11 +28,6 @@ class ServerConnections {
 
   static const String API_GET_MENU = "api/v1/ARMGetMenu";
   static const String API_SIGNOUT = "api/v1/ARMSignOut";
-  static const String API_GET_ENCRYPTED_SECRET_KEY = "api/v1/ARMGetEncryptedSecret";
-  static const String API_ARM_EXECUTE = "api/v1/ARMExecuteAPI";
-  static const String API_SECRETKEY_GET_PUNCHIN_DATA = "5246994904522510";
-  static const String API_SECRETKEY_GET_DO_PUNCHIN = "1408279244140740";
-  static const String API_SECRETKEY_GET_DO_PUNCHOUT = "1408279244140740";
 
   static const String API_GET_PENDING_ACTIVETASK = "api/v1/ARMGetPendingActiveTasks";
   static const String API_GET_PENDING_ACTIVETASK_COUNT = "api/v1/ARMGetPendingActiveTasksCount";
@@ -73,7 +68,7 @@ class ServerConnections {
         // print("Post header: $header");
         print("API_POST_BODY:" + body);
         var response = await client.post(Uri.parse(url), headers: header, body: body);
-        // print("API_RESPONSE_DATA: ${response.body}\n");
+        print("API_RESPONSE_DATA: $API_NAME: ${response.body}\n");
         // print("");
         if (response.statusCode == 200) return response.body;
         if (response.statusCode == 404) {

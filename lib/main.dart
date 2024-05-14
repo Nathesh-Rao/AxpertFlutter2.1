@@ -77,7 +77,7 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.light,
       theme: Const.THEMEDATA,
       initialRoute: Routes.SplashScreen,
-      // initialRoute: Routes.LandingPage,
+      // initialRoute: Routes.SettingsPage,
       getPages: RoutePages.pages,
       builder: EasyLoading.init(),
     );

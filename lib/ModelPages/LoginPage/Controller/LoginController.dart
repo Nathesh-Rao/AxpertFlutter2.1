@@ -232,14 +232,16 @@ class LoginController extends GetxController {
             await _processLoginAndGoToHomePage();
           }
         } else {
-          Get.snackbar("Error", "Some Error occured", backgroundColor: Colors.red, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM);
+          Get.snackbar("Error", "Some Error occured",
+              backgroundColor: Colors.red, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM);
         }
         LoadingScreen.dismiss();
         // print(resp);
         // print(googleUser);
       }
     } catch (e) {
-      Get.snackbar("Error", "User is not Registered!", snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
+      Get.snackbar("Error", "User is not Registered!",
+          snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
     }
   }
 
@@ -256,7 +258,7 @@ class LoginController extends GetxController {
     var jsonResp = jsonDecode(connectResp);
     if (jsonResp != "") {
       if (jsonResp['result']['success'].toString() == "true") {
-       // Get.offAllNamed(Routes.LandingPage);
+        // Get.offAllNamed(Routes.LandingPage);
       } else {
         var message = jsonResp['result']['message'].toString();
         showErrorSnack(title: "Error - Connect To Axpert", message: message);

@@ -95,7 +95,7 @@ void decodeFirebaseMessage(RemoteMessage message, {isBackground = false}) async 
   }
   if (hasNotificationPermission) {
     try {
-      if (shouldDisplay)
+      if (shouldDisplay && await AppStorage().retrieveValue(AppStorage.isShowNotifyEnabled))
         await flutterLocalNotificationsPlugin.show(data.hashCode, data.title, data.body, notificationDetails, payload: 'item x');
     } catch (e) {}
   }

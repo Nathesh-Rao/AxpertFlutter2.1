@@ -104,7 +104,7 @@ class CommonMethods {
   static Future<Position?> getCurrentLocation() async {
     final hasPermission = await _handleLocationPermission();
     if (hasPermission)
-      return Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     else
       return null;
   }
@@ -146,6 +146,32 @@ class LoadingScreen {
 showErrorSnack({title = 'Error', message = 'Server busy, Please try again later.'}) {
   Get.snackbar(title, message, snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
 }
+
+showAnimatedDialogBox({
+  @required child,
+}) {
+  showGeneralDialog(
+    context: Get.context!,
+    barrierLabel: "",
+    barrierColor: Colors.transparent.withOpacity(0.6),
+    barrierDismissible: true,
+    transitionBuilder: (context, animation, secondaryAnimation, transChild) => Transform.scale(
+      scale: animation.value,
+      child: child,
+    ),
+    pageBuilder: (context, animation, secondaryAnimation) => Container(),
+  );
+}
+
+// getEncryptedSecretKey(String key) async {
+//   var url = Const.getFullARMUrl_HardCoded(ServerConnections.API_GET_ENCRYPTED_SECRET_KEY);
+//   Map<String, dynamic> body = {"secretkey": key};
+//   var resp = await ServerConnections().postToServer(url: url, body: jsonEncode(body), isBearer: true);
+//   if (resp != "") {
+//     return resp;
+//   }
+//   return '';
+// }
 
 showBiometricDialog() async {
   try {

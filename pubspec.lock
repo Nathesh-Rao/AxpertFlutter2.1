@@ -57,6 +57,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.2"
+  asn1lib:
+    dependency: transitive
+    description:
+      name: asn1lib
+      sha256: c9c85fedbe2188b95133cbe960e16f5f448860f7133330e272edbbca5893ddc6
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.5.2"
   async:
     dependency: transitive
     description:
@@ -81,6 +89,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.11.8"
+  badges:
+    dependency: "direct main"
+    description:
+      name: badges
+      sha256: a7b6bbd60dce418df0db3058b53f9d083c22cdb5132a052145dc267494df0b84
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.2"
   boolean_selector:
     dependency: transitive
     description:
@@ -321,6 +337,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.0"
+  encrypt:
+    dependency: "direct main"
+    description:
+      name: encrypt
+      sha256: "62d9aa4670cc2a8798bab89b39fc71b6dfbacf615de6cf5001fb39f7e4a996a2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.3"
   fake_async:
     dependency: transitive
     description:
@@ -606,6 +630,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
+  flutter_switch:
+    dependency: "direct main"
+    description:
+      name: flutter_switch
+      sha256: b91477f926bba135d2d203d7b24367492662d8d9c3aa6adb960b14c1087d3c41
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.2"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -913,7 +945,7 @@ packages:
     source: hosted
     version: "0.2.1+1"
   intl:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: intl
       sha256: "3bc132a9dbce73a7e4a21a17d06e1878839ffbf975568bc875c60537824b0c4d"
@@ -1324,10 +1356,10 @@ packages:
     dependency: transitive
     description:
       name: pointycastle
-      sha256: "7c1e5f0d23c9016c5bbd8b1473d0d3fb3fc851b876046039509e18e0c7485f2c"
+      sha256: "70fe966348fe08c34bf929582f1d8247d9d9408130723206472b4687227e4333"
       url: "https://pub.dev"
     source: hosted
-    version: "3.7.3"
+    version: "3.8.0"
   pool:
     dependency: transitive
     description:
@@ -1613,6 +1645,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.0"
+  timeline_tile:
+    dependency: "direct main"
+    description:
+      name: timeline_tile
+      sha256: "85ec2023c67137397c2812e3e848b2fb20b410b67cd9aff304bb5480c376fc0c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   timezone:
     dependency: transitive
     description:
