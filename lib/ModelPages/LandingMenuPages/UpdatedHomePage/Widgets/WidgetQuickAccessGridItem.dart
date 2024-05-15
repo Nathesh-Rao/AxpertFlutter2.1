@@ -28,12 +28,12 @@ class WidgetQuickAccessGridItems extends StatelessWidget {
                   badgeStyle: badge.BadgeStyle(
                       shape: badge.BadgeShape.circle,
                       elevation: 10,
-                      padding: EdgeInsets.all(6),
+                      padding: EdgeInsets.all(4),
                       badgeColor: Colors.white,
                       borderSide: BorderSide(width: 1, color: MyColors.blue2)),
                   badgeContent: Text(
                     model.count,
-                    style: TextStyle(fontSize: 12),
+                    style: TextStyle(fontSize: 13),
                   ),
                   child: Container(
                     padding: const EdgeInsets.all(10),
@@ -77,7 +77,7 @@ class WidgetQuickAccessGridItems extends StatelessWidget {
                   CommonMethods.capitalize(model.caption),
                   maxLines: 2,
                   style:
-                      GoogleFonts.poppins(textStyle: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 13)),
+                      GoogleFonts.poppins(textStyle: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 11)),
                 ),
               ),
             ],
