@@ -291,7 +291,7 @@ class ForgetPassword extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Image.asset(
-                            'assets/images/axpert_name.png',
+                            'assets/images/axpert_full.png',
                             height: MediaQuery.of(context).size.height * 0.05,
                             width: MediaQuery.of(context).size.width * 0.3,
                             fit: BoxFit.fill,

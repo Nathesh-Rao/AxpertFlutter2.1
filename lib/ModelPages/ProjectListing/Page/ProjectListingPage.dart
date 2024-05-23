@@ -108,9 +108,9 @@ class _ProjectListingPageState extends State<ProjectListingPage> {
                                           padding: const EdgeInsets.only(top: 10.0, left: 10),
                                           child: Image.asset(
                                             // 'assets/images/buzzily-logo.png',
-                                            'assets/images/axpert_name.png',
-                                            height: 30,
-                                            width: 120,
+                                            'assets/images/axpert_full.png',
+                                            height: 50,
+                                            width: 160,
                                             fit: BoxFit.cover,
                                           ),
                                         ),

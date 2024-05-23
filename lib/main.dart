@@ -41,6 +41,7 @@ Future<void> main() async {
   await FirebaseMessaging.onMessageOpenedApp.listen(onMessageOpenAppListener);
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   configureEasyLoading();
+  // configureLogging();
   if (Platform.isAndroid) {
     await InAppWebViewController.setWebContentsDebuggingEnabled(true);
   }
@@ -62,6 +63,19 @@ void configureEasyLoading() {
     ..indicatorSize = 55.0
     ..radius = 20.0;
 }
+
+// void configureLogging() async {
+//   await FlutterLogs.initLogs(
+//       logLevelsEnabled: [LogLevel.INFO, LogLevel.WARNING, LogLevel.ERROR, LogLevel.SEVERE],
+//       timeStampFormat: TimeStampFormat.TIME_FORMAT_READABLE,
+//       directoryStructure: DirectoryStructure.FOR_DATE,
+//       logTypesEnabled: ["device", "network", "errors"],
+//       logFileExtension: LogFileExtension.LOG,
+//       logsWriteDirectoryName: "axpertLog",
+//       logsExportDirectoryName: "logs/Exported",
+//       debugFileOperations: true,
+//       isDebuggable: true);
+// }
 
 class MyApp extends StatelessWidget {
   MyApp({super.key});

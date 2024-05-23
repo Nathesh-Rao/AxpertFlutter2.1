@@ -27,8 +27,9 @@ class WidgetLandingAppBarUpdated extends StatelessWidget implements PreferredSiz
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Image.asset(
-              "assets/images/axpert.png",
-              height: 25,
+              "assets/images/axpert_03.png",
+              height: 35,
+              // width: 25,
             ),
             Text(
               "xpert",

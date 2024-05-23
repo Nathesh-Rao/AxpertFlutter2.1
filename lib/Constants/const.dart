@@ -51,14 +51,15 @@ class Const {
   //         "clientid = '" + clientID + "'";
 
   static final THEMEDATA = ThemeData.light(useMaterial3: false).copyWith(
-      brightness: Brightness.light,
-      elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ButtonStyle(
-              backgroundColor: MaterialStateColor.resolveWith((states) => MyColors.blue2),
-              foregroundColor: MaterialStateColor.resolveWith((states) => Colors.white))),
-      primaryColor: Color(0xff003AA5),
-      scaffoldBackgroundColor: Colors.white,
-      colorScheme: ThemeData().colorScheme.copyWith(primary: MyColors.blue2),
-      textButtonTheme:
-          TextButtonThemeData(style: ButtonStyle(backgroundColor: MaterialStateColor.resolveWith((states) => Colors.grey))));
+    brightness: Brightness.light,
+    elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ButtonStyle(
+            backgroundColor: MaterialStateColor.resolveWith((states) => MyColors.blue2),
+            foregroundColor: MaterialStateColor.resolveWith((states) => Colors.white))),
+    primaryColor: Color(0xff003AA5),
+    scaffoldBackgroundColor: Colors.white,
+    colorScheme: ThemeData().colorScheme.copyWith(primary: MyColors.blue2),
+    // textButtonTheme:
+    //     TextButtonThemeData(style: ButtonStyle(backgroundColor: MaterialStateColor.resolveWith((states) => Colors.grey)))
+  );
 }

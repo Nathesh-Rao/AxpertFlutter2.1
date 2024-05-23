@@ -62,12 +62,16 @@ class SettingsPage extends StatelessWidget {
                                 children: [
                                   CircleAvatar(
                                     minRadius: 50,
-                                    backgroundColor: Colors.grey,
-                                    child: Icon(
-                                      Icons.person,
-                                      color: Colors.white,
-                                      size: 80,
+                                    backgroundColor: Colors.white,
+                                    child: Image.asset(
+                                      "assets/images/avator.png",
+                                      scale: 1.1,
                                     ),
+                                    // child: Icon(
+                                    //   Icons.person,
+                                    //   color: Colors.white,
+                                    //   size: 80,
+                                    // ),
                                   ),
                                   Align(
                                     alignment: Alignment.bottomRight,
@@ -148,13 +152,13 @@ class SettingsPage extends StatelessWidget {
                           children: [
                             SizedBox(height: 20),
                             Image.asset(
-                              'assets/images/axpert_name.png',
+                              'assets/images/axpert_full.png',
                               // 'assets/images/buzzily-logo.png',
-                              height: MediaQuery.of(context).size.height * 0.048,
-                              width: MediaQuery.of(context).size.width * 0.38,
+                              height: MediaQuery.of(context).size.height * 0.06,
+                              // width: MediaQuery.of(context).size.width * 0.38,
                               // fit: BoxFit.fill,
                             ),
-                            SizedBox(height: 30),
+                            SizedBox(height: 18),
                             ListTile(
                               onTap: () {
                                 settingsPageController.onChangeNotifyStatus();

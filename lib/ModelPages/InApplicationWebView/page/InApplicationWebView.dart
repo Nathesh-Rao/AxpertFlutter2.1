@@ -42,7 +42,7 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
       if (argumentData != null) widget.data = argumentData[0];
       if (argumentData != null) hasAppBar = argumentData[1] ?? false;
     } catch (e) {}
-    // widget.data = "https://amazon.in";
+    // widget.data = "https://amazon.in"
     print(widget.data);
     clearCookie();
   }
@@ -148,7 +148,7 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Image.asset(
-                        "assets/images/axpert.png",
+                        "assets/images/axpert_03.png",
                         height: 25,
                       ),
                       Text(

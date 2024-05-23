@@ -64,20 +64,20 @@ class _LoginPageState extends State<LoginPage> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  SizedBox(height: 10),
+                                  SizedBox(height: 20),
                                   Hero(
                                     tag: 'axpertImage',
                                     child: Center(
                                       child: Image.asset(
-                                        'assets/images/axpert_name.png',
+                                        'assets/images/axpert_04.png',
                                         // 'assets/images/buzzily-logo.png',
-                                        height: MediaQuery.of(context).size.height * 0.048,
-                                        width: MediaQuery.of(context).size.width * 0.38,
+                                        height: MediaQuery.of(context).size.height * 0.090,
+                                        // width: MediaQuery.of(context).size.width * 0.38,
                                         fit: BoxFit.fill,
                                       ),
                                     ),
                                   ),
-                                  SizedBox(height: 25),
+                                  SizedBox(height: 5),
                                   Text('Login',
                                       style: GoogleFonts.poppins(
                                           textStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 20, color: Colors.black))),
@@ -356,7 +356,7 @@ class _LoginPageState extends State<LoginPage> {
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
                                 return Text(
-                                  "v${snapshot.data}_testRelease2",
+                                  "v${snapshot.data}_testRelease1",
                                   style: GoogleFonts.poppins(
                                       textStyle: TextStyle(
                                           color: MyColors.buzzilyblack,

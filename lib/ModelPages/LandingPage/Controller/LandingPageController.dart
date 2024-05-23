@@ -651,7 +651,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
           children: [
             SizedBox(width: 30),
             Image.asset(
-              'assets/images/axpert.png',
+              'assets/images/axpert_03.png',
               width: 40,
             ),
             SizedBox(width: 25),
