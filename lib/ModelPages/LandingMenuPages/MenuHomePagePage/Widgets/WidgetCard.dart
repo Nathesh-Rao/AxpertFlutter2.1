@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
@@ -60,13 +61,12 @@ class WidgetCard extends StatelessWidget {
             menuHomePageController.actionData[cardModel.caption] == null ? SizedBox(height: 10) : SizedBox(height: 4),
             Padding(
               padding: const EdgeInsets.only(top: 5, bottom: 2, right: 5),
-              child: FittedBox(
-                fit: BoxFit.fitWidth,
-                child: Text(
-                  cardModel.caption,
-                  style: GoogleFonts.roboto(
-                      textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: HexColor("#444444"))),
-                ),
+              child: AutoSizeText(
+                cardModel.caption,
+                maxLines: 2,
+                textAlign: TextAlign.left,
+                style: GoogleFonts.roboto(
+                    textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: HexColor("#444444"))),
               ),
             ),
           ],
