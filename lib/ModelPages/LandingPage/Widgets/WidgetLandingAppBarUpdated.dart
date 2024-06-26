@@ -44,13 +44,13 @@ class WidgetLandingAppBarUpdated extends StatelessWidget implements PreferredSiz
       ),
       centerTitle: false,
       actions: [
-        IconButton(
+        /*IconButton(
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(minWidth: 33, maxWidth: 33),
             onPressed: () {
               Get.toNamed(Routes.SettingsPage);
             },
-            icon: Icon(Icons.settings)),
+            icon: Icon(Icons.settings)),*/
         Obx(() => IconButton(
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(minWidth: 33, maxWidth: 33),
@@ -63,12 +63,16 @@ class WidgetLandingAppBarUpdated extends StatelessWidget implements PreferredSiz
                 child: Icon(Icons.notifications_active_outlined),
               ),
             )),
+        SizedBox(
+          width: 5,
+        ),
         // IconButton(onPressed: () {}, icon: Icon(Icons.dashboard_customize_outlined)),
         IconButton(
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(minWidth: 33, maxWidth: 40),
             onPressed: () {
-              Get.dialog(WidgetDisplayProfileDetails());
+              Get.toNamed(Routes.SettingsPage);
+              //Get.dialog(WidgetDisplayProfileDetails());
             },
             icon: Icon(Icons.person_pin, size: 30)),
         // InkWell(

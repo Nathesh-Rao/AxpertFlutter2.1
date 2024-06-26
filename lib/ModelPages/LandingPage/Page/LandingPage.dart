@@ -21,11 +21,18 @@ class LandingPage extends StatelessWidget {
       drawer: WidgetDrawer(),
       bottomNavigationBar: AppBottomNavigation(),
       body: WillPopScope(
-        onWillPop: landingPageController.onWillPop,
-        child: Obx(() => menuHomePageController.switchPage.value == true
-            ? InApplicationWebViewer(menuHomePageController.webUrl)
-            : landingPageController.getPage()),
-      ),
+          onWillPop: landingPageController.onWillPop,
+          child: Obx(() => Stack(
+                children: [
+                  landingPageController.getPage(),
+                  Visibility(visible: menuHomePageController.switchPage.value, child: InApplicationWebViewer(menuHomePageController.webUrl))
+                ],
+              ))
+          /* menuHomePageController.switchPage.value == true
+                ? InApplicationWebViewer(menuHomePageController.webUrl)
+                : landingPageController.getPage(),
+            ),*/
+          ),
     );
   }
 }

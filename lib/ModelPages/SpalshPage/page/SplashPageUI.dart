@@ -96,7 +96,7 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
     if (canAuthenticate) {
       final List<BiometricType> availableBiometrics = await auth.getAvailableBiometrics();
       print("List: $availableBiometrics");
-      // if (availableBiometrics.contains(BiometricType.fingerprint) ||
+      // if (availableBiometrics.contains (BiometricType.fingerprint) ||
       //     availableBiometrics.contains(BiometricType.weak) ||
       //     availableBiometrics.contains(BiometricType.strong))
       if (availableBiometrics.isNotEmpty) {

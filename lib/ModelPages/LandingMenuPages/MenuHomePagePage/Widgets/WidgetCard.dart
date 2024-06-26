@@ -28,7 +28,7 @@ class WidgetCard extends StatelessWidget {
           color: HexColor(menuHomePageController.getCardBackgroundColor(cardModel.colorcode.trim())), // ?? "ffffff"),
           borderRadius: BorderRadius.circular(10),
           // boxShadow: [BoxShadow(color: Colors.grey.shade400, blurRadius: 7)] ,
-          border: Border.all(width: 1, color: Colors.grey.withOpacity(0.4))),
+                    border: Border.all(width: 1, color: Colors.grey.withOpacity(0.4))),
       child: Padding(
         padding: EdgeInsets.only(left: 20, top: 10, right: 2),
         child: Column(
@@ -42,7 +42,7 @@ class WidgetCard extends StatelessWidget {
                   child: CachedNetworkImage(
                     imageUrl: Const.getFullProjectUrl("images/homepageicon/") + cardModel.caption + '.png',
                     errorWidget: (context, url, error) =>
-                        Image.network(Const.getFullProjectUrl('images/homepageicon/default.png')),
+                        Image.network(Const.getFullProjectUrl('images/homepageicon/default.png')), //'CustomPages/icons/homepageicon/default.png'
                     width: 40,
                   ),
                 ),
@@ -75,7 +75,7 @@ class WidgetCard extends StatelessWidget {
     );
   }
 
-  showMenuDialog(CardModel cardModel) async {
+ showMenuDialog(CardModel cardModel) async {
     //call api if needed
     if (cardModel.caption.toLowerCase().contains("attendance")) {
       await menuHomePageController.getPunchINData();
@@ -189,7 +189,6 @@ class WidgetCard extends StatelessWidget {
                   : ButtonStyle(padding: MaterialStateProperty.all(EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5))),
               onPressed: menuHomePageController.isShowPunchIn.value
                   ? () {
-                      Get.back();
                       menuHomePageController.onClick_PunchIn();
                     }
                   : null,
@@ -208,7 +207,6 @@ class WidgetCard extends StatelessWidget {
                     : ButtonStyle(padding: MaterialStateProperty.all(EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5))),
                 onPressed: menuHomePageController.isShowPunchOut.value
                     ? () {
-                        Get.back();
                         menuHomePageController.onClick_PunchOut();
                       }
                     : null,
