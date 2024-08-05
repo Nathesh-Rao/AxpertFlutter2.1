@@ -27,6 +27,7 @@ class ServerConnections {
   static const String API_CHANGE_PASSWORD = "api/v1/ARMChangePassword";
 
   static const String API_GET_MENU = "api/v1/ARMGetMenu";
+  static const String API_GET_MENU_V2 = "api/v2/ARMGetMenu";
   static const String API_SIGNOUT = "api/v1/ARMSignOut";
 
   static const String API_GET_PENDING_ACTIVETASK = "api/v1/ARMGetPendingActiveTasks";
@@ -69,7 +70,7 @@ class ServerConnections {
         // print("Post header: $header");
         print("API_POST_BODY:" + body);
         var response = await client.post(Uri.parse(url), headers: header, body: body);
-        print("API_RESPONSE_DATA: $API_NAME: ${response.body}\n");
+       // print("API_RESPONSE_DATA: $API_NAME: ${response.body}\n");
         // print("");
         if (response.statusCode == 200) return response.body;
         if (response.statusCode == 404) {

@@ -31,6 +31,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:text_scroll/text_scroll.dart';
 
 class LandingPageController extends GetxController with WidgetsBindingObserver {
+  final MenuMorePageController menuMorePageController = Get.put(MenuMorePageController());
   TextEditingController userCtrl = TextEditingController();
   TextEditingController oPassCtrl = TextEditingController();
   TextEditingController nPassCtrl = TextEditingController();
@@ -85,7 +86,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
         MenuDashboardPage(),
         // MenuCalendarPage(),
         WebViewCalendar(),
-        MenuMorePage(),
+        //MenuMorePage(),
       ];
     });
     showChangePassword_PopUp();
@@ -130,8 +131,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
                 SizedBox(height: 20),
                 Text(
                   "Log in to your Buzzily account using your phone's biometric credentials.",
-                  style: GoogleFonts.poppins(
-                      textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.grey.shade600)),
+                  style: GoogleFonts.poppins(textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.grey.shade600)),
                   textAlign: TextAlign.center,
                   maxLines: 2,
                 ),
@@ -548,8 +548,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
         var projectDet = jsonDecode(val['project_details']);
         // print("notiiii: " + projectDet["projectname"].toString());
         if (projectDet["projectname"].toString() == appStorage.retrieveValue(AppStorage.PROJECT_NAME).toString() &&
-            notify_to.contains(userName.toString().toLowerCase()))
-          list.add(WidgetNotification(FirebaseMessageModel.fromJson(val)));
+            notify_to.contains(userName.toString().toLowerCase())) list.add(WidgetNotification(FirebaseMessageModel.fromJson(val)));
       } catch (e) {
         print(e.toString());
       }
@@ -640,8 +639,6 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
   }
 
   getDrawerTileList() {
-    MenuMorePageController menuMorePageController = Get.find();
-
     List<Widget> menuList = [];
     menuList.add(
       Container(
@@ -674,7 +671,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
         ),
       ),
     );
-    var index;
+    /*var index;
     var masterIndex = 0;
     for (var item in menuMorePageController.finalMenuHeader) {
       index = 0;
@@ -686,7 +683,10 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
         children: getDrawerInnerListTile(menuMorePageController, item, index).toList(),
       );
       menuList.add(wid2);
-    }
+    }*/
+    var a = menuMorePageController.menu_finalList.map(build_innerListTile).toList();
+    menuList.addAll(a);
+
     if (menuList.length == 1) {
       menuList.add(ListTile(
         onTap: () {
@@ -752,6 +752,39 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
     return menuList;
   }
 
+  Widget build_innerListTile(tile, {double leftPadding = 15}) {
+    MenuItemNewmModel model_tile = tile;
+    if (model_tile.childList.isEmpty) {
+      return Visibility(
+        visible: model_tile.visible.toUpperCase() == "T",
+        child: InkWell(
+          onTap: () {
+            menuMorePageController.openItemClick(model_tile);
+            Get.back();
+          },
+          child: ListTile(
+            leading: Icon(menuMorePageController.generateIcon(tile, 1)),
+            contentPadding: EdgeInsets.only(left: leftPadding),
+            title: Text(
+              model_tile.caption,
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Visibility(
+        visible: model_tile.visible.toUpperCase() == "T",
+        child: ExpansionTile(
+          leading: Icon(Icons.folder),
+          tilePadding: EdgeInsets.only(left: leftPadding, right: 10),
+          title: Text(tile.caption),
+          children: ListTile.divideTiles(context: Get.context, tiles:  model_tile.childList.map((tile) => build_innerListTile(tile, leftPadding: leftPadding + 15)))
+              .toList(),
+        ),
+      );
+    }
+  }
+
   getDrawerInnerListTile(MenuMorePageController menuMorePageController, item, index) {
     List<Widget> innerTile = [];
     innerTile.add(Container(
@@ -767,8 +800,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
         child: Padding(
           padding: EdgeInsets.only(left: 20),
           // menuMorePageController.IconList[index++ % 8]
-          child: ListTile(
-              leading: Icon(menuMorePageController.generateIcon(subMenu, index++)), title: Text(subMenu.caption.toString())),
+          child: ListTile(leading: Icon(menuMorePageController.generateIcon(subMenu, index++)), title: Text(subMenu.caption.toString())),
         ),
       ));
 
@@ -1221,9 +1253,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
                     ),
                     padding: const EdgeInsets.fromLTRB(3.0, 6.0, 3.0, 3.0),
                     child: Column(children: const [
-                      Text('Cancel',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white, fontSize: 14, fontFamily: "nunitoreg"))
+                      Text('Cancel', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 14, fontFamily: "nunitoreg"))
                     ]),
                   ),
                 ),

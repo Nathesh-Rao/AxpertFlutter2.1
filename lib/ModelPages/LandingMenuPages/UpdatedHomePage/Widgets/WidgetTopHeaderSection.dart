@@ -1,13 +1,21 @@
 import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Controllers/MenuMorePageController.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Models/MenuItemModel.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Controller/LandingPageController.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcolor/hexcolor.dart';
+import 'package:substring_highlight/substring_highlight.dart';
 
 class WidgetTopHeaderSection extends StatelessWidget {
   WidgetTopHeaderSection({super.key});
+
   final LandingPageController landingPageController = Get.find();
+  final MenuMorePageController menuMorePageController = Get.find();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -22,8 +30,7 @@ class WidgetTopHeaderSection extends StatelessWidget {
                   child: Text(
                     "Hello, ${CommonMethods.capitalize(landingPageController.userName.value)}",
                     // + CommonMethods.capitalize(landingPageController.userName.value),
-                    style:
-                        GoogleFonts.poppins(textStyle: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w700)),
+                    style: GoogleFonts.poppins(textStyle: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w700)),
                   ),
                 ),
               )),
@@ -38,10 +45,65 @@ class WidgetTopHeaderSection extends StatelessWidget {
             ),
           ),
           Container(
-            width: double.maxFinite,
-            margin: EdgeInsets.only(top: 20, right: 20, left: 20, bottom: 20),
-            decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(10)),
-            child: Column(
+              width: double.maxFinite,
+              margin: EdgeInsets.only(top: 15, right: 20, left: 20, bottom: 20),
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
+              child: TypeAheadField<MenuItemNewmModel>(
+                controller: menuMorePageController.searchController,
+                itemBuilder: (context, item) {
+                  return ListTile(
+                    leading: Icon(menuMorePageController.generateIcon(item, 1)),
+                    minLeadingWidth: 10,
+                    contentPadding: EdgeInsets.only(left: 10),
+                    title: SubstringHighlight(
+                      text: item.caption,
+                      term: menuMorePageController.searchController.text,
+                      textStyleHighlight: TextStyle(fontWeight:FontWeight.w700),
+                    ), //Text(item.caption),
+                  );
+                },
+                onSelected: (item) {
+                  menuMorePageController.openItemClick(item);
+                  menuMorePageController.clearField_searchBar();
+                },
+                suggestionsCallback: (value) {
+                  return menuMorePageController.filter_search(value);
+                },
+                builder: (context, cnt, fn) {
+                  return TextField(
+                    controller: cnt,
+                    focusNode: fn,
+                    decoration: InputDecoration(
+                      hintText: 'Search',
+                      hintStyle: TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'Poppins',
+                        //color: HexColor("#8E8E8E"),
+                      ),
+                      filled: true,
+                      //fillColor: HexColor("#FFFFFF"),
+                      labelStyle: TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Poppins',
+                        //  color: HexColor("#8B193F"),
+                      ),
+                      contentPadding: EdgeInsets.only(left: 10),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: HexColor("#7070704F")),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      prefixIcon: Icon(
+                        Icons.search_outlined,
+                      ),
+                      suffixIcon: menuMorePageController.getSuffixIcon_searchBar(),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: MyColors.blue1),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  );
+                },
+              ) /*Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -60,8 +122,8 @@ class WidgetTopHeaderSection extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
-          )
+            ),*/
+              )
         ],
       ),
     );

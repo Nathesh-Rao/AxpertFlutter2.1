@@ -41,7 +41,7 @@ class WidgetUpdatedCards extends StatelessWidget {
                 child: CachedNetworkImage(
                   imageUrl: Const.getFullProjectUrl("images/homepageicon/") + cardModel.caption + '.png',
                   errorWidget: (context, url, error) =>
-                      Image.network(Const.getFullProjectUrl('imagess/homepageicon/default.png')),
+                      Image.network(Const.getFullProjectUrl('images/homepageicon/default.png')),
                   width: 40,
                 ),
                 // child: Icon(

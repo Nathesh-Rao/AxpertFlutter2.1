@@ -109,7 +109,7 @@ class MenuHomePageController extends GetxController {
     //           child: Text("Ok")));
     // }
     await getCardDataSources();
-    listOfCards..sort((a, b) => a.caption.toString().toLowerCase().compareTo(b.caption.toString().toLowerCase()));
+   // listOfCards..sort((a, b) => a.caption.toString().toLowerCase().compareTo(b.caption.toString().toLowerCase()));
     isLoading.value = false;
     LoadingScreen.dismiss();
     return listOfCards;
@@ -340,7 +340,7 @@ class MenuHomePageController extends GetxController {
     if (resp != "") {
       var jsonResp = jsonDecode(resp);
       if (jsonResp["success"].toString() == "true") {
-        var listItems = jsonResp["testapi"]["rows"];
+        var listItems = jsonResp["axm_dashboard_shortcutmenu"]["rows"];
         listOfGridCardItems.clear();
         for (var items in listItems) {
           GridDashboardModel newModel = GridDashboardModel.fromJson(items);

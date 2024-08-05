@@ -28,12 +28,12 @@ class WidgetQuickAccessGridItems extends StatelessWidget {
                   badgeStyle: badge.BadgeStyle(
                       shape: badge.BadgeShape.circle,
                       elevation: 10,
-                      padding: EdgeInsets.all(4),
+                      padding: EdgeInsets.only(left: 8,right: 8,top: 4,bottom: 4),
                       badgeColor: Colors.white,
                       borderSide: BorderSide(width: 1, color: MyColors.blue2)),
                   badgeContent: Text(
                     model.count,
-                    style: TextStyle(fontSize: 13),
+                    style: TextStyle(fontSize: 10),
                   ),
                   child: Container(
                     padding: const EdgeInsets.all(10),
