@@ -9,6 +9,7 @@ import 'package:axpertflutter/ModelPages/LoginPage/Page/SignUp.dart';
 import 'package:axpertflutter/ModelPages/NotificationPage/Pages/NotificationPage.dart';
 import 'package:axpertflutter/ModelPages/ProjectListing/Page/ProjectListingPage.dart';
 import 'package:axpertflutter/ModelPages/SettingsPage/Page/SettingsPage.dart';
+import 'package:axpertflutter/ModelPages/ShowLogs/Pages/ShowLog.dart';
 import 'package:axpertflutter/ModelPages/SpalshPage/page/SplashPageUI.dart';
 import 'package:get/get.dart';
 
@@ -24,6 +25,7 @@ class Routes {
   static const String LandingPage = "/LandingPage";
   static const String NotificationPage = "/LandingPage/Notifications";
   static const String SettingsPage = "/LandingPage/Settings";
+  static const String ShowLogs = "/LandingPage/ShowLogs";
 }
 
 class RoutePages {
@@ -82,6 +84,11 @@ class RoutePages {
     GetPage(
       name: Routes.SettingsPage,
       page: () => SettingsPage(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: Routes.ShowLogs,
+      page: () => ShowLogs(),
       transition: Transition.rightToLeft,
     ),
   ];

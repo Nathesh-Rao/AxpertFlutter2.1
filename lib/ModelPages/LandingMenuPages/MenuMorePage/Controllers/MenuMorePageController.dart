@@ -54,7 +54,7 @@ class MenuMorePageController extends GetxController {
   MenuMorePageController() {
     print("-----------MenuMorePageController Called-------------");
     getMenuList_v2();
-    getMenuList();
+    //getMenuList();
   }
 
   getMenuList() async {
@@ -197,7 +197,7 @@ class MenuMorePageController extends GetxController {
       print("menuResp ${menuResp}");
       var menuJson = jsonDecode(menuResp);
       if (menuJson['result']['success'].toString() == "true") {
-        for (var menuItem in menuJson['result']["Data"]) {
+        for (var menuItem in menuJson['result']["data"]) {
           MenuItemNewmModel mi = MenuItemNewmModel.fromJson(menuItem);
           menuListMain_new.add(mi);
         }

@@ -1,8 +1,10 @@
 import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
+import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Controller/LandingPageController.dart';
 import 'package:axpertflutter/ModelPages/SettingsPage/Controller/SettingsPageController.dart';
+import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
@@ -163,7 +165,7 @@ class SettingsPage extends StatelessWidget {
                               onTap: () {
                                 settingsPageController.onChangeNotifyStatus();
                               },
-                              leading: Icon(Icons.notifications_active),
+                              leading: Icon(Icons.notifications_active_outlined),
                               title: Text(
                                 "Notification",
                                 style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 18)),
@@ -183,10 +185,47 @@ class SettingsPage extends StatelessWidget {
                             ),
                             Divider(),
                             ListTile(
+                              onTap: () async {
+                                await Get.defaultDialog(
+                                  barrierDismissible: false,
+                                  title: "Action",
+                                  middleText: "Please select option",
+                                  confirm: ElevatedButton(
+                                      onPressed: () async {
+                                        Get.back();
+                                      },
+                                      child: Text("Open File")),
+                                  cancel: TextButton(
+                                      onPressed: () async {
+                                        Get.back();
+                                      },
+                                      child: Text("Cancel")),
+                                );
+                              },
+                              leading: Icon(Icons.description_outlined),
+                              title: Text(
+                                "Trace",
+                                style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 18)),
+                              ),
+                              trailing: Obx(() => SizedBox(
+                                    width: 60,
+                                    child: FlutterSwitch(
+                                      height: 30,
+                                      value: settingsPageController.logOnOffValue.value,
+                                      showOnOff: true,
+                                      activeColor: MyColors.blue2,
+                                      onToggle: (bool values) {
+                                        settingsPageController.onChangeLogStatus();
+                                      },
+                                    ),
+                                  )),
+                            ),
+                            Divider(),
+                            ListTile(
                               onTap: () {
                                 landingPageController.showManageWindow(initialIndex: 1);
                               },
-                              leading: Icon(Icons.lock),
+                              leading: Icon(Icons.lock_outline),
                               title: Text(
                                 "Change Password",
                                 style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 18)),

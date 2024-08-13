@@ -20,6 +20,7 @@ class ServerConnections {
   static const String API_GOOGLESIGNIN_SSO = "api/v1/ARMSigninSSO";
   static const String API_CONNECTTOAXPERT = "api/v1/ARMConnectToAxpert";
   static const String API_GET_HOMEPAGE_CARDS = "api/v1/ARMGetHomePageCards";
+  static const String API_GET_HOMEPAGE_CARDS_v2 = "api/v2/ARMGetHomePageCards";
   static const String API_GET_HOMEPAGE_CARDSDATASOURCE = "api/v1/ARMGetDataResponse";
   // static const String API_GET_PENDING_ACTIVELIST = "api/v1/ARMGetActiveTasks"; //OLD
   static const String API_MOBILE_NOTIFICATION = "api/v1/ARMMobileNotification";
@@ -41,7 +42,6 @@ class ServerConnections {
   static const String API_GET_BULK_APPROVAL_COUNT = "api/v1/ARMGetBulkApprovalCount";
   static const String API_GET_BULK_ACTIVETASKS = "api/v1/ARMGetBulkActiveTasks";
   static const String API_GET_SENDTOUSERS = "api/v1/ARMGetSendToUsers";
-
 
   AppStorage appStorage = AppStorage();
 
@@ -70,7 +70,7 @@ class ServerConnections {
         // print("Post header: $header");
         print("API_POST_BODY:" + body);
         var response = await client.post(Uri.parse(url), headers: header, body: body);
-       // print("API_RESPONSE_DATA: $API_NAME: ${response.body}\n");
+        // print("API_RESPONSE_DATA: $API_NAME: ${response.body}\n");
         // print("");
         if (response.statusCode == 200) return response.body;
         if (response.statusCode == 404) {
@@ -121,13 +121,17 @@ class ServerConnections {
   getFromServer({String url = '', var header = ''}) async {
     try {
       if (url == '') url = _baseUrl;
+      var API_NAME = url.substring(url.lastIndexOf("/") + 1, url.length);
       if (header == '') header = {"Content-Type": "application/json"};
       print("Get Url: $url");
       var response = await client.get(Uri.parse(url), headers: header);
       if (response.statusCode == 200) return response.body;
       if (response.statusCode == 404) {
-        Get.snackbar("Error " + response.statusCode.toString(), "Invalid Url",
-            snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
+        if (API_NAME.toString().toLowerCase() == "ARMAppStatus".toLowerCase()) {
+          showErrorSnack(title: "Error!", message: "Invalid ARM URL");
+        } else {
+          showErrorSnack(title: "Error " + response.statusCode.toString(), message: "Invalid Url");
+        }
       } else {
         Get.snackbar("Error " + response.statusCode.toString(), "Internal server error",
             snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);

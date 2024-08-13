@@ -20,6 +20,7 @@ class Const {
   static final String SET_HYBRID_INFO = "/Webservice.asmx/SetHybridInfo";
   static final String SET_HYBRID_NOTIFICATION_INFO = "/Webservice.asmx/SetHybridNotifiInfo";
   static final String LOGOUT_LINK = "webservice.asmx/SignOut";
+  static bool isLogEnabled = false;
 
   static String getSQLforClientID(String clientID) => "select * from tblclientMST where " + "clientid = '" + clientID + "'";
 

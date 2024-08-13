@@ -131,7 +131,8 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
                 SizedBox(height: 20),
                 Text(
                   "Log in to your Buzzily account using your phone's biometric credentials.",
-                  style: GoogleFonts.poppins(textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.grey.shade600)),
+                  style: GoogleFonts.poppins(
+                      textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.grey.shade600)),
                   textAlign: TextAlign.center,
                   maxLines: 2,
                 ),
@@ -548,7 +549,8 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
         var projectDet = jsonDecode(val['project_details']);
         // print("notiiii: " + projectDet["projectname"].toString());
         if (projectDet["projectname"].toString() == appStorage.retrieveValue(AppStorage.PROJECT_NAME).toString() &&
-            notify_to.contains(userName.toString().toLowerCase())) list.add(WidgetNotification(FirebaseMessageModel.fromJson(val)));
+            notify_to.contains(userName.toString().toLowerCase()))
+          list.add(WidgetNotification(FirebaseMessageModel.fromJson(val)));
       } catch (e) {
         print(e.toString());
       }
@@ -778,8 +780,9 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
           leading: Icon(Icons.folder),
           tilePadding: EdgeInsets.only(left: leftPadding, right: 10),
           title: Text(tile.caption),
-          children: ListTile.divideTiles(context: Get.context, tiles:  model_tile.childList.map((tile) => build_innerListTile(tile, leftPadding: leftPadding + 15)))
-              .toList(),
+          children: ListTile.divideTiles(
+              context: Get.context,
+              tiles: model_tile.childList.map((tile) => build_innerListTile(tile, leftPadding: leftPadding + 15))).toList(),
         ),
       );
     }
@@ -800,7 +803,8 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
         child: Padding(
           padding: EdgeInsets.only(left: 20),
           // menuMorePageController.IconList[index++ % 8]
-          child: ListTile(leading: Icon(menuMorePageController.generateIcon(subMenu, index++)), title: Text(subMenu.caption.toString())),
+          child: ListTile(
+              leading: Icon(menuMorePageController.generateIcon(subMenu, index++)), title: Text(subMenu.caption.toString())),
         ),
       ));
 
@@ -1253,7 +1257,9 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
                     ),
                     padding: const EdgeInsets.fromLTRB(3.0, 6.0, 3.0, 3.0),
                     child: Column(children: const [
-                      Text('Cancel', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 14, fontFamily: "nunitoreg"))
+                      Text('Cancel',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white, fontSize: 14, fontFamily: "nunitoreg"))
                     ]),
                   ),
                 ),

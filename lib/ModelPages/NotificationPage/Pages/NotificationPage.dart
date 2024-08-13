@@ -94,7 +94,10 @@ class NotificationPage extends StatelessWidget {
     unreadCount = max<int>(unreadCount, val);
 
     if (landingPageController.notificationPageRefresh.value == true) {
-      landingPageController.notificationPageRefresh.value = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        landingPageController.notificationPageRefresh.value = false;
+      });
+
       landingPageController.getNotificationList();
       return ListView.builder(
         itemBuilder: (context, index) {

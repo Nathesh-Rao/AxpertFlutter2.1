@@ -3,12 +3,20 @@
 <plist version="1.0">
 <dict>
 
+    <key>NSLocationAlwaysUsageDescription</key>
+        <string>The application need The Location Access</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+        <string>The application need The Location Access</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+        <string>The application need The Location Access</string>
     <key>NSAppTransportSecurity</key>
     <dict>
         <key>NSAllowsArbitraryLoads</key><true/>
     </dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
+
+    <key>UISupportsDocumentBrowser</key>
+    <true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

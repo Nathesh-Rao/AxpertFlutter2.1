@@ -79,7 +79,7 @@ class MenuHomePageController extends GetxController {
   getCardDetails() async {
     isLoading.value = true;
     LoadingScreen.show();
-    var url = Const.getFullARMUrl(ServerConnections.API_GET_HOMEPAGE_CARDS);
+    var url = Const.getFullARMUrl(ServerConnections.API_GET_HOMEPAGE_CARDS_v2);
     var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
     // print(resp);
     if (resp != "") {
@@ -109,7 +109,7 @@ class MenuHomePageController extends GetxController {
     //           child: Text("Ok")));
     // }
     await getCardDataSources();
-   // listOfCards..sort((a, b) => a.caption.toString().toLowerCase().compareTo(b.caption.toString().toLowerCase()));
+    // listOfCards..sort((a, b) => a.caption.toString().toLowerCase().compareTo(b.caption.toString().toLowerCase()));
     isLoading.value = false;
     LoadingScreen.dismiss();
     return listOfCards;

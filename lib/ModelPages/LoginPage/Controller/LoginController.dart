@@ -5,6 +5,7 @@ import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/const.dart';
+import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -43,6 +44,11 @@ class LoginController extends GetxController {
   }
 
   setWillAuthenticate() async {
+    await LogService.writeLog(message: "info1");
+    await LogService.writeLog(message: "info2");
+    await LogService.writeLog(message: "info3");
+    await LogService.writeLog(message: "info4");
+
     var willAuth = await getWillBiometricAuthenticateForThisUser(userNameController.text.toString().trim());
     print(("Login willAuth: $willAuth"));
     if (willAuth != null) {
@@ -60,7 +66,6 @@ class LoginController extends GetxController {
     var body = Const.getAppBody();
     var data = await serverConnections.postToServer(url: url, body: body);
     LoadingScreen.dismiss();
-
     if (data != "") {
       data = data.toString().replaceAll("null", "\"\"");
 
@@ -68,9 +73,11 @@ class LoginController extends GetxController {
 
       var jsonData = jsonDecode(data)['result']['data'] as List;
       userTypeList.clear();
+
       for (var item in jsonData) {
         String val = item["usergroup"].toString();
-        userTypeList.add(CommonMethods.capitalize(val));
+        val = CommonMethods.capitalize(val);
+        if (!userTypeList.contains(val)) userTypeList.add(val);
       }
       userTypeList..sort((a, b) => a.toString().toLowerCase().compareTo(b.toString().toLowerCase()));
       if (ddSelectedValue.value == "") {

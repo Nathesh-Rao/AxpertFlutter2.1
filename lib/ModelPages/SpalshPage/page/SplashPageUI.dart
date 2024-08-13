@@ -1,12 +1,16 @@
+import 'dart:io';
+
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/VersionUpdateClearOldData.dart';
 import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/ModelPages/ProjectListing/Model/ProjectModel.dart';
+import 'package:axpertflutter/ModelPages/location_permission.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -31,6 +35,7 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
     checkIfDeviceSupportBiometric();
     Future.delayed(Duration(milliseconds: 1800), () {
       _animationController.stop();
+      WidgetsBinding.instance.addPostFrameCallback((_) => _askLocationPermission());
       var cached = appStorage.retrieveValue(AppStorage.CACHED);
       try {
         if (cached == null)
@@ -47,6 +52,19 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
         Get.offAllNamed(Routes.ProjectListingPage);
       }
     });
+  }
+
+  _askLocationPermission() async {
+    if (Platform.isAndroid) {
+      var permission = await Permission.locationAlways.request();
+      print("Location Permission: ${permission}");
+      if (permission != PermissionStatus.granted) {
+        Get.to(RequestLocationPage());
+      }
+    }
+    if (Platform.isIOS) {
+      await Geolocator.requestPermission();
+    }
   }
 
   @override

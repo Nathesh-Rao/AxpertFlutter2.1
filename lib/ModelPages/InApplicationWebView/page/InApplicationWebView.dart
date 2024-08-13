@@ -45,6 +45,7 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
     // widget.data = "https://amazon.in"
     print(widget.data);
     clearCookie();
+    // widget.data = "http://google.com";
   }
 
   @override
@@ -132,9 +133,9 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
       onWillPop: () async {
         if (await _webViewController.canGoBack()) {
           _webViewController.goBack();
-          return false;
+          return Future.value(false);
         } else {
-          return true;
+          return Future.value(true);
         }
       },
       child: Scaffold(
