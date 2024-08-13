@@ -777,7 +777,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
       return Visibility(
         visible: model_tile.visible.toUpperCase() == "T",
         child: ExpansionTile(
-          leading: Icon(Icons.folder),
+          leading: Icon(menuMorePageController.generateIcon(tile, 1)),
           tilePadding: EdgeInsets.only(left: leftPadding, right: 10),
           title: Text(tile.caption),
           children: ListTile.divideTiles(

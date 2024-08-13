@@ -239,10 +239,9 @@ class MenuMorePageController extends GetxController {
     final map_finalList = LinkedHashMap.fromEntries(reverseM.entries.toList().reversed);
 
     // Add the Map value to List
-    menuListMain_new.clear();
-    map_finalList.forEach((k, v) => menuListMain_new.add(v as MenuItemNewmModel));
-    menu_finalList.value = menuListMain_new;
-    print("menuNewList: $menuListMain_new");
+    List<MenuItemNewmModel> newList = [];
+    map_finalList.forEach((k, v) => newList.add(v as MenuItemNewmModel));
+    menu_finalList.value = newList;
   }
 
   String getParent_hierarchy(Map heada_parentList, String name) {

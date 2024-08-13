@@ -45,7 +45,6 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
     // widget.data = "https://amazon.in"
     print(widget.data);
     clearCookie();
-    // widget.data = "http://google.com";
   }
 
   @override
