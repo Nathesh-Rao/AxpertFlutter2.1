@@ -82,6 +82,10 @@ class _AddNewConnectionState extends State<AddNewConnection> {
                   children: [
                     SizedBox(height: 10),
                     Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white,
+                      ),
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(

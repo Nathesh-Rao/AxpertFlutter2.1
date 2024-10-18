@@ -13,7 +13,6 @@ import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Contr
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Controllers/MenuMorePageController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Models/MenuItemModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Page/MenuMorePage.dart';
-import 'package:axpertflutter/ModelPages/LandingMenuPages/UpdatedHomePage/Page/UpdatedHomePage.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Models/FirebaseMessageModel.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetNotification.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
@@ -29,6 +28,8 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:text_scroll/text_scroll.dart';
+
+import '../../LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Page/UpdatedHomePage.dart';
 
 class LandingPageController extends GetxController with WidgetsBindingObserver {
   final MenuMorePageController menuMorePageController = Get.put(MenuMorePageController());

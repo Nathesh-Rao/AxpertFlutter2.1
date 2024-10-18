@@ -18,6 +18,7 @@ import 'package:material_icons_named/material_icons_named.dart';
 class MenuHomePageController extends GetxController {
   InternetConnectivity internetConnectivity = Get.find();
   var colorList = ["#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"];
+
   // var colorList = ["#EEF2FF", "#FFF9E7", "#F5EBFF", "#FFECF6", "#E5F5FA", "#E6FAF4", "#F7F7F7", "#E8F5F8"];
   var listOfCards = [].obs;
   var listOfGridCardItems = [].obs;
@@ -36,6 +37,11 @@ class MenuHomePageController extends GetxController {
   var last_login_location = "Loading..".obs;
   var attendanceVisibility = false.obs;
 
+  //Client Info
+  var client_info_companyTitle = "".obs;
+  var client_info_userNickname = "".obs;
+  var client_info_logo_base64String = "".obs;
+
   var isLoading = true.obs;
   ServerConnections serverConnections = ServerConnections();
   AppStorage appStorage = AppStorage();
@@ -43,6 +49,7 @@ class MenuHomePageController extends GetxController {
 
   MenuHomePageController() {
     body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
+    getClientInfo();
     getCardDetails();
     getPunchINData();
     getGridDashboardDetails();
@@ -389,6 +396,56 @@ class MenuHomePageController extends GetxController {
         last_login_location.value = jsonResp['axm_logindetails']['rows'][0]["last_login_location"].toString();
       } else {
         attendanceVisibility.value = false;
+      }
+    }
+  }
+
+  getClientInfo() async {
+    var cl_recId = "";
+    var cl_imagePath = "";
+    // var dataSourceUrl = baseUrl + GlobalConfiguration().get("HomeCardDataResponse").toString();
+    var dataSourceUrl = Const.getFullARMUrl(ServerConnections.API_GET_HOMEPAGE_CARDSDATASOURCE);
+    var body = {
+      "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
+      "username": appStorage.retrieveValue(AppStorage.USER_NAME),
+      "appname": Const.PROJECT_NAME, //"agilepost113",
+      "datasource": "Company_Logo",
+      "sqlParams": {"username": appStorage.retrieveValue(AppStorage.USER_NAME)}
+    };
+
+    var dsResp = await serverConnections.postToServer(url: dataSourceUrl, isBearer: true, body: jsonEncode(body));
+    if (dsResp != "") {
+      var jsonDSResp = jsonDecode(dsResp);
+      if (jsonDSResp['result']['success'].toString() == "true") {
+        var dsDataList = jsonDSResp['result']['data'];
+        for (var item in dsDataList) {
+          try {
+            cl_recId = item['recordid'].toInt().toString() ?? "";
+            client_info_companyTitle.value = item['company_title'] ?? "";
+            client_info_userNickname.value = item['user_nickname'] ?? "";
+            cl_imagePath = item['imagepath'] ?? "";
+          } catch (e) {
+            print(e);
+          }
+        }
+      }
+    }
+    if (!cl_recId.isEmpty && !cl_imagePath.isEmpty) getImageFlieByRecordId(cl_recId, cl_imagePath);
+  }
+
+  getImageFlieByRecordId(recID, filePath) async {
+    var url = Const.getFullARMUrl(ServerConnections.API_GET_FILE_BY_RECORDID);
+    var body = {
+      // "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
+      "RecordId": recID,
+      "FilePath": filePath
+    };
+
+    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body));
+    if (resp != "") {
+      var jsonResp = jsonDecode(resp);
+      if (jsonResp['success'].toString() == "true") {
+        client_info_logo_base64String.value = jsonResp['base64'] ?? "";
       }
     }
   }

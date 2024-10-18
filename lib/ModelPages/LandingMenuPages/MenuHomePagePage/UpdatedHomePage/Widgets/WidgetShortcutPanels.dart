@@ -1,6 +1,6 @@
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/CardModel.dart';
-import 'package:axpertflutter/ModelPages/LandingMenuPages/UpdatedHomePage/Widgets/WidgetQuickAccessGridItem.dart';
+import '../Widgets/WidgetQuickAccessGridItem.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 

@@ -1,20 +1,24 @@
 import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
-import 'package:axpertflutter/Constants/const.dart';
-import 'package:axpertflutter/ModelPages/LandingPage/Controller/LandingPageController.dart';
-import 'package:axpertflutter/ModelPages/SettingsPage/Controller/SettingsPageController.dart';
+
 import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../Constants/const.dart';
+import '../../LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
+import '../../LandingPage/Controller/LandingPageController.dart';
+import '../Controller/SettingsPageController.dart';
+
 class SettingsPage extends StatelessWidget {
   SettingsPage({super.key});
 
   final SettingsPageController settingsPageController = Get.put(SettingsPageController());
   final LandingPageController landingPageController = Get.find();
+  final MenuHomePageController menuHomePageController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -91,22 +95,25 @@ class SettingsPage extends StatelessWidget {
                               ),
                             ),
                             SizedBox(width: 30),
-                            Column(
+                            Obx(() => Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  CommonMethods.capitalize(landingPageController.userName.value),
+                                  CommonMethods.capitalize(menuHomePageController.client_info_userNickname.value != "" ? menuHomePageController.client_info_userNickname.value : landingPageController.userName.value),
                                   maxLines: 2,
                                   style: GoogleFonts.poppins(
                                       textStyle: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.w600)),
                                 ),
-                                Text(
-                                  "Agile Labs Pvt. Ltd.",
-                                  style: GoogleFonts.poppins(textStyle: TextStyle(color: Colors.white, fontSize: 15)),
+                                Visibility(
+                                  visible: menuHomePageController.client_info_companyTitle.value != "",
+                                  child: Text(
+                                    menuHomePageController.client_info_companyTitle.value,
+                                    style: GoogleFonts.poppins(textStyle: TextStyle(color: Colors.white, fontSize: 15)),
+                                  ),
                                 ),
                               ],
-                            )
+                            )),
                           ],
                         ),
                       ),
@@ -227,7 +234,7 @@ class SettingsPage extends StatelessWidget {
                               },
                               leading: Icon(Icons.lock_outline),
                               title: Text(
-                                "Change Password",
+                                "Reset Password",
                                 style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 18)),
                               ),
                             ),
@@ -238,7 +245,7 @@ class SettingsPage extends StatelessWidget {
                               },
                               leading: Icon(Icons.power_settings_new),
                               title: Text(
-                                "Logout",
+                                "Sign out",
                                 style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 18)),
                               ),
                             ),

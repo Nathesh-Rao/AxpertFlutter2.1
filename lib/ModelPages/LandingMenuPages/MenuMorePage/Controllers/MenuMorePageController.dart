@@ -198,8 +198,10 @@ class MenuMorePageController extends GetxController {
       var menuJson = jsonDecode(menuResp);
       if (menuJson['result']['success'].toString() == "true") {
         for (var menuItem in menuJson['result']["data"]) {
-          MenuItemNewmModel mi = MenuItemNewmModel.fromJson(menuItem);
-          menuListMain_new.add(mi);
+          try {
+            MenuItemNewmModel mi = MenuItemNewmModel.fromJson(menuItem);
+            menuListMain_new.add(mi);
+          } catch (e) {}
         }
       }
     }
@@ -224,11 +226,15 @@ class MenuMorePageController extends GetxController {
     //To get the parent tree reverse the Map
     final reverseM = LinkedHashMap.fromEntries(map_menulist.entries.toList().reversed);
     reverseM.forEach((key, value) {
-      MenuItemNewmModel md = value;
-      var parent = md.parent;
-      if (parent != "") {
-        reverseM[parent].childList.insert(0, md);
-        keysToRemove.add(key);
+      try {
+        MenuItemNewmModel md = value;
+        var parent = md.parent;
+        if (parent != "") {
+          reverseM[parent].childList.insert(0, md);
+          keysToRemove.add(key);
+        }
+      } catch (e) {
+        print(e);
       }
     });
 

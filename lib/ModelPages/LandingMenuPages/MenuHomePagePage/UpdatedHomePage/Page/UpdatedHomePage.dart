@@ -1,15 +1,16 @@
 import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
-import 'package:axpertflutter/ModelPages/LandingMenuPages/UpdatedHomePage/Widgets/WidgetAttendancePanel.dart';
-import 'package:axpertflutter/ModelPages/LandingMenuPages/UpdatedHomePage/Widgets/WidgetQuickAccessPanel.dart';
-import 'package:axpertflutter/ModelPages/LandingMenuPages/UpdatedHomePage/Widgets/WidgetShortcutPanels.dart';
-import 'package:axpertflutter/ModelPages/LandingMenuPages/UpdatedHomePage/Widgets/WidgetTopHeaderSection.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Controller/LandingPageController.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetSlidingNotification.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../Widgets/WidgetAttendancePanel.dart';
+import '../Widgets/WidgetQuickAccessPanel.dart';
+import '../Widgets/WidgetShortcutPanels.dart';
+import '../Widgets/WidgetTopHeaderSection.dart';
 
 class UpdatedHomePage extends StatelessWidget {
   UpdatedHomePage({super.key});
@@ -17,6 +18,7 @@ class UpdatedHomePage extends StatelessWidget {
   // UpdatedHomePageController updatedHomePageController = Get.put(UpdatedHomePageController());
   final MenuHomePageController menuHomePageController = Get.find();
   final LandingPageController landingPageController = Get.find();
+
 
   @override
   Widget build(BuildContext context) {

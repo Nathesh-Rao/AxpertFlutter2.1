@@ -153,13 +153,13 @@ class ForgetPasswordController extends GetxController {
         } else {
           Get.defaultDialog(
               title: "Success",
-              middleText: "Password is reset and sent to your email",
+              middleText: "  Password is reset and sent to your email  ",
               confirm: ElevatedButton(
                   onPressed: () {
                     Get.back();
                     Get.back();
                   },
-                  child: Text("Ok")));
+                  child: Text("OK")));
 
           /*  otpAttempts.value = jsonMsg["result"]["otpattemptsleft"];
           regID.value = jsonMsg["result"]["regid"];

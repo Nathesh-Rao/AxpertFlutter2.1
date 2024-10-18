@@ -14,8 +14,8 @@ class ExecuteApi {
 
   static const String API_PrivateKey_DashBoard = "9511835779821320";
   static const String API_PublicKey_DashBoard = "AXPKEY000000010002";
-  static const String API_PrivateKey_Attendance = "1986988291821600";
-  static const String API_PublicKey_Attendance = "AXPKEY000000010004";
+  static const String API_PrivateKey_Attendance = "9876583824480530";
+  static const String API_PublicKey_Attendance = "AXPKEY000000010018";
 
   // var body;
   var url = Const.getFullARMUrl(API_ARM_EXECUTE);

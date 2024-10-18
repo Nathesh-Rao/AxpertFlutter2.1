@@ -306,15 +306,12 @@ class ForgetPassword extends StatelessWidget {
                                 fontFamily: 'redhatsmbold'),
                           ),
                           SizedBox(height: 20),
-                          Visibility(
-                            visible: false,
-                            child: Text(
-                              'Enter email to reset password',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: MediaQuery.of(context).size.height * 0.02,
-                                  color: MyColors.blue2),
-                            ),
+                          Text(
+                            'Enter email to reset password',
+                            style: TextStyle(
+                                fontWeight: FontWeight.normal,
+                                fontSize: MediaQuery.of(context).size.height * 0.02,
+                                color: MyColors.blue2),
                           ),
                           SizedBox(height: 30),
                           DropdownButtonFormField(
