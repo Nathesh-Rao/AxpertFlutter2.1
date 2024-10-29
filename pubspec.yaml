@@ -1,10 +1,9 @@
 name: axpertflutter
 description: A new Flutter project.
 
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 version: 2.1.3+2103
-
 
 environment:
   sdk: ">=2.18.6 <3.0.0"
@@ -71,33 +70,28 @@ dependencies:
   substring_highlight: ^1.0.33
   location: ^7.0.0
   file_downloader_flutter: ^0.0.5
-#  simple_downloader: ^0.0.3+1
+  #  simple_downloader: ^0.0.3+1
   background_location_tracker: ^1.4.3
-
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/images/agilelabslogo.png"
+  image_path: "assets/images/agilelabslogonew.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
-#  web:
-#    generate: true
-#    image_path: "images/agilelabslogo.png"
-#    background_color: "#hexcode"
-#    theme_color: "#hexcode"
-
+  #  web:
+  #    generate: true
+  #    image_path: "images/agilelabslogo.png"
+  #    background_color: "#hexcode"
+  #    theme_color: "#hexcode"
 
   flutter_lints: ^2.0.0
-
 
 flutter:
   uses-material-design: true
@@ -109,7 +103,6 @@ flutter:
   assets:
     - assets/lang/
     - assets/images/
-
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -131,16 +124,13 @@ flutter:
     - family: Gellix
       fonts:
         - asset: assets/fonts/Gellix-Black.ttf
-
-
 #        - asset: assets/fonts/Poppins-Medium.ttf
 
-
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/custom-fonts/#from-packages
+#   - family: Trajan Pro
+#     fonts:
+#       - asset: fonts/TrajanPro.ttf
+#       - asset: fonts/TrajanPro_Bold.ttf
+#         weight: 700
+#
+# For details regarding fonts from package dependencies,
+# see https://flutter.dev/custom-fonts/#from-packages

@@ -19,7 +19,8 @@ class SplashPage extends StatefulWidget {
   State<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateMixin {
+class _SplashPageState extends State<SplashPage>
+    with SingleTickerProviderStateMixin {
   var _animationController;
   AppStorage appStorage = AppStorage();
   ProjectModel? projectModel;
@@ -29,13 +30,15 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
     super.initState();
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual);
     // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-    _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 800));
+    _animationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 800));
     _animationController.forward();
     VersionUpdateClearOldData.clearAllOldData();
     checkIfDeviceSupportBiometric();
     Future.delayed(Duration(milliseconds: 1800), () {
       _animationController.stop();
-      WidgetsBinding.instance.addPostFrameCallback((_) => _askLocationPermission());
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => _askLocationPermission());
       var cached = appStorage.retrieveValue(AppStorage.CACHED);
       try {
         if (cached == null)
@@ -88,7 +91,7 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
                 height: 80,
                 width: 80,
                 child: Image.asset(
-                  'assets/images/agilelabslogo.png',
+                  'assets/images/agilelabslogonew.png',
                   fit: BoxFit.cover,
                 ),
               ),
@@ -109,10 +112,12 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
   void checkIfDeviceSupportBiometric() async {
     final LocalAuthentication auth = LocalAuthentication();
     final bool canAuthenticateWithBiometrics = await auth.canCheckBiometrics;
-    final bool canAuthenticate = canAuthenticateWithBiometrics || await auth.isDeviceSupported();
+    final bool canAuthenticate =
+        canAuthenticateWithBiometrics || await auth.isDeviceSupported();
     print("canAuthenticate: $canAuthenticate");
     if (canAuthenticate) {
-      final List<BiometricType> availableBiometrics = await auth.getAvailableBiometrics();
+      final List<BiometricType> availableBiometrics =
+          await auth.getAvailableBiometrics();
       print("List: $availableBiometrics");
       // if (availableBiometrics.contains (BiometricType.fingerprint) ||
       //     availableBiometrics.contains(BiometricType.weak) ||

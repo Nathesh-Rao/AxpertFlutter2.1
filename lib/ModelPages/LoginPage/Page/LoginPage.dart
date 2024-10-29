@@ -42,7 +42,8 @@ class _LoginPageState extends State<LoginPage> {
               child: Stack(
                 children: [
                   SingleChildScrollView(
-                    keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
                     child: Padding(
                       padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
                       child: Column(
@@ -71,7 +72,9 @@ class _LoginPageState extends State<LoginPage> {
                                       child: Image.asset(
                                         'assets/images/axpert_04.png',
                                         // 'assets/images/buzzily-logo.png',
-                                        height: MediaQuery.of(context).size.height * 0.090,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.090,
                                         // width: MediaQuery.of(context).size.width * 0.38,
                                         fit: BoxFit.fill,
                                       ),
@@ -80,11 +83,17 @@ class _LoginPageState extends State<LoginPage> {
                                   SizedBox(height: 5),
                                   Text('Login',
                                       style: GoogleFonts.poppins(
-                                          textStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 20, color: Colors.black))),
+                                          textStyle: TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 20,
+                                              color: Colors.black))),
                                   SizedBox(height: 10),
                                   Text('Enter Your Credentials',
                                       style: GoogleFonts.poppins(
-                                          textStyle: TextStyle(fontWeight: FontWeight.w400, fontSize: 12, color: Colors.black))),
+                                          textStyle: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 12,
+                                              color: Colors.black))),
                                 ],
                               ),
                               // Align(
@@ -105,14 +114,18 @@ class _LoginPageState extends State<LoginPage> {
                           Text(
                             Const.PROJECT_NAME.toString().toUpperCase(),
                             style: GoogleFonts.poppins(
-                                textStyle: TextStyle(fontWeight: FontWeight.w400, fontSize: 10, color: Colors.black)),
+                                textStyle: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 10,
+                                    color: Colors.black)),
                           ),
                           SizedBox(height: 20),
                           TextField(
                             controller: loginController.userNameController,
                             textInputAction: TextInputAction.next,
                             decoration: InputDecoration(
-                              errorText: loginController.errMessage(loginController.errUserName),
+                              errorText: loginController
+                                  .errMessage(loginController.errUserName),
                               labelText: "Username",
                               hintText: "Enter Username",
                               prefixIcon: Icon(Icons.person),
@@ -128,7 +141,8 @@ class _LoginPageState extends State<LoginPage> {
                             obscureText: loginController.showPassword.value,
                             textInputAction: TextInputAction.next,
                             decoration: InputDecoration(
-                              errorText: loginController.errMessage(loginController.errPassword),
+                              errorText: loginController
+                                  .errMessage(loginController.errPassword),
                               labelText: "Password",
                               hintText: "Enter Password",
                               prefixIcon: Icon(Icons.lock),
@@ -158,8 +172,10 @@ class _LoginPageState extends State<LoginPage> {
                               child: DropdownButtonFormField(
                                 value: loginController.ddSelectedValue.value,
                                 items: loginController.dropdownMenuItem(),
-                                onChanged: (value) => loginController.dropDownItemChanged(value),
-                                decoration: InputDecoration(prefixIcon: Icon(Icons.group)),
+                                onChanged: (value) =>
+                                    loginController.dropDownItemChanged(value),
+                                decoration: InputDecoration(
+                                    prefixIcon: Icon(Icons.group)),
                                 // border: OutlineInputBorder(
                                 //   borderRadius: BorderRadius.circular(10),
                                 // )
@@ -178,9 +194,12 @@ class _LoginPageState extends State<LoginPage> {
                                   children: [
                                     Checkbox(
                                       value: loginController.rememberMe.value,
-                                      onChanged: (value) => {loginController.rememberMe.toggle()},
+                                      onChanged: (value) =>
+                                          {loginController.rememberMe.toggle()},
                                       checkColor: Colors.white,
-                                      fillColor: MaterialStateProperty.resolveWith(loginController.getColor),
+                                      fillColor:
+                                          MaterialStateProperty.resolveWith(
+                                              loginController.getColor),
                                     ),
                                     Text("Remember Me")
                                   ],
@@ -196,7 +215,9 @@ class _LoginPageState extends State<LoginPage> {
                                       decoration: TextDecoration.underline,
                                       color: HexColor("#3E4153"),
                                       fontWeight: FontWeight.w600,
-                                      fontSize: MediaQuery.of(context).size.height * 0.016),
+                                      fontSize:
+                                          MediaQuery.of(context).size.height *
+                                              0.016),
                                 ),
                               )
                             ],
@@ -210,12 +231,17 @@ class _LoginPageState extends State<LoginPage> {
                               },
                               child: Container(
                                 height: 50,
-                                decoration: BoxDecoration(color: MyColors.blue2, borderRadius: BorderRadius.circular(20)),
+                                decoration: BoxDecoration(
+                                    color: MyColors.blue2,
+                                    borderRadius: BorderRadius.circular(20)),
                                 child: Center(
                                   child: Text(
                                     "Login",
                                     style: GoogleFonts.poppins(
-                                        textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: MyColors.white1)),
+                                        textStyle: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 16,
+                                            color: MyColors.white1)),
                                   ),
                                 ),
                               ),
@@ -228,16 +254,21 @@ class _LoginPageState extends State<LoginPage> {
                               padding: EdgeInsets.only(left: 30, right: 30),
                               child: ElevatedButton.icon(
                                   style: ElevatedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
                                     foregroundColor: MyColors.buzzilyblack,
                                     backgroundColor: MyColors.white1,
                                     minimumSize: Size(double.infinity, 48),
                                   ),
-                                  icon: Icon(FontAwesomeIcons.google, color: MyColors.red),
+                                  icon: Icon(FontAwesomeIcons.google,
+                                      color: MyColors.red),
                                   label: Text('Sign In With Google',
                                       style: GoogleFonts.poppins(
-                                          textStyle:
-                                              TextStyle(fontWeight: FontWeight.w500, fontSize: 12, color: HexColor("#3E4153")))),
+                                          textStyle: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 12,
+                                              color: HexColor("#3E4153")))),
                                   onPressed: () {
                                     loginController.googleSignInClicked();
                                   }),
@@ -249,19 +280,24 @@ class _LoginPageState extends State<LoginPage> {
                               Get.toNamed(Routes.SignUp);
                             },
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 70, right: 70),
+                              padding:
+                                  const EdgeInsets.only(left: 70, right: 70),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text("New user?  ",
                                       style: GoogleFonts.poppins(
-                                          textStyle:
-                                              TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: HexColor("#3E4153")))),
+                                          textStyle: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 12,
+                                              color: HexColor("#3E4153")))),
                                   Text(
                                     "Sign up",
                                     style: GoogleFonts.poppins(
                                         textStyle: TextStyle(
-                                            decoration: TextDecoration.underline,
+                                            decoration:
+                                                TextDecoration.underline,
                                             fontWeight: FontWeight.w600,
                                             fontSize: 12,
                                             color: HexColor("#4E9AF5"))),
@@ -276,7 +312,10 @@ class _LoginPageState extends State<LoginPage> {
                               "By using the software, you agree to the",
                               style: GoogleFonts.poppins(
                                   textStyle: TextStyle(
-                                      fontWeight: FontWeight.w400, fontSize: 12, letterSpacing: 1, color: Colors.black)),
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 12,
+                                      letterSpacing: 1,
+                                      color: Colors.black)),
                             ),
                           ),
                           Row(
@@ -297,7 +336,10 @@ class _LoginPageState extends State<LoginPage> {
                                 child: Text(" and the ",
                                     style: GoogleFonts.poppins(
                                       textStyle: TextStyle(
-                                          fontWeight: FontWeight.w400, fontSize: 12, color: Colors.black, letterSpacing: 1),
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 12,
+                                          color: Colors.black,
+                                          letterSpacing: 1),
                                     )),
                               ),
                               FittedBox(
@@ -317,11 +359,14 @@ class _LoginPageState extends State<LoginPage> {
                           Text("Powered By",
                               textAlign: TextAlign.center,
                               style: GoogleFonts.poppins(
-                                textStyle:
-                                    TextStyle(fontWeight: FontWeight.w500, fontSize: 12, color: Colors.black, letterSpacing: 1),
+                                textStyle: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 12,
+                                    color: Colors.black,
+                                    letterSpacing: 1),
                               )),
                           Image.asset(
-                            'assets/images/agilelabslogo.png',
+                            'assets/images/agilelabslogonew.png',
                             height: MediaQuery.of(context).size.height * 0.04,
                             // width: MediaQuery.of(context).size.width * 0.075,
                             fit: BoxFit.fill,
@@ -338,7 +383,8 @@ class _LoginPageState extends State<LoginPage> {
                                 child: Icon(
                                   Icons.fingerprint_outlined,
                                   color: MyColors.blue2,
-                                  size: MediaQuery.of(context).size.height * 0.04,
+                                  size:
+                                      MediaQuery.of(context).size.height * 0.04,
                                 ),
                               ),
                             ),
@@ -361,7 +407,10 @@ class _LoginPageState extends State<LoginPage> {
                                       textStyle: TextStyle(
                                           color: MyColors.buzzilyblack,
                                           fontWeight: FontWeight.w700,
-                                          fontSize: MediaQuery.of(context).size.height * 0.012)),
+                                          fontSize: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.012)),
                                 );
                               } else {
                                 return Text("");

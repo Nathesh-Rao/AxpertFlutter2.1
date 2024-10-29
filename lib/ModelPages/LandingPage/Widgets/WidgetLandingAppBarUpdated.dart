@@ -8,7 +8,8 @@ import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetDisplayProfil
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class WidgetLandingAppBarUpdated extends StatelessWidget implements PreferredSizeWidget {
+class WidgetLandingAppBarUpdated extends StatelessWidget
+    implements PreferredSizeWidget {
   WidgetLandingAppBarUpdated({super.key});
 
   LandingPageController landingPageController = Get.find();
@@ -46,11 +47,14 @@ class WidgetLandingAppBarUpdated extends StatelessWidget implements PreferredSiz
                 fontWeight: FontWeight.bold,
               ),
             ),
-	    SizedBox(width: 5),
+            SizedBox(width: 5),
             Obx(() => Visibility(
-                  visible: menuHomePageController.client_info_logo_base64String.value != "",
+                  visible: menuHomePageController
+                          .client_info_logo_base64String.value !=
+                      "",
                   child: Image.memory(
-                    base64Decode(menuHomePageController.client_info_logo_base64String.value),
+                    base64Decode(menuHomePageController
+                        .client_info_logo_base64String.value),
                     height: 40,
                     width: 40,
                   ),
