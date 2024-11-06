@@ -101,7 +101,7 @@ class WidgetLandingAppBarUpdated extends StatelessWidget
         //   // child: CircleAvatar(
         //   //   // backgroundImage: AssetImage('assets/images/profpic.jpg'),
         //   //   backgroundColor: Colors.blue,
-        //   //   backgroundImage: AssetImage("assets/images/axpert.png"),
+        //   //   backgroundImage: AssetImage("assets/images/appversion"),
         //   // ),
         // ),
         SizedBox(
