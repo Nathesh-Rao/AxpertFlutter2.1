@@ -14,6 +14,7 @@ import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Controlle
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Models/MenuItemModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Page/MenuMorePage.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Models/FirebaseMessageModel.dart';
+import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetBanner.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetNotification.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:carousel_slider/carousel_controller.dart';
@@ -29,6 +30,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:text_scroll/text_scroll.dart';
 
+import '../../LandingMenuPages/MenuHomePagePage/Models/BannerModel.dart';
 import '../../LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Page/UpdatedHomePage.dart';
 
 class LandingPageController extends GetxController with WidgetsBindingObserver {
@@ -46,6 +48,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
   var userName = 'Demo'.obs; //update with user name
   var bottomIndex = 0.obs;
   var carouselIndex = 0.obs;
+  var carouselBannerIndex = 0.obs;
   var needRefreshNotification = false.obs;
   var notificationPageRefresh = false.obs;
   var showBadge = false.obs;
@@ -55,7 +58,9 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
   var isAuthRequired = false;
   var unread;
   var toDay;
-  final CarouselController carouselController = CarouselController();
+  final CarouselController carouselController_notify = CarouselController();
+  final CarouselController carouselController_banner = CarouselController();
+
 
   DateTime currentBackPressTime = DateTime.now();
 
@@ -64,6 +69,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
 
   late var pageList;
   var list = [WidgetNotification(FirebaseMessageModel("Title 1", "Body 1"))];
+  var list_bannerItem = [].obs;
 
   getPage() {
     if (bottomIndex.value == 0) {
@@ -91,8 +97,8 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
       ];
     });
     showChangePassword_PopUp();
-
     getBiometricStatus();
+    getBannerDetailList();
   }
 
   getBiometricStatus() async {
@@ -132,8 +138,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
                 SizedBox(height: 20),
                 Text(
                   "Log into your project account using your phone's biometric credentials..",
-                  style: GoogleFonts.poppins(
-                      textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.grey.shade600)),
+                  style: GoogleFonts.poppins(textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.grey.shade600)),
                   textAlign: TextAlign.center,
                   maxLines: 2,
                 ),
@@ -220,7 +225,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
     if (now.difference(currentBackPressTime) > const Duration(seconds: 2)) {
       currentBackPressTime = now;
       Get.rawSnackbar(
-          // message: "Press back again to exit",
+        // message: "Press back again to exit",
           messageText: Center(
             child: Text(
               "Press back again to exit",
@@ -284,9 +289,9 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
                       ),
                       Expanded(
                           child: Text(
-                        "Messages",
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                      )),
+                            "Messages",
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          )),
                       IconButton(
                           onPressed: () {
                             Get.back();
@@ -550,8 +555,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
         var projectDet = jsonDecode(val['project_details']);
         // print("notiiii: " + projectDet["projectname"].toString());
         if (projectDet["projectname"].toString() == appStorage.retrieveValue(AppStorage.PROJECT_NAME).toString() &&
-            notify_to.contains(userName.toString().toLowerCase()))
-          list.add(WidgetNotification(FirebaseMessageModel.fromJson(val)));
+            notify_to.contains(userName.toString().toLowerCase())) list.add(WidgetNotification(FirebaseMessageModel.fromJson(val)));
       } catch (e) {
         print(e.toString());
       }
@@ -740,16 +744,21 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
         title: Text("Logout"),
       ));
       menuList.add(SizedBox(
-        height: MediaQuery.of(Get.context!).size.height - 540,
+        height: MediaQuery
+            .of(Get.context!)
+            .size
+            .height - 540,
       ));
     }
     menuList.add(Container(
       height: 70,
       child: Center(
           child: Text(
-        'App Version: ${Const.APP_VERSION}\n© agile-labs.com ${DateTime.now().year}',
-        textAlign: TextAlign.center,
-      )),
+            'App Version: ${Const.APP_VERSION}\n© agile-labs.com ${DateTime
+                .now()
+                .year}',
+            textAlign: TextAlign.center,
+          )),
     ));
 
     return menuList;
@@ -782,8 +791,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
           tilePadding: EdgeInsets.only(left: leftPadding, right: 10),
           title: Text(tile.caption),
           children: ListTile.divideTiles(
-              context: Get.context,
-              tiles: model_tile.childList.map((tile) => build_innerListTile(tile, leftPadding: leftPadding + 15))).toList(),
+              context: Get.context, tiles: model_tile.childList.map((tile) => build_innerListTile(tile, leftPadding: leftPadding + 15))).toList(),
         ),
       );
     }
@@ -804,8 +812,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
         child: Padding(
           padding: EdgeInsets.only(left: 20),
           // menuMorePageController.IconList[index++ % 8]
-          child: ListTile(
-              leading: Icon(menuMorePageController.generateIcon(subMenu, index++)), title: Text(subMenu.caption.toString())),
+          child: ListTile(leading: Icon(menuMorePageController.generateIcon(subMenu, index++)), title: Text(subMenu.caption.toString())),
         ),
       ));
 
@@ -979,7 +986,8 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
             child: Padding(
               padding: EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 20),
               child: SingleChildScrollView(
-                child: Obx(() => Column(
+                child: Obx(() =>
+                    Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Center(
@@ -1176,7 +1184,8 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
   }
 
   userCredentials() {
-    return Obx(() => Column(
+    return Obx(() =>
+        Column(
           children: [
             SizedBox(height: 20),
             TextFormField(
@@ -1258,9 +1267,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
                     ),
                     padding: const EdgeInsets.fromLTRB(3.0, 6.0, 3.0, 3.0),
                     child: Column(children: const [
-                      Text('Cancel',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white, fontSize: 14, fontFamily: "nunitoreg"))
+                      Text('Cancel', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 14, fontFamily: "nunitoreg"))
                     ]),
                   ),
                 ),
@@ -1295,5 +1302,49 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
             ]),
           ],
         ));
+  }
+
+  getBannerDetailList() async {
+    try {
+      list_bannerItem.clear();
+      var baseUrl = Const.PROJECT_URL;
+      baseUrl += baseUrl.endsWith("/") ? "" : "/";
+      var url = baseUrl + ServerConnections.BANNER_JSON_NAME;
+      // url = "https://demo.agilecloud.biz/mainpagebanner.json";
+      final data = await serverConnections.getFromServer(url: url, show_errorSnackbar: false);
+      if (data != null && data != "") {
+        print("getBannerDetails1: $data");
+        var jsonResp = jsonDecode(data);
+        if (jsonResp.length > 0) {
+          list_bannerItem.clear();
+          for (var item in jsonResp) {
+            list_bannerItem.add(WidgetBanner(BannerModel.fromJson(item, baseUrl)));
+          }
+        }
+      } else {
+        if (Const.PROJECT_URL.endsWith("/")) {
+          var URL = Const.PROJECT_URL.substring(0, Const.PROJECT_URL.length - 1);
+          baseUrl = URL.substring(0, URL.lastIndexOf('/'));
+        } else {
+          baseUrl = Const.PROJECT_URL.substring(0, Const.PROJECT_URL.lastIndexOf('/'));
+        }
+
+        baseUrl += baseUrl.endsWith("/") ? "" : "/";
+        var url = baseUrl + ServerConnections.BANNER_JSON_NAME;
+        final data = await serverConnections.getFromServer(url: url, show_errorSnackbar: false);
+        if (data != null && data != "") {
+          print("getBannerDetails2: $data");
+          var jsonResp = jsonDecode(data);
+          if (jsonResp.length > 0) {
+            list_bannerItem.clear();
+            for (var item in jsonResp) {
+              list_bannerItem.add(WidgetBanner(BannerModel.fromJson(item, baseUrl)));
+            }
+          }
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 }

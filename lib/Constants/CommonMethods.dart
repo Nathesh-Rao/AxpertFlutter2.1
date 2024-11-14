@@ -56,14 +56,10 @@ class CommonMethods {
   static String activeList_CreateURL_MESSAGE(activeList, int index) {
     var url = "";
     var msgType = activeList.msgtype.toString().toUpperCase().trim();
-    if (msgType == "MESSAGE" ||
-        msgType == "FORM NOTIFICATION" ||
-        msgType == "PERIODIC NOTIFICATION" ||
-        msgType == "CACHED SAVE") {
+    if (msgType == "MESSAGE" || msgType == "FORM NOTIFICATION" || msgType == "PERIODIC NOTIFICATION" || msgType == "CACHED SAVE") {
       var hlink_TRANID = activeList.hlink_transid.toString();
-      var hlink_PARAMS = activeList.hlink_params.toString().startsWith("^")
-          ? activeList.hlink_params.toString()
-          : "^" + activeList.hlink_params.toString();
+      var hlink_PARAMS =
+          activeList.hlink_params.toString().startsWith("^") ? activeList.hlink_params.toString() : "^" + activeList.hlink_params.toString();
       url = "aspx/AxMain.aspx?pname=" +
           hlink_TRANID +
           "&authKey=AXPERT-" +
@@ -143,8 +139,9 @@ class LoadingScreen {
   }
 }
 
-showErrorSnack({title = 'Error', message = 'Server busy, Please try again later.'}) {
-  Get.snackbar(title, message, snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.redAccent);
+showErrorSnack({title = 'Error', message = 'Server busy, Please try again later.', show_errorSnackbar = true}) {
+  if (show_errorSnackbar)
+    Get.snackbar(title, message, snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.redAccent);
 }
 
 showBiometricDialog() async {

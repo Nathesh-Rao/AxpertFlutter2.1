@@ -22,6 +22,7 @@ class ServerConnections {
   static const String API_GET_HOMEPAGE_CARDS = "api/v1/ARMGetHomePageCards";
   static const String API_GET_HOMEPAGE_CARDS_v2 = "api/v2/ARMGetHomePageCards";
   static const String API_GET_HOMEPAGE_CARDSDATASOURCE = "api/v1/ARMGetDataResponse";
+
   // static const String API_GET_PENDING_ACTIVELIST = "api/v1/ARMGetActiveTasks"; //OLD
   static const String API_MOBILE_NOTIFICATION = "api/v1/ARMMobileNotification";
   static const String API_GET_DASHBOARD_DATA = "api/v1/ARMGetCardsData";
@@ -43,7 +44,7 @@ class ServerConnections {
   static const String API_GET_BULK_ACTIVETASKS = "api/v1/ARMGetBulkActiveTasks";
   static const String API_GET_SENDTOUSERS = "api/v1/ARMGetSendToUsers";
   static const String API_GET_FILE_BY_RECORDID = "api/v1/GetFileByRecordId";
-
+  static const String BANNER_JSON_NAME = "mainpagebanner.json";
 
   AppStorage appStorage = AppStorage();
 
@@ -90,8 +91,7 @@ class ServerConnections {
         }
       } catch (e) {
         print("API_ERROR: $API_NAME: ${e.toString()}");
-        Get.snackbar("Error ", e.toString(),
-            snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
+        Get.snackbar("Error ", e.toString(), snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
       }
 
     return "";
@@ -120,7 +120,7 @@ class ServerConnections {
   //   }
   // }
 
-  getFromServer({String url = '', var header = ''}) async {
+  getFromServer({String url = '', var header = '', var show_errorSnackbar = true}) async {
     try {
       if (url == '') url = _baseUrl;
       var API_NAME = url.substring(url.lastIndexOf("/") + 1, url.length);
@@ -130,17 +130,16 @@ class ServerConnections {
       if (response.statusCode == 200) return response.body;
       if (response.statusCode == 404) {
         if (API_NAME.toString().toLowerCase() == "ARMAppStatus".toLowerCase()) {
-          showErrorSnack(title: "Error!", message: "Invalid ARM URL");
+          showErrorSnack(title: "Error!", message: "Invalid ARM URL", show_errorSnackbar: show_errorSnackbar );
         } else {
-          showErrorSnack(title: "Error " + response.statusCode.toString(), message: "Invalid Url");
+          showErrorSnack(title: "Error " + response.statusCode.toString(), message: "Invalid Url", show_errorSnackbar: show_errorSnackbar);
         }
       } else {
-        Get.snackbar("Error " + response.statusCode.toString(), "Internal server error",
-            snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
+        showErrorSnack(title: "Error! " + response.statusCode.toString(), message: "Internal server error", show_errorSnackbar: show_errorSnackbar );
       }
     } catch (e) {
-      Get.snackbar("Error ", e.toString(),
-          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
+      showErrorSnack(title: "Error!", message: e.toString(), show_errorSnackbar: show_errorSnackbar );
+     // Get.snackbar("Error ", e.toString(), snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
     }
     LoadingScreen.dismiss();
   }

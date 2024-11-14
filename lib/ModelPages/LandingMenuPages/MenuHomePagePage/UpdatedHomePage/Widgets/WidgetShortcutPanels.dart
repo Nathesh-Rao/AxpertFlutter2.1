@@ -6,29 +6,38 @@ import 'package:get/get.dart';
 
 class WidgetShortcutPanel extends StatelessWidget {
   WidgetShortcutPanel({super.key});
+
   final MenuHomePageController menuHomePageController = Get.find();
+
   @override
   Widget build(BuildContext context) {
     return Obx(() => AnimatedSize(
           duration: Duration(milliseconds: 300),
           curve: Curves.linear,
-          child: GridView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: menuHomePageController.listOfGridCardItems.length,
-            padding: EdgeInsets.only(top: 0, bottom: 5),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4, // number of items in each row
-              mainAxisSpacing: 0, // spacing between rows
-              crossAxisSpacing: 0, // spacing between columns
+          child: Visibility(
+            visible: menuHomePageController.listOfGridCardItems.length > 0,
+            child: Container(
+              height: 100,
+              child: GridView.builder(
+                shrinkWrap: true,
+                // physics: NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                itemCount: menuHomePageController.listOfGridCardItems.length,
+                padding: EdgeInsets.only(top: 0, bottom: 5),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 1, // number of items in each row
+                  mainAxisSpacing: 0, // spacing between rows
+                  crossAxisSpacing: 0, // spacing between columns
+                ),
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                      onTap: () {
+                        captionOnTapFunction(CardModel(stransid: menuHomePageController.listOfGridCardItems[index].url));
+                      },
+                      child: WidgetQuickAccessGridItems(menuHomePageController.listOfGridCardItems[index]));
+                },
+              ),
             ),
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                  onTap: () {
-                    captionOnTapFunction(CardModel(stransid: menuHomePageController.listOfGridCardItems[index].url));
-                  },
-                  child: WidgetQuickAccessGridItems(menuHomePageController.listOfGridCardItems[index]));
-            },
           ),
         ));
   }

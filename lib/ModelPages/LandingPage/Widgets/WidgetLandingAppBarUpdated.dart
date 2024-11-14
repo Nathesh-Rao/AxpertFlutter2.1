@@ -22,12 +22,14 @@ class WidgetLandingAppBarUpdated extends StatelessWidget
       foregroundColor: Colors.white,
       flexibleSpace: Container(
         decoration: BoxDecoration(
-            gradient: LinearGradient(
+            gradient: MyColors.updatedUIBackgroundGradient/*LinearGradient(
           colors: [
-            Color.fromRGBO(55, 100, 252, 1),
-            Color.fromRGBO(151, 100, 218, 1),
+            *//*Color.fromRGBO(55, 100, 252, 1),
+            Color.fromRGBO(151, 100, 218, 1),*//*
+            Color.fromRGBO(9, 9, 121, 1),
+            Color.fromRGBO(7,176,210,1),
           ],
-        )),
+        )*/),
       ),
       titleSpacing: 5,
       title: Container(

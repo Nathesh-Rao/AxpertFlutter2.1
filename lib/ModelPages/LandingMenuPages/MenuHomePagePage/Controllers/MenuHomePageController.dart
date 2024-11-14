@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/const.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/BannerModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/CardModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/CardOptionModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/GridDashboardModel.dart';
@@ -36,6 +37,7 @@ class MenuHomePageController extends GetxController {
   var last_login_time = "Loading..".obs;
   var last_login_location = "Loading..".obs;
   var attendanceVisibility = false.obs;
+
 
   //Client Info
   var client_info_companyTitle = "".obs;
@@ -162,10 +164,7 @@ class MenuHomePageController extends GetxController {
       print("hit $btnType");
       print("pname: $btnOpen");
       if (btnType.toLowerCase() == "button" && btnOpen != "") {
-        webUrl = Const.getFullProjectUrl("aspx/AxMain.aspx?authKey=AXPERT-") +
-            appStorage.retrieveValue(AppStorage.SESSIONID) +
-            "&pname=" +
-            btnOpen;
+        webUrl = Const.getFullProjectUrl("aspx/AxMain.aspx?authKey=AXPERT-") + appStorage.retrieveValue(AppStorage.SESSIONID) + "&pname=" + btnOpen;
         switchPage.toggle();
       } else {}
     }
@@ -264,10 +263,7 @@ class MenuHomePageController extends GetxController {
     if (jsonResp['success'].toString() == "true") {
       // var result = jsonResp['result'].toString();
       Get.snackbar("Punch-In success", "",
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM,
-          duration: Duration(seconds: 3));
+          backgroundColor: Colors.green, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM, duration: Duration(seconds: 3));
       isShowPunchIn.value = false;
       isShowPunchOut.value = true;
       actionData.clear();
@@ -275,10 +271,7 @@ class MenuHomePageController extends GetxController {
     } else {
       // var errMessage = jsonResp['message'].toString();
       Get.snackbar("Error", jsonResp['message'].toString(),
-          backgroundColor: Colors.redAccent,
-          colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM,
-          duration: Duration(seconds: 3));
+          backgroundColor: Colors.redAccent, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM, duration: Duration(seconds: 3));
     }
   }
 
@@ -319,19 +312,13 @@ class MenuHomePageController extends GetxController {
     if (jsonResp['success'].toString() == "true") {
       // var result = jsonResp['result'].toString();
       Get.snackbar("Punch-Out success", "",
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM,
-          duration: Duration(seconds: 3));
+          backgroundColor: Colors.green, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM, duration: Duration(seconds: 3));
       actionData.clear();
       await getCardDataSources();
     } else {
       // var errMessage = jsonResp['message'].toString();
       Get.snackbar("Error", jsonResp['message'].toString(),
-          backgroundColor: Colors.redAccent,
-          colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM,
-          duration: Duration(seconds: 3));
+          backgroundColor: Colors.redAccent, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM, duration: Duration(seconds: 3));
     }
     LoadingScreen.dismiss();
   }
@@ -449,4 +436,5 @@ class MenuHomePageController extends GetxController {
       }
     }
   }
+
 }

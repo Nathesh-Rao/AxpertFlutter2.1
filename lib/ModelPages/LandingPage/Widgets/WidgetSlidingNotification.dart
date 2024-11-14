@@ -51,7 +51,7 @@ class WidgetSlidingNotificationPanel extends StatelessWidget {
                         items: landingPageController.list.length > 5
                             ? landingPageController.list.sublist(0, 5)
                             : landingPageController.list,
-                        carouselController: landingPageController.carouselController,
+                        carouselController: landingPageController.carouselController_notify,
                         options: CarouselOptions(
                           initialPage: landingPageController.carouselIndex.value,
                           height: double.maxFinite,
@@ -75,7 +75,7 @@ class WidgetSlidingNotificationPanel extends StatelessWidget {
                               .entries
                               .map((entry) {
                             return GestureDetector(
-                              onTap: () => landingPageController.carouselController.animateToPage(entry.key),
+                              onTap: () => landingPageController.carouselController_notify.animateToPage(entry.key),
                               child: Container(
                                 width: 10.0,
                                 height: 10.0,

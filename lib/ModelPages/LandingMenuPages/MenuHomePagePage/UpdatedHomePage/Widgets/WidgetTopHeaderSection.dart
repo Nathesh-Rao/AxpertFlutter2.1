@@ -44,7 +44,6 @@ class WidgetTopHeaderSection extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.only(left: 20),
                     child: Container(
-                      padding: EdgeInsets.only(top: 10),
                       child: Text(
                         "Hello, ${CommonMethods.capitalize(menuHomePageController.client_info_userNickname.value != "" ? menuHomePageController.client_info_userNickname.value : landingPageController.userName.value)}",
                         // + CommonMethods.capitalize(landingPageController.userName.value),

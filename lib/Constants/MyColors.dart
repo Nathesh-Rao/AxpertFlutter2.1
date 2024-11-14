@@ -50,5 +50,11 @@ class MyColors {
   static const Color yellow1 = Color(0xFFFFBC20);
   static const Color white1 = Color(0xFFFFFFFF);
   static const LinearGradient updatedUIBackgroundGradient =
-      LinearGradient(colors: [Color.fromRGBO(55, 100, 252, 1), Color.fromRGBO(151, 100, 218, 1)]);
+     // LinearGradient(colors: [Color.fromRGBO(55, 100, 252, 1), Color.fromRGBO(151, 100, 218, 1)]);
+     // LinearGradient(colors: [Color.fromRGBO(9,9,121,1), Color.fromRGBO(7,176,210,1)]);
+  //LinearGradient(colors: [Color.fromRGBO(9,9,121,1), Color.fromRGBO(151, 100, 218, 1)]);
+  // LinearGradient(colors: [Color.fromRGBO(6,2,68,1), Color.fromRGBO(44,44,149,1)]);
+  // LinearGradient(colors: [Color.fromRGBO(10,4,112,1), Color.fromRGBO(58,58,217,1)]);
+  // LinearGradient(colors: [Color.fromRGBO(15,8,148,1), Color.fromRGBO(104,104,233,1)]);
+  LinearGradient(colors: [Color.fromRGBO(43,40,115,1), Color.fromRGBO(142,142,255,1)]);
 }
