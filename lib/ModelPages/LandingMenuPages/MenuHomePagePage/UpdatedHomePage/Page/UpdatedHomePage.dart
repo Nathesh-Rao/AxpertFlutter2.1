@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../LandingPage/Widgets/WidgetKPIPanel.dart';
 import '../Widgets/WidgetAttendancePanel.dart';
 import '../Widgets/WidgetQuickAccessPanel.dart';
 import '../Widgets/WidgetShortcutPanels.dart';
@@ -20,7 +21,6 @@ class UpdatedHomePage extends StatelessWidget {
   final MenuHomePageController menuHomePageController = Get.find();
   final LandingPageController landingPageController = Get.find();
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +29,8 @@ class UpdatedHomePage extends StatelessWidget {
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
                 SliverToBoxAdapter(
                   child: ClipRRect(
-                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50)),
+                    borderRadius:
+                        BorderRadius.only(bottomLeft: Radius.circular(50)),
                     child: Container(
                       // margin: EdgeInsets.only(left: 10, right: 10),
                       decoration: BoxDecoration(
@@ -53,8 +54,9 @@ class UpdatedHomePage extends StatelessWidget {
               children: [
                 WidgetBannerSlidingPanel(),
 
-
                 //WidgetSlidingNotificationPanel(),
+                //KPI panel
+                Widgetkpipanel(),
                 //Attendance
                 WidgetAttendancePanel(),
                 //Quick Links

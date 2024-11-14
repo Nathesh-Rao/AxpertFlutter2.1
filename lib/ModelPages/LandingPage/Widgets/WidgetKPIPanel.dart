@@ -1,3 +1,4 @@
+import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetKPIPanelItem.dart';
 import 'package:flutter/material.dart';
 
 class Widgetkpipanel extends StatelessWidget {
@@ -5,6 +6,25 @@ class Widgetkpipanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    final double baseSize = MediaQuery.of(context).size.height * .15;
+
+    return Visibility(
+        child: Padding(
+      padding: EdgeInsets.only(top: 5),
+      child: SizedBox(
+        height: baseSize,
+        child: ListView.separated(
+            physics: BouncingScrollPhysics(),
+            padding: EdgeInsets.only(left: 15),
+            scrollDirection: Axis.horizontal,
+            itemCount: 5,
+            separatorBuilder: (context, index) => SizedBox(
+                  width: 10,
+                ),
+            itemBuilder: (context, index) => WidgetKPIPanelItem(
+                  index: index,
+                )),
+      ),
+    ));
   }
 }
