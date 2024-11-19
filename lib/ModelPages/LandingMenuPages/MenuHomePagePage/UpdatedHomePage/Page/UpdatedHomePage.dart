@@ -52,6 +52,7 @@ class UpdatedHomePage extends StatelessWidget {
           body: SingleChildScrollView(
             child: Column(
               children: [
+                //Banner panel
                 WidgetBannerSlidingPanel(),
 
                 //WidgetSlidingNotificationPanel(),

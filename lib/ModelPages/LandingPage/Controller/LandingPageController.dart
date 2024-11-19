@@ -650,7 +650,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
     menuList.add(
       Container(
         height: 70,
-        decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: Colors.black.withOpacity(0.7)))),
+        decoration: BoxDecoration(color: Colors.grey,border: Border(bottom: BorderSide(width: 1, color: Colors.black.withOpacity(0.7)))),
         child: Row(
           children: [
             SizedBox(width: 30),

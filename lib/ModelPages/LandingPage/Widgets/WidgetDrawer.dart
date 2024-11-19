@@ -17,6 +17,7 @@ class WidgetDrawer extends StatelessWidget {
         ClipRRect(
           clipper: getClipped(),
           child: Drawer(
+            backgroundColor: Colors.white,
             child: SafeArea(
               child: ListView(
                 children:  ListTile.divideTiles(context: context, tiles: landingPageController.getDrawerTileList()).toList(),
