@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../LandingPage/Widgets/WidgetKPIPanel.dart';
 import '../Widgets/WidgetAttendancePanel.dart';
+import '../Widgets/WidgetHomeConfigPanels.dart';
 import '../Widgets/WidgetQuickAccessPanel.dart';
 import '../Widgets/WidgetShortcutPanels.dart';
 import '../Widgets/WidgetTopHeaderSection.dart';
@@ -58,6 +59,8 @@ class UpdatedHomePage extends StatelessWidget {
                 //WidgetSlidingNotificationPanel(),
                 //KPI panel
                 Widgetkpipanel(),
+                //Home configuration panels
+                WidgetHomeConfigPanels(),
                 //Attendance
                 WidgetAttendancePanel(),
                 //Quick Links
