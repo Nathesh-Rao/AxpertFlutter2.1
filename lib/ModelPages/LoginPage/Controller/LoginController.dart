@@ -35,7 +35,8 @@ class LoginController extends GetxController {
     fetchUserTypeList();
     fetchRememberedData();
     dropDownItemChanged(ddSelectedValue);
-    if (userNameController.text.toString().trim() != "") rememberMe.value = true;
+    if (userNameController.text.toString().trim() != "")
+      rememberMe.value = true;
 
     setWillAuthenticate();
 
@@ -49,7 +50,8 @@ class LoginController extends GetxController {
     await LogService.writeLog(message: "info3");
     await LogService.writeLog(message: "info4");
 
-    var willAuth = await getWillBiometricAuthenticateForThisUser(userNameController.text.toString().trim());
+    var willAuth = await getWillBiometricAuthenticateForThisUser(
+        userNameController.text.toString().trim());
     print(("Login willAuth: $willAuth"));
     if (willAuth != null) {
       willAuthenticate.value = willAuth;
@@ -79,7 +81,9 @@ class LoginController extends GetxController {
         val = CommonMethods.capitalize(val);
         if (!userTypeList.contains(val)) userTypeList.add(val);
       }
-      userTypeList..sort((a, b) => a.toString().toLowerCase().compareTo(b.toString().toLowerCase()));
+      userTypeList
+        ..sort((a, b) =>
+            a.toString().toLowerCase().compareTo(b.toString().toLowerCase()));
       if (ddSelectedValue.value == "") {
         ddSelectedValue.value = userTypeList[0];
         dropDownItemChanged(ddSelectedValue);
@@ -87,11 +91,11 @@ class LoginController extends GetxController {
     }
   }
 
-  Color getColor(Set<MaterialState> states) {
-    const Set<MaterialState> interactiveStates = <MaterialState>{
-      MaterialState.pressed,
-      MaterialState.hovered,
-      MaterialState.focused,
+  Color getColor(Set<WidgetState> states) {
+    const Set<WidgetState> interactiveStates = <WidgetState>{
+      WidgetState.pressed,
+      WidgetState.hovered,
+      WidgetState.focused,
     };
     if (states.any(interactiveStates.contains)) {
       return MyColors.blue2;
@@ -172,12 +176,17 @@ class LoginController extends GetxController {
         var json = jsonDecode(response);
         // print(json["result"]["sessionid"].toString());
         if (json["result"]["success"].toString().toLowerCase() == "true") {
-          await appStorage.storeValue(AppStorage.TOKEN, json["result"]["token"].toString());
-          await appStorage.storeValue(AppStorage.SESSIONID, json["result"]["sessionid"].toString());
-          await appStorage.storeValue(AppStorage.USER_NAME, userNameController.text.trim());
-          await appStorage.storeValue(AppStorage.USER_CHANGE_PASSWORD, json["result"]["ChangePassword"].toString());
+          await appStorage.storeValue(
+              AppStorage.TOKEN, json["result"]["token"].toString());
+          await appStorage.storeValue(
+              AppStorage.SESSIONID, json["result"]["sessionid"].toString());
+          await appStorage.storeValue(
+              AppStorage.USER_NAME, userNameController.text.trim());
+          await appStorage.storeValue(AppStorage.USER_CHANGE_PASSWORD,
+              json["result"]["ChangePassword"].toString());
           storeLastLoginData(body);
-          print("User_change_password: ${appStorage.retrieveValue(AppStorage.USER_CHANGE_PASSWORD)}");
+          print(
+              "User_change_password: ${appStorage.retrieveValue(AppStorage.USER_CHANGE_PASSWORD)}");
           //Save Data
           if (rememberMe.value) {
             rememberCredentials();
@@ -188,7 +197,9 @@ class LoginController extends GetxController {
           await _processLoginAndGoToHomePage();
         } else {
           Get.snackbar("Error ", json["result"]["message"],
-              snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: Colors.redAccent,
+              colorText: Colors.white);
         }
       }
       LoadingScreen.dismiss();
@@ -220,17 +231,23 @@ class LoginController extends GetxController {
         };
 
         var url = Const.getFullARMUrl(ServerConnections.API_GOOGLESIGNIN_SSO);
-        var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body));
+        var resp = await serverConnections.postToServer(
+            url: url, body: jsonEncode(body));
         if (resp != "") {
           var jsonResp = jsonDecode(resp);
           // print(jsonResp);
           if (jsonResp['result']['success'].toString() == "false") {
             Get.snackbar("Alert!", jsonResp['result']['message'].toString(),
-                snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
+                snackPosition: SnackPosition.BOTTOM,
+                colorText: Colors.white,
+                backgroundColor: Colors.red);
           } else {
-            await appStorage.storeValue(AppStorage.TOKEN, jsonResp["result"]["token"].toString());
-            await appStorage.storeValue(AppStorage.SESSIONID, jsonResp["result"]["sessionid"].toString());
-            await appStorage.storeValue(AppStorage.USER_NAME, googleUser.email.toString());
+            await appStorage.storeValue(
+                AppStorage.TOKEN, jsonResp["result"]["token"].toString());
+            await appStorage.storeValue(AppStorage.SESSIONID,
+                jsonResp["result"]["sessionid"].toString());
+            await appStorage.storeValue(
+                AppStorage.USER_NAME, googleUser.email.toString());
             //remove rememberer data
             // appStorage.remove(AppStorage.USERID);
             // appStorage.remove(AppStorage.USER_PASSWORD);
@@ -240,7 +257,9 @@ class LoginController extends GetxController {
           }
         } else {
           Get.snackbar("Error", "Some Error occured",
-              backgroundColor: Colors.red, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM);
+              backgroundColor: Colors.red,
+              colorText: Colors.white,
+              snackPosition: SnackPosition.BOTTOM);
         }
         LoadingScreen.dismiss();
         // print(resp);
@@ -248,7 +267,9 @@ class LoginController extends GetxController {
       }
     } catch (e) {
       Get.snackbar("Error", "User is not Registered!",
-          snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
+          snackPosition: SnackPosition.BOTTOM,
+          colorText: Colors.white,
+          backgroundColor: Colors.red);
     }
   }
 
@@ -256,9 +277,12 @@ class LoginController extends GetxController {
     //mobile Notification
     await _callApiForMobileNotification();
     //connect to Axpert
-    var connectBody = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
+    var connectBody = {
+      'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)
+    };
     var cUrl = Const.getFullARMUrl(ServerConnections.API_CONNECTTOAXPERT);
-    var connectResp = await serverConnections.postToServer(url: cUrl, body: jsonEncode(connectBody), isBearer: true);
+    var connectResp = await serverConnections.postToServer(
+        url: cUrl, body: jsonEncode(connectBody), isBearer: true);
     print(connectResp);
     // getArmMenu
 
@@ -284,7 +308,8 @@ class LoginController extends GetxController {
       'ImeiNo': imei,
     };
     var cUrl = Const.getFullARMUrl(ServerConnections.API_MOBILE_NOTIFICATION);
-    var connectResp = await serverConnections.postToServer(url: cUrl, body: jsonEncode(connectBody), isBearer: true);
+    var connectResp = await serverConnections.postToServer(
+        url: cUrl, body: jsonEncode(connectBody), isBearer: true);
     print("Mobile: " + connectResp);
   }
 
@@ -361,7 +386,8 @@ class LoginController extends GetxController {
         }
       } catch (e) {
         print(e.toString());
-        if (e.toString().contains('NotAvailable') && e.toString().contains('Authentication failure'))
+        if (e.toString().contains('NotAvailable') &&
+            e.toString().contains('Authentication failure'))
           showErrorSnack(title: "Oops!", message: "Only Biometric is allowed.");
       }
     }
@@ -380,5 +406,37 @@ class LoginController extends GetxController {
     var projectName = Const.PROJECT_NAME;
     Map lastData = appStorage.retrieveValue(AppStorage.LAST_LOGIN_DATA) ?? {};
     return lastData[projectName] ?? '';
+  }
+//----------------------------------------------------
+  //---------------------- to switch portal---------->
+//----------------------------------------------------
+
+  var portalDropdownValue = "Default".obs;
+  var isPortalDefault = true.obs;
+  List<String> portalNameList = ["Default", "ESS"];
+
+//------methods-------------------
+  portalDropdownMenuItem() {
+    List<DropdownMenuItem<String>> portalList = [];
+
+    for (var item in portalNameList) {
+      DropdownMenuItem<String> dditem = DropdownMenuItem(
+        value: item.toString(),
+        child: Text(item),
+      );
+      portalList.add(dditem);
+    }
+    return portalList;
+  }
+
+//
+  portalDropDownItemChanged(Object? value) {
+    portalDropdownValue.value = value.toString();
+    if (value.toString().toLowerCase() == "default") {
+      isPortalDefault.value = true;
+    } else {
+      isPortalDefault.value = false;
+    }
+    // print(value);
   }
 }
