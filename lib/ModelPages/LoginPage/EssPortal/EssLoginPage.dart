@@ -19,25 +19,26 @@ class EssLoginPage extends StatelessWidget {
     var loginContainerHeight = MediaQuery.of(context).size.height * 0.67;
     LoginController loginController = Get.find();
 
-    //---------------------------------------------
-    _iconWidget({required IconData icon, Color? color}) {
-      return InkWell(
-        onTap: () {},
-        child: Container(
-          width: 60,
-          height: 40,
-          decoration: BoxDecoration(
-              color: MyColors.white3, borderRadius: BorderRadius.circular(10)),
-          child: Center(
-            child: Icon(
-              icon,
-              color: color,
-              size: 17,
-            ),
-          ),
-        ),
-      );
-    }
+    //----------------social login button widget for future-----------------------------
+    //
+    // _iconWidget({required IconData icon, Color? color}) {
+    //   return InkWell(
+    //     onTap: () {},
+    //     child: Container(
+    //       width: 60,
+    //       height: 40,
+    //       decoration: BoxDecoration(
+    //           color: MyColors.white3, borderRadius: BorderRadius.circular(10)),
+    //       child: Center(
+    //         child: Icon(
+    //           icon,
+    //           color: color,
+    //           size: 17,
+    //         ),
+    //       ),
+    //     ),
+    //   );
+    // }
 
     return Obx(
       () => Stack(
@@ -69,7 +70,7 @@ class EssLoginPage extends StatelessWidget {
                           fit: BoxFit.fill,
                         ),
                         SizedBox(height: 5),
-                        Text('Welcome to Axpert ESS portal',
+                        Text('Welcome to Axpert',
                             textAlign: TextAlign.center,
                             style: GoogleFonts.poppins(
                                 textStyle: TextStyle(
@@ -228,6 +229,63 @@ class EssLoginPage extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 15),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                loginController.rememberMe.toggle();
+                              },
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: Checkbox(
+                                      value: loginController.rememberMe.value,
+                                      onChanged: (value) =>
+                                          {loginController.rememberMe.toggle()},
+                                      checkColor: Colors.white,
+                                      fillColor: WidgetStateProperty.all(
+                                          MyColors.blue10),
+                                      // fillColor: WidgetStateProperty.resolveWith(
+                                      //     loginController.getColor),
+                                    ),
+                                  ),
+                                  SizedBox(width: 5),
+                                  Text(
+                                    "Remember Me",
+                                    style: TextStyle(
+                                        color: HexColor("#3E4153"),
+                                        fontWeight: FontWeight.w600,
+                                        fontSize:
+                                            MediaQuery.of(context).size.height *
+                                                0.014),
+                                  )
+                                ],
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                Get.toNamed(Routes.ForgetPassword);
+                              },
+                              child: Text(
+                                "Forgot Password?",
+                                style: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    color: HexColor("#3E4153"),
+                                    fontWeight: FontWeight.w600,
+                                    fontSize:
+                                        MediaQuery.of(context).size.height *
+                                            0.014),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 15),
                       InkWell(
                         onTap: () {
                           loginController.loginButtonClicked();
@@ -260,110 +318,175 @@ class EssLoginPage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              loginController.rememberMe.toggle();
-                            },
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: Checkbox(
-                                    value: loginController.rememberMe.value,
-                                    onChanged: (value) =>
-                                        {loginController.rememberMe.toggle()},
-                                    checkColor: Colors.white,
-                                    fillColor: WidgetStateProperty.all(
-                                        MyColors.blue10),
-                                    // fillColor: WidgetStateProperty.resolveWith(
-                                    //     loginController.getColor),
-                                  ),
+                      SizedBox(height: 10),
+
+                      Visibility(
+                        visible: loginController.googleSignInVisible.value,
+                        child: InkWell(
+                          onTap: () {
+                            loginController.googleSignInClicked();
+                          },
+                          child: Container(
+                            height: 60,
+                            decoration: BoxDecoration(
+                              color: MyColors.white1,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black45, // Shadow color
+                                  offset: Offset(0, 0),
+                                  blurRadius: 3,
+                                  spreadRadius: 0,
                                 ),
-                                SizedBox(width: 5),
+                              ],
+                            ),
+                            child: Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    SimpleIcons.google,
+                                    color: SimpleIconColors.google,
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    "Sign In with Google",
+                                    style: GoogleFonts.poppins(
+                                        textStyle: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 18,
+                                            color: MyColors.text1)),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+
+                      Visibility(
+                        visible: loginController.newUserSigninVisible.value,
+                        child: InkWell(
+                          onTap: () {
+                            Get.toNamed(Routes.SignUp);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("New user?  ",
+                                    style: GoogleFonts.poppins(
+                                        textStyle: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 12,
+                                            color: HexColor("#3E4153")))),
                                 Text(
-                                  "Remember Me",
-                                  style: TextStyle(
-                                      color: HexColor("#3E4153"),
-                                      fontWeight: FontWeight.w600,
-                                      fontSize:
-                                          MediaQuery.of(context).size.height *
-                                              0.014),
+                                  "Sign up",
+                                  style: GoogleFonts.poppins(
+                                      textStyle: TextStyle(
+                                          decoration: TextDecoration.underline,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 12,
+                                          color: MyColors.blue10)),
                                 )
                               ],
                             ),
                           ),
-                          InkWell(
-                            onTap: () {
-                              Get.toNamed(Routes.ForgetPassword);
-                            },
-                            child: Text(
-                              "Forgot Password?",
-                              style: TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  color: HexColor("#3E4153"),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: MediaQuery.of(context).size.height *
-                                      0.014),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                       Spacer(),
-                      Text(
-                        "Login with touch ID",
-                        style: GoogleFonts.poppins(
-                            textStyle: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize:
-                                    MediaQuery.of(context).size.height * 0.014,
-                                color: MyColors.blue10)),
-                      ),
-                      SizedBox(height: 10),
-                      InkWell(
-                        onTap: () {},
-                        borderRadius: BorderRadius.circular(50),
-                        child: CircleAvatar(
-                          radius: 40,
-                          backgroundColor: MyColors.white3,
-                          child: Icon(
-                            Icons.fingerprint_rounded,
-                            size: 45,
-                            color: MyColors.blue10,
+                      Visibility(
+                        visible: loginController.willAuthenticate.value,
+                        child: GestureDetector(
+                          onTap: () {
+                            loginController.displayAuthenticationDialog();
+                          },
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                "Login with touch ID",
+                                style: GoogleFonts.poppins(
+                                    textStyle: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize:
+                                            MediaQuery.of(context).size.height *
+                                                0.014,
+                                        color: MyColors.blue10)),
+                              ),
+                              SizedBox(height: 10),
+                              CircleAvatar(
+                                radius: 35,
+                                backgroundColor: MyColors.white3,
+                                child: Icon(
+                                  Icons.fingerprint_rounded,
+                                  size: 45,
+                                  color: MyColors.blue10,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                       Spacer(),
-                      Text(
-                        "Or continue with",
-                        style: GoogleFonts.poppins(
-                            textStyle: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize:
-                                    MediaQuery.of(context).size.height * 0.014,
-                                color: MyColors.blue10)),
-                      ),
-                      SizedBox(height: 10),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          _iconWidget(
-                              icon: SimpleIcons.google,
-                              color: SimpleIconColors.google),
-                          SizedBox(width: 10),
-                          _iconWidget(
-                              icon: SimpleIcons.facebook,
-                              color: SimpleIconColors.facebook),
-                          SizedBox(width: 10),
-                          _iconWidget(
-                              icon: SimpleIcons.apple,
-                              color: SimpleIconColors.apple),
+                          Spacer(),
+                          FutureBuilder(
+                              future: loginController.getVersionName(),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return Text(
+                                    "v${snapshot.data}${Const.RELEASE_ID}",
+                                    style: GoogleFonts.poppins(
+                                        textStyle: TextStyle(
+                                            color: MyColors.buzzilyblack,
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.012)),
+                                  );
+                                } else {
+                                  return Text("");
+                                }
+                              }),
                         ],
                       )
+                      //-------------------------------------------------------
+                      //Social login buttons for future connections for future
+                      //-------------------------------------------------------
+
+                      // Text(
+                      //   "Or continue with",
+                      //   style: GoogleFonts.poppins(
+                      //       textStyle: TextStyle(
+                      //           fontWeight: FontWeight.w600,
+                      //           fontSize:
+                      //               MediaQuery.of(context).size.height * 0.014,
+                      //           color: MyColors.blue10)),
+                      // ),
+                      // SizedBox(height: 10),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.center,
+                      //   children: [
+                      //     _iconWidget(
+                      //         icon: SimpleIcons.google,
+                      //         color: SimpleIconColors.google),
+                      //     SizedBox(width: 10),
+                      //     _iconWidget(
+                      //         icon: SimpleIcons.facebook,
+                      //         color: SimpleIconColors.facebook),
+                      //     SizedBox(width: 10),
+                      //     _iconWidget(
+                      //         icon: SimpleIcons.apple,
+                      //         color: SimpleIconColors.apple),
+                      //   ],
+                      // )
                     ],
                   ),
                 ),

@@ -125,6 +125,12 @@ class LoginController extends GetxController {
 
   dropDownItemChanged(Object? value) {
     ddSelectedValue.value = value.toString();
+    if (ddSelectedValue.value.toLowerCase() == "power" ||
+        ddSelectedValue.value.isEmpty) {
+      newUserSigninVisible.value = false;
+    } else {
+      newUserSigninVisible.value = true;
+    }
     if (ddSelectedValue.value.toLowerCase() == "external")
       googleSignInVisible.value = true;
     else
@@ -413,6 +419,8 @@ class LoginController extends GetxController {
 
   var portalDropdownValue = "Default".obs;
   var isPortalDefault = true.obs;
+  var newUserSigninVisible = false.obs;
+
   List<String> portalNameList = ["Default", "ESS"];
 
 //------methods-------------------
