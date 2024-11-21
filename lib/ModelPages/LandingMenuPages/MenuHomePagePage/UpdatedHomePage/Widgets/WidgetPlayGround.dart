@@ -1,8 +1,13 @@
+import 'dart:math';
+
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swipe_button/flutter_swipe_button.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../../../LandingPage/Widgets/WidgetKPIPanelItem.dart';
+import '../../Models/sampleHomeConfigModel.dart';
 
 class WidgetPlayGround extends StatefulWidget {
   const WidgetPlayGround({super.key});
@@ -246,8 +251,172 @@ class _WidgetPlayGroundState extends State<WidgetPlayGround> {
               )
             ],
           ),
-        )
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.20,
+          child: ListView.separated(
+              physics: BouncingScrollPhysics(),
+              padding: EdgeInsets.only(left: 15),
+              scrollDirection: Axis.horizontal,
+              itemCount: 5,
+              separatorBuilder: (context, index) => SizedBox(
+                    width: 20,
+                  ),
+              itemBuilder: (context, index) => WidgetESSKPIPanelItem(
+                    index: index,
+                  )),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Card(
+            elevation: 5,
+            margin: EdgeInsets.zero,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            child: SizedBox(
+              width: double.infinity,
+              height: MediaQuery.of(context).size.height * 0.30,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Other services",
+                      style: style,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Expanded(
+                        child: Column(
+                      children: [
+                        Row(
+                          children: [],
+                        ),
+                        Row(
+                          children: [],
+                        ),
+                      ],
+                    ))
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
       ],
+    );
+  }
+}
+
+class WidgetESSKPIPanelItem extends StatelessWidget {
+  const WidgetESSKPIPanelItem({super.key, required this.index});
+//for populating the pseudodata, index is accessing.
+  final int index;
+  @override
+  Widget build(BuildContext context) {
+    final double baseSize = MediaQuery.of(context).size.height * .23;
+// pseudo data--------->
+    List<String> cardNames = [
+      "KPI Users",
+      "KPI 16/10",
+      "KPI CARD_Release13",
+      "KPI_Release14",
+      "actors",
+    ];
+    List<String> cardData = [
+      "50",
+      "8",
+      "erertetertre",
+      "amit",
+      "1",
+    ];
+    List<int> colors = [
+      0xff3764FC,
+      0xffed5888,
+      0xff9469e5,
+      0xffef9a97,
+      0xffeeac44,
+    ];
+//---------------------->
+
+    return GestureDetector(
+      onTap: () {
+        //---
+      },
+      child: Container(
+        height: baseSize,
+        width: baseSize * 0.7,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: Color(colors[index]),
+        ),
+        child: Stack(
+          children: [
+            _widgetKPIItemBGElement(context, right: -60, top: 0, size: 60),
+            _widgetKPIItemBGElement(context, right: -7, bottom: -20, size: 35),
+            Padding(
+              padding: EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: Icon(
+                      Icons.person,
+                      size: 20,
+                      color: Color(colors[index]),
+                    ),
+                    radius: 15,
+                  ),
+                  Spacer(),
+                  Text(
+                    cardNames[index],
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    cardData[index],
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+// Faded circle widget------------------------------------>
+  _widgetKPIItemBGElement(BuildContext context,
+      {double? right, double? top, double? size, double? bottom}) {
+    return Positioned(
+      right: right,
+      top: top,
+      bottom: bottom,
+      child: CircleAvatar(
+        radius: size,
+        backgroundColor: Colors.white12,
+      ),
     );
   }
 }
