@@ -60,13 +60,18 @@ class WidgetMenuFolderPanelItem extends StatelessWidget {
 
   generateItems() {
     List<Widget> items = List.generate(panelItems.length,
-            (index) => WidgetMenuFolderPanelInnerItem(item: panelItems[index]));
+        (index) => WidgetMenuFolderPanelInnerItem(item: panelItems[index]));
 
     if (items.length >= 8) {
       items = items.sublist(0, 7);
       items.add(WidgetMenuFolderPanelMoreWidgetItem(
         items: panelItems,
       ));
+    } else {
+      int itemsToAdd = 8 - items.length;
+
+      items.addAll(
+          List.filled(itemsToAdd, WidgetMenuFolderPanelEmptyWidgetItem()));
     }
 
     return items;

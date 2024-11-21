@@ -1,20 +1,13 @@
 import 'dart:math';
 
-import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/MenuFolderModel.dart';
+import 'package:axpertflutter/Constants/const.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
-import '../../../../../Constants/const.dart';
-import '../../Controllers/MenuHomePageController.dart';
-import 'WidgetMenuFolderPanelBottomSheet.dart';
 
-class WidgetMenuFolderPanelInnerItem extends StatelessWidget {
-  WidgetMenuFolderPanelInnerItem(
-      {super.key, required this.item, this.isFromBottomSheet = false});
-  final MenuHomePageController menuHomePageController = Get.find();
-  final MenuFolderModel item;
-  final bool isFromBottomSheet;
+class QuickAccessTileWidget extends StatelessWidget {
+  const QuickAccessTileWidget({super.key});
+
   @override
   Widget build(BuildContext context) {
     final double baseHeight = MediaQuery.of(context).size.height * .25;
@@ -35,12 +28,7 @@ class WidgetMenuFolderPanelInnerItem extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           InkWell(
-            onTap: () {
-              if (isFromBottomSheet) Get.back();
-              menuHomePageController.captionOnTapFunction(item.target!
-                  .substring(item.target!.lastIndexOf('=') + 1,
-                      item.target.toString().length));
-            },
+            onTap: () {},
             borderRadius: BorderRadius.circular(100),
             child: CircleAvatar(
               backgroundColor: colorList[
@@ -51,7 +39,7 @@ class WidgetMenuFolderPanelInnerItem extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: CachedNetworkImage(
                   imageUrl: Const.getFullProjectUrl("images/homepageicon/") +
-                      item.caption.toString() +
+                      "item.caption.toString()" +
                       '.png',
                   errorWidget: (context, url, error) => Image.network(
                       Const.getFullProjectUrl(
@@ -69,7 +57,7 @@ class WidgetMenuFolderPanelInnerItem extends StatelessWidget {
           SizedBox(
             height: baseHeight / 7,
             child: Text(
-              item.caption.toString(),
+              "item",
               textAlign: TextAlign.center,
               style: TextStyle(
                 overflow: TextOverflow.fade,
@@ -85,20 +73,22 @@ class WidgetMenuFolderPanelInnerItem extends StatelessWidget {
 }
 
 //-------------------------------------------->
-class WidgetMenuFolderPanelMoreWidgetItem extends StatelessWidget {
-  const WidgetMenuFolderPanelMoreWidgetItem({super.key, required this.items});
-  final List<MenuFolderModel> items;
+class QuickAccessTileMoreWidget extends StatelessWidget {
+  const QuickAccessTileMoreWidget({
+    super.key,
+  });
+  // final List<MenuFolderModel> items;
   @override
   Widget build(BuildContext context) {
     final double baseSize = MediaQuery.of(context).size.height * .25;
 
     final double basewidth = MediaQuery.of(context).size.width - 30;
-    List<Widget> baseItems = List.generate(
-        items.length,
-        (index) => WidgetMenuFolderPanelInnerItem(
-              item: items[index],
-              isFromBottomSheet: true,
-            ));
+    // List<Widget> baseItems = List.generate(
+    //     items.length,
+    //     (index) => WidgetMenuFolderPanelInnerItem(
+    //           item: items[index],
+    //           isFromBottomSheet: true,
+    //         ));
     return SizedBox(
       width: (basewidth / 4) - 30,
       child: Column(
@@ -106,9 +96,9 @@ class WidgetMenuFolderPanelMoreWidgetItem extends StatelessWidget {
         children: [
           InkWell(
             onTap: () {
-              Get.bottomSheet(WidgetMenuFolderPanelBottomSheet(
-                baseItems: baseItems,
-              ));
+              // Get.bottomSheet(WidgetMenuFolderPanelBottomSheet(
+              //   baseItems: baseItems,
+              // ));
             },
             borderRadius: BorderRadius.circular(100),
             splashColor: Colors.white60,
@@ -140,8 +130,8 @@ class WidgetMenuFolderPanelMoreWidgetItem extends StatelessWidget {
 }
 
 //-------------------------------------------->
-class WidgetMenuFolderPanelEmptyWidgetItem extends StatelessWidget {
-  const WidgetMenuFolderPanelEmptyWidgetItem({super.key});
+class QuickAccessTileEmptyeWidget extends StatelessWidget {
+  const QuickAccessTileEmptyeWidget({super.key});
   @override
   Widget build(BuildContext context) {
     final double basewidth = MediaQuery.of(context).size.width - 30;

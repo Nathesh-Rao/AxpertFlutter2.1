@@ -59,12 +59,13 @@ class UpdatedHomePage extends StatelessWidget {
                 //WidgetSlidingNotificationPanel(),
                 //KPI panel
                 Widgetkpipanel(),
+                //Quick Links
+                WidgetQuickAccessPanel(),
                 //Home configuration panels
                 WidgetMenuFolderPanels(),
                 //Attendance
                 WidgetAttendancePanel(),
-                //Quick Links
-                WidgetQuickAccessPanel(),
+
                 //add your panel here
 
                 //Till here
