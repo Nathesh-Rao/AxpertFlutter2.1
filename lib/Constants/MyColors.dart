@@ -11,6 +11,10 @@ class MyColors {
   static const Color blue7 = Color(0xFF42A5F5);
   static const Color blue8 = Color(0xFFF7F8FA);
   static const Color blue9 = Color(0xFF0d297d);
+  static const Color blue10 = Color(0xff1F41BB);
+  static const Color blue11 = Color(0xffCBD6FF);
+  static const Color blue12 = Color(0xffF1F4FF);
+
   static const Color buttoncolor = Color(0xFF164A41);
   static const Color buttoncolor1 = Color(0xFF4CAF50);
   static const Color buzzilyblack = Color(0xFF1F1D2C);
@@ -49,12 +53,17 @@ class MyColors {
   static const Color yellow = Color(0xFFffff4c);
   static const Color yellow1 = Color(0xFFFFBC20);
   static const Color white1 = Color(0xFFFFFFFF);
+  static const Color white3 = Color(0xffECECEC);
+  static const Color text1 = Color(0xff626262);
   static const LinearGradient updatedUIBackgroundGradient =
-     // LinearGradient(colors: [Color.fromRGBO(55, 100, 252, 1), Color.fromRGBO(151, 100, 218, 1)]);
-     // LinearGradient(colors: [Color.fromRGBO(9,9,121,1), Color.fromRGBO(7,176,210,1)]);
-  //LinearGradient(colors: [Color.fromRGBO(9,9,121,1), Color.fromRGBO(151, 100, 218, 1)]);
-  // LinearGradient(colors: [Color.fromRGBO(6,2,68,1), Color.fromRGBO(44,44,149,1)]);
-  // LinearGradient(colors: [Color.fromRGBO(10,4,112,1), Color.fromRGBO(58,58,217,1)]);
-  // LinearGradient(colors: [Color.fromRGBO(15,8,148,1), Color.fromRGBO(104,104,233,1)]);
-  LinearGradient(colors: [Color.fromRGBO(43,40,115,1), Color.fromRGBO(142,142,255,1)]);
+      // LinearGradient(colors: [Color.fromRGBO(55, 100, 252, 1), Color.fromRGBO(151, 100, 218, 1)]);
+      // LinearGradient(colors: [Color.fromRGBO(9,9,121,1), Color.fromRGBO(7,176,210,1)]);
+      //LinearGradient(colors: [Color.fromRGBO(9,9,121,1), Color.fromRGBO(151, 100, 218, 1)]);
+      // LinearGradient(colors: [Color.fromRGBO(6,2,68,1), Color.fromRGBO(44,44,149,1)]);
+      // LinearGradient(colors: [Color.fromRGBO(10,4,112,1), Color.fromRGBO(58,58,217,1)]);
+      // LinearGradient(colors: [Color.fromRGBO(15,8,148,1), Color.fromRGBO(104,104,233,1)]);
+      LinearGradient(colors: [
+    Color.fromRGBO(43, 40, 115, 1),
+    Color.fromRGBO(142, 142, 255, 1)
+  ]);
 }
