@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class WidgetHomeConfigPanelBottomSheet extends StatelessWidget {
-  const WidgetHomeConfigPanelBottomSheet({super.key, required this.baseItems});
+class WidgetMenuFolderPanelBottomSheet extends StatelessWidget {
+  const WidgetMenuFolderPanelBottomSheet({super.key, required this.baseItems});
   final List<Widget> baseItems;
 
   @override

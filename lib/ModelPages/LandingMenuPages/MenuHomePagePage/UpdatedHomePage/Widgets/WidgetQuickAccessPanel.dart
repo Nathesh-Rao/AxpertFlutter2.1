@@ -11,7 +11,7 @@ class WidgetQuickAccessPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() => Visibility(
-          visible: menuHomePageController.listOfCards.length == 0 ? false : true,
+          visible: menuHomePageController.listOfOptionCards.length == 0 ? false : true,
           child: Container(
             margin: EdgeInsets.only(top: 20, left: 15, right: 15),
             child: Column(
@@ -40,16 +40,16 @@ class WidgetQuickAccessPanel extends StatelessWidget {
                       gridDelegate:
                           SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, crossAxisSpacing: 5, mainAxisSpacing: 5),
                       // itemCount: menuHomePageController.listOfCards.length,
-                      itemCount: menuHomePageController.listOfCards.length,
+                      itemCount: menuHomePageController.listOfOptionCards.length,
                       itemBuilder: (context, index) {
                         // return WidgetCardUpdated(menuHomePageController.listOfCards[index]);
                         return GestureDetector(
                           onTap: () {
-                            captionOnTapFunction(menuHomePageController.listOfCards[index]);
+                            menuHomePageController.captionOnTapFunction(menuHomePageController.listOfOptionCards[index].stransid);
                           },
                           child: AspectRatio(
                             aspectRatio: 1 / 1,
-                            child: WidgetUpdatedCards(menuHomePageController.listOfCards[index]),
+                            child: WidgetUpdatedCards(menuHomePageController.listOfOptionCards[index]),
                           ),
                         );
                       },
@@ -62,8 +62,8 @@ class WidgetQuickAccessPanel extends StatelessWidget {
         ));
   }
 
-  captionOnTapFunction(cardModel) {
-    var link_id = cardModel.stransid;
+/*  captionOnTapFunction(transid) {
+    var link_id = transid;
     var validity = false;
     if (link_id.toLowerCase().startsWith('h')) {
       if (link_id.toLowerCase().contains("hp")) {
@@ -83,5 +83,5 @@ class WidgetQuickAccessPanel extends StatelessWidget {
     if (validity) {
       menuHomePageController.openBtnAction("button", link_id);
     }
-  }
+  }*/
 }

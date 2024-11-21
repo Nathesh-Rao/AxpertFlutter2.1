@@ -27,7 +27,7 @@ class WidgetSlidingNotificationPanel extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Card(
             elevation: 5,
-            shadowColor: MyColors.buzzilygrey,
+            shadowColor: MyColors.color_grey,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
             child: Container(
               height: MediaQuery.of(context).size.height * .15,

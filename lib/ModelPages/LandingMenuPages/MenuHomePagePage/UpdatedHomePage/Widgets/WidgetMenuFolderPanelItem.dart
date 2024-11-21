@@ -1,39 +1,21 @@
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/MenuFolderModel.dart';
 import 'package:flutter/material.dart';
 
-import '../../Models/sampleHomeConfigModel.dart';
-import 'WidgetHomeConfigPanelInnerItem.dart';
+import '../../../../../Constants/MyColors.dart';
+import 'WidgetMenuFolderPanelInnerItem.dart';
 
-class WidgetHomeConfigPanelItem extends StatelessWidget {
-  const WidgetHomeConfigPanelItem(
+class WidgetMenuFolderPanelItem extends StatelessWidget {
+  const WidgetMenuFolderPanelItem(
       {super.key, required this.panelItems, required this.keyname});
-  final List<SampleConfigModelItemModel> panelItems;
+  final List<MenuFolderModel> panelItems;
   final String keyname;
+
   @override
   Widget build(BuildContext context) {
-    //
     final double baseSize = MediaQuery.of(context).size.height * .25;
-    //------generating
-    generateItems() {
-      List<Widget> items = List.generate(panelItems.length,
-          (index) => WidgetConfigPanelInnerItem(item: panelItems[index]));
 
-      if (items.length >= 8) {
-        items = items.sublist(0, 7);
-        items.add(WidgetConfigPanelMoreWidgetItem(
-          items: panelItems,
-        ));
-      } else {
-        items = items;
-      }
-      return items;
-    }
-
-    // List<Widget> panelItems = generateItems(baseItems);
-    // List<Widget> panelItems = baseItems;
-
-    //---------------------->
     return Padding(
-      padding: EdgeInsets.only(top: 20),
+      padding: EdgeInsets.only(top: 30),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,6 +34,7 @@ class WidgetHomeConfigPanelItem extends StatelessWidget {
             clipBehavior: Clip.hardEdge,
             margin: EdgeInsets.zero,
             elevation: 2,
+            shadowColor: MyColors.color_grey,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
@@ -73,5 +56,19 @@ class WidgetHomeConfigPanelItem extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  generateItems() {
+    List<Widget> items = List.generate(panelItems.length,
+            (index) => WidgetMenuFolderPanelInnerItem(item: panelItems[index]));
+
+    if (items.length >= 8) {
+      items = items.sublist(0, 7);
+      items.add(WidgetMenuFolderPanelMoreWidgetItem(
+        items: panelItems,
+      ));
+    }
+
+    return items;
   }
 }

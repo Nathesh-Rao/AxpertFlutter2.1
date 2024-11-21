@@ -8,6 +8,7 @@ import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Model
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/CardModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/CardOptionModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/GridDashboardModel.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/MenuFolderModel.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ExecuteApi.dart';
 import 'package:axpertflutter/Utils/ServerConnections/InternetConnectivity.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
@@ -16,12 +17,15 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:material_icons_named/material_icons_named.dart';
 
+import '../UpdatedHomePage/Widgets/WidgetMenuFolderPanelItem.dart';
+
 class MenuHomePageController extends GetxController {
   InternetConnectivity internetConnectivity = Get.find();
   var colorList = ["#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"];
 
   // var colorList = ["#EEF2FF", "#FFF9E7", "#F5EBFF", "#FFECF6", "#E5F5FA", "#E6FAF4", "#F7F7F7", "#E8F5F8"];
-  var listOfCards = [].obs;
+  var listOfOptionCards = [].obs;
+  var list_menuFolderData = {}.obs;
   var listOfGridCardItems = [].obs;
   var actionData = {};
   Set setOfDatasource = {};
@@ -37,7 +41,6 @@ class MenuHomePageController extends GetxController {
   var last_login_time = "Loading..".obs;
   var last_login_location = "Loading..".obs;
   var attendanceVisibility = false.obs;
-
 
   //Client Info
   var client_info_companyTitle = "".obs;
@@ -95,13 +98,21 @@ class MenuHomePageController extends GetxController {
       print("Home card ${resp}");
       var jsonResp = jsonDecode(resp);
       if (jsonResp['result']['success'].toString() == "true") {
-        listOfCards.clear();
-        var dataList = jsonResp['result']['data'];
+        listOfOptionCards.clear();
+        var dataList = jsonResp['result']['menu option'];
         for (var item in dataList) {
           CardModel cardModel = CardModel.fromJson(item);
-          listOfCards.add(cardModel);
+          listOfOptionCards.add(cardModel);
           setOfDatasource.add(item['datasource'].toString());
         }
+
+        var menuFolderList = [];
+        var data_menuFolder = jsonResp['result']['menu folder'];
+        for (var item in data_menuFolder) {
+          MenuFolderModel menuFolderModel = MenuFolderModel.fromJson(item);
+          menuFolderList.add(menuFolderModel);
+        }
+        parseMenuFolderData(menuFolderList);
       } else {
         //error
       }
@@ -121,7 +132,7 @@ class MenuHomePageController extends GetxController {
     // listOfCards..sort((a, b) => a.caption.toString().toLowerCase().compareTo(b.caption.toString().toLowerCase()));
     isLoading.value = false;
     LoadingScreen.dismiss();
-    return listOfCards;
+    return listOfOptionCards;
   }
 
   getCardDataSources() async {
@@ -344,6 +355,29 @@ class MenuHomePageController extends GetxController {
     }
   }
 
+  captionOnTapFunction(transid) {
+    var link_id = transid;
+    var validity = false;
+    if (link_id.toLowerCase().startsWith('h')) {
+      if (link_id.toLowerCase().contains("hp")) {
+        link_id = link_id.toLowerCase().replaceAll("hp", "h");
+      }
+      validity = true;
+    } else {
+      if (link_id.toLowerCase().startsWith('i')) {
+        validity = true;
+      } else {
+        if (link_id.toLowerCase().startsWith('t')) {
+          validity = true;
+        } else
+          validity = false;
+      }
+    }
+    if (validity) {
+      openBtnAction("button", link_id);
+    }
+  }
+
   generateIcon(model) {
     var iconName = model.icon;
     if (iconName.contains("material-icons")) {
@@ -437,4 +471,29 @@ class MenuHomePageController extends GetxController {
     }
   }
 
+  void parseMenuFolderData(List menuFolderList) {
+    var map_folderList = {};
+    for (var item in menuFolderList) {
+      var folderName = item.groupfolder;
+      List<MenuFolderModel> list = [];
+      list = map_folderList[folderName] ?? [];
+      list.add(item);
+      map_folderList[folderName] = list;
+    }
+    list_menuFolderData.value = map_folderList;
+    print("list_menuFolderData: ${list_menuFolderData.toString()}");
+  }
+
+  getMenuFolderPanelWidgetList(){
+    var panelModel = list_menuFolderData;
+    var keys = panelModel.keys.toList();
+    List<Widget> panelWidgets = List.generate(
+        keys.length,
+            (index) => WidgetMenuFolderPanelItem(
+          keyname: keys[index],
+          panelItems: panelModel[keys[index]]!,
+        ));
+
+    return panelWidgets;
+  }
 }

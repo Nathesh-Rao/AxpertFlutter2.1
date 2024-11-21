@@ -25,16 +25,6 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     var dropdownWidth = MediaQuery.of(context).size.width * .35;
 
-    Widget getLoginWidget() {
-      switch (loginController.portalDropdownValue.value.toLowerCase()) {
-        case "ess":
-          return EssLoginPage();
-
-        default:
-          return DefaultLoginPageWidget();
-      }
-    }
-
     return Obx(() => PopScope(
           onPopInvoked: (didPop) {
             exit(0);
@@ -64,21 +54,12 @@ class _LoginPageState extends State<LoginPage> {
                   isExpanded: true,
                   style: GoogleFonts.poppins(
                       textStyle: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18,
-                          color: loginController.isPortalDefault.value
-                              ? Colors.black
-                              : Colors.white)),
-                  dropdownColor: loginController.isPortalDefault.value
-                      ? Colors.white
-                      : Color(0xff3764FC),
-                  iconEnabledColor: loginController.isPortalDefault.value
-                      ? Color(0xff3764FC)
-                      : Colors.white,
+                          fontWeight: FontWeight.w500, fontSize: 18, color: loginController.isPortalDefault.value ? Colors.black : Colors.white)),
+                  dropdownColor: loginController.isPortalDefault.value ? Colors.white : Color(0xff3764FC),
+                  iconEnabledColor: loginController.isPortalDefault.value ? Color(0xff3764FC) : Colors.white,
                   borderRadius: BorderRadius.circular(10),
                   items: loginController.portalDropdownMenuItem(),
-                  onChanged: (value) =>
-                      loginController.portalDropDownItemChanged(value),
+                  onChanged: (value) => loginController.portalDropDownItemChanged(value),
                   value: loginController.portalDropdownValue.value,
                 ),
               ),
@@ -89,9 +70,7 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   icon: Icon(
                     Icons.settings,
-                    color: loginController.isPortalDefault.value
-                        ? Colors.black
-                        : Colors.white,
+                    color: loginController.isPortalDefault.value ? Colors.black : Colors.white,
                   ),
                 ),
               ],
@@ -100,5 +79,15 @@ class _LoginPageState extends State<LoginPage> {
             body: getLoginWidget(),
           ),
         ));
+  }
+
+  Widget getLoginWidget() {
+    switch (loginController.portalDropdownValue.value.toLowerCase()) {
+      case "ess":
+        return EssLoginPage();
+
+      default:
+        return DefaultLoginPageWidget();
+    }
   }
 }

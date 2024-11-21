@@ -22,7 +22,7 @@ class CardModel {
 
   CardModel.fromJson(Map<String, dynamic> json)
       : cardid = json['cardid'].toString(),
-        carddesc = json['carddesc'].toString() ?? "",
+        carddesc = json['carddesc'] ?? "",
         caption = json['caption'].toString(),
         pagecaption = json['pagecaption'].toString(),
         displayicon = json['displayicon'].toString(),

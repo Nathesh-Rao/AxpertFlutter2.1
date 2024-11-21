@@ -128,7 +128,7 @@ class ForgetPassword extends StatelessWidget {
                                 },
                               ),
                               filled: true,
-                              fillColor: MyColors.buzzilygrey,
+                              fillColor: MyColors.color_grey,
                               labelStyle: const TextStyle(
                                 fontSize: 15,
                                 fontFamily: 'Proxima_Nova_Regular',
@@ -186,7 +186,7 @@ class ForgetPassword extends StatelessWidget {
                                 },
                               ),
                               filled: true,
-                              fillColor: MyColors.buzzilygrey,
+                              fillColor: MyColors.color_grey,
                               labelStyle: const TextStyle(
                                 fontSize: 15,
                                 fontFamily: 'Proxima_Nova_Regular',
@@ -243,7 +243,7 @@ class ForgetPassword extends StatelessWidget {
                                 },
                               ),
                               filled: true,
-                              fillColor: MyColors.buzzilygrey,
+                              fillColor: MyColors.color_grey,
                               labelStyle: const TextStyle(
                                 fontSize: 15,
                                 fontFamily: 'Proxima_Nova_Regular',
@@ -324,7 +324,7 @@ class ForgetPassword extends StatelessWidget {
                                 fontSize: 15,
                               ),
                               filled: true,
-                              fillColor: MyColors.buzzilygrey,
+                              fillColor: MyColors.color_grey,
                               labelStyle: const TextStyle(
                                 fontSize: 15,
                                 fontFamily: 'Proxima_Nova_Regular',
@@ -357,7 +357,7 @@ class ForgetPassword extends StatelessWidget {
                                 fontSize: 15,
                               ),
                               filled: true,
-                              fillColor: MyColors.buzzilygrey,
+                              fillColor: MyColors.color_grey,
                               labelStyle: const TextStyle(
                                 fontSize: 15,
                                 fontFamily: 'Proxima_Nova_Regular',
@@ -390,7 +390,7 @@ class ForgetPassword extends StatelessWidget {
                                 fontSize: 15,
                               ),
                               filled: true,
-                              fillColor: MyColors.buzzilygrey,
+                              fillColor: MyColors.color_grey,
                               labelStyle: const TextStyle(
                                 fontSize: 15,
                                 fontFamily: 'Proxima_Nova_Regular',

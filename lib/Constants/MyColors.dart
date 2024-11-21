@@ -20,7 +20,7 @@ class MyColors {
   static const Color buzzilyblack = Color(0xFF1F1D2C);
   static const Color buzzilybuttonblue = Color(0xFF006CFF);
   static const Color buzzilybuttontext = Color(0xFF778085);
-  static const Color buzzilygrey = Color(0xFFF6F7F8);
+  static const Color color_grey = Color(0xFFF6F7F8);
   static const Color buzzilytext = Color(0xFF2b282b);
   static const Color dialogheaderback = Color(0xFF5b538c);
   static const Color gold = Color(0xFFdaa520);
