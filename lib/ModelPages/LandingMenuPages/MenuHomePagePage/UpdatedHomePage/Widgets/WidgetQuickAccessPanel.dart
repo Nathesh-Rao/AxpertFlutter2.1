@@ -1,5 +1,6 @@
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/CardModel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -88,42 +89,6 @@ class WidgetQuickAccessPanel extends StatelessWidget {
                       runAlignment: WrapAlignment.spaceBetween,
                       children: generateItems(),
                     ),
-
-                    // child: GridView.builder(
-                    //   shrinkWrap: true,
-                    //   padding: EdgeInsets.zero,
-                    //   physics: NeverScrollableScrollPhysics(),
-                    //   gridDelegate:
-                    //       SliverGridDelegateWithFixedCrossAxisCount(
-                    //           crossAxisCount: 2,
-                    //           crossAxisSpacing: 5,
-                    //           mainAxisSpacing: 5),
-                    //   // itemCount: menuHomePageController.listOfCards.length,
-                    //   // itemCount:
-                    //   //     menuHomePageController.listOfOptionCards.length,
-                    //   itemCount: 4,
-                    //   itemBuilder: (context, index) {
-                    //     // return WidgetCardUpdated(menuHomePageController.listOfCards[index]);
-                    //     return GestureDetector(
-                    //       onTap: () {
-                    //         menuHomePageController.captionOnTapFunction(
-                    //             menuHomePageController
-                    //                 .listOfOptionCards[0].stransid);
-                    //       },
-                    //       child: AspectRatio(
-                    //         aspectRatio: 1 / 1,
-                    //         child: Card(
-                    //           clipBehavior: Clip.hardEdge,
-                    //           shape: RoundedRectangleBorder(
-                    //               borderRadius: BorderRadius.circular(10)),
-                    //           child: WidgetUpdatedCards(
-                    //               menuHomePageController
-                    //                   .listOfOptionCards[0]),
-                    //         ),
-                    //       ),
-                    //     );
-                    //   },
-                    // ),
                   ),
                 )
               ],
@@ -135,12 +100,15 @@ class WidgetQuickAccessPanel extends StatelessWidget {
   generateItems() {
     List<Widget> items = List.generate(
       menuHomePageController.listOfOptionCards.length,
-      (index) => QuickAccessTileWidget(),
+      (index) => QuickAccessTileWidget(
+          menuHomePageController.listOfOptionCards[index]),
     );
 
     if (items.length >= 8) {
       items = items.sublist(0, 7);
-      items.add(QuickAccessTileMoreWidget());
+      items.add(QuickAccessTileMoreWidget(
+        menuHomePageController.listOfOptionCards,
+      ));
     } else {
       int itemsToAdd = 8 - items.length;
 
