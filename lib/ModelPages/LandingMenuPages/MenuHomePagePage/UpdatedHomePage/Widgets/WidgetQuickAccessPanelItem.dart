@@ -33,48 +33,55 @@ class QuickAccessTileWidget extends StatelessWidget {
 
     return Stack(
       children: [
-        GestureDetector(
-          onTap: () {
-            menuHomePageController.captionOnTapFunction(cardModel.stransid);
-          },
-          child: Column(
-           crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                backgroundColor: colorList[
-                    Random().nextInt(colorList.length)], // color.withAlpha(30),
-                foregroundColor: Colors.black,
-                radius: baseHeight / 9,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CachedNetworkImage(
-                    imageUrl: Const.getFullProjectUrl("images/homepageicon/") +
-                        cardModel.caption.toString() +
-                        '.png',
-                    errorWidget: (context, url, error) => Image.network(
-                        Const.getFullProjectUrl(
-                            'images/homepageicon/default.png')),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Expanded(
-                child: SizedBox(
-                  height: baseHeight / 7,
-                  child: Text(
-                    cardModel.caption,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      overflow: TextOverflow.fade,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w500,
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: GestureDetector(
+              onTap: () {
+                menuHomePageController.captionOnTapFunction(cardModel.stransid);
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    backgroundColor: colorList[Random()
+                        .nextInt(colorList.length)], // color.withAlpha(30),
+                    foregroundColor: Colors.black,
+                    radius: baseHeight / 9,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CachedNetworkImage(
+                        imageUrl:
+                            Const.getFullProjectUrl("images/homepageicon/") +
+                                cardModel.caption.toString() +
+                                '.png',
+                        errorWidget: (context, url, error) => Image.network(
+                            Const.getFullProjectUrl(
+                                'images/homepageicon/default.png')),
+                      ),
                     ),
                   ),
-                ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Expanded(
+                    child: SizedBox(
+                      height: baseHeight / 7,
+                      child: Text(
+                        cardModel.caption,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          overflow: TextOverflow.fade,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
         Align(
