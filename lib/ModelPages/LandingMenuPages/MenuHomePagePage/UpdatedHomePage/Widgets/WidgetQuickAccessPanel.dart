@@ -12,7 +12,7 @@ class WidgetQuickAccessPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double baseSize = MediaQuery.of(context).size.height * .25;
+    final double baseSize = _getHeight(context);
 
     return Obx(() => Visibility(
           visible: menuHomePageController.listOfOptionCards.length == 0
@@ -104,8 +104,7 @@ class WidgetQuickAccessPanel extends StatelessWidget {
                       itemBuilder: (context, index) {
                         // return WidgetCardUpdated(menuHomePageController.listOfCards[index]);
                         return AspectRatio(
-                            aspectRatio: 1 / 1,
-                            child: generateItems()[index]);
+                            aspectRatio: 1 / 1, child: generateItems()[index]);
                       },
                     ),
                   ),
@@ -114,6 +113,14 @@ class WidgetQuickAccessPanel extends StatelessWidget {
             ),
           ),
         ));
+  }
+
+  _getHeight(BuildContext context) {
+    var height = MediaQuery.of(context).size.height * 0.25;
+    if (menuHomePageController.listOfOptionCards.length <= 4) {
+      return height / 2;
+    }
+    return height;
   }
 
   List<Widget> generateItems() {
