@@ -416,8 +416,19 @@ class QuickAccessTileMoreWidget extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: (baseSize / 7) + 5,
+          height: 5,
         ),
+        SizedBox(
+          height: baseSize / 7,
+          child: Text(
+            "More",
+            style: TextStyle(
+              overflow: TextOverflow.fade,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        )
       ],
     );
 
