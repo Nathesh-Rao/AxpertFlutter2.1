@@ -106,9 +106,12 @@ class WidgetMenuFolderPanelMoreWidgetItem extends StatelessWidget {
         children: [
           InkWell(
             onTap: () {
-              Get.bottomSheet(WidgetMenuFolderPanelBottomSheet(
-                baseItems: baseItems,
-              ));
+              Get.bottomSheet(
+                WidgetMenuFolderPanelBottomSheet(
+                  baseItems: baseItems,
+                ),
+                isScrollControlled: true,
+              );
             },
             borderRadius: BorderRadius.circular(100),
             splashColor: Colors.white60,
