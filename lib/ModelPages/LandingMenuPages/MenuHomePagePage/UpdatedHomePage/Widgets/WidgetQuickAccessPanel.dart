@@ -12,8 +12,6 @@ class WidgetQuickAccessPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double baseSize = _getHeight(context);
-
     return Obx(() => Visibility(
           visible: menuHomePageController.listOfOptionCards.length == 0
               ? false
@@ -80,7 +78,7 @@ class WidgetQuickAccessPanel extends StatelessWidget {
                   color: Colors.white,
                   child: Container(
                     padding: EdgeInsets.all(15),
-                    height: baseSize,
+                    height: _getHeight(context),
                     width: double.infinity,
 
                     // child: Wrap(
