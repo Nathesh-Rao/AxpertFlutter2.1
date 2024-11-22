@@ -79,6 +79,7 @@ class WidgetQuickAccessPanel extends StatelessWidget {
                   child: Container(
                     padding: EdgeInsets.all(15),
                     height: _getHeight(context),
+                    
                     width: double.infinity,
 
                     // child: Wrap(
