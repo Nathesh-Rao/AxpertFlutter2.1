@@ -82,12 +82,33 @@ class WidgetQuickAccessPanel extends StatelessWidget {
                     padding: EdgeInsets.all(15),
                     height: baseSize,
                     width: double.infinity,
-                    child: Wrap(
-                      spacing: 10,
-                      runSpacing: 10,
-                      alignment: WrapAlignment.spaceBetween,
-                      runAlignment: WrapAlignment.spaceBetween,
-                      children: generateItems(),
+
+                    // child: Wrap(
+                    //   spacing: 10,
+                    //   runSpacing: 10,
+                    //   alignment: WrapAlignment.spaceBetween,
+                    //   runAlignment: WrapAlignment.spaceBetween,
+                    //   children: generateItems(),
+                    // ),
+                    child: Expanded(
+                      child: GridView.builder(
+                        shrinkWrap: true,
+                        padding: EdgeInsets.zero,
+                        physics: NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 4,
+                          crossAxisSpacing: 5,
+                          mainAxisSpacing: 15,
+                        ),
+                        // itemCount: menuHomePageController.listOfCards.length,
+                        itemCount: generateItems().length,
+                        itemBuilder: (context, index) {
+                          // return WidgetCardUpdated(menuHomePageController.listOfCards[index]);
+                          return AspectRatio(
+                              aspectRatio: 1 / 1,
+                              child: generateItems()[index]);
+                        },
+                      ),
                     ),
                   ),
                 )
@@ -97,7 +118,7 @@ class WidgetQuickAccessPanel extends StatelessWidget {
         ));
   }
 
-  generateItems() {
+  List<Widget> generateItems() {
     List<Widget> items = List.generate(
       menuHomePageController.listOfOptionCards.length,
       (index) => QuickAccessTileWidget(

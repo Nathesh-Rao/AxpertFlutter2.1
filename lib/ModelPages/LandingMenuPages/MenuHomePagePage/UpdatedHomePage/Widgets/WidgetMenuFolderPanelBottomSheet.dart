@@ -7,10 +7,10 @@ class WidgetMenuFolderPanelBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double basewidth = MediaQuery.of(context).size.width - 30;
+    final double maxHeight = _getBottomSheetHeight(context: context);
 
     return Container(
-      height: basewidth,
+      height: maxHeight,
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
@@ -41,10 +41,24 @@ class WidgetMenuFolderPanelBottomSheet extends StatelessWidget {
                   crossAxisSpacing: 10.0,
                   mainAxisSpacing: 10.0,
                 ),
-                itemBuilder: (context, index) => baseItems[index]),
+                itemBuilder: (context, index) {
+                  return baseItems[index];
+                }),
           )
         ],
       ),
     );
+  }
+
+  double _getBottomSheetHeight({required BuildContext context}) {
+    if (baseItems.length <= 12) {
+      return MediaQuery.of(context).size.width - 30;
+    } else if (baseItems.length > 20) {
+      return MediaQuery.of(context).size.height * 0.75;
+    } else {
+      var width = MediaQuery.of(context).size.width - 30;
+      width = width + width / 2;
+      return width;
+    }
   }
 }
