@@ -90,25 +90,23 @@ class WidgetQuickAccessPanel extends StatelessWidget {
                     //   runAlignment: WrapAlignment.spaceBetween,
                     //   children: generateItems(),
                     // ),
-                    child: Expanded(
-                      child: GridView.builder(
-                        shrinkWrap: true,
-                        padding: EdgeInsets.zero,
-                        physics: NeverScrollableScrollPhysics(),
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 4,
-                          crossAxisSpacing: 5,
-                          mainAxisSpacing: 15,
-                        ),
-                        // itemCount: menuHomePageController.listOfCards.length,
-                        itemCount: generateItems().length,
-                        itemBuilder: (context, index) {
-                          // return WidgetCardUpdated(menuHomePageController.listOfCards[index]);
-                          return AspectRatio(
-                              aspectRatio: 1 / 1,
-                              child: generateItems()[index]);
-                        },
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      padding: EdgeInsets.zero,
+                      physics: NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 4,
+                        crossAxisSpacing: 5,
+                        mainAxisSpacing: 15,
                       ),
+                      // itemCount: menuHomePageController.listOfCards.length,
+                      itemCount: generateItems().length,
+                      itemBuilder: (context, index) {
+                        // return WidgetCardUpdated(menuHomePageController.listOfCards[index]);
+                        return AspectRatio(
+                            aspectRatio: 1 / 1,
+                            child: generateItems()[index]);
+                      },
                     ),
                   ),
                 )

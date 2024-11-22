@@ -38,7 +38,7 @@ class QuickAccessTileWidget extends StatelessWidget {
             menuHomePageController.captionOnTapFunction(cardModel.stransid);
           },
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+           crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CircleAvatar(
                 backgroundColor: colorList[
@@ -60,15 +60,17 @@ class QuickAccessTileWidget extends StatelessWidget {
               SizedBox(
                 height: 5,
               ),
-              SizedBox(
-                height: baseHeight / 7,
-                child: Text(
-                  cardModel.caption,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    overflow: TextOverflow.fade,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
+              Expanded(
+                child: SizedBox(
+                  height: baseHeight / 7,
+                  child: Text(
+                    cardModel.caption,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      overflow: TextOverflow.fade,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ),
@@ -421,14 +423,16 @@ class QuickAccessTileMoreWidget extends StatelessWidget {
         SizedBox(
           height: 5,
         ),
-        SizedBox(
-          height: baseSize / 7,
-          child: Text(
-            "More",
-            style: TextStyle(
-              overflow: TextOverflow.fade,
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
+        Expanded(
+          child: SizedBox(
+            height: baseSize / 7,
+            child: Text(
+              "More",
+              style: TextStyle(
+                overflow: TextOverflow.fade,
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
         )

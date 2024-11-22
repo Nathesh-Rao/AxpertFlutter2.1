@@ -10,11 +10,12 @@ import '../../Controllers/MenuHomePageController.dart';
 import 'WidgetMenuFolderPanelBottomSheet.dart';
 
 class WidgetMenuFolderPanelInnerItem extends StatelessWidget {
-  WidgetMenuFolderPanelInnerItem(
-      {super.key, required this.item, this.isFromBottomSheet = false});
+  WidgetMenuFolderPanelInnerItem({super.key, required this.item, this.isFromBottomSheet = false});
+
   final MenuHomePageController menuHomePageController = Get.find();
   final MenuFolderModel item;
   final bool isFromBottomSheet;
+
   @override
   Widget build(BuildContext context) {
     final double baseHeight = MediaQuery.of(context).size.height * .25;
@@ -29,65 +30,58 @@ class WidgetMenuFolderPanelInnerItem extends StatelessWidget {
       HexColor("#d9ecef"),
     ];
 
-    return SizedBox(
-      width: (baseWidth / 4) - 30,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          InkWell(
-            onTap: () {
-              if (isFromBottomSheet) Get.back();
-              menuHomePageController.captionOnTapFunction(item.target!
-                  .substring(item.target!.lastIndexOf('=') + 1,
-                      item.target.toString().length));
-            },
-            borderRadius: BorderRadius.circular(100),
-            child: CircleAvatar(
-              backgroundColor: colorList[
-                  Random().nextInt(colorList.length)], // color.withAlpha(30),
-              foregroundColor: Colors.black,
-              radius: baseHeight / 9,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CachedNetworkImage(
-                  imageUrl: Const.getFullProjectUrl("images/homepageicon/") +
-                      item.caption.toString() +
-                      '.png',
-                  errorWidget: (context, url, error) => Image.network(
-                      Const.getFullProjectUrl(
-                          'images/homepageicon/default.png')),
-                ),
-              ), /*Icon(
+    return InkWell(
+        onTap: () {
+          if (isFromBottomSheet) Get.back();
+          menuHomePageController.captionOnTapFunction(item.target!.substring(item.target!.lastIndexOf('=') + 1, item.target.toString().length));
+        },
+        child: SizedBox(
+          width: (baseWidth / 4) - 30,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircleAvatar(
+                backgroundColor: colorList[Random().nextInt(colorList.length)], // color.withAlpha(30),
+                foregroundColor: Colors.black,
+                radius: baseHeight / 9,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CachedNetworkImage(
+                    imageUrl: Const.getFullProjectUrl("images/homepageicon/") + item.caption.toString() + '.png',
+                    errorWidget: (context, url, error) => Image.network(Const.getFullProjectUrl('images/homepageicon/default.png')),
+                  ),
+                ), /*Icon(
                 Icons.airplane_ticket,
                 color: color,
               ),*/
-            ),
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          SizedBox(
-            height: baseHeight / 7,
-            child: Text(
-              item.caption.toString(),
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                overflow: TextOverflow.fade,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
               ),
-            ),
+              SizedBox(
+                height: 5,
+              ),
+              SizedBox(
+                height: baseHeight / 7,
+                child: Text(
+                  item.caption.toString(),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    overflow: TextOverflow.fade,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-    );
+        ));
   }
 }
 
 //-------------------------------------------->
 class WidgetMenuFolderPanelMoreWidgetItem extends StatelessWidget {
   const WidgetMenuFolderPanelMoreWidgetItem({super.key, required this.items});
+
   final List<MenuFolderModel> items;
+
   @override
   Widget build(BuildContext context) {
     final double baseSize = MediaQuery.of(context).size.height * .25;

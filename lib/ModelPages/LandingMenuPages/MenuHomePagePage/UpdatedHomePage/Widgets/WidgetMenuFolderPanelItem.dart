@@ -5,8 +5,8 @@ import '../../../../../Constants/MyColors.dart';
 import 'WidgetMenuFolderPanelInnerItem.dart';
 
 class WidgetMenuFolderPanelItem extends StatelessWidget {
-  const WidgetMenuFolderPanelItem(
-      {super.key, required this.panelItems, required this.keyname});
+  const WidgetMenuFolderPanelItem({super.key, required this.panelItems, required this.keyname});
+
   final List<MenuFolderModel> panelItems;
   final String keyname;
 
@@ -42,7 +42,7 @@ class WidgetMenuFolderPanelItem extends StatelessWidget {
             color: Colors.white,
             child: Container(
               padding: EdgeInsets.all(15),
-              height: baseSize,
+              height: panelItems.length > 4 ? baseSize : baseSize / 2,
               width: double.infinity,
               child: Wrap(
                 spacing: 10,
@@ -59,8 +59,7 @@ class WidgetMenuFolderPanelItem extends StatelessWidget {
   }
 
   generateItems() {
-    List<Widget> items = List.generate(panelItems.length,
-        (index) => WidgetMenuFolderPanelInnerItem(item: panelItems[index]));
+    List<Widget> items = List.generate(panelItems.length, (index) => WidgetMenuFolderPanelInnerItem(item: panelItems[index]));
 
     if (items.length >= 8) {
       items = items.sublist(0, 7);
