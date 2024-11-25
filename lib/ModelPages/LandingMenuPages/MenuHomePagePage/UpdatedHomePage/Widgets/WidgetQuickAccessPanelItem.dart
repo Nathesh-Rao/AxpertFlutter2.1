@@ -496,9 +496,11 @@ class QuickAccessTileEmptyeWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        CircleAvatar(
-          backgroundColor: Colors.transparent,
-          radius: baseSize / 9,
+        Expanded(
+          child: CircleAvatar(
+            backgroundColor: Colors.transparent,
+            radius: baseSize / 9,
+          ),
         ),
         SizedBox(
           height: (baseSize / 7) + 5,
