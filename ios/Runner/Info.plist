@@ -2,21 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-
-    <key>NSLocationAlwaysUsageDescription</key>
-        <string>The application need The Location Access</string>
-    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-        <string>The application need The Location Access</string>
-    <key>NSLocationWhenInUseUsageDescription</key>
-        <string>The application need The Location Access</string>
-    <key>NSAppTransportSecurity</key>
-    <dict>
-        <key>NSAllowsArbitraryLoads</key><true/>
-    </dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
-   	<true/>
-    <key>UISupportsDocumentBrowser</key>
-    <true/>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -50,8 +37,19 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Camera permission is requires to scan the QR Code</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>The application need The Location Access</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>The application need The Location Access</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>The application need The Location Access</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Need permission for access gallery for QR Code</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
@@ -79,6 +77,8 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UISupportsDocumentBrowser</key>
+	<true/>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
 </dict>
