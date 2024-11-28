@@ -698,7 +698,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
       Container(
         height: 70,
         decoration: BoxDecoration(
-            color: Colors.grey,
+            color: Colors.grey.shade400,
             border: Border(
                 bottom: BorderSide(
                     width: 1, color: Colors.black.withOpacity(0.7)))),

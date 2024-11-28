@@ -47,9 +47,10 @@ class _WidgetPlayGroundState extends State<WidgetPlayGround> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         SizedBox(
-          height: 20,
+          height: 15,
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
