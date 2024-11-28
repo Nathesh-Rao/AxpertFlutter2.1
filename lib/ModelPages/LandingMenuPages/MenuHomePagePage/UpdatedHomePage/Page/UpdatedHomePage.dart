@@ -1,6 +1,7 @@
 import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Widgets/WidgetPlayGround.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Controller/LandingPageController.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetBannerSliding.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetSlidingNotification.dart';
@@ -53,6 +54,10 @@ class UpdatedHomePage extends StatelessWidget {
           body: SingleChildScrollView(
             child: Column(
               children: [
+                //---------------------------------------->
+                //Widget playgrounds---------------------->
+                //---------------------------------------->
+                WidgetPlayGround(),
                 //Banner panel
                 WidgetBannerSlidingPanel(),
 

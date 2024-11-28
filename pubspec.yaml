@@ -73,6 +73,7 @@ dependencies:
   file_downloader_flutter: ^0.0.5
   #  simple_downloader: ^0.0.3+1
   background_location_tracker: ^1.4.3
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
 dependency_overrides:
