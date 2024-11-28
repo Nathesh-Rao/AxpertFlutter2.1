@@ -13,27 +13,28 @@ class WidgetDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() =>
-        ClipRRect(
+    return Obx(() => ClipRRect(
           clipper: getClipped(),
           child: Drawer(
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.grey.shade400,
             child: SafeArea(
               child: ListView(
-                children:  ListTile.divideTiles(context: context, tiles: landingPageController.getDrawerTileList()).toList(),
+                children: ListTile.divideTiles(
+                        context: context,
+                        tiles: landingPageController.getDrawerTileList())
+                    .toList(),
               ),
             ),
           ),
         ));
   }
-
-
 }
 
 class getClipped extends CustomClipper<RRect> {
   @override
   getClip(Size size) {
-    return RRect.fromLTRBAndCorners(0, 0, size.width, size.height, bottomRight: Radius.circular(40));
+    return RRect.fromLTRBAndCorners(0, 0, size.width, size.height,
+        bottomRight: Radius.circular(40));
   }
 
   @override
