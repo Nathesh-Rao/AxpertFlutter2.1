@@ -23,11 +23,9 @@ class WidgetEssAppBar extends StatelessWidget implements PreferredSizeWidget {
       foregroundColor: Colors.white,
       backgroundColor: Colors.transparent,
       // backgroundColor: Color(0xff3764FC),
-      flexibleSpace: Container(
-          // decoration:
-          //     BoxDecoration(gradient: MyColors.updatedUIBackgroundGradient),
-          ),
+
       titleSpacing: 5,
+      leading: Icon(Icons.menu),
       title: Container(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
