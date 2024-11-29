@@ -8,6 +8,8 @@ import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetDisplayProfil
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../controller/EssController.dart';
+
 class WidgetEssAppBar extends StatelessWidget implements PreferredSizeWidget {
   WidgetEssAppBar({super.key});
 
@@ -15,95 +17,110 @@ class WidgetEssAppBar extends StatelessWidget implements PreferredSizeWidget {
       Get.put(LandingPageController());
   MenuHomePageController menuHomePageController =
       Get.put(MenuHomePageController());
-
+  final EssController controller = Get.find();
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      elevation: 0,
-      foregroundColor: Colors.white,
-      backgroundColor: Colors.transparent,
-      // backgroundColor: Color(0xff3764FC),
-
-      titleSpacing: 5,
-      leading: Icon(Icons.menu),
-      title: Container(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Image.asset(
-              "assets/images/axpert_03.png",
-              height: 35,
-              // width: 25,
-            ),
-            Text(
-              "xpert",
-              style: TextStyle(
-                fontFamily: 'Gellix-Black',
-                // color: HexColor("#133884"),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(width: 5),
-            Obx(() => Visibility(
-                  visible: menuHomePageController
-                          .client_info_logo_base64String.value !=
-                      "",
-                  child: Image.memory(
-                    base64Decode(menuHomePageController
-                        .client_info_logo_base64String.value),
-                    height: 40,
-                    width: 40,
-                  ),
-                )),
+    return Obx(
+      () => AppBar(
+        elevation: 0,
+        foregroundColor: Colors.white,
+        backgroundColor: controller.appBarColor.value,
+        // backgroundColor: Color(0xff3764FC),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+              gradient: controller
+                  .appbarGradient /*LinearGradient(
+          colors: [
+            */ /*Color.fromRGBO(55, 100, 252, 1),
+            Color.fromRGBO(151, 100, 218, 1),*/ /*
+            Color.fromRGBO(9, 9, 121, 1),
+            Color.fromRGBO(7,176,210,1),
           ],
+        )*/
+              ),
         ),
-      ),
-      centerTitle: false,
-      actions: [
-        /*IconButton(
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(minWidth: 33, maxWidth: 33),
-            onPressed: () {
-              Get.toNamed(Routes.SettingsPage);
-            },
-            icon: Icon(Icons.settings)),*/
-        Obx(() => IconButton(
+        titleSpacing: 5,
+        leading: Icon(Icons.menu),
+        title: Container(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Image.asset(
+                "assets/images/axpert_03.png",
+                height: 35,
+                // width: 25,
+              ),
+              Text(
+                "xpert",
+                style: TextStyle(
+                  fontFamily: 'Gellix-Black',
+                  // color: HexColor("#133884"),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(width: 5),
+              Obx(() => Visibility(
+                    visible: menuHomePageController
+                            .client_info_logo_base64String.value !=
+                        "",
+                    child: Image.memory(
+                      base64Decode(menuHomePageController
+                          .client_info_logo_base64String.value),
+                      height: 40,
+                      width: 40,
+                    ),
+                  )),
+            ],
+          ),
+        ),
+        centerTitle: false,
+        actions: [
+          /*IconButton(
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(minWidth: 33, maxWidth: 33),
               onPressed: () {
-                landingPageController.showNotifications();
+                Get.toNamed(Routes.SettingsPage);
               },
-              icon: Badge(
-                isLabelVisible: landingPageController.showBadge.value,
-                label: Text(landingPageController.badgeCount.value.toString()),
-                child: Icon(Icons.notifications_active_outlined),
-              ),
-            )),
-        SizedBox(
-          width: 5,
-        ),
-        // IconButton(onPressed: () {}, icon: Icon(Icons.dashboard_customize_outlined)),
-        IconButton(
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(minWidth: 33, maxWidth: 40),
-            onPressed: () {
-              Get.toNamed(Routes.SettingsPage);
-              //Get.dialog(WidgetDisplayProfileDetails());
-            },
-            icon: Icon(Icons.person_pin, size: 30)),
-        // InkWell(
-        //   onTap: () {},
-        //   child: Icon(Icons.person_pin, color: MyColors.black, size: 35),
-        //   // child: CircleAvatar(
-        //   //   // backgroundImage: AssetImage('assets/images/profpic.jpg'),
-        //   //   backgroundColor: Colors.blue,
-        //   //   backgroundImage: AssetImage("assets/images/appversion"),
-        //   // ),
-        // ),
-        SizedBox(
-          width: 8,
-        )
-      ],
+              icon: Icon(Icons.settings)),*/
+          Obx(() => IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 33, maxWidth: 33),
+                onPressed: () {
+                  landingPageController.showNotifications();
+                },
+                icon: Badge(
+                  isLabelVisible: landingPageController.showBadge.value,
+                  label:
+                      Text(landingPageController.badgeCount.value.toString()),
+                  child: Icon(Icons.notifications_active_outlined),
+                ),
+              )),
+          SizedBox(
+            width: 5,
+          ),
+          // IconButton(onPressed: () {}, icon: Icon(Icons.dashboard_customize_outlined)),
+          IconButton(
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(minWidth: 33, maxWidth: 40),
+              onPressed: () {
+                Get.toNamed(Routes.SettingsPage);
+                //Get.dialog(WidgetDisplayProfileDetails());
+              },
+              icon: Icon(Icons.person_pin, size: 30)),
+          // InkWell(
+          //   onTap: () {},
+          //   child: Icon(Icons.person_pin, color: MyColors.black, size: 35),
+          //   // child: CircleAvatar(
+          //   //   // backgroundImage: AssetImage('assets/images/profpic.jpg'),
+          //   //   backgroundColor: Colors.blue,
+          //   //   backgroundImage: AssetImage("assets/images/appversion"),
+          //   // ),
+          // ),
+          SizedBox(
+            width: 8,
+          )
+        ],
+      ),
     );
   }
 

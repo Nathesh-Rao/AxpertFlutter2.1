@@ -1,15 +1,17 @@
+import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/controller/EssController.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetEssAttendanceCard.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetEssHomeCard.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetEssKPICards.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetEssOtherServiceCard.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetHeaderWidget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../widgets/WidgetEssAppBar.dart';
 
 class EssHomePage extends StatelessWidget {
-  const EssHomePage({super.key});
-
+  EssHomePage({super.key});
+  final EssController controller = Get.put(EssController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,6 +21,7 @@ class EssHomePage extends StatelessWidget {
         children: [
           Expanded(
             child: ListView(
+              controller: controller.scrollController,
               padding: EdgeInsets.zero,
               children: [
                 WidgetHeaderWidget(),
