@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetKPIPanelItem.dart';
 import 'package:flutter/material.dart';
 
@@ -21,9 +23,7 @@ class Widgetkpipanel extends StatelessWidget {
             separatorBuilder: (context, index) => SizedBox(
                   width: 10,
                 ),
-            itemBuilder: (context, index) => WidgetKPIPanelItem(
-                  index: index,
-                )),
+            itemBuilder: (context, index) => WidgetKPIPanelItem(index: index)),
       ),
     ));
   }

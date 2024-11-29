@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/CommonMethods.dart';
@@ -303,7 +304,14 @@ class LoginController extends GetxController {
     } else {
       showErrorSnack();
     }
-    Get.offAllNamed(Routes.LandingPage);
+    // Get.offAllNamed(Routes.LandingPage);
+    //
+    //burnur code for navigating to ess portal - amrith--->
+    if (isPortalDefault.value) {
+      Get.offAllNamed(Routes.LandingPage);
+    } else {
+      Get.offAllNamed(Routes.EssHomePage);
+    } //------------------------------------------------>
   }
 
   _callApiForMobileNotification() async {
