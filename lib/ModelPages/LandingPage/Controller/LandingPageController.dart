@@ -848,7 +848,6 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
           tilePadding: EdgeInsets.only(left: leftPadding, right: 10),
           title: Text(tile.caption),
           children: ListTile.divideTiles(
-                  color: Colors.white,
                   context: Get.context,
                   tiles: model_tile.childList.map((tile) =>
                       build_innerListTile(tile, leftPadding: leftPadding + 15)))
@@ -877,7 +876,6 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
           padding: EdgeInsets.only(left: 20),
           // menuMorePageController.IconList[index++ % 8]
           child: ListTile(
-              tileColor: Colors.white,
               leading:
                   Icon(menuMorePageController.generateIcon(subMenu, index++)),
               title: Text(subMenu.caption.toString())),
