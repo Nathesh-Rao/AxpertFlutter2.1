@@ -16,8 +16,8 @@ class EssController extends GetxController {
   var appBarColor = Colors.transparent.obs;
 
   var appbarGradient = LinearGradient(colors: [
-    Color(0xff3764FC),
-    Color(0xff9764DA),
+    Colors.transparent,
+    Colors.transparent,
   ]);
   void _scrollListener() {
     double offset = scrollController.offset;
@@ -30,6 +30,5 @@ class EssController extends GetxController {
       Color(0xff9764DA).withOpacity((offset / 200).clamp(0, 1)),
     ]);
   }
-
 //----------------------------
 }

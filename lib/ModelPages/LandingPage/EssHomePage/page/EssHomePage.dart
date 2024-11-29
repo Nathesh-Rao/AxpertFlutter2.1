@@ -1,4 +1,5 @@
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/controller/EssController.dart';
+import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetEssAnnouncement.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetEssAttendanceCard.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetEssHomeCard.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetEssKPICards.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../widgets/WidgetEssAppBar.dart';
+import '../widgets/WidgetEssRecentActivity.dart';
 
 class EssHomePage extends StatelessWidget {
   EssHomePage({super.key});
@@ -32,6 +34,11 @@ class EssHomePage extends StatelessWidget {
                 WidgetEssKPICards(),
                 _heightBox(),
                 WidgetEssOtherServiceCard(),
+                _heightBox(),
+                WidgetRecentActivity(),
+                _heightBox(),
+                WidgetEssAnnouncement(),
+                _heightBox(height: 30),
               ],
             ),
           ),

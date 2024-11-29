@@ -50,10 +50,11 @@ class WidgetEssSearchBar extends StatelessWidget {
                 flex: 6,
                 child: Center(
                   child: TypeAheadField(
+                    showOnFocus: false,
                     builder: (context, controller, focusNode) {
                       return TextField(
                           controller: controller,
-                          focusNode: focusNode,
+                          // focusNode: focusNode,
                           autofocus: true,
                           decoration: InputDecoration(
                               filled: true,

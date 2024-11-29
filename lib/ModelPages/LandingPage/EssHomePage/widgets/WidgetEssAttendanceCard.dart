@@ -108,7 +108,9 @@ class _WidgetEssAttendanceCardState extends State<WidgetEssAttendanceCard> {
                     color: clockedIn ? Color(0xff0D1545) : Color(0xff283FCE),
                   ),
                   child: Text(
-                    clockedIn ? "Swipe to Clock out" : "Swipe to Clock In ",
+                    clockedIn
+                        ? "Swipe to Clock out 🌜"
+                        : "Swipe to Clock In 🌞",
                     style: GoogleFonts.poppins(
                         textStyle: TextStyle(
                       fontWeight: FontWeight.w500,
