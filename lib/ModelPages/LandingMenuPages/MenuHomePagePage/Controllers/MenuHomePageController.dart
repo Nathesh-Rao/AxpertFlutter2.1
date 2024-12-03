@@ -232,7 +232,7 @@ class MenuHomePageController extends GetxController {
     secretEncryptedKey =
         await getEncryptedSecretKey(ExecuteApi.API_SECRETKEY_GET_PUNCHIN_DATA);
     if (secretEncryptedKey != "") {
-      var url = Const.getFullARMUrl(ExecuteApi.API_ARM_EXECUTE);
+      var url = Const.getFullARMUrl(ExecuteApi.API_ARM_EXECUTE_PUBLISHED);
       var body = {
         // "SecretKey": secretEncryptedKey,
         "publickey": "AXPKEY000000010003",

@@ -1,5 +1,7 @@
+import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/controller/EssController.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swipe_button/flutter_swipe_button.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class WidgetEssAttendanceCard extends StatefulWidget {
@@ -11,6 +13,8 @@ class WidgetEssAttendanceCard extends StatefulWidget {
 }
 
 class _WidgetEssAttendanceCardState extends State<WidgetEssAttendanceCard> {
+  final EssController controller = Get.find();
+
   var style = GoogleFonts.poppins(
       textStyle: TextStyle(
     fontWeight: FontWeight.w600,
@@ -20,7 +24,12 @@ class _WidgetEssAttendanceCardState extends State<WidgetEssAttendanceCard> {
   bool clockedIn = false;
   bool swipeStarted = false;
 
-  _swiped() {
+  _swiped() async {
+    if (!clockedIn) {
+      controller.onClick_PunchIn();
+    } else {
+      controller.onClick_PunchOut();
+    }
     setState(() {
       clockedIn = !clockedIn;
       swipeStarted = false;

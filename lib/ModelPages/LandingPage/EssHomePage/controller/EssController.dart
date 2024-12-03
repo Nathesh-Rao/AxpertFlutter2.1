@@ -5,19 +5,23 @@ import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/models/ESSRecentActivityModel.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/state_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_icons_named/material_icons_named.dart';
 
+import '../../../../Constants/CommonMethods.dart';
 import '../../../../Constants/MyColors.dart';
 import '../../../../Constants/const.dart';
 import '../../../../Utils/ServerConnections/ExecuteApi.dart';
+import '../../../../Utils/ServerConnections/ServerConnections.dart';
 import '../models/ESSAnnouncementModel.dart';
 
 class EssController extends GetxController {
   AppStorage appStorage = AppStorage();
+  ServerConnections serverConnections = ServerConnections();
   @override
   void onInit() {
     scrollController.addListener(_scrollListener);
@@ -28,6 +32,7 @@ class EssController extends GetxController {
   EssController() {
     getESSRecentActivity();
     getESSAnnouncement();
+    getPunchINData();
   }
 
   generateIcon(model) {
@@ -91,7 +96,7 @@ class EssController extends GetxController {
     );
     // log(resp.toString());
     if (resp != "") {
-      log(resp.toString());
+      // log(resp.toString());
       var jsonResp = jsonDecode(resp);
       if (jsonResp["success"].toString() == "true") {
         var listItems = jsonResp["axm_ess_recentactivity"]["rows"];
@@ -170,7 +175,7 @@ class EssController extends GetxController {
       body: jsonEncode(body),
       isBearer: true,
     );
-    log(resp.toString());
+    // log(resp.toString());
     if (resp != "") {
       var jsonResp = jsonDecode(resp);
 
@@ -323,5 +328,228 @@ class EssController extends GetxController {
         ],
       ),
     );
+  }
+
+  //-----Attendance----------
+  var recordId = '';
+  var punchInResp = '';
+  // getCardDataSources() async {
+  //   if (actionData.length > 1) {
+  //     return actionData;
+  //   } else {
+  //     // var dataSourceUrl = baseUrl + GlobalConfiguration().get("HomeCardDataResponse").toString();
+  //     var dataSourceUrl = Const.getFullARMUrl(
+  //         ServerConnections.API_GET_HOMEPAGE_CARDSDATASOURCE);
+  //     var dataSourceBody = body;
+  //     dataSourceBody["sqlParams"] = {
+  //       "param": "value",
+  //       "username": appStorage.retrieveValue(AppStorage.USER_NAME)
+  //     };
+
+  //     actionData.clear();
+  //     for (var items in setOfDatasource) {
+  //       if (items.toString() != "") {
+  //         dataSourceBody["datasource"] = items;
+  //         // setOfDatasource.remove(items);
+  //         var dsResp = await serverConnections.postToServer(
+  //             url: dataSourceUrl,
+  //             isBearer: true,
+  //             body: jsonEncode(dataSourceBody));
+  //         if (dsResp != "") {
+  //           var jsonDSResp = jsonDecode(dsResp);
+  //           // print(jsonDSResp);
+  //           if (jsonDSResp['result']['success'].toString() == "true") {
+  //             var dsDataList = jsonDSResp['result']['data'];
+  //             for (var item in dsDataList) {
+  //               var list = [];
+  //               list = actionData[item['cardname']] != null
+  //                   ? actionData[item['cardname']]
+  //                   : [];
+  //               CardOptionModel cardOptionModel =
+  //                   CardOptionModel.fromJson(item);
+
+  //               if (list.indexOf(cardOptionModel) < 0)
+  //                 list.add(cardOptionModel);
+  //               actionData[item['cardname']] = list;
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
+  getPunchINData() async {
+    LoadingScreen.show();
+
+    var url = Const.getFullARMUrl(ExecuteApi.API_ARM_EXECUTE_PUBLISHED);
+    var body = {
+      "publickey": "AXPKEY000000010003",
+      "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
+      "username": appStorage.retrieveValue(AppStorage.USER_NAME),
+      "Project": appStorage.retrieveValue(AppStorage.PROJECT_NAME),
+      "getsqldata": {
+        "username": appStorage.retrieveValue(AppStorage.USER_NAME),
+        "trace": "false"
+      },
+      "sqlparams": {}
+    };
+    var resp = await serverConnections.postToServer(
+        url: url, body: jsonEncode(body), isBearer: true);
+
+    log("Resp:|Get Punch IN data| ${resp}");
+    punchInResp = resp;
+    print("ExecuteApi Resp: ${resp}");
+    if (resp != "" && !resp.toString().contains("error")) {
+      var jsonResp = jsonDecode(resp);
+      if (jsonResp['success'].toString() == "true") {
+        var rows = jsonResp['punchin_out_status']['rows'];
+        if (rows.length == 0) {
+          // isShowPunchIn.value = true;
+          // isShowPunchOut.value = false;
+        } else {
+          var firstRowVal = rows[0];
+          // isShowPunchIn.value = false;
+          // isShowPunchOut.value = true;
+          recordId = firstRowVal['recordid'] ?? '';
+        }
+      } else {
+        // isShowPunchIn.value = true;
+      }
+    }
+
+    LoadingScreen.dismiss();
+  }
+
+  onClick_PunchIn() async {
+    // print(punchInResp);
+    LoadingScreen.show();
+    // var secretEncryptedKey =
+    //     await getEncryptedSecretKey(ExecuteApi.API_SECRETKEY_GET_DO_PUNCHIN);
+    Position? currentLocation = await CommonMethods.getCurrentLocation();
+    var latitude = currentLocation?.latitude ?? "";
+    var longitude = currentLocation?.longitude ?? "";
+    String address = '';
+    // String address = await CommonMethods.getAddressFromLatLng(
+    //     currentLocation);
+    ////currentLocation != null ? await CommonMethods.getAddressFromLatLng(currentLocation) : "";
+    log("address: ${address.toString()}");
+    var url = Const.getFullARMUrl(ExecuteApi.API_ARM_EXECUTE_PUBLISHED);
+    var body = {
+      "publickey": "AXPKEY000000010002",
+      "project": appStorage.retrieveValue(AppStorage.PROJECT_NAME),
+      "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
+      "submitdata": {
+        "username": appStorage.retrieveValue(AppStorage.USER_NAME),
+        "trace": "false",
+        "dataarray": {
+          "data": {
+            "mode": "new",
+            "recordid": "0",
+            "dc1": {
+              "row1": {
+                "latitude": latitude,
+                "longitude": longitude,
+                "status": "IN",
+                "inloc": address
+              }
+            }
+          }
+        }
+      }
+    };
+    // print("punch_IN_Body: ${jsonEncode(body)}");
+    var resp = await serverConnections.postToServer(
+        url: url, body: jsonEncode(body), isBearer: true);
+
+    //print("PunchIN_resp: $resp");
+    print(resp);
+    log("Resp:|Punch IN| ${resp.toString()}");
+    if (resp.toString() == '') return;
+    var jsonResp = jsonDecode(resp);
+    LoadingScreen.dismiss();
+
+    if (jsonResp['success'].toString() == "true") {
+      // var result = jsonResp['result'].toString();
+      Get.snackbar("Punch-In success", "",
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+          duration: Duration(seconds: 3));
+      // isShowPunchIn.value = false;
+      // isShowPunchOut.value = true;
+      // actionData.clear();
+      // await getCardDataSources();
+    } else {
+      // var errMessage = jsonResp['message'].toString();
+      Get.snackbar("Error", jsonResp['message'].toString(),
+          backgroundColor: Colors.redAccent,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+          duration: Duration(seconds: 3));
+    }
+  }
+
+  onClick_PunchOut() async {
+    LoadingScreen.show();
+
+    Position? currentLocation = await CommonMethods.getCurrentLocation();
+    var latitude = currentLocation?.latitude ?? "";
+    var longitude = currentLocation?.longitude ?? "";
+    String address = '';
+    // String address = await CommonMethods.getAddressFromLatLng(
+    //     currentLocation!);
+    //currentLocation != null ? await CommonMethods.getAddressFromLatLng(currentLocation) : "";
+    log("address: ${address.toString()}");
+
+    var url = Const.getFullARMUrl(ExecuteApi.API_ARM_EXECUTE_PUBLISHED);
+    var body = {
+      "publickey": "AXPKEY000000010002",
+      "project": appStorage.retrieveValue(AppStorage.PROJECT_NAME),
+      "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
+      "submitdata": {
+        "username": appStorage.retrieveValue(AppStorage.USER_NAME),
+        "trace": "false",
+        "dataarray": {
+          "data": {
+            "mode": "edit",
+            "recordid": recordId,
+            "dc1": {
+              "row1": {
+                "olatitude": latitude,
+                "olongitude": longitude,
+                "status": "OUT",
+                "outloc": address
+              }
+            }
+          }
+        }
+      }
+    };
+    var resp = await serverConnections.postToServer(
+        url: url, body: jsonEncode(body), isBearer: true);
+    log("Resp:|Punch OUT| ${resp}");
+    if (resp.toString() == '') return;
+
+    print(resp);
+    var jsonResp = jsonDecode(resp);
+
+    if (jsonResp['success'].toString() == "true") {
+      // var result = jsonResp['result'].toString();
+      Get.snackbar("Punch-Out success", "",
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+          duration: Duration(seconds: 3));
+      // actionData.clear();
+      // await getCardDataSources();
+    } else {
+      // var errMessage = jsonResp['message'].toString();
+      Get.snackbar("Error", jsonResp['message'].toString(),
+          backgroundColor: Colors.redAccent,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+          duration: Duration(seconds: 3));
+    }
+    LoadingScreen.dismiss();
   }
 }

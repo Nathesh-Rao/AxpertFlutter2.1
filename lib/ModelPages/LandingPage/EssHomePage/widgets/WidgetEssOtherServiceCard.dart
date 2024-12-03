@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class WidgetEssOtherServiceCard extends StatelessWidget {
@@ -65,17 +66,25 @@ class WidgetEssOtherServiceCard extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.black,
-                shape: BoxShape.circle,
-              ),
-              height: 55,
-              width: 55,
-              child: Icon(
-                Icons.keyboard_arrow_down_rounded,
-                size: height / 2.7,
-                color: Colors.white,
+            InkWell(
+              onTap: () {
+                Get.bottomSheet(Container(
+                  height: 200,
+                  color: Colors.white,
+                ));
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  shape: BoxShape.circle,
+                ),
+                height: 55,
+                width: 55,
+                child: Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  size: height / 2.7,
+                  color: Colors.white,
+                ),
               ),
             ),
             SizedBox(
