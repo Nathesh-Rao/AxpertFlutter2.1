@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/models/ESSRecentActivityModel.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ import '../../../../Utils/ServerConnections/ExecuteApi.dart';
 import '../models/ESSAnnouncementModel.dart';
 
 class EssController extends GetxController {
+  AppStorage appStorage = AppStorage();
   @override
   void onInit() {
     scrollController.addListener(_scrollListener);
@@ -78,6 +80,7 @@ class EssController extends GetxController {
 //----- calls-------
   void getESSRecentActivity() async {
     var body = {
+      "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
       "publickey": ExecuteApi.API_PublicKey_ESS_RecentActivity,
       "Project": Const.PROJECT_NAME,
       "getsqldata": {"trace": "true"}
@@ -88,6 +91,7 @@ class EssController extends GetxController {
     );
     // log(resp.toString());
     if (resp != "") {
+      log(resp.toString());
       var jsonResp = jsonDecode(resp);
       if (jsonResp["success"].toString() == "true") {
         var listItems = jsonResp["axm_ess_recentactivity"]["rows"];
@@ -157,6 +161,7 @@ class EssController extends GetxController {
 //----- calls-------
   void getESSAnnouncement() async {
     var body = {
+      "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
       "publickey": ExecuteApi.API_PublicKey_ESS_Announcement,
       "Project": Const.PROJECT_NAME,
       "getsqldata": {"trace": "true"}
