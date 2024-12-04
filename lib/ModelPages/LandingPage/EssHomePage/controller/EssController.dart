@@ -428,9 +428,8 @@ class EssController extends GetxController {
     Position? currentLocation = await CommonMethods.getCurrentLocation();
     var latitude = currentLocation?.latitude ?? "";
     var longitude = currentLocation?.longitude ?? "";
-    String address = '';
-    // String address = await CommonMethods.getAddressFromLatLng(
-    //     currentLocation);
+    // String address = '';
+    String address = await CommonMethods.getAddressFromLatLng(currentLocation!);
     ////currentLocation != null ? await CommonMethods.getAddressFromLatLng(currentLocation) : "";
     log("address: ${address.toString()}");
     var url = Const.getFullARMUrl(ExecuteApi.API_ARM_EXECUTE_PUBLISHED);
@@ -495,9 +494,8 @@ class EssController extends GetxController {
     Position? currentLocation = await CommonMethods.getCurrentLocation();
     var latitude = currentLocation?.latitude ?? "";
     var longitude = currentLocation?.longitude ?? "";
-    String address = '';
-    // String address = await CommonMethods.getAddressFromLatLng(
-    //     currentLocation!);
+    // String address = '';
+    String address = await CommonMethods.getAddressFromLatLng(currentLocation!);
     //currentLocation != null ? await CommonMethods.getAddressFromLatLng(currentLocation) : "";
     log("address: ${address.toString()}");
 
@@ -552,4 +550,5 @@ class EssController extends GetxController {
     }
     LoadingScreen.dismiss();
   }
+  //-------Drawer----->
 }

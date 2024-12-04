@@ -40,7 +40,7 @@ class WidgetEssAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
         ),
         titleSpacing: 5,
-        leading: Icon(Icons.menu),
+        // leading: Icon(Icons.menu),
         title: Container(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,

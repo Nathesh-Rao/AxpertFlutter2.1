@@ -1,5 +1,6 @@
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/controller/EssController.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetEssAnnouncement.dart';
+import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetEssAppDrawer.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetEssAttendanceCard.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetEssHomeCard.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetEssKPICards.dart';
@@ -17,6 +18,7 @@ class EssHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: WidgetEssAppDrawer(),
       extendBodyBehindAppBar: true,
       appBar: WidgetEssAppBar(),
       body: Column(
