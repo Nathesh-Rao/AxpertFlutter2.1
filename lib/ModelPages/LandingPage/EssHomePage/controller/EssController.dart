@@ -1,16 +1,26 @@
 import 'dart:convert';
 import 'dart:developer';
-
+import 'package:axpertflutter/Constants/Routes.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:axpertflutter/Constants/AppStorage.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/CardModel.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/CardOptionModel.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/MenuFolderModel.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Controllers/MenuMorePageController.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Models/MenuItemModel.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/models/ESSRecentActivityModel.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/state_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:material_icons_named/material_icons_named.dart';
+import 'package:text_scroll/text_scroll.dart';
 
 import '../../../../Constants/CommonMethods.dart';
 import '../../../../Constants/MyColors.dart';
@@ -20,6 +30,8 @@ import '../../../../Utils/ServerConnections/ServerConnections.dart';
 import '../models/ESSAnnouncementModel.dart';
 
 class EssController extends GetxController {
+  final MenuMorePageController menuMorePageController =
+      Get.put(MenuMorePageController());
   AppStorage appStorage = AppStorage();
   ServerConnections serverConnections = ServerConnections();
   @override
@@ -29,7 +41,14 @@ class EssController extends GetxController {
     super.onInit();
   }
 
+  var body, header;
+  var userName = 'Demo'.obs; //update with user name
+
   EssController() {
+    body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
+    userName.value =
+        appStorage.retrieveValue(AppStorage.USER_NAME) ?? userName.value;
+    getCardDetails();
     getESSRecentActivity();
     getESSAnnouncement();
     getPunchINData();
@@ -550,5 +569,402 @@ class EssController extends GetxController {
     }
     LoadingScreen.dismiss();
   }
-  //-------Drawer----->
+  //-------Quick links----->
+
+  var listOfOptionCards = [].obs;
+  var list_menuFolderData = {}.obs;
+  // var listOfGridCardItems = [].obs;
+  var actionData = {};
+  Set setOfDatasource = {};
+
+  getCardDetails() async {
+    // isLoading.value = true;
+    LoadingScreen.show();
+    var url = Const.getFullARMUrl(ServerConnections.API_GET_HOMEPAGE_CARDS_v2);
+    var resp = await serverConnections.postToServer(
+        url: url, body: jsonEncode(body), isBearer: true);
+    // print(resp);
+    if (resp != "") {
+      print("Home card ${resp}");
+      var jsonResp = jsonDecode(resp);
+      if (jsonResp['result']['success'].toString() == "true") {
+        listOfOptionCards.clear();
+        var dataList = jsonResp['result']['menu option'];
+        for (var item in dataList) {
+          CardModel cardModel = CardModel.fromJson(item);
+          listOfOptionCards.add(cardModel);
+          setOfDatasource.add(item['datasource'].toString());
+        }
+
+        var menuFolderList = [];
+        var data_menuFolder = jsonResp['result']['menu folder'];
+        for (var item in data_menuFolder) {
+          MenuFolderModel menuFolderModel = MenuFolderModel.fromJson(item);
+          menuFolderList.add(menuFolderModel);
+        }
+        parseMenuFolderData(menuFolderList);
+      } else {
+        //error
+      }
+    }
+    // if (listOfCards.length == 0) {
+    //   print("Length:   0");
+    //   Get.defaultDialog(
+    //       title: "Alert!",
+    //       middleText: "Session Timed Out",
+    //       confirm: ElevatedButton(
+    //           onPressed: () {
+    //             Get.back();
+    //           },
+    //           child: Text("Ok")));
+    // }
+    await getCardDataSources();
+    // listOfCards..sort((a, b) => a.caption.toString().toLowerCase().compareTo(b.caption.toString().toLowerCase()));
+    // isLoading.value = false;
+    LoadingScreen.dismiss();
+    return listOfOptionCards;
+  }
+
+  getCardDataSources() async {
+    if (actionData.length > 1) {
+      return actionData;
+    } else {
+      // var dataSourceUrl = baseUrl + GlobalConfiguration().get("HomeCardDataResponse").toString();
+      var dataSourceUrl = Const.getFullARMUrl(
+          ServerConnections.API_GET_HOMEPAGE_CARDSDATASOURCE);
+      var dataSourceBody = body;
+      dataSourceBody["sqlParams"] = {
+        "param": "value",
+        "username": appStorage.retrieveValue(AppStorage.USER_NAME)
+      };
+
+      actionData.clear();
+      for (var items in setOfDatasource) {
+        if (items.toString() != "") {
+          dataSourceBody["datasource"] = items;
+          // setOfDatasource.remove(items);
+          var dsResp = await serverConnections.postToServer(
+              url: dataSourceUrl,
+              isBearer: true,
+              body: jsonEncode(dataSourceBody));
+          if (dsResp != "") {
+            var jsonDSResp = jsonDecode(dsResp);
+            // print(jsonDSResp);
+            if (jsonDSResp['result']['success'].toString() == "true") {
+              var dsDataList = jsonDSResp['result']['data'];
+              for (var item in dsDataList) {
+                var list = [];
+                list = actionData[item['cardname']] != null
+                    ? actionData[item['cardname']]
+                    : [];
+                CardOptionModel cardOptionModel =
+                    CardOptionModel.fromJson(item);
+
+                if (list.indexOf(cardOptionModel) < 0)
+                  list.add(cardOptionModel);
+                actionData[item['cardname']] = list;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  void parseMenuFolderData(List menuFolderList) {
+    var map_folderList = {};
+    for (var item in menuFolderList) {
+      var folderName = item.groupfolder;
+      List<MenuFolderModel> list = [];
+      list = map_folderList[folderName] ?? [];
+      list.add(item);
+      map_folderList[folderName] = list;
+    }
+    list_menuFolderData.value = map_folderList;
+    print("list_menuFolderData: ${list_menuFolderData.toString()}");
+  }
+
+  //-------Drawer-----------------
+  indexChange(value) {
+    MenuHomePageController menuHomePageController = Get.find();
+    menuHomePageController.switchPage.value = false;
+    // bottomIndex.value = value;
+  }
+
+  clearCacheData() async {
+    var tempDir = await getTemporaryDirectory();
+    if (tempDir.existsSync()) {
+      tempDir.deleteSync(recursive: true);
+    }
+  }
+
+  signOut() async {
+    var body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
+    var url = Const.getFullARMUrl(ServerConnections.API_SIGNOUT);
+
+    Get.defaultDialog(
+        title: "Log out",
+        middleText: "Are you sure you want to log out?",
+        confirm: ElevatedButton(
+            onPressed: () async {
+              Get.back();
+              LoadingScreen.show();
+              try {
+                await FirebaseAuth.instance.signOut();
+                await GoogleSignIn().signOut();
+                clearCacheData();
+              } catch (e) {}
+              appStorage.storeValue(AppStorage.USER_NAME, "");
+              await serverConnections.postToServer(
+                  url: url, body: jsonEncode(body));
+              LoadingScreen.dismiss();
+              Get.offAllNamed(Routes.Login);
+              // if (resp != "" && !resp.toString().contains("error")) {
+              //   var jsonResp = jsonDecode(resp);
+              //   if (jsonResp['result']['success'].toString() == "true") {
+              //     appStorage.remove(AppStorage.SESSIONID);
+              //     appStorage.remove(AppStorage.TOKEN);
+              //
+              //   } else {
+              //     error(jsonResp['result']['message'].toString());
+              //   }
+              // } else {
+              //   error("Some error occurred");
+              // }
+            },
+            child: Text("Yes")),
+        cancel: ElevatedButton(
+            style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(Colors.grey)),
+            onPressed: () {
+              Get.back();
+            },
+            child: Text("No")));
+  }
+
+  Widget _userInfoMenuWidget({
+    required String username,
+    required String companyName,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 15),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircleAvatar(
+              backgroundColor: Colors.white,
+              radius: 32,
+              child: CircleAvatar(
+                // backgroundColor: Colors.white,
+                backgroundImage: AssetImage("assets/images/profilesample.jpg"),
+                radius: 30,
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  username,
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 20,
+                  ),
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.warehouse,
+                      color: Colors.white,
+                      size: 14,
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text(
+                      companyName,
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  getDrawerTileList() {
+    List<Widget> menuList = [];
+    menuList.add(
+      DrawerHeader(
+        padding: EdgeInsets.zero,
+        margin: EdgeInsets.zero,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xff3764FC),
+                Color(0xff9764DA),
+              ]),
+        ),
+        child: _userInfoMenuWidget(
+            username: userName.value, companyName: "Agile labs"),
+      ),
+    );
+    var a =
+        menuMorePageController.menu_finalList.map(build_innerListTile).toList();
+    menuList.addAll(a);
+
+    if (menuList.length == 1) {
+      menuList.add(ListTile(
+        tileColor: Colors.white,
+        onTap: () {
+          Get.back();
+          indexChange(0);
+        },
+        leading: Icon(Icons.home_outlined),
+        title: Text("Home"),
+      ));
+      menuList.add(ListTile(
+        tileColor: Colors.white,
+        onTap: () {
+          Get.back();
+          indexChange(1);
+        },
+        leading: Icon(Icons.view_list_outlined),
+        title: Text("Active List"),
+      ));
+      menuList.add(ListTile(
+        tileColor: Colors.white,
+        onTap: () {
+          Get.back();
+          indexChange(2);
+        },
+        leading: Icon(Icons.speed_outlined),
+        title: Text("Dashboard"),
+      ));
+      menuList.add(ListTile(
+        tileColor: Colors.white,
+        onTap: () {
+          Get.back();
+          indexChange(3);
+        },
+        leading: Icon(Icons.calendar_month_outlined),
+        title: Text("Calendar"),
+      ));
+      menuList.add(ListTile(
+        tileColor: Colors.white,
+        onTap: () {
+          Get.back();
+          indexChange(4);
+        },
+        leading: Icon(Icons.dashboard_customize_outlined),
+        title: Text("More"),
+      ));
+      menuList.add(ListTile(
+        tileColor: Colors.white,
+        onTap: () {
+          Get.back();
+          signOut();
+        },
+        leading: Icon(Icons.power_settings_new),
+        title: Text("Logout"),
+      ));
+      menuList.add(SizedBox(
+        height: MediaQuery.of(Get.context!).size.height - 540,
+      ));
+    }
+    menuList.add(Container(
+      color: Colors.white,
+      height: 70,
+      child: Center(
+          child: Text(
+        'App Version: ${Const.APP_VERSION}\n© agile-labs.com ${DateTime.now().year}',
+        textAlign: TextAlign.center,
+      )),
+    ));
+
+    return menuList;
+  }
+
+  Widget build_innerListTile(tile, {double leftPadding = 15}) {
+    MenuItemNewmModel model_tile = tile;
+    if (model_tile.childList.isEmpty) {
+      return Visibility(
+        visible: model_tile.visible.toUpperCase() == "T",
+        child: InkWell(
+          onTap: () {
+            menuMorePageController.openItemClick(model_tile);
+            Get.back();
+          },
+          child: ListTile(
+            tileColor: Colors.white,
+            leading: Icon(menuMorePageController.generateIcon(tile, 1)),
+            contentPadding: EdgeInsets.only(left: leftPadding),
+            title: Text(
+              model_tile.caption,
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Visibility(
+        visible: model_tile.visible.toUpperCase() == "T",
+        child: ExpansionTile(
+          backgroundColor: Colors.white,
+          collapsedBackgroundColor: Colors.white70,
+          leading: Icon(menuMorePageController.generateIcon(tile, 1)),
+          tilePadding: EdgeInsets.only(left: leftPadding, right: 10),
+          title: Text(tile.caption),
+          children: ListTile.divideTiles(
+                  context: Get.context,
+                  tiles: model_tile.childList.map((tile) =>
+                      build_innerListTile(tile, leftPadding: leftPadding + 15)))
+              .toList(),
+        ),
+      );
+    }
+  }
+
+  getDrawerInnerListTile(
+      MenuMorePageController menuMorePageController, item, index) {
+    List<Widget> innerTile = [];
+    innerTile.add(Container(
+      height: 1,
+      color: Colors.white,
+      // color: Colors.grey.withOpacity(0.1),
+    ));
+    for (MenuItemModel subMenu
+        in menuMorePageController.finalHeadingWiseData[item] ?? [])
+      innerTile.add(InkWell(
+        onTap: () {
+          menuMorePageController.openItemClick(subMenu);
+          Get.back();
+        },
+        child: Padding(
+          padding: EdgeInsets.only(left: 20),
+          // menuMorePageController.IconList[index++ % 8]
+          child: ListTile(
+              leading:
+                  Icon(menuMorePageController.generateIcon(subMenu, index++)),
+              title: Text(subMenu.caption.toString())),
+        ),
+      ));
+
+    return ListTile.divideTiles(context: Get.context, tiles: innerTile);
+    // return innerTile;
+  }
 }

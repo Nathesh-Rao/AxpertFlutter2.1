@@ -1,16 +1,18 @@
+import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/controller/EssController.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'WidgetEssSearchBar.dart';
 
 class WidgetHeaderWidget extends StatelessWidget {
-  const WidgetHeaderWidget({super.key});
-
+  WidgetHeaderWidget({super.key});
+  final EssController controller = Get.find();
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Container(
-      height: size.height * 0.32,
+      height: size.height * 0.29,
       width: size.width,
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -50,7 +52,8 @@ class WidgetHeaderWidget extends StatelessWidget {
               ),
             ),
           ),
-          _userInfoWidget(username: "Amrithanath", companyName: "Agile Labs"),
+          _userInfoWidget(
+              username: controller.userName.value, companyName: "Agile Labs"),
           WidgetEssSearchBar(),
         ],
       ),

@@ -1,10 +1,13 @@
+import 'package:axpertflutter/Constants/MyColors.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Widgets/WidgetQuickAccessPanelItem.dart';
+import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/controller/EssController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class WidgetEssOtherServiceCard extends StatelessWidget {
-  const WidgetEssOtherServiceCard({super.key});
-
+  WidgetEssOtherServiceCard({super.key});
+  final EssController controller = Get.find();
   @override
   Widget build(BuildContext context) {
     var style = GoogleFonts.poppins(
@@ -12,129 +15,104 @@ class WidgetEssOtherServiceCard extends StatelessWidget {
       fontWeight: FontWeight.w600,
       fontSize: 14,
     ));
-    var size = MediaQuery.of(context).size;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: Card(
-        elevation: 5,
-        margin: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        child: SizedBox(
-          width: double.infinity,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
+    return Obx(() => Visibility(
+          visible: controller.listOfOptionCards.length == 0 ? false : true,
+          child: Card(
+            margin: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+            elevation: 5,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            clipBehavior: Clip.hardEdge,
+
+            shadowColor: MyColors.color_grey,
+
+            // color: Color(0xffeeeff9),
+            color: Colors.white,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Other services",
-                  style: style,
+                SizedBox(
+                  height: 8,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 15,
+                  ),
+                  child: Text(
+                    "Other services",
+                    style: style,
+                  ),
+                ),
+                Divider(
+                  thickness: 1.5,
                 ),
                 SizedBox(
                   height: 10,
                 ),
-                Wrap(
-                    alignment: WrapAlignment.spaceBetween,
-                    runAlignment: WrapAlignment.spaceBetween,
-                    runSpacing: size.width * 0.03,
-                    children: List.generate(
-                        8, (index) => _cardItem(size.width / 5.5, index))),
+                Container(
+                  padding: EdgeInsets.all(15),
+                  height: _getHeight(context),
+
+                  width: double.infinity,
+
+                  // child: Wrap(
+                  //   spacing: 10,
+                  //   runSpacing: 10,
+                  //   alignment: WrapAlignment.spaceBetween,
+                  //   runAlignment: WrapAlignment.spaceBetween,
+                  //   children: generateItems(),
+                  // ),
+                  child: GridView.builder(
+                    shrinkWrap: true,
+                    padding: EdgeInsets.zero,
+                    physics: NeverScrollableScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 4,
+                      crossAxisSpacing: 5,
+                      mainAxisSpacing: 15,
+                    ),
+                    // itemCount: menuHomePageController.listOfCards.length,
+                    itemCount: generateItems().length,
+                    itemBuilder: (context, index) {
+                      // return WidgetCardUpdated(menuHomePageController.listOfCards[index]);
+                      return AspectRatio(
+                          aspectRatio: 1 / 1, child: generateItems()[index]);
+                    },
+                  ),
+                )
               ],
             ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
-  Widget _cardItem(double height, int index) {
-    List<Color> colors = [
-      Colors.blue,
-      Colors.teal,
-      Colors.purple,
-      Colors.green,
-      Colors.amber,
-      Colors.red,
-      Colors.indigo,
-    ];
-
-    if (index == 7) {
-      return SizedBox(
-        height: height + 10,
-        width: height + 5,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            InkWell(
-              onTap: () {
-                Get.bottomSheet(Container(
-                  height: 200,
-                  color: Colors.white,
-                ));
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  shape: BoxShape.circle,
-                ),
-                height: 55,
-                width: 55,
-                child: Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  size: height / 2.7,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Text(
-              "More",
-              overflow: TextOverflow.fade,
-              style: GoogleFonts.poppins(
-                height: 1,
-                fontSize: 10,
-                fontWeight: FontWeight.w600,
-              ),
-            )
-          ],
-        ),
-      );
+  _getHeight(BuildContext context) {
+    var height = MediaQuery.of(context).size.height * 0.25;
+    if (controller.listOfOptionCards.length <= 4) {
+      return height / 2;
     }
-    return SizedBox(
-      height: height + 10,
-      width: height + 5,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-                color: colors[index].withAlpha(50),
-                borderRadius: BorderRadius.circular(8)),
-            height: 55,
-            width: 55,
-            child: Icon(
-              Icons.receipt_long,
-              size: height / 2.7,
-              color: colors[index],
-            ),
-          ),
-          SizedBox(
-            height: 15,
-          ),
-          Text(
-            "Reimbursement",
-            overflow: TextOverflow.fade,
-            style: GoogleFonts.poppins(
-              height: 1,
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-            ),
-          )
-        ],
-      ),
+    return height;
+  }
+
+  List<Widget> generateItems() {
+    List<Widget> items = List.generate(
+      controller.listOfOptionCards.length,
+      (index) => QuickAccessTileWidget(controller.listOfOptionCards[index]),
     );
+
+    if (items.length >= 8) {
+      items = items.sublist(0, 7);
+      items.add(QuickAccessTileMoreWidget(
+        controller.listOfOptionCards,
+      ));
+    } else {
+      int itemsToAdd = 8 - items.length;
+
+      items.addAll(List.filled(itemsToAdd, QuickAccessTileEmptyeWidget()));
+    }
+
+    return items;
   }
 }
