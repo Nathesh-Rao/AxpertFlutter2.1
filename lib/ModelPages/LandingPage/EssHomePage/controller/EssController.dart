@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:axpertflutter/Constants/Routes.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/BannerModel.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Widgets/WidgetMenuFolderPanelItem.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
@@ -28,6 +30,8 @@ import '../../../../Constants/const.dart';
 import '../../../../Utils/ServerConnections/ExecuteApi.dart';
 import '../../../../Utils/ServerConnections/ServerConnections.dart';
 import '../models/ESSAnnouncementModel.dart';
+import '../models/EssBannerModel.dart';
+import '../widgets/WidgetEssFolderPanelItem.dart';
 
 class EssController extends GetxController {
   final MenuMorePageController menuMorePageController =
@@ -48,6 +52,7 @@ class EssController extends GetxController {
     body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
     userName.value =
         appStorage.retrieveValue(AppStorage.USER_NAME) ?? userName.value;
+    getBanners();
     getCardDetails();
     getESSRecentActivity();
     getESSAnnouncement();
@@ -966,5 +971,127 @@ class EssController extends GetxController {
 
     return ListTile.divideTiles(context: Get.context, tiles: innerTile);
     // return innerTile;
+  }
+
+  //-----Folder panel--
+  getMenuFolderPanelWidgetList() {
+    var panelModel = list_menuFolderData;
+    var keys = panelModel.keys.toList();
+    List<Widget> panelWidgets = List.generate(
+        keys.length,
+        (index) => WidgetEssFolderPanelItem(
+              keyname: keys[index],
+              panelItems: panelModel[keys[index]]!,
+            ));
+
+    return panelWidgets;
+  }
+
+  //-----banners -------
+
+  List<EssBannerModel> mainbanerList = [];
+  List<BannerModel> subBannerList = [];
+
+  RxList<Widget> bannerWidgets = <Widget>[].obs;
+
+  getBannerWidgets() {
+    bannerWidgets.clear();
+    log("mainbanerList.length : ${mainbanerList.length}");
+    log("subbannerList.length : ${subBannerList.length}");
+
+    for (var item in mainbanerList) {
+      bannerWidgets.add(Container(
+        height: 100,
+        color: Colors.blue,
+      ));
+    }
+
+    for (var item in subBannerList) {
+      bannerWidgets.add(Container(
+        height: 100,
+        color: Colors.purple,
+      ));
+    }
+
+    log("BannerWidgetLength: ${bannerWidgets.length}");
+  }
+
+  getBanners() async {
+    var body = {
+      "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
+      "publickey": ExecuteApi.API_PublicKey_ESS_Banners,
+      "Project": Const.PROJECT_NAME,
+      "getsqldata": {"trace": "true"}
+    };
+
+    var resp = await ExecuteApi().CallFetchData_ExecuteAPI(
+      body: jsonEncode(body),
+      isBearer: true,
+    );
+
+    if (resp != "") {
+      mainbanerList.clear();
+      var jsonResp = jsonDecode(resp);
+      if (jsonResp["success"].toString() == "true") {
+        var listItems = jsonResp["axm_ess_banners"]["rows"];
+        // listOfESSRecentActivity.clear();
+
+        for (var item in listItems) {
+          EssBannerModel bannerModel = EssBannerModel.fromJson(item);
+          mainbanerList.add(bannerModel);
+
+          // print("Banner Item=======================>:${item}");
+        }
+        // _getRecentActivityHomeScreenWidgets();
+      }
+    }
+    try {
+      subBannerList.clear();
+      var baseUrl = Const.PROJECT_URL;
+      baseUrl += baseUrl.endsWith("/") ? "" : "/";
+      var url = baseUrl + ServerConnections.BANNER_JSON_NAME;
+      // url = "https://demo.agilecloud.biz/mainpagebanner.json";
+      final data = await serverConnections.getFromServer(
+          url: url, show_errorSnackbar: false);
+      if (data != null && data != "") {
+        print("getBannerDetails1: $data");
+        var jsonResp = jsonDecode(data);
+        if (jsonResp.length > 0) {
+          subBannerList.clear();
+
+          for (var item in jsonResp) {
+            subBannerList.add(BannerModel.fromJson(item, baseUrl));
+          }
+        }
+      } else {
+        if (Const.PROJECT_URL.endsWith("/")) {
+          var URL =
+              Const.PROJECT_URL.substring(0, Const.PROJECT_URL.length - 1);
+          baseUrl = URL.substring(0, URL.lastIndexOf('/'));
+        } else {
+          baseUrl = Const.PROJECT_URL
+              .substring(0, Const.PROJECT_URL.lastIndexOf('/'));
+        }
+
+        baseUrl += baseUrl.endsWith("/") ? "" : "/";
+        var url = baseUrl + ServerConnections.BANNER_JSON_NAME;
+        final data = await serverConnections.getFromServer(
+            url: url, show_errorSnackbar: false);
+        if (data != null && data != "") {
+          print("getBannerDetails2: $data");
+          var jsonResp = jsonDecode(data);
+          if (jsonResp.length > 0) {
+            subBannerList.clear();
+            for (var item in jsonResp) {
+              subBannerList.add(BannerModel.fromJson(item, baseUrl));
+            }
+          }
+        }
+      }
+    } catch (e) {
+      log("getSubBannerData called : $e");
+      // print(e);
+    }
+    getBannerWidgets();
   }
 }

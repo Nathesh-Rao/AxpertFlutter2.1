@@ -22,6 +22,7 @@ class ExecuteApi {
   static const String API_PublicKey_ESS_RecentActivity =
       "AXPESSKEY000000010001";
   static const String API_PublicKey_ESS_Announcement = "AXPESSKEY000000010002";
+  static const String API_PublicKey_ESS_Banners = "AXPESSKEY000000010003";
   //----recent-activity
 
   // var body;

@@ -12,6 +12,7 @@ import 'package:get/get.dart';
 
 import '../../../LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
 import '../widgets/WidgetEssAppBar.dart';
+import '../widgets/WidgetEssMenuFolderWidget.dart';
 import '../widgets/WidgetEssRecentActivity.dart';
 
 class EssHomePage extends StatelessWidget {
@@ -49,8 +50,9 @@ class EssHomePage extends StatelessWidget {
                       WidgetEssOtherServiceCard(),
                       _heightBox(),
                       WidgetRecentActivity(),
-                      WidgetEssAnnouncement(),
                       _heightBox(),
+                      WidgetEssAnnouncement(),
+                      WidgetEssMenuFolders(),
                     ],
                   ),
                 ),
@@ -65,5 +67,5 @@ class EssHomePage extends StatelessWidget {
     );
   }
 
-  Widget _heightBox({double height = 15}) => SizedBox(height: height);
+  Widget _heightBox({double height = 20}) => SizedBox(height: height);
 }

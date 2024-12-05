@@ -1,9 +1,14 @@
+import 'dart:developer';
+
+import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/controller/EssController.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class WidgetEssHomecard extends StatelessWidget {
-  const WidgetEssHomecard({super.key});
-
+  WidgetEssHomecard({super.key});
+  final EssController controller = Get.find();
   @override
   Widget build(BuildContext context) {
     var style = GoogleFonts.poppins(
@@ -11,6 +16,26 @@ class WidgetEssHomecard extends StatelessWidget {
       fontWeight: FontWeight.w600,
       fontSize: 14,
     ));
+    // return CarouselSlider.builder(
+    //     itemCount: controller.bannerWidgets.length,
+    //     itemBuilder: (context, index, currentIndex) =>
+    //         controller.bannerWidgets[currentIndex],
+    //     options: CarouselOptions());
+
+    return Obx(() {
+      log("HomeButton Updated");
+      return Visibility(
+        visible: controller.bannerWidgets.length != 0,
+        child: CarouselSlider(
+            items: controller.bannerWidgets,
+            options: CarouselOptions(
+              enableInfiniteScroll: false,
+            )),
+      );
+    });
+  }
+
+  _widget(context, style) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 15),
       width: double.infinity,
