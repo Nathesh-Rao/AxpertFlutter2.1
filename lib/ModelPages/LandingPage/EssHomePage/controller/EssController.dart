@@ -3,6 +3,9 @@ import 'dart:developer';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/BannerModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Widgets/WidgetMenuFolderPanelItem.dart';
+import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetEssMainBannerWidget.dart';
+import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetEssSubBannerWidget.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
@@ -38,6 +41,7 @@ class EssController extends GetxController {
       Get.put(MenuMorePageController());
   AppStorage appStorage = AppStorage();
   ServerConnections serverConnections = ServerConnections();
+  CarouselController essBannerController = CarouselController();
   @override
   void onInit() {
     scrollController.addListener(_scrollListener);
@@ -993,24 +997,26 @@ class EssController extends GetxController {
   List<BannerModel> subBannerList = [];
 
   RxList<Widget> bannerWidgets = <Widget>[].obs;
+  var bannerCurrentIndex = 0.obs;
+
+  updateBannerIndex({required int index}) {
+    bannerCurrentIndex.value = index;
+  }
 
   getBannerWidgets() {
     bannerWidgets.clear();
     log("mainbanerList.length : ${mainbanerList.length}");
     log("subbannerList.length : ${subBannerList.length}");
 
-    for (var item in mainbanerList) {
-      bannerWidgets.add(Container(
-        height: 100,
-        color: Colors.blue,
+    for (var banner in mainbanerList) {
+      bannerWidgets.add(WidgetEssMainBannerWidget(
+        bannerModel: banner,
+        color: MyColors.getRandomColor(),
       ));
     }
 
-    for (var item in subBannerList) {
-      bannerWidgets.add(Container(
-        height: 100,
-        color: Colors.purple,
-      ));
+    for (var banner in subBannerList) {
+      bannerWidgets.add(WidgetEssSubBannerWidget(subBannerModel: banner));
     }
 
     log("BannerWidgetLength: ${bannerWidgets.length}");
