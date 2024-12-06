@@ -1,13 +1,18 @@
+import 'package:axpertflutter/Constants/MyColors.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Controllers/MenuMorePageController.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Models/MenuItemModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:substring_highlight/substring_highlight.dart';
 
 class WidgetEssSearchBar extends StatelessWidget {
-  const WidgetEssSearchBar({super.key});
-
+  WidgetEssSearchBar({super.key});
+  final MenuMorePageController menuController = Get.find();
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -49,31 +54,58 @@ class WidgetEssSearchBar extends StatelessWidget {
               Expanded(
                 flex: 6,
                 child: Center(
-                  child: TypeAheadField(
-                    showOnFocus: false,
-                    builder: (context, controller, focusNode) {
-                      return TextField(
-                          controller: controller,
-                          // focusNode: focusNode,
-                          autofocus: true,
-                          decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.white,
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                              ),
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.never,
-                              labelText: 'Search for anything',
-                              labelStyle: GoogleFonts.poppins(
-                                fontSize: 16,
-                                color: Color(0xff9A9A9A),
-                              )));
+                  child: TypeAheadField<MenuItemNewmModel>(
+                    controller: menuController.searchController,
+                    itemBuilder: (context, item) {
+                      return ListTile(
+                        leading: Icon(menuController.generateIcon(item, 1)),
+                        minLeadingWidth: 10,
+                        contentPadding: EdgeInsets.only(left: 10),
+                        title: SubstringHighlight(
+                          text: item.caption,
+                          term: menuController.searchController.text,
+                          textStyleHighlight:
+                              TextStyle(fontWeight: FontWeight.w700),
+                        ), //Text(item.caption),
+                      );
                     },
-                    itemBuilder: (context, value) => ListTile(),
-                    onSelected: (_) {},
+                    onSelected: (item) {
+                      menuController.openItemClick(item);
+                      menuController.clearField_searchBar();
+                    },
                     suggestionsCallback: (value) {
-                      return;
+                      return menuController.filter_search(value);
+                    },
+                    builder: (context, cnt, fn) {
+                      return TextField(
+                        controller: cnt,
+                        focusNode: fn,
+                        decoration: InputDecoration(
+                          hintText: 'Search',
+                          hintStyle: TextStyle(
+                            fontSize: 14,
+                            fontFamily: 'Poppins',
+                            //color: HexColor("#8E8E8E"),
+                          ),
+                          // filled: true,
+                          //fillColor: HexColor("#FFFFFF"),
+                          labelStyle: TextStyle(
+                            fontSize: 15,
+                            fontFamily: 'Poppins',
+                            //  color: HexColor("#8B193F"),
+                          ),
+                          contentPadding: EdgeInsets.only(left: 10),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.transparent),
+                          ),
+
+                          suffixIcon: menuController.getSuffixIcon_searchBar(),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(color: Colors.transparent),
+                          ),
+                        ),
+                      );
                     },
                   ),
                 ),
