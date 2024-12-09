@@ -15,14 +15,14 @@ class WidgetShortcutPanel extends StatelessWidget {
           duration: Duration(milliseconds: 300),
           curve: Curves.linear,
           child: Visibility(
-            visible: menuHomePageController.listOfGridCardItems.length > 0,
+            visible: menuHomePageController.listOfshortcutCardItems.length > 0,
             child: Container(
               height: 100,
               child: GridView.builder(
                 shrinkWrap: true,
                 // physics: NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.horizontal,
-                itemCount: menuHomePageController.listOfGridCardItems.length,
+                itemCount: menuHomePageController.listOfshortcutCardItems.length,
                 padding: EdgeInsets.only(top: 0, bottom: 5),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 1, // number of items in each row
@@ -32,9 +32,9 @@ class WidgetShortcutPanel extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return GestureDetector(
                       onTap: () {
-                        captionOnTapFunction(CardModel(stransid: menuHomePageController.listOfGridCardItems[index].url));
+                        captionOnTapFunction(CardModel(stransid: menuHomePageController.listOfshortcutCardItems[index].url));
                       },
-                      child: WidgetQuickAccessGridItems(menuHomePageController.listOfGridCardItems[index]));
+                      child: WidgetQuickAccessGridItems(menuHomePageController.listOfshortcutCardItems[index]));
                 },
               ),
             ),

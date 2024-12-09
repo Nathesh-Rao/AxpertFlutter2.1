@@ -9,7 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class WidgetQuickAccessGridItems extends StatelessWidget {
   WidgetQuickAccessGridItems(this.model, {super.key});
-  final GridDashboardModel model;
+  final ShortcutMenuDashboardModel model;
   final MenuHomePageController menuHomePageController = Get.find();
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/const.dart';
@@ -127,7 +129,12 @@ class ServerConnections {
       if (header == '') header = {"Content-Type": "application/json"};
       print("Get Url: $url");
       var response = await client.get(Uri.parse(url), headers: header);
-      if (response.statusCode == 200) return response.body;
+      if (response.statusCode == 200) {
+        var decodedBody = utf8.decode(response.bodyBytes);
+        return decodedBody;
+       // return response.body;
+      }
+
       if (response.statusCode == 404) {
         if (API_NAME.toString().toLowerCase() == "ARMAppStatus".toLowerCase()) {
           showErrorSnack(title: "Error!", message: "Invalid ARM URL", show_errorSnackbar: show_errorSnackbar );
