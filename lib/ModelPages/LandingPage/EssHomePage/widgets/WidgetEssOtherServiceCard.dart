@@ -19,7 +19,7 @@ class WidgetEssOtherServiceCard extends StatelessWidget {
     return Obx(() => Visibility(
           visible: controller.listOfOptionCards.length == 0 ? false : true,
           child: Card(
-            margin: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+            margin: EdgeInsets.only(bottom: 35, top: 15, left: 15, right: 15),
             elevation: 5,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
