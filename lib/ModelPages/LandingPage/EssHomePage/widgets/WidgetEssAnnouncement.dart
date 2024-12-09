@@ -21,7 +21,7 @@ class WidgetEssAnnouncement extends StatelessWidget {
         visible: controller.listOfAnnouncementHomeScreenWidgets.isNotEmpty,
         child: Card(
           elevation: 5,
-          margin: EdgeInsets.only(left: 15, right: 15, bottom: 15),
+          margin: EdgeInsets.only(left: 15, right: 15, top: 25),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           child: Column(

@@ -1,8 +1,12 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 import 'package:axpertflutter/Constants/Routes.dart';
+import 'package:axpertflutter/ModelPages/InApplicationWebView/page/WebViewCalendar.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/BannerModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Widgets/WidgetMenuFolderPanelItem.dart';
+import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/page/EssHomePage.dart';
+import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetEssHomeWidget.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetEssMainBannerWidget.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetEssSubBannerWidget.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -32,13 +36,15 @@ import '../../../../Constants/MyColors.dart';
 import '../../../../Constants/const.dart';
 import '../../../../Utils/ServerConnections/ExecuteApi.dart';
 import '../../../../Utils/ServerConnections/ServerConnections.dart';
+import '../../../LandingMenuPages/MenuActiveListPage/Page/MenuActiveListPage.dart';
+import '../../../LandingMenuPages/MenuDashboardPage/Page/MenuDashboardPage.dart';
 import '../models/ESSAnnouncementModel.dart';
 import '../models/EssBannerModel.dart';
 import '../widgets/WidgetEssFolderPanelItem.dart';
 
 class EssController extends GetxController {
   final MenuMorePageController menuMorePageController =
-      Get.put(MenuMorePageController());
+      Get.put<MenuMorePageController>(MenuMorePageController());
   AppStorage appStorage = AppStorage();
   ServerConnections serverConnections = ServerConnections();
   CarouselController essBannerController = CarouselController();
@@ -49,8 +55,16 @@ class EssController extends GetxController {
     super.onInit();
   }
 
-  var body, header;
-  var userName = 'Demo'.obs; //update with user name
+  var bottomIndex = 0.obs;
+  DateTime currentBackPressTime = DateTime.now();
+  late var pageList;
+  getPage() {
+    if (bottomIndex.value == 0) {
+      return EssHomeWidget();
+      // return MenuHomePage();
+    }
+    return pageList[bottomIndex.value];
+  }
 
   EssController() {
     body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
@@ -60,8 +74,181 @@ class EssController extends GetxController {
     getCardDetails();
     getESSRecentActivity();
     getESSAnnouncement();
+
     getPunchINData();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getBiometricStatus();
+      pageList = [
+        EssHomeWidget(),
+        MenuActiveListPage(),
+        MenuDashboardPage(),
+        WebViewCalendar(),
+      ];
+    });
   }
+
+  Future<bool> onWillPop() {
+    try {
+      MenuHomePageController menuHomePageController = Get.find();
+      if (menuHomePageController.switchPage.value == true) {
+        menuHomePageController.switchPage.toggle();
+        return Future.value(false);
+      }
+    } catch (e) {}
+    DateTime now = DateTime.now();
+    if (bottomIndex.value != 0) {
+      bottomIndex.value = 0;
+      return Future.value(false);
+    }
+    if (now.difference(currentBackPressTime) > const Duration(seconds: 2)) {
+      currentBackPressTime = now;
+      Get.rawSnackbar(
+          // message: "Press back again to exit",
+          messageText: Center(
+            child: Text(
+              "Press back again to exit",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700),
+            ),
+          ),
+          margin: EdgeInsets.only(left: 10, right: 10),
+          borderRadius: 10,
+          backgroundColor: Colors.red,
+          isDismissible: true,
+          duration: Duration(seconds: 2),
+          snackPosition: SnackPosition.BOTTOM);
+      return Future.value(false);
+    } else {
+      if (Get.isSnackbarOpen) Get.back();
+      // SystemNavigator.pop(animated: true);
+      exit(0);
+      // return Future.value(true);
+    }
+  }
+  ///////////////-----biometric
+
+  var willAuth = false;
+
+  getBiometricStatus() async {
+    var willAuthLocal =
+        await getWillBiometricAuthenticateForThisUser(userName.value);
+    if (willAuthLocal == null) {
+      Get.bottomSheet(
+        PopScope(
+          canPop: false,
+          child: Container(
+            margin: EdgeInsets.only(top: 150),
+            padding: EdgeInsets.only(top: 10, left: 20, right: 20),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+                color: Colors.grey.shade100),
+            child: Column(
+              children: [
+                Container(
+                  height: 4,
+                  width: 80,
+                  decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(30)),
+                ),
+                Container(
+                  height: 250,
+                  child: Center(
+                    child: Icon(
+                      Icons.fingerprint_outlined,
+                      color: MyColors.blue2,
+                      size: 80,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Text(
+                  "Biometric Authentication in now Available!",
+                  style: GoogleFonts.poppins(
+                      textStyle:
+                          TextStyle(fontWeight: FontWeight.w500, fontSize: 20)),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                ),
+                SizedBox(height: 20),
+                Text(
+                  "Log into your project account using your phone's biometric credentials..",
+                  style: GoogleFonts.poppins(
+                      textStyle: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                          color: Colors.grey.shade600)),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () async {
+                    var willAuthenticate = await showBiometricDialog();
+                    Get.back();
+                    await setWillBiometricAuthenticateForThisUser(
+                        userName.value, willAuthenticate);
+                    willAuth = willAuthenticate;
+                  },
+                  child: Container(
+                    width: 300,
+                    child: Center(child: Text("Enable biometric login")),
+                  ),
+                ),
+                SizedBox(height: 20),
+                TextButton(
+                    onPressed: () {
+                      Get.back();
+                      setWillBiometricAuthenticateForThisUser(
+                          userName.value, false);
+                      willAuth = false;
+                    },
+                    style: ButtonStyle(
+                        backgroundColor: WidgetStateColor.resolveWith(
+                            (states) => Colors.grey.shade300)),
+                    child: Container(
+                      width: 300,
+                      child: Center(child: Text("Skip for now")),
+                    )),
+              ],
+            ),
+          ),
+        ),
+        isDismissible: false,
+        isScrollControlled: true,
+        enableDrag: false,
+        backgroundColor: Colors.black.withOpacity(0.2),
+        enterBottomSheetDuration: Duration(milliseconds: 500),
+      );
+      LoadingScreen.dismiss();
+      // Get.defaultDialog(
+      //     titlePadding: EdgeInsets.only(top: 20),
+      //     contentPadding: EdgeInsets.all(20),
+      //     title: "Biometric Available!",
+      //     middleText: "Do you want to add fingerprint for login?",
+      //     barrierDismissible: false,
+      //     confirm: ElevatedButton(
+      //         onPressed: () async {
+      //           Get.back();
+      //           var willAuthenticate = await showBiometricDialog();
+      // setWillBiometricAuthenticateForThisUser(userName.value, willAuthenticate);
+      // },
+      // child: Text("Yes")),
+      // cancel: TextButton(
+      //     onPressed: () {
+      // setWillBiometricAuthenticateForThisUser(userName.value, false);
+      // Get.back();
+      // },
+      // child: Text("No")));
+    } else
+      willAuth = willAuthLocal;
+  }
+
+  var body, header;
+  var userName = 'Demo'.obs; //update with user name
 
   generateIcon(model) {
     var iconName = model.icon;
@@ -114,6 +301,7 @@ class EssController extends GetxController {
   void getESSRecentActivity() async {
     var body = {
       "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
+      // "publickey": "AXPKEY000000010006",
       "publickey": ExecuteApi.API_PublicKey_ESS_RecentActivity,
       "Project": Const.PROJECT_NAME,
       "getsqldata": {"trace": "true"}
@@ -122,7 +310,7 @@ class EssController extends GetxController {
       body: jsonEncode(body),
       isBearer: true,
     );
-    // log(resp.toString());
+    log("Recent Activity ${resp.toString()}");
     if (resp != "") {
       // log(resp.toString());
       var jsonResp = jsonDecode(resp);
@@ -195,6 +383,8 @@ class EssController extends GetxController {
   void getESSAnnouncement() async {
     var body = {
       "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
+      // "publickey": "AXPKEY000000010007",
+
       "publickey": ExecuteApi.API_PublicKey_ESS_Announcement,
       "Project": Const.PROJECT_NAME,
       "getsqldata": {"trace": "true"}
@@ -203,7 +393,7 @@ class EssController extends GetxController {
       body: jsonEncode(body),
       isBearer: true,
     );
-    // log(resp.toString());
+    log("Announcement ${resp.toString()}");
     if (resp != "") {
       var jsonResp = jsonDecode(resp);
 
@@ -1025,6 +1215,8 @@ class EssController extends GetxController {
   getBanners() async {
     var body = {
       "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
+      // "publickey": "AXPKEY000000010008",
+
       "publickey": ExecuteApi.API_PublicKey_ESS_Banners,
       "Project": Const.PROJECT_NAME,
       "getsqldata": {"trace": "true"}
@@ -1034,7 +1226,7 @@ class EssController extends GetxController {
       body: jsonEncode(body),
       isBearer: true,
     );
-
+    log("Banners ${resp.toString()}");
     if (resp != "") {
       mainbanerList.clear();
       var jsonResp = jsonDecode(resp);

@@ -23,7 +23,7 @@ class WidgetRecentActivity extends StatelessWidget {
         visible: controller.listOfRecentActivityHomeScreenWidgets.isNotEmpty,
         child: Card(
           elevation: 5,
-          margin: EdgeInsets.only(left: 15, right: 15, bottom: 35),
+          margin: EdgeInsets.only(left: 15, right: 15, top: 25),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           child: Column(

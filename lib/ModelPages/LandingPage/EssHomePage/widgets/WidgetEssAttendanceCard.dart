@@ -51,7 +51,10 @@ class _WidgetEssAttendanceCardState extends State<WidgetEssAttendanceCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 15, right: 15, bottom: 20),
+      padding: const EdgeInsets.only(
+        left: 15,
+        right: 15,
+      ),
       child: Card(
         elevation: 5,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),

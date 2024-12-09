@@ -15,7 +15,7 @@ class WidgetEssHomecard extends StatelessWidget {
       return Visibility(
         visible: controller.bannerWidgets.length > 0,
         child: Padding(
-          padding: const EdgeInsets.only(bottom: 20),
+          padding: const EdgeInsets.only(top: 20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

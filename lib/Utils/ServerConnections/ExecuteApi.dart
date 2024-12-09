@@ -20,9 +20,10 @@ class ExecuteApi {
   static const String API_PrivateKey_Attendance = "9876583824480530";
   static const String API_PublicKey_Attendance = "AXPKEY000000010018";
   static const String API_PublicKey_ESS_RecentActivity =
-      "AXPESSKEY000000010001";
-  static const String API_PublicKey_ESS_Announcement = "AXPESSKEY000000010002";
-  static const String API_PublicKey_ESS_Banners = "AXPESSKEY000000010003";
+      "AXM_API_ESS_GET_RECENTACTIVITY";
+  static const String API_PublicKey_ESS_Announcement =
+      "AXM_API_ESS_GET_ANNOUNCEMENT";
+  static const String API_PublicKey_ESS_Banners = "AXM_API_ESS_GET_BANNERS";
   //----recent-activity
 
   // var body;
