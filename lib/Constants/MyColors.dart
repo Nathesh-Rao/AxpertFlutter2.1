@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class MyColors {
@@ -66,4 +68,26 @@ class MyColors {
     Color.fromRGBO(43, 40, 115, 1),
     Color.fromRGBO(142, 142, 255, 1)
   ]);
+
+  //------random- color------>
+  static Color getRandomColor() {
+    List<Color> colors = [
+      Colors.purple,
+      Colors.green,
+      Colors.amber,
+      Colors.red,
+      Colors.indigo,
+      Colors.blue,
+      Colors.orange,
+      Colors.cyan,
+      Colors.teal,
+      Colors.lime,
+      Colors.brown,
+      Colors.pink,
+      Colors.deepOrange,
+      Colors.lightGreen,
+      Colors.deepPurple,
+    ];
+    return colors[Random().nextInt(colors.length)];
+  }
 }

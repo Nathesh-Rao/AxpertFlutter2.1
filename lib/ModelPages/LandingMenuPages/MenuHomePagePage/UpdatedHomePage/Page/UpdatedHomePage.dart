@@ -65,9 +65,7 @@ class UpdatedHomePage extends StatelessWidget {
                 WidgetMenuFolderPanels(),
                 //Attendance
                 WidgetAttendancePanel(),
-
                 //add your panel here
-
                 //Till here
                 //keep it as it is
                 SizedBox(height: 100),

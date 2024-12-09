@@ -693,6 +693,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
 
   getDrawerTileList() {
     List<Widget> menuList = [];
+
     menuList.add(
       Container(
         height: 70,
@@ -861,7 +862,8 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
     List<Widget> innerTile = [];
     innerTile.add(Container(
       height: 1,
-      color: Colors.grey.withOpacity(0.1),
+      color: Colors.white,
+      // color: Colors.grey.withOpacity(0.1),
     ));
     for (MenuItemModel subMenu
         in menuMorePageController.finalHeadingWiseData[item] ?? [])

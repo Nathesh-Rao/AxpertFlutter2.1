@@ -2,6 +2,7 @@ import 'package:axpertflutter/ModelPages/AddConnection/page/AddNewConnections.da
 import 'package:axpertflutter/ModelPages/InApplicationWebView/page/InApplicationWebView.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Page/PendingListItemDetails.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Controller/Binding.dart';
+import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/page/EssHomePage.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Page/LandingPage.dart';
 import 'package:axpertflutter/ModelPages/LoginPage/Page/ForgetPassword.dart';
 import 'package:axpertflutter/ModelPages/LoginPage/Page/LoginPage.dart';
@@ -26,6 +27,7 @@ class Routes {
   static const String NotificationPage = "/LandingPage/Notifications";
   static const String SettingsPage = "/LandingPage/Settings";
   static const String ShowLogs = "/LandingPage/ShowLogs";
+  static const String EssHomePage = "/EssHomePage";
 }
 
 class RoutePages {
@@ -89,6 +91,11 @@ class RoutePages {
     GetPage(
       name: Routes.ShowLogs,
       page: () => ShowLogs(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: Routes.EssHomePage,
+      page: () => EssHomePage(),
       transition: Transition.rightToLeft,
     ),
   ];

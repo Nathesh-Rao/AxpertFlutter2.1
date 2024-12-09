@@ -64,9 +64,9 @@ class Const {
     elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
             backgroundColor:
-                MaterialStateColor.resolveWith((states) => MyColors.blue2),
+                WidgetStateColor.resolveWith((states) => MyColors.blue2),
             foregroundColor:
-                MaterialStateColor.resolveWith((states) => Colors.white))),
+                WidgetStateColor.resolveWith((states) => Colors.white))),
     primaryColor: Color(0xff003AA5),
     scaffoldBackgroundColor: Colors.white,
     colorScheme: ThemeData().colorScheme.copyWith(primary: MyColors.blue2),
