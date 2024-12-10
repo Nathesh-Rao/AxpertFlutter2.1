@@ -11,7 +11,8 @@ class LandingPage extends StatelessWidget {
   LandingPage({super.key});
 
   final LandingPageController landingPageController = Get.find();
-  final MenuHomePageController menuHomePageController = Get.put(MenuHomePageController());
+  final MenuHomePageController menuHomePageController =
+      Get.put(MenuHomePageController());
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,10 @@ class LandingPage extends StatelessWidget {
           child: Obx(() => Stack(
                 children: [
                   landingPageController.getPage(),
-                  Visibility(visible: menuHomePageController.switchPage.value, child: InApplicationWebViewer(menuHomePageController.webUrl))
+                  Visibility(
+                      visible: menuHomePageController.switchPage.value,
+                      child:
+                          InApplicationWebViewer(menuHomePageController.webUrl))
                 ],
               ))
           /* menuHomePageController.switchPage.value == true

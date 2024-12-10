@@ -23,49 +23,23 @@ class EssHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: WidgetEssAppDrawer(),
-      extendBodyBehindAppBar: true,
-      appBar: WidgetEssAppBar(),
-      body:
-          //       landingPageController.getPage(),
-
-          Obx(
-        () => Stack(
-          children: [
-            Column(
-              children: [
-                Expanded(
-                  child: ListView(
-                    controller: controller.scrollController,
-                    padding: EdgeInsets.zero,
-                    children: [
-                      WidgetHeaderWidget(),
-                      WidgetEssAttendanceCard(),
-                      _heightBox(),
-                      WidgetEssHomecard(),
-                      _heightBox(),
-                      WidgetEssKPICards(),
-                      _heightBox(),
-                      WidgetEssOtherServiceCard(),
-                      _heightBox(),
-                      WidgetRecentActivity(),
-                      _heightBox(),
-                      WidgetEssAnnouncement(),
-                      WidgetEssMenuFolders(),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Visibility(
-                visible: menuHomePageController.switchPage.value,
-                child: InApplicationWebViewer(menuHomePageController.webUrl))
-          ],
+    return WillPopScope(
+      onWillPop: controller.onWillPop,
+      child: Scaffold(
+        drawer: WidgetEssAppDrawer(),
+        extendBodyBehindAppBar: true,
+        appBar: WidgetEssAppBar(),
+        body: Obx(
+          () => Stack(
+            children: [
+              controller.getPage(),
+              Visibility(
+                  visible: menuHomePageController.switchPage.value,
+                  child: InApplicationWebViewer(menuHomePageController.webUrl))
+            ],
+          ),
         ),
       ),
     );
   }
-
-  Widget _heightBox({double height = 20}) => SizedBox(height: height);
 }
