@@ -85,35 +85,35 @@ class WidgetRecentActivity extends StatelessWidget {
     );
   }
 
-  _activityItem(EssRecentActivityModel model) {
-    var color = MyColors.getRandomColor();
+  // _activityItem(EssRecentActivityModel model) {
+  //   var color = MyColors.getRandomColor();
 
-    return ListTile(
-      onTap: () {},
-      leading: CircleAvatar(
-        backgroundColor: color.withAlpha(35),
-        foregroundColor: color,
-        child: Icon(controller.generateIcon(model)),
-      ),
-      title: Text(
-        model.caption,
-        style: GoogleFonts.poppins(
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      subtitle: Text(
-        model.subheading,
-        style: GoogleFonts.poppins(
-          fontSize: 13,
-        ),
-      ),
-      trailing: Text(
-        model.info1,
-        style: GoogleFonts.poppins(
-          fontSize: 11,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
-  }
+  //   return ListTile(
+  //     onTap: () {},
+  //     leading: CircleAvatar(
+  //       backgroundColor: color.withAlpha(35),
+  //       foregroundColor: color,
+  //       child: Icon(controller.generateIcon(model, 1)),
+  //     ),
+  //     title: Text(
+  //       model.caption,
+  //       style: GoogleFonts.poppins(
+  //         fontWeight: FontWeight.w500,
+  //       ),
+  //     ),
+  //     subtitle: Text(
+  //       model.subheading,
+  //       style: GoogleFonts.poppins(
+  //         fontSize: 13,
+  //       ),
+  //     ),
+  //     trailing: Text(
+  //       model.info1,
+  //       style: GoogleFonts.poppins(
+  //         fontSize: 11,
+  //         fontWeight: FontWeight.w600,
+  //       ),
+  //     ),
+  //   );
+  // }
 }

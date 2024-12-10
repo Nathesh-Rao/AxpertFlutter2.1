@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
@@ -5,10 +6,12 @@ import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/ModelPages/InApplicationWebView/page/WebViewCalendar.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/BannerModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Widgets/WidgetMenuFolderPanelItem.dart';
+import 'package:axpertflutter/ModelPages/LandingPage/Controller/LandingPageController.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/page/EssHomePage.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetEssHomeWidget.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetEssMainBannerWidget.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetEssSubBannerWidget.dart';
+import 'package:axpertflutter/Utils/ServerConnections/InternetConnectivity.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:axpertflutter/Constants/AppStorage.dart';
@@ -43,8 +46,12 @@ import '../models/EssBannerModel.dart';
 import '../widgets/WidgetEssFolderPanelItem.dart';
 
 class EssController extends GetxController {
-  final MenuMorePageController menuMorePageController =
-      Get.put<MenuMorePageController>(MenuMorePageController());
+  // final MenuMorePageController menuMorePageController =
+  //     Get.put<MenuMorePageController>(MenuMorePageController());
+  final MenuHomePageController menuHomePageController =
+      Get.put(MenuHomePageController());
+
+  InternetConnectivity internetConnectivity = Get.find();
   AppStorage appStorage = AppStorage();
   ServerConnections serverConnections = ServerConnections();
   CarouselController essBannerController = CarouselController();
@@ -63,10 +70,11 @@ class EssController extends GetxController {
       return EssHomeWidget();
       // return MenuHomePage();
     }
-    return pageList[bottomIndex.value];
+    return SafeArea(child: pageList[bottomIndex.value]);
   }
 
   EssController() {
+    log("EssController: Rebuilds");
     body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
     userName.value =
         appStorage.retrieveValue(AppStorage.USER_NAME) ?? userName.value;
@@ -74,7 +82,7 @@ class EssController extends GetxController {
     getCardDetails();
     getESSRecentActivity();
     getESSAnnouncement();
-
+    getMenuList_v2();
     getPunchINData();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -128,6 +136,17 @@ class EssController extends GetxController {
       // return Future.value(true);
     }
   }
+
+  var IconList = [
+    Icons.calendar_month_outlined,
+    Icons.today_outlined,
+    Icons.date_range_outlined,
+    Icons.event_repeat_outlined,
+    Icons.perm_contact_calendar_outlined,
+    Icons.event_note_outlined,
+    Icons.event_available_outlined,
+    Icons.event_busy_outlined,
+  ];
   ///////////////-----biometric
 
   var willAuth = false;
@@ -250,13 +269,16 @@ class EssController extends GetxController {
   var body, header;
   var userName = 'Demo'.obs; //update with user name
 
-  generateIcon(model) {
-    var iconName = model.icon;
+  IconData? generateIcon(subMenu, index) {
+    var iconName = subMenu.icon;
+
     if (iconName.contains("material-icons")) {
       iconName = iconName.replaceAll("|material-icons", "");
       return materialIcons[iconName];
     } else {
-      switch (model.type.trim().toUpperCase()[0]) {
+      switch (subMenu.pagetype.trim() != ""
+          ? subMenu.pagetype.trim().toUpperCase()[0]
+          : subMenu.pagetype.trim()) {
         case "T":
           return Icons.assignment;
         case "I":
@@ -265,31 +287,51 @@ class EssController extends GetxController {
         case "H":
           return Icons.code;
         default:
-          return Icons.access_time;
+          return IconList[index++ % 8];
       }
     }
   }
 
+  // generateIcon(model) {
+  //   var iconName = model.icon;
+  //   if (iconName.contains("material-icons")) {
+  //     iconName = iconName.replaceAll("|material-icons", "");
+  //     return materialIcons[iconName];
+  //   } else {
+  //     switch (model.type.trim().toUpperCase()[0]) {
+  //       case "T":
+  //         return Icons.assignment;
+  //       case "I":
+  //         return Icons.view_list;
+  //       case "W":
+  //       case "H":
+  //         return Icons.code;
+  //       default:
+  //         return Icons.access_time;
+  //     }
+  //   }
+  // }
+
 //-----Appbar control---------
   final ScrollController scrollController = ScrollController();
 
-  var appBarColor = Colors.transparent.obs;
-
-  var appbarGradient = LinearGradient(colors: [
+  var appbarHomeGradient = LinearGradient(colors: [
     Colors.transparent,
     Colors.transparent,
-  ]);
+  ]).obs;
   void _scrollListener() {
     double offset = scrollController.offset;
-    appBarColor.value = offset > 0
-        ? Color(0xff9764DA).withOpacity((offset / 200).clamp(0, 1))
-        : Colors.transparent;
 
-    appbarGradient = LinearGradient(colors: [
+    appbarHomeGradient.value = LinearGradient(colors: [
       Color(0xff3764FC).withOpacity((offset / 200).clamp(0, 1)),
       Color(0xff9764DA).withOpacity((offset / 200).clamp(0, 1)),
     ]);
   }
+
+  var appbarStaticColorGradient = LinearGradient(colors: [
+    Color(0xff3764FC),
+    Color(0xff9764DA),
+  ]);
 //----------------------------
 
 //------Recent Activity----------
@@ -348,7 +390,7 @@ class EssController extends GetxController {
       leading: CircleAvatar(
         backgroundColor: color.withAlpha(35),
         foregroundColor: color,
-        child: Icon(generateIcon(model)),
+        child: Icon(generateIcon(model, 1)),
       ),
       title: Text(
         model.caption,
@@ -884,10 +926,19 @@ class EssController extends GetxController {
   }
 
   //-------Drawer-----------------
+
+  var menu_finalList = [].obs;
+  List<MenuItemNewmModel> menuListMain_new = [];
   indexChange(value) {
     MenuHomePageController menuHomePageController = Get.find();
     menuHomePageController.switchPage.value = false;
-    // bottomIndex.value = value;
+    bottomIndex.value = value;
+    if (value == 0) {
+      appbarHomeGradient.value = LinearGradient(colors: [
+        Colors.transparent,
+        Colors.transparent,
+      ]);
+    }
   }
 
   clearCacheData() async {
@@ -1023,8 +1074,7 @@ class EssController extends GetxController {
             username: userName.value, companyName: "Agile labs"),
       ),
     );
-    var a =
-        menuMorePageController.menu_finalList.map(build_innerListTile).toList();
+    var a = menu_finalList.map(build_innerListTile).toList();
     menuList.addAll(a);
 
     if (menuList.length == 1) {
@@ -1106,12 +1156,12 @@ class EssController extends GetxController {
         visible: model_tile.visible.toUpperCase() == "T",
         child: InkWell(
           onTap: () {
-            menuMorePageController.openItemClick(model_tile);
+            openItemClick(model_tile);
             Get.back();
           },
           child: ListTile(
             tileColor: Colors.white,
-            leading: Icon(menuMorePageController.generateIcon(tile, 1)),
+            leading: Icon(generateIcon(tile, 1)),
             contentPadding: EdgeInsets.only(left: leftPadding),
             title: Text(
               model_tile.caption,
@@ -1125,7 +1175,7 @@ class EssController extends GetxController {
         child: ExpansionTile(
           backgroundColor: Colors.white,
           collapsedBackgroundColor: Colors.white70,
-          leading: Icon(menuMorePageController.generateIcon(tile, 1)),
+          leading: Icon(generateIcon(tile, 1)),
           tilePadding: EdgeInsets.only(left: leftPadding, right: 10),
           title: Text(tile.caption),
           children: ListTile.divideTiles(
@@ -1135,6 +1185,94 @@ class EssController extends GetxController {
               .toList(),
         ),
       );
+    }
+  }
+
+  void getMenuList_v2() async {
+    print("getMenuList_v2_called");
+    var mUrl = Const.getFullARMUrl(ServerConnections.API_GET_MENU_V2);
+    var conectBody = {
+      'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)
+    };
+    var menuResp = await serverConnections.postToServer(
+        url: mUrl, body: jsonEncode(conectBody), isBearer: true);
+    if (menuResp != "") {
+      print("menuResp ${menuResp}");
+      var menuJson = jsonDecode(menuResp);
+      if (menuJson['result']['success'].toString() == "true") {
+        for (var menuItem in menuJson['result']["data"]) {
+          try {
+            MenuItemNewmModel mi = MenuItemNewmModel.fromJson(menuItem);
+            menuListMain_new.add(mi);
+          } catch (e) {}
+        }
+      }
+    }
+    reOrganise_v2(menuListMain_new);
+  }
+
+  void reOrganise_v2(menuList) {
+    var heada_ParentList = {};
+    var map_menulist = {};
+    for (var item in menuList) {
+      var parent = item.parent;
+      if (parent != "") {
+        heada_ParentList[item.name] = parent;
+        String parent_tree = getParent_hierarchy(heada_ParentList, item.name);
+        item.parent_tree = parent_tree;
+      }
+      map_menulist[item.name] = item;
+    }
+
+    var keysToRemove = <String>[];
+
+    //To get the parent tree reverse the Map
+    final reverseM =
+        LinkedHashMap.fromEntries(map_menulist.entries.toList().reversed);
+    reverseM.forEach((key, value) {
+      try {
+        MenuItemNewmModel md = value;
+        var parent = md.parent;
+        if (parent != "") {
+          reverseM[parent].childList.insert(0, md);
+          keysToRemove.add(key);
+        }
+      } catch (e) {
+        print(e);
+      }
+    });
+
+    //Remove the record that was added to its parent.
+    keysToRemove.forEach((key) => reverseM.remove(key));
+
+    // Once again reverse the Map to get the actual order.
+    final map_finalList =
+        LinkedHashMap.fromEntries(reverseM.entries.toList().reversed);
+
+    // Add the Map value to List
+    List<MenuItemNewmModel> newList = [];
+    map_finalList.forEach((k, v) => newList.add(v as MenuItemNewmModel));
+    menu_finalList.value = newList;
+  }
+
+  String getParent_hierarchy(Map heada_parentList, String name) {
+    String parent_tree = "";
+    String parent = heada_parentList[name];
+    while (parent != "") {
+      parent_tree += parent_tree == "" ? parent : "~" + parent;
+      parent = heada_parentList[parent] ?? "";
+    }
+    return parent_tree;
+  }
+
+  void openItemClick(itemModel) async {
+    if (await internetConnectivity.connectionStatus) {
+      if (itemModel.url != "") {
+        // menuHomePageController.webUrl = Const.getFullProjectUrl(itemModel.url);
+        // menuHomePageController.switchPage.value = true;
+        Get.toNamed(Routes.InApplicationWebViewer,
+            arguments: [Const.getFullProjectUrl(itemModel.url)]);
+      }
     }
   }
 
