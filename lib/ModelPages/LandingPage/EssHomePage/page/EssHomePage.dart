@@ -26,7 +26,6 @@ class EssHomePage extends StatelessWidget {
       Get.put(LandingPageController());
   @override
   Widget build(BuildContext context) {
-    log("REBUILD: HomePage build method");
     return WillPopScope(
       onWillPop: controller.onWillPop,
       child: Scaffold(

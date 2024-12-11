@@ -42,26 +42,26 @@ class WidgetRecentActivity extends StatelessWidget {
                       style: style,
                     ),
                     Spacer(),
-                    InkWell(
-                      onTap: () {},
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            "See all",
-                            style: style.copyWith(
-                              fontSize: 12,
-                              color: Colors.blue.shade900,
-                            ),
-                          ),
-                          Icon(
-                            Icons.chevron_right,
-                            size: 16,
-                            color: Colors.blue.shade900,
-                          ),
-                        ],
-                      ),
-                    ),
+                    // InkWell(
+                    //   onTap: () {},
+                    //   child: Row(
+                    //     mainAxisSize: MainAxisSize.min,
+                    //     children: [
+                    //       Text(
+                    //         "See all",
+                    //         style: style.copyWith(
+                    //           fontSize: 12,
+                    //           color: Colors.blue.shade900,
+                    //         ),
+                    //       ),
+                    //       Icon(
+                    //         Icons.chevron_right,
+                    //         size: 16,
+                    //         color: Colors.blue.shade900,
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

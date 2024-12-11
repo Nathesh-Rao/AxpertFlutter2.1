@@ -6,6 +6,7 @@ class EssAnnouncementModel {
   final String subheading;
   final String description;
   final String announcementlink;
+  final String pageid;
 
   EssAnnouncementModel({
     required this.imageurl,
@@ -13,6 +14,7 @@ class EssAnnouncementModel {
     required this.subheading,
     required this.description,
     required this.announcementlink,
+    required this.pageid,
   });
 
   factory EssAnnouncementModel.fromRawJson(String str) =>
@@ -27,6 +29,7 @@ class EssAnnouncementModel {
         subheading: json["subheading"],
         description: json["description"],
         announcementlink: json["announcementlink"],
+        pageid: json["pageid"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -35,5 +38,6 @@ class EssAnnouncementModel {
         "subheading": subheading,
         "description": description,
         "announcementlink": announcementlink,
+        "pageid": pageid,
       };
 }

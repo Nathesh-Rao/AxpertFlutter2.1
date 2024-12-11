@@ -382,11 +382,41 @@ class EssController extends GetxController {
     }
   }
 
+  _activityItemClick(String url) {
+    var link_id = url;
+    var validity = false;
+    if (link_id.toLowerCase().startsWith('h')) {
+      if (link_id.toLowerCase().contains("hp")) {
+        link_id = link_id.toLowerCase().replaceAll("hp", "h");
+      }
+      validity = true;
+    } else {
+      if (link_id.toLowerCase().startsWith('i')) {
+        validity = true;
+      } else {
+        if (link_id.toLowerCase().startsWith('t')) {
+          validity = true;
+        } else
+          validity = false;
+      }
+    }
+    if (validity) {
+      var webUrl = Const.getFullProjectUrl("aspx/AxMain.aspx?authKey=AXPERT-") +
+          appStorage.retrieveValue(AppStorage.SESSIONID) +
+          "&pname=" +
+          link_id;
+
+      Get.toNamed(Routes.InApplicationWebViewer, arguments: [webUrl]);
+    }
+  }
+
   _activityItem(EssRecentActivityModel model) {
     var color = MyColors.getRandomColor();
 
     return ListTile(
-      onTap: () {},
+      onTap: () {
+        _activityItemClick(model.pageid);
+      },
       leading: CircleAvatar(
         backgroundColor: color.withAlpha(35),
         foregroundColor: color,
@@ -491,37 +521,41 @@ class EssController extends GetxController {
                 ),
                 Container(
                   height: 40,
-                  padding: EdgeInsets.symmetric(horizontal: 10),
                   margin: EdgeInsets.only(bottom: 5),
                   decoration: BoxDecoration(
                       color: color.withAlpha(30),
                       borderRadius: BorderRadius.circular(10)),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(10),
-                    onTap: () {},
-                    child: Center(
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.link,
-                            color: color,
-                          ),
-                          SizedBox(
-                            width: 7,
-                          ),
-                          Text(
-                            model.announcementlink,
-                            style: GoogleFonts.poppins(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(10),
+                      onTap: () {
+                        _activityItemClick(model.pageid);
+                      },
+                      child: Center(
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.link,
+                              color: color,
                             ),
-                          ),
-                          Spacer(),
-                          Icon(
-                            Icons.chevron_right_rounded,
-                            color: color,
-                          )
-                        ],
+                            SizedBox(
+                              width: 7,
+                            ),
+                            Text(
+                              model.announcementlink,
+                              style: GoogleFonts.poppins(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Spacer(),
+                            Icon(
+                              Icons.chevron_right_rounded,
+                              color: color,
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),
