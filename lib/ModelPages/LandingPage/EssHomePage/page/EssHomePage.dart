@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:axpertflutter/ModelPages/InApplicationWebView/page/InApplicationWebView.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Controller/LandingPageController.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/controller/EssController.dart';
@@ -24,6 +26,7 @@ class EssHomePage extends StatelessWidget {
       Get.put(LandingPageController());
   @override
   Widget build(BuildContext context) {
+    log("REBUILD: HomePage build method");
     return WillPopScope(
       onWillPop: controller.onWillPop,
       child: Scaffold(

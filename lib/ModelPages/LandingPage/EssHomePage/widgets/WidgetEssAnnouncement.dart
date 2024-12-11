@@ -8,7 +8,7 @@ import '../models/ESSAnnouncementModel.dart';
 
 class WidgetEssAnnouncement extends StatelessWidget {
   WidgetEssAnnouncement({super.key});
-  final EssController controller = EssController();
+  final EssController controller = Get.find();
   @override
   Widget build(BuildContext context) {
     var style = GoogleFonts.poppins(
