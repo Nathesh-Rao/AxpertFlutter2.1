@@ -14,7 +14,7 @@ class WidgetEssAppDrawer extends StatelessWidget {
         width: size.width * 0.7,
         // height: size.height,
         // color: Colors.white,
-        backgroundColor: Colors.grey.shade400,
+        backgroundColor: Colors.white,
         child: ListView(
           padding: EdgeInsets.zero,
           children: ListTile.divideTiles(

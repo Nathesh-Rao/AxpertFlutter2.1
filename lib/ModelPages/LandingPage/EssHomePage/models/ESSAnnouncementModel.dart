@@ -2,19 +2,21 @@ import 'dart:convert';
 
 class EssAnnouncementModel {
   final String imageurl;
-  final String caption;
-  final String subheading;
+  final String title;
+  final String subtitle;
   final String description;
-  final String announcementlink;
+  final String linkcaption;
   final String pageid;
+  final String isactive;
 
   EssAnnouncementModel({
     required this.imageurl,
-    required this.caption,
-    required this.subheading,
+    required this.title,
+    required this.subtitle,
     required this.description,
-    required this.announcementlink,
+    required this.linkcaption,
     required this.pageid,
+    required this.isactive,
   });
 
   factory EssAnnouncementModel.fromRawJson(String str) =>
@@ -25,19 +27,21 @@ class EssAnnouncementModel {
   factory EssAnnouncementModel.fromJson(Map<String, dynamic> json) =>
       EssAnnouncementModel(
         imageurl: json["imageurl"],
-        caption: json["caption"],
-        subheading: json["subheading"],
+        title: json["title"],
+        subtitle: json["subtitle"],
         description: json["description"],
-        announcementlink: json["announcementlink"],
+        linkcaption: json["linkcaption"],
         pageid: json["pageid"],
+        isactive: json["isactive"],
       );
 
   Map<String, dynamic> toJson() => {
         "imageurl": imageurl,
-        "caption": caption,
-        "subheading": subheading,
+        "title": title,
+        "subtitle": subtitle,
         "description": description,
-        "announcementlink": announcementlink,
+        "linkcaption": linkcaption,
         "pageid": pageid,
+        "isactive": isactive,
       };
 }

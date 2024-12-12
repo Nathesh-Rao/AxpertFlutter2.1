@@ -2,8 +2,8 @@ import 'dart:convert';
 
 class EssRecentActivityModel {
   final String icon;
-  final String caption;
-  final String subheading;
+  final String title;
+  final String subtitle;
   final String info1;
   final String info2;
   final String isactive;
@@ -11,8 +11,8 @@ class EssRecentActivityModel {
 
   EssRecentActivityModel({
     required this.icon,
-    required this.caption,
-    required this.subheading,
+    required this.title,
+    required this.subtitle,
     required this.info1,
     required this.info2,
     required this.isactive,
@@ -27,8 +27,8 @@ class EssRecentActivityModel {
   factory EssRecentActivityModel.fromJson(Map<String, dynamic> json) =>
       EssRecentActivityModel(
         icon: json["icon"],
-        caption: json["caption"],
-        subheading: json["subheading"],
+        title: json["title"],
+        subtitle: json["subtitle"],
         info1: json["info1"],
         info2: json["info2"],
         isactive: json["isactive"],
@@ -37,8 +37,8 @@ class EssRecentActivityModel {
 
   Map<String, dynamic> toJson() => {
         "icon": icon,
-        "caption": caption,
-        "subheading": subheading,
+        "caption": title,
+        "subtitle": subtitle,
         "info1": info1,
         "info2": info2,
         "isactive": isactive,

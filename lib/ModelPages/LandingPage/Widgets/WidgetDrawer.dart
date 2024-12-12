@@ -16,7 +16,7 @@ class WidgetDrawer extends StatelessWidget {
     return Obx(() => ClipRRect(
           clipper: getClipped(),
           child: Drawer(
-            backgroundColor: Colors.grey.shade400,
+            backgroundColor: Colors.white,
             child: SafeArea(
               child: ListView(
                 children: ListTile.divideTiles(

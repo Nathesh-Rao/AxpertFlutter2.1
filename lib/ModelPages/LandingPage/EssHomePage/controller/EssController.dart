@@ -423,13 +423,13 @@ class EssController extends GetxController {
         child: Icon(generateIcon(model, 1)),
       ),
       title: Text(
-        model.caption,
+        model.title,
         style: GoogleFonts.poppins(
           fontWeight: FontWeight.w500,
         ),
       ),
       subtitle: Text(
-        model.subheading,
+        model.subtitle,
         style: GoogleFonts.poppins(
           fontSize: 13,
         ),
@@ -543,7 +543,7 @@ class EssController extends GetxController {
                               width: 7,
                             ),
                             Text(
-                              model.announcementlink,
+                              model.linkcaption,
                               style: GoogleFonts.poppins(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
@@ -590,7 +590,7 @@ class EssController extends GetxController {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                model.caption,
+                model.title,
                 style: GoogleFonts.poppins(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
@@ -608,7 +608,7 @@ class EssController extends GetxController {
                     width: 5,
                   ),
                   Text(
-                    model.subheading,
+                    model.subtitle,
                     style: GoogleFonts.poppins(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
