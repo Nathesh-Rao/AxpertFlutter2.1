@@ -7,6 +7,7 @@ class EssRecentActivityModel {
   final String info1;
   final String info2;
   final String isactive;
+  final String pageid;
 
   EssRecentActivityModel({
     required this.icon,
@@ -15,6 +16,7 @@ class EssRecentActivityModel {
     required this.info1,
     required this.info2,
     required this.isactive,
+    required this.pageid,
   });
 
   factory EssRecentActivityModel.fromRawJson(String str) =>
@@ -30,6 +32,7 @@ class EssRecentActivityModel {
         info1: json["info1"],
         info2: json["info2"],
         isactive: json["isactive"],
+        pageid: json["pageid"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -39,5 +42,6 @@ class EssRecentActivityModel {
         "info1": info1,
         "info2": info2,
         "isactive": isactive,
+        "pageid": pageid,
       };
 }

@@ -42,26 +42,26 @@ class WidgetRecentActivity extends StatelessWidget {
                       style: style,
                     ),
                     Spacer(),
-                    InkWell(
-                      onTap: () {},
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            "See all",
-                            style: style.copyWith(
-                              fontSize: 12,
-                              color: Colors.blue.shade900,
-                            ),
-                          ),
-                          Icon(
-                            Icons.chevron_right,
-                            size: 16,
-                            color: Colors.blue.shade900,
-                          ),
-                        ],
-                      ),
-                    ),
+                    // InkWell(
+                    //   onTap: () {},
+                    //   child: Row(
+                    //     mainAxisSize: MainAxisSize.min,
+                    //     children: [
+                    //       Text(
+                    //         "See all",
+                    //         style: style.copyWith(
+                    //           fontSize: 12,
+                    //           color: Colors.blue.shade900,
+                    //         ),
+                    //       ),
+                    //       Icon(
+                    //         Icons.chevron_right,
+                    //         size: 16,
+                    //         color: Colors.blue.shade900,
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
@@ -85,35 +85,35 @@ class WidgetRecentActivity extends StatelessWidget {
     );
   }
 
-  _activityItem(EssRecentActivityModel model) {
-    var color = MyColors.getRandomColor();
+  // _activityItem(EssRecentActivityModel model) {
+  //   var color = MyColors.getRandomColor();
 
-    return ListTile(
-      onTap: () {},
-      leading: CircleAvatar(
-        backgroundColor: color.withAlpha(35),
-        foregroundColor: color,
-        child: Icon(controller.generateIcon(model)),
-      ),
-      title: Text(
-        model.caption,
-        style: GoogleFonts.poppins(
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      subtitle: Text(
-        model.subheading,
-        style: GoogleFonts.poppins(
-          fontSize: 13,
-        ),
-      ),
-      trailing: Text(
-        model.info1,
-        style: GoogleFonts.poppins(
-          fontSize: 11,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
-  }
+  //   return ListTile(
+  //     onTap: () {},
+  //     leading: CircleAvatar(
+  //       backgroundColor: color.withAlpha(35),
+  //       foregroundColor: color,
+  //       child: Icon(controller.generateIcon(model, 1)),
+  //     ),
+  //     title: Text(
+  //       model.caption,
+  //       style: GoogleFonts.poppins(
+  //         fontWeight: FontWeight.w500,
+  //       ),
+  //     ),
+  //     subtitle: Text(
+  //       model.subheading,
+  //       style: GoogleFonts.poppins(
+  //         fontSize: 13,
+  //       ),
+  //     ),
+  //     trailing: Text(
+  //       model.info1,
+  //       style: GoogleFonts.poppins(
+  //         fontSize: 11,
+  //         fontWeight: FontWeight.w600,
+  //       ),
+  //     ),
+  //   );
+  // }
 }

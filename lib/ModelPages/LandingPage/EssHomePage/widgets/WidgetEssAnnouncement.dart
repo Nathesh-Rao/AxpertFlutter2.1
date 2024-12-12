@@ -8,7 +8,7 @@ import '../models/ESSAnnouncementModel.dart';
 
 class WidgetEssAnnouncement extends StatelessWidget {
   WidgetEssAnnouncement({super.key});
-  final EssController controller = EssController();
+  final EssController controller = Get.find();
   @override
   Widget build(BuildContext context) {
     var style = GoogleFonts.poppins(
@@ -40,28 +40,28 @@ class WidgetEssAnnouncement extends StatelessWidget {
                       style: style,
                     ),
                     Spacer(),
-                    InkWell(
-                      onTap: () {
-                        controller.getESSAnnouncement();
-                      },
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            "See all",
-                            style: style.copyWith(
-                              fontSize: 12,
-                              color: Colors.blue.shade900,
-                            ),
-                          ),
-                          Icon(
-                            Icons.chevron_right,
-                            size: 16,
-                            color: Colors.blue.shade900,
-                          ),
-                        ],
-                      ),
-                    ),
+                    // InkWell(
+                    //   onTap: () {
+                    //     controller.getESSAnnouncement();
+                    //   },
+                    //   child: Row(
+                    //     mainAxisSize: MainAxisSize.min,
+                    //     children: [
+                    //       Text(
+                    //         "See all",
+                    //         style: style.copyWith(
+                    //           fontSize: 12,
+                    //           color: Colors.blue.shade900,
+                    //         ),
+                    //       ),
+                    //       Icon(
+                    //         Icons.chevron_right,
+                    //         size: 16,
+                    //         color: Colors.blue.shade900,
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

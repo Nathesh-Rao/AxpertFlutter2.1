@@ -26,9 +26,9 @@ class _WidgetEssAttendanceCardState extends State<WidgetEssAttendanceCard> {
 
   _swiped() async {
     if (!clockedIn) {
-      controller.onClick_PunchIn();
+      // controller.onClick_PunchIn();
     } else {
-      controller.onClick_PunchOut();
+      // controller.onClick_PunchOut();
     }
     setState(() {
       clockedIn = !clockedIn;

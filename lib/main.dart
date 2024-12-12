@@ -21,7 +21,8 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:platform_device_id/platform_device_id.dart';
 
-FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 NotificationDetails notificationDetails = NotificationDetails(
     android: AndroidNotificationDetails('Default', 'Default',
@@ -50,7 +51,8 @@ Future<void> main() async {
     await InAppWebViewController.setWebContentsDebuggingEnabled(true);
   }
   runApp(MyApp());
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.black38));
+  SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(statusBarColor: Colors.black38));
   try {
     Const.DEVICE_ID = await PlatformDeviceId.getDeviceId ?? "00";
   } on PlatformException {}
@@ -71,7 +73,8 @@ void configureEasyLoading() {
 class MyApp extends StatelessWidget {
   MyApp({super.key});
 
-  final InternetConnectivity internetConnectivity = Get.put(InternetConnectivity());
+  final InternetConnectivity internetConnectivity =
+      Get.put(InternetConnectivity());
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +85,7 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.light,
       theme: Const.THEMEDATA,
       initialRoute: Routes.SplashScreen,
+
       // initialRoute: Routes.SettingsPage,
       getPages: RoutePages.pages,
       // builder: EasyLoading.init(),
@@ -91,7 +95,8 @@ class MyApp extends StatelessWidget {
                 body: Center(
                   child: InkWell(
                       onTap: () => Get.toNamed(Routes.ProjectListingPage),
-                      child: Text("Some Error occurred. \n ${errorDetails.exception.toString()}")),
+                      child: Text(
+                          "Some Error occurred. \n ${errorDetails.exception.toString()}")),
                 ),
               );
           if (child != null) return child;
