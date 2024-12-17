@@ -1,9 +1,12 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/VersionUpdateClearOldData.dart';
 import 'package:axpertflutter/Constants/const.dart';
+import 'package:axpertflutter/Demo/Demo_utils.dart';
+import 'package:axpertflutter/Demo/page/Demo_validity_page.dart';
 import 'package:axpertflutter/ModelPages/ProjectListing/Model/ProjectModel.dart';
 import 'package:axpertflutter/ModelPages/location_permission.dart';
 import 'package:flutter/material.dart';
@@ -39,20 +42,31 @@ class _SplashPageState extends State<SplashPage>
       _animationController.stop();
       WidgetsBinding.instance
           .addPostFrameCallback((_) => _askLocationPermission());
+//---------DEMO-------------
+      DemoUtils.demoSplashConfig();
+
       var cached = appStorage.retrieveValue(AppStorage.CACHED);
-      try {
-        if (cached == null)
+//---------DEMO-------------
+// only the validity can be removed
+      if (DemoUtils.demoValidityCheck()) {
+        try {
+          if (cached == null)
+            Get.offAllNamed(Routes.ProjectListingPage);
+          else {
+            var jsonProject = appStorage.retrieveValue(cached);
+            log("Project Model in json");
+            log(jsonProject.toString());
+            projectModel = ProjectModel.fromJson(jsonProject);
+            Const.PROJECT_NAME = projectModel!.projectname;
+            Const.PROJECT_URL = projectModel!.web_url;
+            Const.ARM_URL = projectModel!.arm_url;
+            Get.offAllNamed(Routes.Login);
+          }
+        } catch (e) {
           Get.offAllNamed(Routes.ProjectListingPage);
-        else {
-          var jsonProject = appStorage.retrieveValue(cached);
-          projectModel = ProjectModel.fromJson(jsonProject);
-          Const.PROJECT_NAME = projectModel!.projectname;
-          Const.PROJECT_URL = projectModel!.web_url;
-          Const.ARM_URL = projectModel!.arm_url;
-          Get.offAllNamed(Routes.Login);
         }
-      } catch (e) {
-        Get.offAllNamed(Routes.ProjectListingPage);
+      } else {
+        Get.offAll(() => DemoValidityPage());
       }
     });
   }

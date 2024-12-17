@@ -58,6 +58,7 @@ dependencies:
   permission_handler: ^11.0.1
   # platform_device_id: ^1.0.1
   # platform_device_id: ^1.0.1
+  lottie:
   qr_code_scanner: ^1.0.1
   scan: ^1.6.0
   scrollable_positioned_list: ^0.3.8
@@ -117,6 +118,7 @@ flutter:
   assets:
     - assets/lang/
     - assets/images/
+    - assets/lotties/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

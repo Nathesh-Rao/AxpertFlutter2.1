@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:animated_icon/animated_icon.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
+import 'package:axpertflutter/Demo/Demo_utils.dart';
 import 'package:axpertflutter/ModelPages/AddConnection/Controllers/AddConnectionController.dart';
 import 'package:axpertflutter/ModelPages/ProjectListing/Controller/ProjectListingController.dart';
 import 'package:axpertflutter/ModelPages/ProjectListing/Widgets/ProjectItemListTile.dart';
@@ -18,8 +19,10 @@ class ProjectListingPage extends StatefulWidget {
 }
 
 class _ProjectListingPageState extends State<ProjectListingPage> {
-  ProjectListingController projectListingController = Get.put(ProjectListingController());
-  AddConnectionController addConnectionController = Get.put(AddConnectionController());
+  ProjectListingController projectListingController =
+      Get.put(ProjectListingController());
+  AddConnectionController addConnectionController =
+      Get.put(AddConnectionController());
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +42,8 @@ class _ProjectListingPageState extends State<ProjectListingPage> {
   _NavigateToAddConnectionPage() async {
     var data = await Get.toNamed(Routes.AddNewConnection);
     if (data != null) {
-      if (projectListingController.isCountAvailable.value == false) projectListingController.isCountAvailable.value = true;
+      if (projectListingController.isCountAvailable.value == false)
+        projectListingController.isCountAvailable.value = true;
       setState(() {
         projectListingController.getProjectList();
       });
@@ -69,7 +73,9 @@ class _ProjectListingPageState extends State<ProjectListingPage> {
                   child: ClipRRect(
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(80), topLeft: Radius.circular(80), topRight: Radius.circular(80)),
+                        bottomLeft: Radius.circular(80),
+                        topLeft: Radius.circular(80),
+                        topRight: Radius.circular(80)),
                     child: Container(
                       height: MediaQuery.of(context).size.height / 1.5,
                       width: MediaQuery.of(context).size.width,
@@ -105,7 +111,8 @@ class _ProjectListingPageState extends State<ProjectListingPage> {
                                       Hero(
                                         tag: 'axpertImage',
                                         child: Padding(
-                                          padding: const EdgeInsets.only(top: 10.0, left: 10),
+                                          padding: const EdgeInsets.only(
+                                              top: 10.0, left: 10),
                                           child: Image.asset(
                                             // 'assets/images/buzzily-logo.png',
                                             'assets/images/axpert_full.png',
@@ -118,7 +125,8 @@ class _ProjectListingPageState extends State<ProjectListingPage> {
                                     ],
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.only(top: 15.0, left: 0, right: 0),
+                                    padding: const EdgeInsets.only(
+                                        top: 15.0, left: 0, right: 0),
                                     child: Text(
                                       'Connect to application',
                                       style: TextStyle(
@@ -135,129 +143,173 @@ class _ProjectListingPageState extends State<ProjectListingPage> {
                                       return Future.value(true);
                                     },
                                     child: SizedBox(
-                                      height: MediaQuery.of(context).size.height * 0.6,
-                                      child: projectListingController.isCountAvailable.value
-                                          ? FutureBuilder(
-                                              future: projectListingController.getProjectList(),
-                                              builder: (BuildContext context, snapshot) {
-                                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                                  return Center(
-                                                    child: CircularProgressIndicator(),
-                                                  );
-                                                }
-                                                if (snapshot.connectionState == ConnectionState.done) {
-                                                  if (snapshot.hasError) {
-                                                    return Text("");
-                                                  } else {
-                                                    if (snapshot.hasData) {
-                                                      return ListView.builder(
-                                                          padding: EdgeInsets.only(left: 20, right: 20),
-                                                          itemCount: snapshot.data!.length,
-                                                          itemBuilder: (_, index) {
-                                                            return GestureDetector(
-                                                              onTap: () {
-                                                                print("index data: " + snapshot.data![index]);
-                                                              },
-                                                              child: Dismissible(
-                                                                  background: Container(
-                                                                    margin: EdgeInsets.only(top: 5, bottom: 5),
-                                                                    decoration: BoxDecoration(
-                                                                        color: Colors.red,
-                                                                        borderRadius:
-                                                                            BorderRadius.horizontal(left: Radius.circular(10))),
-                                                                    child: Row(
-                                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                                      children: [
-                                                                        Padding(
-                                                                          padding: const EdgeInsets.only(left: 10),
-                                                                          child: AnimateIcon(
-                                                                            iconType: IconType.continueAnimation,
-                                                                            color: Colors.white,
-                                                                            animateIcon: AnimateIcons.trashBin, onTap: () {},
-
-                                                                            // child: Text(
-                                                                            //   "Delete",
-                                                                            //   style: TextStyle(fontSize: 18, color: Colors.white),
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                  secondaryBackground: Container(
-                                                                    margin: EdgeInsets.only(top: 5, bottom: 5),
-                                                                    decoration: BoxDecoration(
-                                                                        color: Colors.amber,
-                                                                        borderRadius:
-                                                                            BorderRadius.horizontal(right: Radius.circular(10))),
-                                                                    child: Row(
-                                                                      mainAxisAlignment: MainAxisAlignment.end,
-                                                                      children: [
-                                                                        // Text(
-                                                                        //   "Edit",
-                                                                        //   style: TextStyle(color: Colors.white, fontSize: 18),
-                                                                        // ),
-                                                                        Padding(
-                                                                          padding: EdgeInsets.only(right: 10),
-                                                                          child: AnimateIcon(
-                                                                            onTap: () {}, animateIcon: AnimateIcons.edit,
-                                                                            iconType: IconType.continueAnimation,
-                                                                            color: Colors.white,
-                                                                            // child: Text(
-                                                                            //   "Edit",
-                                                                            //   style: TextStyle(color: Colors.white, fontSize: 18),
-                                                                          ),
-                                                                        )
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                  confirmDismiss: (direction) async {
-                                                                    if (direction == DismissDirection.endToStart) {
-                                                                      addConnectionController.edit(snapshot.data![index]);
-                                                                    }
-                                                                    if (direction == DismissDirection.startToEnd) {
-                                                                      return addConnectionController
-                                                                          .delete(snapshot.data![index]);
-                                                                    }
-                                                                    return false;
-                                                                  },
-                                                                  key: ValueKey(index),
-                                                                  child: ProjectItemListTile(snapshot.data![index])),
-                                                            );
-                                                          });
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.6,
+                                      child:
+                                          projectListingController
+                                                  .isCountAvailable.value
+                                              ? FutureBuilder(
+                                                  future:
+                                                      projectListingController
+                                                          .getProjectList(),
+                                                  builder:
+                                                      (BuildContext context,
+                                                          snapshot) {
+                                                    if (snapshot
+                                                            .connectionState ==
+                                                        ConnectionState
+                                                            .waiting) {
+                                                      return Center(
+                                                        child:
+                                                            CircularProgressIndicator(),
+                                                      );
                                                     }
-                                                  }
-                                                }
-                                                return Text("");
-                                              })
-                                          : Visibility(
-                                              visible: !projectListingController.isCountAvailable.value,
-                                              child: GestureDetector(
-                                                onTap: _NavigateToAddConnectionPage,
-                                                child: Container(
-                                                  padding: EdgeInsets.only(top: 250),
-                                                  height: 50,
-                                                  child: Column(
-                                                    children: [
-                                                      Container(
-                                                        height: 50,
-                                                        width: 250,
-                                                        decoration: BoxDecoration(
-                                                            color: MyColors.blue2, borderRadius: BorderRadius.circular(30)),
-                                                        child: Center(
-                                                          child: Text(
-                                                            "+ Add Connection",
-                                                            style: TextStyle(color: Colors.white, fontSize: 20),
-                                                          ),
-                                                        ),
+                                                    if (snapshot
+                                                            .connectionState ==
+                                                        ConnectionState.done) {
+                                                      if (snapshot.hasError) {
+                                                        return Text("");
+                                                      } else {
+                                                        if (snapshot.hasData) {
+                                                          return ListView
+                                                              .builder(
+                                                                  padding: EdgeInsets
+                                                                      .only(
+                                                                          left:
+                                                                              20,
+                                                                          right:
+                                                                              20),
+                                                                  itemCount:
+                                                                      snapshot
+                                                                          .data!
+                                                                          .length,
+                                                                  itemBuilder:
+                                                                      (_, index) {
+                                                                    return GestureDetector(
+                                                                      onTap:
+                                                                          () {
+                                                                        print("index data: " +
+                                                                            snapshot.data![index]);
+                                                                      },
+                                                                      child: Dismissible(
+                                                                          background: Container(
+                                                                            margin:
+                                                                                EdgeInsets.only(top: 5, bottom: 5),
+                                                                            decoration:
+                                                                                BoxDecoration(color: Colors.red, borderRadius: BorderRadius.horizontal(left: Radius.circular(10))),
+                                                                            child:
+                                                                                Row(
+                                                                              mainAxisAlignment: MainAxisAlignment.start,
+                                                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                                                              children: [
+                                                                                Padding(
+                                                                                  padding: const EdgeInsets.only(left: 10),
+                                                                                  child: AnimateIcon(
+                                                                                    iconType: IconType.continueAnimation,
+                                                                                    color: Colors.white,
+                                                                                    animateIcon: AnimateIcons.trashBin, onTap: () {},
 
-                                                        // color: Colors.red,
-                                                      )
-                                                    ],
+                                                                                    // child: Text(
+                                                                                    //   "Delete",
+                                                                                    //   style: TextStyle(fontSize: 18, color: Colors.white),
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                          secondaryBackground: Container(
+                                                                            margin:
+                                                                                EdgeInsets.only(top: 5, bottom: 5),
+                                                                            decoration:
+                                                                                BoxDecoration(color: Colors.amber, borderRadius: BorderRadius.horizontal(right: Radius.circular(10))),
+                                                                            child:
+                                                                                Row(
+                                                                              mainAxisAlignment: MainAxisAlignment.end,
+                                                                              children: [
+                                                                                // Text(
+                                                                                //   "Edit",
+                                                                                //   style: TextStyle(color: Colors.white, fontSize: 18),
+                                                                                // ),
+                                                                                Padding(
+                                                                                  padding: EdgeInsets.only(right: 10),
+                                                                                  child: AnimateIcon(
+                                                                                    onTap: () {}, animateIcon: AnimateIcons.edit,
+                                                                                    iconType: IconType.continueAnimation,
+                                                                                    color: Colors.white,
+                                                                                    // child: Text(
+                                                                                    //   "Edit",
+                                                                                    //   style: TextStyle(color: Colors.white, fontSize: 18),
+                                                                                  ),
+                                                                                )
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                          confirmDismiss: (direction) async {
+                                                                            if (direction ==
+                                                                                DismissDirection.endToStart) {
+                                                                              addConnectionController.edit(snapshot.data![index]);
+                                                                            }
+                                                                            if (direction ==
+                                                                                DismissDirection.startToEnd) {
+                                                                              return addConnectionController.delete(snapshot.data![index]);
+                                                                            }
+                                                                            return false;
+                                                                          },
+                                                                          key: ValueKey(index),
+                                                                          child: ProjectItemListTile(snapshot.data![index])),
+                                                                    );
+                                                                  });
+                                                        }
+                                                      }
+                                                    }
+                                                    return Text("");
+                                                  })
+                                              : Visibility(
+                                                  visible:
+                                                      !projectListingController
+                                                          .isCountAvailable
+                                                          .value,
+                                                  child: GestureDetector(
+                                                    // onTap: _NavigateToAddConnectionPage,
+                                                    onTap: () {
+                                                      DemoUtils
+                                                          .showDemoBarrier();
+                                                    },
+                                                    child: Container(
+                                                      padding: EdgeInsets.only(
+                                                          top: 250),
+                                                      height: 50,
+                                                      child: Column(
+                                                        children: [
+                                                          Container(
+                                                            height: 50,
+                                                            width: 250,
+                                                            decoration: BoxDecoration(
+                                                                color: MyColors
+                                                                    .blue2,
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            30)),
+                                                            child: Center(
+                                                              child: Text(
+                                                                "+ Add Connection",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        20),
+                                                              ),
+                                                            ),
+
+                                                            // color: Colors.red,
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            ),
                                     ),
                                   ),
                                 ],
@@ -277,7 +329,10 @@ class _ProjectListingPageState extends State<ProjectListingPage> {
           child: FloatingActionButton.extended(
             backgroundColor: MyColors.blue2,
             tooltip: 'Add Connection',
-            onPressed: _NavigateToAddConnectionPage,
+            // onPressed: _NavigateToAddConnectionPage,
+            onPressed: () {
+              DemoUtils.showDemoBarrier();
+            },
             label: Text(
               'Add Connection',
               style: TextStyle(
