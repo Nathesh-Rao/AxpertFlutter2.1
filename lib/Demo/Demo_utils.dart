@@ -69,21 +69,21 @@ class DemoUtils {
     }
   }
 
-  static showDemoBarrier() async {
-    await Get.defaultDialog(
-        title: "Action Not Allowed",
-        content: Text(
-          "Sorry, the action you attempted cannot be performed in the demo version. Thank you for understanding!",
-          style: GoogleFonts.poppins(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: MyColors.text1,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        textConfirm: "Close",
-        onConfirm: () {
-          Get.back();
-        });
-  }
+  // static showDemoBarrier() async {
+  //   await Get.defaultDialog(
+  //       title: "Action Not Allowed",
+  //       content: Text(
+  //         "Sorry, the action you attempted cannot be performed in the demo version. Thank you for understanding!",
+  //         style: GoogleFonts.poppins(
+  //           fontSize: 14,
+  //           fontWeight: FontWeight.w500,
+  //           color: MyColors.text1,
+  //         ),
+  //         textAlign: TextAlign.center,
+  //       ),
+  //       textConfirm: "Close",
+  //       onConfirm: () {
+  //         Get.back();
+  //       });
+  // }
 }

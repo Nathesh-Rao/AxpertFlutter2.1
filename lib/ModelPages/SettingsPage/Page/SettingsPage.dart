@@ -263,8 +263,9 @@ class SettingsPage extends StatelessWidget {
                             Divider(),
                             ListTile(
                               onTap: () {
-                                DemoUtils.showDemoBarrier();
-                                // landingPageController.showManageWindow(initialIndex: 1);
+                                // DemoUtils.showDemoBarrier();
+                                landingPageController.showManageWindow(
+                                    initialIndex: 1);
                               },
                               leading: Icon(Icons.lock_outline),
                               title: Text(

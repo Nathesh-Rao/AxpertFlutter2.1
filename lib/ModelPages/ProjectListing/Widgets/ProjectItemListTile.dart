@@ -96,8 +96,8 @@ class ProjectItemListTile extends StatelessWidget {
                         size: 28, color: MyColors.green),
                     tooltip: 'Edit',
                     onPressed: () async {
-                      DemoUtils.showDemoBarrier();
-                      // addConnectionController.edit(keyValue);
+                      // DemoUtils.showDemoBarrier();
+                      addConnectionController.edit(keyValue);
                       // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => EditWelcomeSmallScreen(weburllist[i], armurllist[i], connectionnamelist[i], connectioncaptionlist[i], i)));
                     },
                   ),
@@ -106,9 +106,9 @@ class ProjectItemListTile extends StatelessWidget {
                         const Icon(Icons.delete, size: 28, color: MyColors.red),
                     tooltip: 'Delete',
                     onPressed: () async {
-                      DemoUtils.showDemoBarrier();
+                      // DemoUtils.showDemoBarrier();
 
-                      // addConnectionController.delete(keyValue);
+                      addConnectionController.delete(keyValue);
                     },
                   ),
                 ])),

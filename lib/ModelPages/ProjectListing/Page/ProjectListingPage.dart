@@ -271,11 +271,12 @@ class _ProjectListingPageState extends State<ProjectListingPage> {
                                                           .isCountAvailable
                                                           .value,
                                                   child: GestureDetector(
-                                                    // onTap: _NavigateToAddConnectionPage,
-                                                    onTap: () {
-                                                      DemoUtils
-                                                          .showDemoBarrier();
-                                                    },
+                                                    onTap:
+                                                        _NavigateToAddConnectionPage,
+                                                    // onTap: () {
+                                                    //   DemoUtils
+                                                    //       .showDemoBarrier();
+                                                    // },
                                                     child: Container(
                                                       padding: EdgeInsets.only(
                                                           top: 250),
@@ -329,10 +330,10 @@ class _ProjectListingPageState extends State<ProjectListingPage> {
           child: FloatingActionButton.extended(
             backgroundColor: MyColors.blue2,
             tooltip: 'Add Connection',
-            // onPressed: _NavigateToAddConnectionPage,
-            onPressed: () {
-              DemoUtils.showDemoBarrier();
-            },
+            onPressed: _NavigateToAddConnectionPage,
+            // onPressed: () {
+            //   DemoUtils.showDemoBarrier();
+            // },
             label: Text(
               'Add Connection',
               style: TextStyle(

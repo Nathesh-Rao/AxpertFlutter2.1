@@ -43,7 +43,7 @@ class _SplashPageState extends State<SplashPage>
       WidgetsBinding.instance
           .addPostFrameCallback((_) => _askLocationPermission());
 //---------DEMO-------------
-      DemoUtils.demoSplashConfig();
+      // DemoUtils.demoSplashConfig();
 
       var cached = appStorage.retrieveValue(AppStorage.CACHED);
 //---------DEMO-------------
