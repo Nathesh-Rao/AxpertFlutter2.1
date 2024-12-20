@@ -103,7 +103,7 @@ class RoutePages {
     GetPage(
       name: Routes.AttendanceManagement,
       page: () => AttendanceManagementHomePage(),
-      transition: Transition.fadeIn,
+      transition: Transition.rightToLeft,
     ),
   ];
 }

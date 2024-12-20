@@ -1,20 +1,19 @@
+import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/AttendanceManagement/controller/AttendanceController.dart';
+import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/AttendanceManagement/widgets/WidgetAttendanceHome.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-import '../../widgets/WidgetEssAttendanceCard.dart';
+import '../widgets/WidgetAttendanceAppaBar.dart';
 
 class AttendanceManagementHomePage extends StatelessWidget {
-  const AttendanceManagementHomePage({super.key});
-
+  AttendanceManagementHomePage({super.key});
+  final AttendanceController c = Get.put(AttendanceController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: Column(
-        children: [
-          Spacer(),
-          WidgetEssAttendanceCard(),
-        ],
-      ),
+      extendBodyBehindAppBar: true,
+      appBar: AttendanceAppBar(),
+      body: WidgetAttendanceHome(),
     );
   }
 }

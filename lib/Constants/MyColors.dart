@@ -16,6 +16,10 @@ class MyColors {
   static const Color blue10 = Color(0xff1F41BB);
   static const Color blue11 = Color(0xffCBD6FF);
   static const Color blue12 = Color(0xffF1F4FF);
+  static const Color baseBlue = Color(0xff3764FC);
+  static const Color baseYellow = Color(0xffF79E02);
+  static const Color baseRed = Color(0xffDD2025);
+  static const Color basegray = Color(0xffDEDEDE);
 
   static const Color buttoncolor = Color(0xFF164A41);
   static const Color buttoncolor1 = Color(0xFF4CAF50);
@@ -69,6 +73,18 @@ class MyColors {
     Color.fromRGBO(142, 142, 255, 1)
   ]);
 
+  static const LinearGradient subBGGradientVertical = LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Color(0xff3764FC),
+        Color(0xff9764DA),
+      ]);
+
+  static const LinearGradient subBGGradientHorizontal = LinearGradient(colors: [
+    Color(0xff3764FC),
+    Color(0xff9764DA),
+  ]);
   //------random- color------>
   static Color getRandomColor() {
     List<Color> colors = [
