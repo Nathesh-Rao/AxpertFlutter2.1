@@ -61,6 +61,7 @@ class MyColors {
   static const Color white1 = Color(0xFFFFFFFF);
   static const Color white3 = Color(0xffECECEC);
   static const Color text1 = Color(0xff626262);
+  static const Color text2 = Color(0xff919191);
   static const LinearGradient updatedUIBackgroundGradient =
       // LinearGradient(colors: [Color.fromRGBO(55, 100, 252, 1), Color.fromRGBO(151, 100, 218, 1)]);
       // LinearGradient(colors: [Color.fromRGBO(9,9,121,1), Color.fromRGBO(7,176,210,1)]);

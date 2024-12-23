@@ -115,7 +115,7 @@ class WidgetTabAttendance extends StatelessWidget {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withAlpha(15),
+                      color: Colors.black.withAlpha(30),
                       offset: Offset(0, -2),
                       blurRadius: 10,
                       spreadRadius: 5,
