@@ -7,11 +7,9 @@ import 'package:google_fonts/google_fonts.dart';
 import '../controller/AttendanceController.dart';
 
 class WidgetTabAttendance extends StatelessWidget {
-  WidgetTabAttendance({
-    super.key,
-  });
+  WidgetTabAttendance({super.key});
   // final AttendanceController controller;
-  // final AttendanceController controller = Get.find<AttendanceController>();
+  final AttendanceController attendanceController = Get.find();
   @override
   Widget build(BuildContext context) {
     var style = GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.w500);
@@ -57,8 +55,7 @@ class WidgetTabAttendance extends StatelessWidget {
                       SizedBox(width: 5),
                       Text(
                         "2024",
-                        style: style.copyWith(
-                            color: MyColors.blue10, fontSize: 14),
+                        style: style.copyWith(color: MyColors.blue10, fontSize: 14),
                       ),
                       SizedBox(width: 30),
                       Icon(
@@ -124,8 +121,7 @@ class WidgetTabAttendance extends StatelessWidget {
               child: Column(
                 children: [
                   Container(
-                    decoration: BoxDecoration(
-                        gradient: MyColors.subBGGradientHorizontal),
+                    decoration: BoxDecoration(gradient: MyColors.subBGGradientHorizontal),
                     padding: EdgeInsets.symmetric(horizontal: 15),
                     height: 42,
                     child: Row(
@@ -134,20 +130,14 @@ class WidgetTabAttendance extends StatelessWidget {
                         Expanded(
                           child: Text(
                             "Date",
-                            style: style.copyWith(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white),
+                            style: style.copyWith(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white),
                             textAlign: TextAlign.start,
                           ),
                         ),
                         Expanded(
                           child: Text(
                             "Clock In",
-                            style: style.copyWith(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white),
+                            style: style.copyWith(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white),
                             textAlign: TextAlign.start,
                           ),
                         ),
@@ -155,20 +145,14 @@ class WidgetTabAttendance extends StatelessWidget {
                         Expanded(
                           child: Text(
                             "Clock Out",
-                            style: style.copyWith(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white),
+                            style: style.copyWith(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white),
                             textAlign: TextAlign.start,
                           ),
                         ),
                         Expanded(
                           child: Text(
                             "Working Hrs",
-                            style: style.copyWith(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white),
+                            style: style.copyWith(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white),
                             textAlign: TextAlign.end,
                           ),
                         ),
@@ -179,10 +163,8 @@ class WidgetTabAttendance extends StatelessWidget {
                     child: SingleChildScrollView(
                       physics: BouncingScrollPhysics(),
                       child: Column(
-                        children: List.generate(
-                            AttendanceDataModel.sampleData.length,
-                            (index) => _attendanceListTile(
-                                AttendanceDataModel.sampleData[index])),
+                        children: List.generate(AttendanceDataModel.sampleData.length,
+                            (index) => _attendanceListTile(AttendanceDataModel.sampleData[index])),
                       ),
                     ),
                   )
@@ -196,15 +178,11 @@ class WidgetTabAttendance extends StatelessWidget {
   }
 
   Widget _attendanceListTile(AttendanceDataModel data) {
-    var style = GoogleFonts.poppins(
-        fontSize: 12, fontWeight: FontWeight.w500, color: Colors.black);
+    var style = GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.black);
 
     return Container(
-      decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border(
-              bottom:
-                  BorderSide(color: _getTileWidgetBorderColor(data.status)))),
+      decoration:
+          BoxDecoration(color: Colors.white, border: Border(bottom: BorderSide(color: _getTileWidgetBorderColor(data.status)))),
       padding: EdgeInsets.symmetric(horizontal: 15),
       height: 52,
       child: Row(
@@ -227,10 +205,7 @@ class WidgetTabAttendance extends StatelessWidget {
                       ),
                       Text(
                         "📍Location",
-                        style: style.copyWith(
-                            fontSize: 8,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xff919191)),
+                        style: style.copyWith(fontSize: 8, fontWeight: FontWeight.w700, color: Color(0xff919191)),
                         textAlign: TextAlign.start,
                       ),
                     ],
@@ -257,10 +232,7 @@ class WidgetTabAttendance extends StatelessWidget {
                       ),
                       Text(
                         "📍Location",
-                        style: style.copyWith(
-                            fontSize: 8,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xff919191)),
+                        style: style.copyWith(fontSize: 8, fontWeight: FontWeight.w700, color: Color(0xff919191)),
                         textAlign: TextAlign.start,
                       ),
                     ],
@@ -288,9 +260,7 @@ class WidgetTabAttendance extends StatelessWidget {
           clipBehavior: Clip.hardEdge,
           height: 30,
           width: 30,
-          decoration: BoxDecoration(
-              color: color.withOpacity(0.28),
-              borderRadius: BorderRadius.circular(5)),
+          decoration: BoxDecoration(color: color.withOpacity(0.28), borderRadius: BorderRadius.circular(5)),
           child: Column(
             children: [
               Expanded(
@@ -325,8 +295,7 @@ class WidgetTabAttendance extends StatelessWidget {
   }
 
   bool _statusCheck(String status) {
-    if (status.toLowerCase().contains("active") ||
-        status.toLowerCase().contains("half")) {
+    if (status.toLowerCase().contains("active") || status.toLowerCase().contains("half")) {
       return true;
     }
 

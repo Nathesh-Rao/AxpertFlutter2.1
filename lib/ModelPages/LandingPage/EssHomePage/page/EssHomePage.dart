@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
+
 import '../widgets/WidgetEssAppBar.dart';
 import '../widgets/WidgetEssMenuFolderWidget.dart';
 import '../widgets/WidgetEssRecentActivity.dart';
@@ -24,6 +25,7 @@ class EssHomePage extends StatelessWidget {
   final EssController controller = Get.put(EssController());
   final LandingPageController landingPageController =
       Get.put(LandingPageController());
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(

@@ -10,7 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class WidgetTabInOutHub extends StatelessWidget {
   WidgetTabInOutHub({super.key});
-  // final AttendanceController controller = Get.find<AttendanceController>();
+  final AttendanceController attendanceController = Get.find();
   @override
   Widget build(BuildContext context) {
     var style = GoogleFonts.poppins(
@@ -22,10 +22,7 @@ class WidgetTabInOutHub extends StatelessWidget {
         SizedBox(height: MediaQuery.of(context).padding.top - 25),
         Expanded(
           child: Container(
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage("assets/images/map.png"),
-                    fit: BoxFit.cover)),
+            decoration: BoxDecoration(image: DecorationImage(image: AssetImage("assets/images/map.png"), fit: BoxFit.cover)),
           ),
         ),
         Padding(
@@ -81,19 +78,14 @@ class WidgetTabInOutHub extends StatelessWidget {
                       SizedBox(width: 5),
                       Text(
                         "IN TIME",
-                        style:
-                            style.copyWith(color: Colors.white, fontSize: 16),
+                        style: style.copyWith(color: Colors.white, fontSize: 16),
                       )
                     ],
                   ),
                   SizedBox(height: 10),
                   Text.rich(TextSpan(children: [
-                    TextSpan(
-                        text: "09:12",
-                        style: style.copyWith(
-                            fontSize: 22, height: 1, color: Colors.white)),
-                    TextSpan(
-                        text: "am", style: style.copyWith(color: Colors.white))
+                    TextSpan(text: "09:12", style: style.copyWith(fontSize: 22, height: 1, color: Colors.white)),
+                    TextSpan(text: "am", style: style.copyWith(color: Colors.white))
                   ])),
                 ],
               ),
@@ -117,20 +109,14 @@ class WidgetTabInOutHub extends StatelessWidget {
                       SizedBox(width: 5),
                       Text(
                         "OUT TIME",
-                        style:
-                            style.copyWith(fontSize: 16, color: MyColors.text1),
+                        style: style.copyWith(fontSize: 16, color: MyColors.text1),
                       )
                     ],
                   ),
                   SizedBox(height: 10),
                   Text.rich(TextSpan(children: [
-                    TextSpan(
-                        text: "00:00",
-                        style: style.copyWith(
-                            fontSize: 22, height: 1, color: MyColors.text1)),
-                    TextSpan(
-                        text: "am",
-                        style: style.copyWith(color: MyColors.text1))
+                    TextSpan(text: "00:00", style: style.copyWith(fontSize: 22, height: 1, color: MyColors.text1)),
+                    TextSpan(text: "am", style: style.copyWith(color: MyColors.text1))
                   ])),
                 ],
               ),
@@ -206,8 +192,7 @@ class WidgetTabInOutHub extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text.rich(TextSpan(children: [
-          TextSpan(
-              text: "09:12", style: style.copyWith(fontSize: 44, height: 1)),
+          TextSpan(text: "09:12", style: style.copyWith(fontSize: 44, height: 1)),
           TextSpan(text: "am", style: style)
         ])),
         Row(

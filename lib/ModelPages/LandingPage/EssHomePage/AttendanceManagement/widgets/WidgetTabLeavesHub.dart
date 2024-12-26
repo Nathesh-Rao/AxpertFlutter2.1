@@ -6,11 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../controller/AttendanceController.dart';
 import 'WidgetButton.dart';
 import 'WidgetProgressIndicator.dart';
 
 class WidgetTabLeavesHub extends StatelessWidget {
-  const WidgetTabLeavesHub({super.key});
+  WidgetTabLeavesHub({super.key});
+  final AttendanceController attendanceController = Get.find();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -27,17 +30,14 @@ class WidgetTabLeavesHub extends StatelessWidget {
                   clipBehavior: Clip.hardEdge,
                   margin: EdgeInsets.only(top: 20, bottom: 40),
                   padding: EdgeInsets.only(bottom: 20),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withAlpha(35),
-                          offset: Offset(0, -2),
-                          blurRadius: 10,
-                          spreadRadius: 5,
-                        )
-                      ]),
+                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20), boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(35),
+                      offset: Offset(0, -2),
+                      blurRadius: 10,
+                      spreadRadius: 5,
+                    )
+                  ]),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -216,8 +216,7 @@ class WidgetTabLeavesHub extends StatelessWidget {
                                 style: style,
                               ),
                               Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 15),
+                                padding: const EdgeInsets.symmetric(horizontal: 15),
                                 child: Divider(
                                   height: 1,
                                   thickness: 1,
