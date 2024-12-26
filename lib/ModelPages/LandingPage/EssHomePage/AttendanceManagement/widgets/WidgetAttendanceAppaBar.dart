@@ -9,9 +9,9 @@ import 'package:google_fonts/google_fonts.dart';
 class AttendanceAppBar extends StatelessWidget implements PreferredSizeWidget {
   AttendanceAppBar({super.key});
 
-  final AttendanceController controller = Get.find<AttendanceController>();
+  final AttendanceController attendanceController = Get.find<AttendanceController>();
   @override
-  Size get preferredSize => Size(double.infinity, controller.appbarHeight);
+  Size get preferredSize => Size(double.infinity, attendanceController.appbarHeight);
   @override
   Widget build(BuildContext context) {
     var topPadding = MediaQuery.of(context).padding;
@@ -40,17 +40,9 @@ class AttendanceAppBar extends StatelessWidget implements PreferredSizeWidget {
             children: [
               Spacer(),
               _topBarWidget(),
-              // SizedBox(
-              //   height: 20,
-              // ),
               Spacer(flex: 2),
-              _userInfoWidget(
-                  username: "Amrithanath", companyName: "Agile Labs"),
-              // SizedBox(
-              //   height: 20,
-              // ),
+              _userInfoWidget(username: "Amrithanath", companyName: "Agile Labs"),
               Spacer(flex: 2),
-
               WidgetAttendanceTopBar()
             ],
           ),
@@ -63,67 +55,70 @@ class AttendanceAppBar extends StatelessWidget implements PreferredSizeWidget {
     required String username,
     required String companyName,
   }) {
-    return Container(
-      padding: EdgeInsets.all(4),
-      margin: const EdgeInsets.symmetric(horizontal: 5),
-      decoration: BoxDecoration(
-        color: Color(0xffD9D9D9).withAlpha(44),
-        borderRadius: BorderRadius.circular(50),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CircleAvatar(
-            backgroundColor: Colors.white.withAlpha(56),
-            radius: 25,
-            child: CircleAvatar(
+    return GestureDetector(
+      onTap: attendanceController.openProfileBottomSheet,
+      child: Container(
+        padding: EdgeInsets.all(4),
+        margin: const EdgeInsets.symmetric(horizontal: 5),
+        decoration: BoxDecoration(
+          color: Color(0xffD9D9D9).withAlpha(44),
+          borderRadius: BorderRadius.circular(50),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircleAvatar(
               backgroundColor: Colors.white.withAlpha(56),
-              radius: 23,
+              radius: 25,
               child: CircleAvatar(
-                // backgroundColor: Colors.white,
-                backgroundImage: AssetImage("assets/images/profilesample.jpg"),
-                radius: 28,
+                backgroundColor: Colors.white.withAlpha(56),
+                radius: 23,
+                child: CircleAvatar(
+                  // backgroundColor: Colors.white,
+                  backgroundImage: AssetImage("assets/images/profilesample.jpg"),
+                  radius: 28,
+                ),
               ),
             ),
-          ),
-          SizedBox(
-            width: 10,
-          ),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                username,
-                style: GoogleFonts.poppins(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w400,
-                  height: 1,
+            SizedBox(
+              width: 10,
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  username,
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w400,
+                    height: 1,
+                  ),
                 ),
-              ),
-              Text(
-                companyName,
-                style: GoogleFonts.poppins(
-                  color: Colors.white.withAlpha(150),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  height: 1,
+                Text(
+                  companyName,
+                  style: GoogleFonts.poppins(
+                    color: Colors.white.withAlpha(150),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    height: 1,
+                  ),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(
-            width: 10,
-          ),
-          Icon(
-            Icons.keyboard_arrow_down_rounded,
-            color: Colors.white,
-          ),
-          SizedBox(
-            width: 10,
-          ),
-        ],
+              ],
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Icon(
+              Icons.keyboard_arrow_down_rounded,
+              color: Colors.white,
+            ),
+            SizedBox(
+              width: 10,
+            ),
+          ],
+        ),
       ),
     );
   }

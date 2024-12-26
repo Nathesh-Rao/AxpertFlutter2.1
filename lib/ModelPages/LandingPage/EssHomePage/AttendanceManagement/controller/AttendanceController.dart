@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/AttendanceManagement/widgets/WidgetProfileBottomSheet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -41,11 +42,50 @@ class AttendanceController extends GetxController {
     }
   }
 
+//-InOut tab--------
+  openProfileBottomSheet() {
+    Get.bottomSheet(WidgetProfileBottomSheet());
+  }
 //-Attendance------
-  RxInt currentSelectedMonthIndex = 11.obs;
 
-  updateMonthIndex(index) {
-    currentSelectedMonthIndex.value = index;
+  var months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+  var years = [
+    '2014',
+    '2015',
+    '2016',
+    '2017',
+    '2018',
+    '2019',
+    '2020',
+    '2021',
+    '2022',
+    '2023',
+    '2024',
+    '2025',
+  ];
+
+  var selectedMonthIndex = 11.obs;
+  var selectedYear = DateFormat("yyyy").format(DateTime.now()).obs;
+
+  updateSelectedYear(dynamic date) {
+    selectedYear.value = years[date];
+  }
+
+  updateMonthIndex(int index) {
+    selectedMonthIndex.value = index;
   }
 
 //applyLeave-control--------------

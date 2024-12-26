@@ -1,5 +1,8 @@
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/AttendanceManagement/models/AttendanceDataModel.dart';
+import 'package:bottom_picker/bottom_picker.dart';
+import 'package:bottom_picker/resources/arrays.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,20 +16,7 @@ class WidgetTabAttendance extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var style = GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.w500);
-    var months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
+
     return Container(
       padding: MediaQuery.of(context).padding,
       child: Column(
@@ -34,71 +24,11 @@ class WidgetTabAttendance extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
             child: Row(
-              children: [
-                Text("Attendance", style: style),
-                Spacer(),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 5),
-                  height: 30,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    color: MyColors.blue10.withAlpha(22),
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.calendar_month,
-                        color: MyColors.blue10,
-                        size: 20,
-                      ),
-                      SizedBox(width: 5),
-                      Text(
-                        "2024",
-                        style: style.copyWith(color: MyColors.blue10, fontSize: 14),
-                      ),
-                      SizedBox(width: 30),
-                      Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        color: MyColors.blue10,
-                        size: 20,
-                      )
-                    ],
-                  ),
-                )
-              ],
+              children: [Text("Attendance", style: style), Spacer(), _yearPickerWidget(context)],
             ),
           ),
           SizedBox(height: 15),
-          SizedBox(
-            height: 40,
-            child: Center(
-              child: ListView.separated(
-                padding: EdgeInsets.symmetric(horizontal: 15),
-                physics: BouncingScrollPhysics(),
-                scrollDirection: Axis.horizontal,
-                itemCount: 12,
-                itemBuilder: (context, index) => GestureDetector(
-                  onTap: () {
-                    // controller.updateMonthIndex(index);
-                  },
-                  child: Text(
-                    months[index],
-                    style: style.copyWith(
-                        fontSize: 18,
-                        color: MyColors.text1,
-                        // value == index ? MyColors.blue10 : MyColors.text1,
-                        fontWeight: FontWeight.normal
-                        //  value == index
-                        //     ? FontWeight.w600
-                        //     : FontWeight.normal,
-                        ),
-                  ),
-                ),
-                separatorBuilder: (context, index) => SizedBox(width: 20),
-              ),
-            ),
-          ),
+          Obx(() => _attendanceListView(value: attendanceController.selectedMonthIndex.value)),
           SizedBox(height: 10),
           Expanded(
             child: Container(
@@ -320,5 +250,91 @@ class WidgetTabAttendance extends StatelessWidget {
     } else {
       return MyColors.basegray;
     }
+  }
+
+  Widget _attendanceListView({required int value}) {
+    var style = GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.w500);
+    return SizedBox(
+      height: 40,
+      child: Center(
+        child: ListView.separated(
+          padding: EdgeInsets.symmetric(horizontal: 15),
+          physics: BouncingScrollPhysics(),
+          scrollDirection: Axis.horizontal,
+          itemCount: 12,
+          itemBuilder: (context, index) => GestureDetector(
+            onTap: () {
+              attendanceController.updateMonthIndex(index);
+            },
+            child: Text(
+              attendanceController.months[index],
+              style: style.copyWith(
+                fontSize: 18,
+                color: value == index ? MyColors.baseBlue : MyColors.text1,
+                fontWeight: value == index ? FontWeight.w600 : FontWeight.normal,
+              ),
+            ),
+          ),
+          separatorBuilder: (context, index) => SizedBox(width: 20),
+        ),
+      ),
+    );
+  }
+
+  Widget _yearPickerWidget(BuildContext context) {
+    var style = GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.w500);
+    return Obx(
+      () => GestureDetector(
+        onTap: () {
+          BottomPicker(
+            items: List.generate(attendanceController.years.length, (index) => Text(attendanceController.years[index])),
+            pickerTitle: Text(
+              "Select Year",
+              style: style.copyWith(
+                fontSize: 20,
+              ),
+            ),
+            pickerTextStyle: style.copyWith(
+              fontSize: 24,
+              color: MyColors.blue9,
+            ),
+            onChange: (index) {
+              print(index);
+            },
+            onSubmit: attendanceController.updateSelectedYear,
+            bottomPickerTheme: BottomPickerTheme.plumPlate,
+          ).show(context);
+        },
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 5),
+          height: 30,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            color: MyColors.blue10.withAlpha(22),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.calendar_month,
+                color: MyColors.blue10,
+                size: 20,
+              ),
+              SizedBox(width: 5),
+              Text(
+                attendanceController.selectedYear.value,
+                style: style.copyWith(color: MyColors.blue10, fontSize: 14),
+              ),
+              SizedBox(width: 30),
+              Icon(
+                Icons.keyboard_arrow_down_rounded,
+                color: MyColors.blue10,
+                size: 20,
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
