@@ -1,18 +1,26 @@
+import 'dart:convert';
 import 'dart:developer';
 
+import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/AttendanceManagement/models/AttendanceReportModel.dart';
+import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/AttendanceManagement/models/LeaveBalanceModel.dart';
+import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/AttendanceManagement/models/TeamMemberModel.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/AttendanceManagement/widgets/WidgetProfileBottomSheet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../../Constants/AppStorage.dart';
+import '../../../../../Constants/const.dart';
+import '../../../../../Utils/ServerConnections/ExecuteApi.dart';
+import '../../../../../Utils/ServerConnections/ServerConnections.dart';
+
 class AttendanceController extends GetxController {
-//topBar-control--------------
+  AppStorage appStorage = AppStorage();
+  ServerConnections serverConnections = ServerConnections();
+// topBar-control--------------
   final PageController pageController = PageController();
 
-  // AttendanceController() {
-  //   print("Attendance controller created");
-  //   pageController = PageController(initialPage: 0);
-  // }
+  AttendanceController() {}
 
   Map<int, String> topBarMap = {
     0: "In-Out Hub",
@@ -42,12 +50,55 @@ class AttendanceController extends GetxController {
     }
   }
 
-//-InOut tab--------
-  openProfileBottomSheet() {
-    Get.bottomSheet(WidgetProfileBottomSheet());
+//--BottomSheet----
+  var isBottomSheetLoading = false.obs;
+  var teamMemberList = [].obs;
+  profileBottomSheetInIt() {
+    if (teamMemberList.isEmpty) {
+      _getTeamMembers();
+    }
   }
-//-Attendance------
 
+  _getTeamMembers() async {
+    isBottomSheetLoading.value = true;
+    var body = {
+      "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
+      "publickey": ExecuteApi.API_PUBLICKEY_ATTENDANCE_TEAMMEMBERS,
+      "Project": Const.PROJECT_NAME,
+      "getsqldata": {"trace": "true"},
+      "sqlparams": {"username": "EID001"}
+    };
+    var resp = await ExecuteApi().CallFetchData_ExecuteAPI(
+      body: jsonEncode(body),
+      isBearer: true,
+    );
+
+    var jsonResp = jsonDecode(resp);
+
+    if (jsonResp["success"].toString() == "true") {
+      teamMemberList.clear();
+      var listItems = jsonResp["ds_get_team_members"]["rows"];
+      for (var item in listItems) {
+        var member = TeamMemberModel.fromJson(item);
+        teamMemberList.add(member);
+      }
+    }
+    isBottomSheetLoading.value = false;
+  }
+//-InOut tab--------
+
+  inoutTabInIt() {}
+  openProfileBottomSheet() {
+    Get.bottomSheet(WidgetProfileBottomSheet(), isScrollControlled: true);
+  }
+
+  updateYear(dynamic date) {}
+
+  _getInOutData() {}
+
+//-Attendance------
+  var attendanceReportList = [].obs;
+  var isAttendanceReportLoading = false.obs;
   var months = [
     'January',
     'February',
@@ -81,11 +132,101 @@ class AttendanceController extends GetxController {
   var selectedYear = DateFormat("yyyy").format(DateTime.now()).obs;
 
   updateSelectedYear(dynamic date) {
+    if (selectedYear.value == years[date]) return;
     selectedYear.value = years[date];
+    _getAttendanceReport();
   }
 
   updateMonthIndex(int index) {
+    if (selectedMonthIndex.value == index) return;
     selectedMonthIndex.value = index;
+    _getAttendanceReport();
+  }
+
+  tabAttendanceInIt() {
+    if (attendanceReportList.isEmpty) {
+      _getAttendanceReport();
+    }
+  }
+
+  _getAttendanceReport() async {
+    isAttendanceReportLoading.value = true;
+    var body = {
+      "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
+      "publickey": ExecuteApi.API_PUBLICKEY_ATTENDANCE_ATTENDANCEREPORT,
+      "Project": Const.PROJECT_NAME,
+      "getsqldata": {"trace": "true"},
+      "sqlparams": {"username": "EID001"}
+    };
+    var resp = await ExecuteApi().CallFetchData_ExecuteAPI(
+      body: jsonEncode(body),
+      isBearer: true,
+    );
+
+    var jsonResp = jsonDecode(resp);
+
+    if (jsonResp["success"].toString() == "true") {
+      attendanceReportList.clear();
+      var listItems = jsonResp["ds_get_attendance_report"]["rows"];
+      for (var item in listItems) {
+        var reportItem = AttendanceReportModel.fromJson(item);
+        attendanceReportList.add(reportItem);
+      }
+    }
+    isAttendanceReportLoading.value = false;
+  }
+
+//leaves hub--------------
+
+  var isLeavesHubLoading = false.obs;
+  var totalLeaves = 0.obs;
+  var totalBalanceLeaves = 0.obs;
+  var totalLeaveData = [].obs;
+  leavesHubInIt() {
+    if (totalLeaveData.isEmpty) {
+      _getLeaveBalanceData();
+    }
+  }
+
+  _getLeaveBalanceData() async {
+    isLeavesHubLoading.value = true;
+    var body = {
+      "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
+      "publickey": ExecuteApi.API_PUBLICKEY_ATTENDANCE_LEAVEDETAILS,
+      "Project": Const.PROJECT_NAME,
+      "getsqldata": {"trace": "true"},
+      "sqlparams": {"username": "EID001"}
+    };
+    var resp = await ExecuteApi().CallFetchData_ExecuteAPI(
+      body: jsonEncode(body),
+      isBearer: true,
+    );
+
+    var jsonResp = jsonDecode(resp);
+
+    if (jsonResp["success"].toString() == "true") {
+      totalLeaveData.clear();
+      var listItems = jsonResp["ds_get_leave_details"]["rows"];
+
+      for (var item in listItems) {
+        var leaveItem = LeaveBalanceModel.fromJson(item);
+        totalLeaveData.add(leaveItem);
+      }
+
+      _setLeaveData();
+    }
+    isLeavesHubLoading.value = false;
+  }
+
+  _setLeaveData() {
+    totalLeaves.value = 0;
+    totalBalanceLeaves.value = 0;
+    if (totalLeaveData.isNotEmpty) {
+      for (LeaveBalanceModel item in totalLeaveData) {
+        totalLeaves.value += int.parse(item.totalLeaves);
+        totalBalanceLeaves.value += int.parse(item.balanceLeaves);
+      }
+    }
   }
 
 //applyLeave-control--------------

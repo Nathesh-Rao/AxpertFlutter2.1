@@ -17,7 +17,7 @@ import 'package:axpertflutter/ModelPages/LandingPage/Models/FirebaseMessageModel
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetBanner.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetNotification.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
-import 'package:carousel_slider/carousel_controller.dart';
+import 'package:carousel_slider/carousel_controller.dart' as cc;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -60,8 +60,8 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
   var isAuthRequired = false;
   var unread;
   var toDay;
-  final CarouselController carouselController_notify = CarouselController();
-  final CarouselController carouselController_banner = CarouselController();
+  final cc.CarouselController carouselController_notify = cc.CarouselController();
+  final cc.CarouselController carouselController_banner = cc.CarouselController();
 
   DateTime currentBackPressTime = DateTime.now();
 

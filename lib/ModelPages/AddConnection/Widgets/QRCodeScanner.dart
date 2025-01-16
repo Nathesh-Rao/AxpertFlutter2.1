@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/ModelPages/AddConnection/Controllers/AddConnectionController.dart';
+import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -127,6 +128,7 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
         controller.pauseCamera();
         var data = addConnectionController.barcodeResult!.code.toString();
         if (data == "" || !addConnectionController.validateQRData(data)) {
+          LogService.writeLog(message: "[ERROR] QRCodeScanner\nScope: _onQRViewCreated\ndata is null");
           Get.snackbar("Invalid!", "Please choose a valid QR Code",
               snackPosition: SnackPosition.BOTTOM,
               backgroundColor: Colors.red,

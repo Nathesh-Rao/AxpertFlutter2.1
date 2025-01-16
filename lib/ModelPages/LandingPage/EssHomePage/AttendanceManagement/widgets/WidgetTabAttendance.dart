@@ -1,5 +1,7 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/AttendanceManagement/models/AttendanceDataModel.dart';
+import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/AttendanceManagement/models/AttendanceReportModel.dart';
 import 'package:bottom_picker/bottom_picker.dart';
 import 'package:bottom_picker/resources/arrays.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,6 +18,10 @@ class WidgetTabAttendance extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var style = GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.w500);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      attendanceController.tabAttendanceInIt();
+    });
 
     return Container(
       padding: MediaQuery.of(context).padding,
@@ -90,12 +96,80 @@ class WidgetTabAttendance extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    child: SingleChildScrollView(
-                      physics: BouncingScrollPhysics(),
-                      child: Column(
-                        children: List.generate(AttendanceDataModel.sampleData.length,
-                            (index) => _attendanceListTile(AttendanceDataModel.sampleData[index])),
-                      ),
+                    child: Obx(
+                      () {
+                        if (attendanceController.isAttendanceReportLoading.value) {
+                          // return Center(
+                          //   child: CircularProgressIndicator(),
+                          // );
+                          return Column(
+                            children: [
+                              LinearProgressIndicator(
+                                color: Color(0xff3764FC),
+                                minHeight: 2,
+                              ),
+                              Spacer(),
+                              FadeInUp(
+                                  duration: Duration(milliseconds: 400),
+                                  from: 25,
+                                  // child: Text.rich(
+                                  //   TextSpan(text: "Getting ", children: [
+                                  //     TextSpan(
+                                  //         text: "${attendanceController.months[attendanceController.selectedMonthIndex.value]}",
+                                  //         style: GoogleFonts.poppins(
+                                  //             fontSize: 20, fontWeight: FontWeight.w500, color: MyColors.text1)),
+                                  //     TextSpan(text: " report...")
+                                  //   ]),
+
+                                  // style: GoogleFonts.poppins(
+                                  //   fontSize: 15,
+                                  //   fontWeight: FontWeight.w500,
+                                  //   color: MyColors.text1,
+                                  // ),
+                                  child: Text(
+                                    "${attendanceController.months[attendanceController.selectedMonthIndex.value]}\n${attendanceController.selectedYear.value}",
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w500, color: MyColors.text1),
+                                  )
+                                  // ),
+                                  ),
+                              Spacer(),
+                            ],
+                          );
+                        }
+
+                        if (attendanceController.attendanceReportList.isEmpty) {
+                          return Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Image.asset(
+                                  'assets/images/no_data_found.png',
+                                  width: 200,
+                                ),
+                                Text(
+                                  "No Data found for this month",
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                )
+                              ],
+                            ),
+                          );
+                        }
+                        return FadeInUp(
+                          duration: Duration(milliseconds: 400),
+                          from: 25,
+                          child: SingleChildScrollView(
+                            physics: BouncingScrollPhysics(),
+                            child: Column(
+                              children: List.generate(attendanceController.attendanceReportList.length,
+                                  (index) => _attendanceListTile(attendanceController.attendanceReportList[index])),
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   )
                 ],
@@ -107,7 +181,7 @@ class WidgetTabAttendance extends StatelessWidget {
     );
   }
 
-  Widget _attendanceListTile(AttendanceDataModel data) {
+  Widget _attendanceListTile(AttendanceReportModel data) {
     var style = GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.black);
 
     return Container(
@@ -129,7 +203,7 @@ class WidgetTabAttendance extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        data.clockIn,
+                        data.intime,
                         style: style,
                         textAlign: TextAlign.start,
                       ),
@@ -156,7 +230,7 @@ class WidgetTabAttendance extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        data.clockOut,
+                        data.outtime,
                         style: style,
                         textAlign: TextAlign.start,
                       ),
@@ -181,7 +255,7 @@ class WidgetTabAttendance extends StatelessWidget {
     );
   }
 
-  Widget _getTileDateWidget(AttendanceDataModel data) {
+  Widget _getTileDateWidget(AttendanceReportModel data) {
     var color = _getTileDateWidgetColor(data.status);
     var date = data.date;
     return Row(

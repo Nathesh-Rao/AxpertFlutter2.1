@@ -5,7 +5,6 @@ class AttendanceDataModel {
   final String status;
   final String clockIn;
   final String clockOut;
-  final String location;
   final String workingHours;
 
   AttendanceDataModel({
@@ -13,22 +12,18 @@ class AttendanceDataModel {
     required this.status,
     required this.clockIn,
     required this.clockOut,
-    required this.location,
     required this.workingHours,
   });
 
-  factory AttendanceDataModel.fromRawJson(String str) =>
-      AttendanceDataModel.fromJson(json.decode(str));
+  factory AttendanceDataModel.fromRawJson(String str) => AttendanceDataModel.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory AttendanceDataModel.fromJson(Map<String, dynamic> json) =>
-      AttendanceDataModel(
+  factory AttendanceDataModel.fromJson(Map<String, dynamic> json) => AttendanceDataModel(
         date: json["date"],
         status: json["status"],
         clockIn: json["clockIn"],
         clockOut: json["clockOut"],
-        location: json["location"],
         workingHours: json["workingHours"],
       );
 
@@ -37,7 +32,6 @@ class AttendanceDataModel {
         "status": status,
         "clockIn": clockIn,
         "clockOut": clockOut,
-        "location": location,
         "workingHours": workingHours,
       };
 
@@ -50,22 +44,8 @@ class AttendanceDataModel {
       "location": "Location",
       "workingHours": "09h 15m"
     },
-    {
-      "date": "2 TUE",
-      "status": "Sick Leave",
-      "clockIn": "",
-      "clockOut": "",
-      "location": "",
-      "workingHours": ""
-    },
-    {
-      "date": "3 WED",
-      "status": "Casual Leave",
-      "clockIn": "",
-      "clockOut": "",
-      "location": "",
-      "workingHours": ""
-    },
+    {"date": "2 TUE", "status": "Sick Leave", "clockIn": "", "clockOut": "", "location": "", "workingHours": ""},
+    {"date": "3 WED", "status": "Casual Leave", "clockIn": "", "clockOut": "", "location": "", "workingHours": ""},
     {
       "date": "4 THU",
       "status": "active",
@@ -82,22 +62,8 @@ class AttendanceDataModel {
       "location": "Location",
       "workingHours": "04h 00m"
     },
-    {
-      "date": "6 SAT",
-      "status": "Week Off",
-      "clockIn": "",
-      "clockOut": "",
-      "location": "",
-      "workingHours": ""
-    },
-    {
-      "date": "7 SUN",
-      "status": "Week Off",
-      "clockIn": "",
-      "clockOut": "",
-      "location": "",
-      "workingHours": ""
-    },
+    {"date": "6 SAT", "status": "Week Off", "clockIn": "", "clockOut": "", "location": "", "workingHours": ""},
+    {"date": "7 SUN", "status": "Week Off", "clockIn": "", "clockOut": "", "location": "", "workingHours": ""},
     {
       "date": "8 MON",
       "status": "active",
@@ -138,30 +104,9 @@ class AttendanceDataModel {
       "location": "Location",
       "workingHours": "09h 20m"
     },
-    {
-      "date": "13 SAT",
-      "status": "Week Off",
-      "clockIn": "",
-      "clockOut": "",
-      "location": "",
-      "workingHours": ""
-    },
-    {
-      "date": "14 SUN",
-      "status": "Week Off",
-      "clockIn": "",
-      "clockOut": "",
-      "location": "",
-      "workingHours": ""
-    },
-    {
-      "date": "15 MON",
-      "status": "Sick Leave",
-      "clockIn": "",
-      "clockOut": "",
-      "location": "",
-      "workingHours": ""
-    },
+    {"date": "13 SAT", "status": "Week Off", "clockIn": "", "clockOut": "", "location": "", "workingHours": ""},
+    {"date": "14 SUN", "status": "Week Off", "clockIn": "", "clockOut": "", "location": "", "workingHours": ""},
+    {"date": "15 MON", "status": "Sick Leave", "clockIn": "", "clockOut": "", "location": "", "workingHours": ""},
     {
       "date": "16 TUE",
       "status": "active",
@@ -194,22 +139,8 @@ class AttendanceDataModel {
       "location": "Location",
       "workingHours": "09h 40m"
     },
-    {
-      "date": "20 SAT",
-      "status": "Week Off",
-      "clockIn": "",
-      "clockOut": "",
-      "location": "",
-      "workingHours": ""
-    },
-    {
-      "date": "21 SUN",
-      "status": "Week Off",
-      "clockIn": "",
-      "clockOut": "",
-      "location": "",
-      "workingHours": ""
-    },
+    {"date": "20 SAT", "status": "Week Off", "clockIn": "", "clockOut": "", "location": "", "workingHours": ""},
+    {"date": "21 SUN", "status": "Week Off", "clockIn": "", "clockOut": "", "location": "", "workingHours": ""},
     {
       "date": "22 MON",
       "status": "active",
@@ -250,22 +181,8 @@ class AttendanceDataModel {
       "location": "Location",
       "workingHours": "09h 20m"
     },
-    {
-      "date": "27 SAT",
-      "status": "Week Off",
-      "clockIn": "",
-      "clockOut": "",
-      "location": "",
-      "workingHours": ""
-    },
-    {
-      "date": "28 SUN",
-      "status": "Week Off",
-      "clockIn": "",
-      "clockOut": "",
-      "location": "",
-      "workingHours": ""
-    },
+    {"date": "27 SAT", "status": "Week Off", "clockIn": "", "clockOut": "", "location": "", "workingHours": ""},
+    {"date": "28 SUN", "status": "Week Off", "clockIn": "", "clockOut": "", "location": "", "workingHours": ""},
     {
       "date": "29 MON",
       "status": "active",

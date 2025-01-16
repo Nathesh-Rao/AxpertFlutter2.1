@@ -4,6 +4,7 @@ import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/ModelPages/AddConnection/Controllers/AddConnectionController.dart';
 import 'package:axpertflutter/ModelPages/ProjectListing/Model/ProjectModel.dart';
+import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -30,6 +31,7 @@ class ProjectItemListTile extends StatelessWidget {
         await appStorage.storeValue(AppStorage.PROJECT_NAME, projectModel!.projectname);
         await appStorage.storeValue(AppStorage.PROJECT_URL, projectModel!.web_url);
         await appStorage.storeValue(AppStorage.ARM_URL, projectModel!.arm_url);
+        LogService.writeLog(message: "[i] ProjectListingPage\nSelected Project : ${projectModel!.projectname}");
         Get.offAllNamed(Routes.Login);
       },
       child: Card(
@@ -94,6 +96,7 @@ class ProjectItemListTile extends StatelessWidget {
                 icon: const Icon(Icons.delete, size: 28, color: MyColors.red),
                 tooltip: 'Delete',
                 onPressed: () async {
+                  LogService.writeLog(message: "[i] ProjectListingPage\n${projectModel!.projectname} Project Deleted");
                   addConnectionController.delete(keyValue);
                 },
               ),

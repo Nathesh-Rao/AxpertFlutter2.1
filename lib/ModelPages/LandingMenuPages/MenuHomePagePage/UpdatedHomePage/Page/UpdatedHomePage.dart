@@ -4,6 +4,7 @@ import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Contr
 import 'package:axpertflutter/ModelPages/LandingPage/Controller/LandingPageController.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetBannerSliding.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetSlidingNotification.dart';
+import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -24,14 +25,14 @@ class UpdatedHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    LogService.writeLog(message: "[>] UpdatedHomePage");
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       body: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
                 SliverToBoxAdapter(
                   child: ClipRRect(
-                    borderRadius:
-                        BorderRadius.only(bottomLeft: Radius.circular(50)),
+                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50)),
                     child: Container(
                       // margin: EdgeInsets.only(left: 10, right: 10),
                       decoration: BoxDecoration(

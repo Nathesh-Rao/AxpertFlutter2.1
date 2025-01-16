@@ -66,6 +66,14 @@ class InternetConnectivity extends GetxController {
           showError();
         }
       },
+      // (result){
+      //     if (result == ConnectivityResult.mobile || result == ConnectivityResult.wifi) {
+      //       isConnected.value = true;
+      //     } else {
+      //       isConnected.value = false;
+      //       showError();
+      //     }
+      // }
     );
   }
 }

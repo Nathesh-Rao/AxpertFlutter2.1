@@ -11,6 +11,7 @@ import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetE
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetEssKPICards.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetEssOtherServiceCard.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetHeaderWidget.dart';
+import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -23,11 +24,11 @@ import '../widgets/WidgetEssRecentActivity.dart';
 class EssHomePage extends StatelessWidget {
   EssHomePage({super.key});
   final EssController controller = Get.put(EssController());
-  final LandingPageController landingPageController =
-      Get.put(LandingPageController());
+  final LandingPageController landingPageController = Get.put(LandingPageController());
 
   @override
   Widget build(BuildContext context) {
+    LogService.writeLog(message: "[>] ESSHomeScreen");
     return WillPopScope(
       onWillPop: controller.onWillPop,
       child: Scaffold(
@@ -41,8 +42,7 @@ class EssHomePage extends StatelessWidget {
               controller.getPage(),
               Visibility(
                   visible: controller.menuHomePageController.switchPage.value,
-                  child: InApplicationWebViewer(
-                      controller.menuHomePageController.webUrl))
+                  child: InApplicationWebViewer(controller.menuHomePageController.webUrl))
             ],
           ),
         ),

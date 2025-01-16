@@ -6,6 +6,7 @@ import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/ModelPages/AddConnection/Controllers/AddConnectionController.dart';
 import 'package:axpertflutter/ModelPages/ProjectListing/Controller/ProjectListingController.dart';
 import 'package:axpertflutter/ModelPages/ProjectListing/Widgets/ProjectItemListTile.dart';
+import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_overlay/loading_overlay.dart';
@@ -20,6 +21,11 @@ class ProjectListingPage extends StatefulWidget {
 class _ProjectListingPageState extends State<ProjectListingPage> {
   ProjectListingController projectListingController = Get.put(ProjectListingController());
   AddConnectionController addConnectionController = Get.put(AddConnectionController());
+  @override
+  void initState() {
+    LogService.writeLog(message: "[>] ProjectListingPage");
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

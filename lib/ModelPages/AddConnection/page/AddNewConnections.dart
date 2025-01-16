@@ -6,6 +6,8 @@ import 'package:axpertflutter/ModelPages/AddConnection/Widgets/URLDetails.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../Utils/LogServices/LogService.dart';
+
 class AddNewConnection extends StatefulWidget {
   const AddNewConnection({super.key});
 
@@ -20,11 +22,15 @@ class _AddNewConnectionState extends State<AddNewConnection> {
   @override
   void initState() {
     super.initState();
+    LogService.writeLog(message: "[>] AddNewConnection");
+
     try {
       connectionController.index.value = 0;
       connectionController.heading.value = "Add new Connection";
       if (argumentData != null) connectionController.index.value = argumentData[0]?.toInt() ?? 0;
-    } catch (e) {}
+    } catch (e) {
+      LogService.writeLog(message: "[ERROR] AddNewConnection\Scope: initState\nError: $e");
+    }
     print(connectionController.index.value);
     switch (connectionController.index.value) {
       case 0:

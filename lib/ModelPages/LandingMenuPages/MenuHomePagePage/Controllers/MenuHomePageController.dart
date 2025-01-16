@@ -17,22 +17,14 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:material_icons_named/material_icons_named.dart';
 
+import '../../../../Utils/LogServices/LogService.dart';
 import '../../../LandingPage/EssHomePage/AttendanceManagement/controller/AttendanceController.dart';
 import '../UpdatedHomePage/Widgets/WidgetMenuFolderPanelItem.dart';
 
 class MenuHomePageController extends GetxController {
   // final AttendanceController c = Get.put(AttendanceController());
   InternetConnectivity internetConnectivity = Get.find();
-  var colorList = [
-    "#FFFFFF",
-    "#FFFFFF",
-    "#FFFFFF",
-    "#FFFFFF",
-    "#FFFFFF",
-    "#FFFFFF",
-    "#FFFFFF",
-    "#FFFFFF"
-  ];
+  var colorList = ["#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"];
 
   // var colorList = ["#EEF2FF", "#FFF9E7", "#F5EBFF", "#FFECF6", "#E5F5FA", "#E6FAF4", "#F7F7F7", "#E8F5F8"];
   var listOfOptionCards = [].obs;
@@ -78,8 +70,7 @@ class MenuHomePageController extends GetxController {
       backgroundColor: Colors.transparent,
       child: Container(
         height: 300,
-        decoration: BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.circular(20)),
+        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
         margin: EdgeInsets.only(left: 30, right: 30),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -87,9 +78,7 @@ class MenuHomePageController extends GetxController {
           children: [
             Container(
               height: 50,
-              decoration: BoxDecoration(
-                  border:
-                      Border(bottom: BorderSide(width: 1, color: Colors.grey))),
+              decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: Colors.grey))),
               child: Center(
                 child: Text(
                   cardModel.caption,
@@ -107,9 +96,11 @@ class MenuHomePageController extends GetxController {
     isLoading.value = true;
     LoadingScreen.show();
     var url = Const.getFullARMUrl(ServerConnections.API_GET_HOMEPAGE_CARDS_v2);
-    var resp = await serverConnections.postToServer(
-        url: url, body: jsonEncode(body), isBearer: true);
+    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
     // print(resp);
+    // LogService.writeLog(message: "[-] UpdatedHomePage => CardDetails > API_GET_HOMEPAGE_CARDS_v2 - body: $body ");
+    // LogService.writeLog(message: "[-] UpdatedHomePage => CardDetails > API_GET_HOMEPAGE_CARDS_v2 - resp: $resp ");
+
     if (resp != "") {
       print("Home card ${resp}");
       var jsonResp = jsonDecode(resp);
@@ -120,8 +111,7 @@ class MenuHomePageController extends GetxController {
           CardModel cardModel = CardModel.fromJson(item);
           listOfOptionCards.add(cardModel);
           //setOfDatasource.add(item['datasource'].toString());
-          if (cardModel.datasource != "")
-            map_dataSource[cardModel.caption] = cardModel.datasource;
+          if (cardModel.datasource != "") map_dataSource[cardModel.caption] = cardModel.datasource;
         }
 
         var menuFolderList = [];
@@ -132,7 +122,7 @@ class MenuHomePageController extends GetxController {
         }
         parseMenuFolderData(menuFolderList);
       } else {
-        //error
+        // LogService.writeLog(message: "[ERROR] UpdatedHomePage => CardDetails > API_GET_HOMEPAGE_CARDS_v2 - Response is empty ");
       }
     }
     // if (listOfCards.length == 0) {
@@ -158,23 +148,19 @@ class MenuHomePageController extends GetxController {
       return actionData;
     } else {
       // var dataSourceUrl = baseUrl + GlobalConfiguration().get("HomeCardDataResponse").toString();
-      var dataSourceUrl = Const.getFullARMUrl(
-          ServerConnections.API_GET_HOMEPAGE_CARDSDATASOURCE);
+      var dataSourceUrl = Const.getFullARMUrl(ServerConnections.API_GET_HOMEPAGE_CARDSDATASOURCE);
       var dataSourceBody = body;
-      dataSourceBody["sqlParams"] = {
-        "param": "value",
-        "username": appStorage.retrieveValue(AppStorage.USER_NAME)
-      };
+      dataSourceBody["sqlParams"] = {"param": "value", "username": appStorage.retrieveValue(AppStorage.USER_NAME)};
 
       actionData.clear();
       for (var cardDataSource in map_dataSource.entries) {
         if (cardDataSource.value != "") {
           dataSourceBody["datasource"] = cardDataSource.value;
           // setOfDatasource.remove(items);
-          var dsResp = await serverConnections.postToServer(
-              url: dataSourceUrl,
-              isBearer: true,
-              body: jsonEncode(dataSourceBody));
+          var dsResp = await serverConnections.postToServer(url: dataSourceUrl, isBearer: true, body: jsonEncode(dataSourceBody));
+          // LogService.writeLog(
+          //     message: "[-] UpdatedHomePage => getCardDataSources > API_GET_HOMEPAGE_CARDSDATASOURCE - Response : $dsResp ");
+
           if (dsResp != "") {
             var jsonDSResp = jsonDecode(dsResp);
             // print(jsonDSResp);
@@ -182,14 +168,10 @@ class MenuHomePageController extends GetxController {
               var dsDataList = jsonDSResp['result']['data'];
               for (var item in dsDataList) {
                 var list = [];
-                list = actionData[cardDataSource.key] != null
-                    ? actionData[cardDataSource.key]
-                    : [];
-                CardOptionModel cardOptionModel =
-                    CardOptionModel.fromJson(item);
+                list = actionData[cardDataSource.key] != null ? actionData[cardDataSource.key] : [];
+                CardOptionModel cardOptionModel = CardOptionModel.fromJson(item);
 
-                if (list.indexOf(cardOptionModel) < 0)
-                  list.add(cardOptionModel);
+                if (list.indexOf(cardOptionModel) < 0) list.add(cardOptionModel);
                 actionData[cardDataSource.key] = list;
               }
             }
@@ -217,16 +199,13 @@ class MenuHomePageController extends GetxController {
 
   String getCardBackgroundColor(String colorCode) {
     final _random = new Random();
-    return !["", null, "null"].contains(colorCode)
-        ? colorCode
-        : colorList[_random.nextInt(colorList.length)];
+    return !["", null, "null"].contains(colorCode) ? colorCode : colorList[_random.nextInt(colorList.length)];
   }
 
   getEncryptedSecretKey(String key) async {
     var url = Const.getFullARMUrl(ExecuteApi.API_GET_ENCRYPTED_SECRET_KEY);
     Map<String, dynamic> body = {"secretkey": key};
-    var resp = await serverConnections.postToServer(
-        url: url, body: jsonEncode(body), isBearer: true);
+    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
     print("Resp: $resp");
     if (resp != "" && !resp.toString().contains("error")) {
       return resp;
@@ -236,8 +215,7 @@ class MenuHomePageController extends GetxController {
   getPunchINData() async {
     var secretEncryptedKey = '';
     LoadingScreen.show();
-    secretEncryptedKey =
-        await getEncryptedSecretKey(ExecuteApi.API_SECRETKEY_GET_PUNCHIN_DATA);
+    secretEncryptedKey = await getEncryptedSecretKey(ExecuteApi.API_SECRETKEY_GET_PUNCHIN_DATA);
     if (secretEncryptedKey != "") {
       var url = Const.getFullARMUrl(ExecuteApi.API_ARM_EXECUTE_PUBLISHED);
       var body = {
@@ -245,14 +223,10 @@ class MenuHomePageController extends GetxController {
         "publickey": "AXPKEY000000010003",
         "username": appStorage.retrieveValue(AppStorage.USER_NAME),
         "Project": appStorage.retrieveValue(AppStorage.PROJECT_NAME),
-        "getsqldata": {
-          "username": appStorage.retrieveValue(AppStorage.USER_NAME),
-          "trace": "false"
-        },
+        "getsqldata": {"username": appStorage.retrieveValue(AppStorage.USER_NAME), "trace": "false"},
         "sqlparams": {}
       };
-      var resp = await serverConnections.postToServer(
-          url: url, body: jsonEncode(body), isBearer: true);
+      var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
       punchInResp = resp;
       print("ExecuteApi Resp: ${resp}");
       if (resp != "" && !resp.toString().contains("error")) {
@@ -279,8 +253,7 @@ class MenuHomePageController extends GetxController {
   onClick_PunchIn() async {
     print(punchInResp);
     LoadingScreen.show();
-    var secretEncryptedKey =
-        await getEncryptedSecretKey(ExecuteApi.API_SECRETKEY_GET_DO_PUNCHIN);
+    var secretEncryptedKey = await getEncryptedSecretKey(ExecuteApi.API_SECRETKEY_GET_DO_PUNCHIN);
     Position? currentLocation = await CommonMethods.getCurrentLocation();
     var latitude = currentLocation?.latitude ?? "";
     var longitude = currentLocation?.longitude ?? "";
@@ -300,20 +273,14 @@ class MenuHomePageController extends GetxController {
             "mode": "new",
             "recordid": "0",
             "dc1": {
-              "row1": {
-                "latitude": latitude,
-                "longitude": longitude,
-                "status": "IN",
-                "inloc": address
-              }
+              "row1": {"latitude": latitude, "longitude": longitude, "status": "IN", "inloc": address}
             }
           }
         }
       }
     };
     // print("punch_IN_Body: ${jsonEncode(body)}");
-    var resp = await serverConnections.postToServer(
-        url: url, body: jsonEncode(body), isBearer: true);
+    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
 
     //print("PunchIN_resp: $resp");
     print(resp);
@@ -343,8 +310,7 @@ class MenuHomePageController extends GetxController {
 
   onClick_PunchOut() async {
     LoadingScreen.show();
-    var secretEncryptedKey =
-        await getEncryptedSecretKey(ExecuteApi.API_SECRETKEY_GET_DO_PUNCHOUT);
+    var secretEncryptedKey = await getEncryptedSecretKey(ExecuteApi.API_SECRETKEY_GET_DO_PUNCHOUT);
     Position? currentLocation = await CommonMethods.getCurrentLocation();
     var latitude = currentLocation?.latitude ?? "";
     var longitude = currentLocation?.longitude ?? "";
@@ -365,19 +331,13 @@ class MenuHomePageController extends GetxController {
             "mode": "edit",
             "recordid": recordId,
             "dc1": {
-              "row1": {
-                "olatitude": latitude,
-                "olongitude": longitude,
-                "status": "OUT",
-                "outloc": address
-              }
+              "row1": {"olatitude": latitude, "olongitude": longitude, "status": "OUT", "outloc": address}
             }
           }
         }
       }
     };
-    var resp = await serverConnections.postToServer(
-        url: url, body: jsonEncode(body), isBearer: true);
+    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
 
     print(resp);
     var jsonResp = jsonDecode(resp);
@@ -405,20 +365,18 @@ class MenuHomePageController extends GetxController {
   void getShorcutMenuDashboardDetails() async {
     var body = {
       // "SecretKey": await getEncryptedSecretKey(ExecuteApi.API_PrivateKey_DashBoard),
-      "publickey": ExecuteApi.API_PublicKey_DashBoard,
+      "publickey": ExecuteApi.API_PUBLICKEY_DASHBOARD,
       "Project": Const.PROJECT_NAME,
       "getsqldata": {"trace": "false"}
     };
-    var resp =
-        await ExecuteApi().CallFetchData_ExecuteAPI(body: jsonEncode(body));
+    var resp = await ExecuteApi().CallFetchData_ExecuteAPI(body: jsonEncode(body));
     if (resp != "") {
       var jsonResp = jsonDecode(resp);
       if (jsonResp["success"].toString() == "true") {
         var listItems = jsonResp["axm_dashboard_shortcutmenu"]["rows"];
         listOfshortcutCardItems.clear();
         for (var items in listItems) {
-          ShortcutMenuDashboardModel newModel =
-              ShortcutMenuDashboardModel.fromJson(items);
+          ShortcutMenuDashboardModel newModel = ShortcutMenuDashboardModel.fromJson(items);
           listOfshortcutCardItems.add(newModel);
         }
       }
@@ -444,6 +402,8 @@ class MenuHomePageController extends GetxController {
       }
     }
     if (validity) {
+      LogService.writeLog(message: "[i] FolderPanel : Open in webview {$link_id}");
+
       openBtnAction("button", link_id);
     }
   }
@@ -470,32 +430,21 @@ class MenuHomePageController extends GetxController {
 
   void getAttendanceDetails() async {
     var body = {
-      "SecretKey":
-          await getEncryptedSecretKey(ExecuteApi.API_PrivateKey_Attendance),
-      "publickey": ExecuteApi.API_PublicKey_Attendance,
+      "SecretKey": await getEncryptedSecretKey(ExecuteApi.API_PRIVATEKEY_ATTENDANCE),
+      "publickey": ExecuteApi.API_PUBLICKEY_ATTENDANCE,
       "Project": Const.PROJECT_NAME, //"agilepost113",
       "getsqldata": {"trace": "false"}
     };
-    var resp =
-        await ExecuteApi().CallFetchData_ExecuteAPI(body: jsonEncode(body));
+    var resp = await ExecuteApi().CallFetchData_ExecuteAPI(body: jsonEncode(body));
     if (resp != "") {
       var jsonResp = jsonDecode(resp);
       if (jsonResp['success'].toString() == "true") {
         attendanceVisibility.value = true;
-        shift_start_time.value = jsonResp['axm_shift_time']['rows'][0]
-                ["shift_start_time"]
-            .toString();
-        shift_end_time.value =
-            jsonResp['axm_shift_time']['rows'][0]["shift_end_time"].toString();
-        last_login_date.value = jsonResp['axm_logindetails']['rows'][0]
-                ["last_login_date"]
-            .toString();
-        last_login_time.value = jsonResp['axm_logindetails']['rows'][0]
-                ["last_login_time"]
-            .toString();
-        last_login_location.value = jsonResp['axm_logindetails']['rows'][0]
-                ["last_login_location"]
-            .toString();
+        shift_start_time.value = jsonResp['axm_shift_time']['rows'][0]["shift_start_time"].toString();
+        shift_end_time.value = jsonResp['axm_shift_time']['rows'][0]["shift_end_time"].toString();
+        last_login_date.value = jsonResp['axm_logindetails']['rows'][0]["last_login_date"].toString();
+        last_login_time.value = jsonResp['axm_logindetails']['rows'][0]["last_login_time"].toString();
+        last_login_location.value = jsonResp['axm_logindetails']['rows'][0]["last_login_location"].toString();
       } else {
         attendanceVisibility.value = false;
       }
@@ -506,8 +455,7 @@ class MenuHomePageController extends GetxController {
     var cl_recId = "";
     var cl_imagePath = "";
     // var dataSourceUrl = baseUrl + GlobalConfiguration().get("HomeCardDataResponse").toString();
-    var dataSourceUrl =
-        Const.getFullARMUrl(ServerConnections.API_GET_HOMEPAGE_CARDSDATASOURCE);
+    var dataSourceUrl = Const.getFullARMUrl(ServerConnections.API_GET_HOMEPAGE_CARDSDATASOURCE);
     var body = {
       "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
       "username": appStorage.retrieveValue(AppStorage.USER_NAME),
@@ -516,8 +464,7 @@ class MenuHomePageController extends GetxController {
       "sqlParams": {"username": appStorage.retrieveValue(AppStorage.USER_NAME)}
     };
 
-    var dsResp = await serverConnections.postToServer(
-        url: dataSourceUrl, isBearer: true, body: jsonEncode(body));
+    var dsResp = await serverConnections.postToServer(url: dataSourceUrl, isBearer: true, body: jsonEncode(body));
     if (dsResp != "") {
       var jsonDSResp = jsonDecode(dsResp);
       if (jsonDSResp['result']['success'].toString() == "true") {
@@ -534,8 +481,7 @@ class MenuHomePageController extends GetxController {
         }
       }
     }
-    if (!cl_recId.isEmpty && !cl_imagePath.isEmpty)
-      getImageFlieByRecordId(cl_recId, cl_imagePath);
+    if (!cl_recId.isEmpty && !cl_imagePath.isEmpty) getImageFlieByRecordId(cl_recId, cl_imagePath);
   }
 
   getImageFlieByRecordId(recID, filePath) async {
@@ -546,8 +492,7 @@ class MenuHomePageController extends GetxController {
       "FilePath": filePath
     };
 
-    var resp =
-        await serverConnections.postToServer(url: url, body: jsonEncode(body));
+    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body));
     if (resp != "") {
       var jsonResp = jsonDecode(resp);
       if (jsonResp['success'].toString() == "true") {
@@ -567,6 +512,9 @@ class MenuHomePageController extends GetxController {
     }
     list_menuFolderData.value = map_folderList;
     print("list_menuFolderData: ${list_menuFolderData.toString()}");
+    LogService.writeLog(
+        message:
+            "[i] MenuHomePageController\nScope: parseMenuFolderData()\nlist_menuFolderData: ${list_menuFolderData.toString()}");
   }
 
   getMenuFolderPanelWidgetList() {
