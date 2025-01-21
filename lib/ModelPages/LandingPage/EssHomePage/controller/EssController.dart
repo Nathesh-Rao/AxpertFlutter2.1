@@ -12,7 +12,7 @@ import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetE
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetEssMainBannerWidget.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/widgets/WidgetEssSubBannerWidget.dart';
 import 'package:axpertflutter/Utils/ServerConnections/InternetConnectivity.dart';
-import 'package:carousel_slider/carousel_slider.dart' as cc;
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
@@ -53,7 +53,7 @@ class EssController extends GetxController {
   InternetConnectivity internetConnectivity = Get.find();
   AppStorage appStorage = AppStorage();
   ServerConnections serverConnections = ServerConnections();
-  cc.CarouselController essBannerController = cc.CarouselController();
+  CarouselSliderController essBannerController = CarouselSliderController();
   @override
   void onInit() {
     scrollController.addListener(_scrollListener);

@@ -33,8 +33,10 @@ initialize() async {
 
   AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
   DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings(
-    onDidReceiveLocalNotification: onDidReceiveLocalNotification,
-  );
+      // todo find replacement
+      /// [DarwinInitializationSettings] is updated with new sdk changes and the below callback been removed from package
+      // onDidReceiveLocalNotification: onDidReceiveLocalNotification,
+      );
   InitializationSettings initializationSettings =
       InitializationSettings(android: initializationSettingsAndroid, iOS: initializationSettingsDarwin);
   await flutterLocalNotificationsPlugin.initialize(initializationSettings,

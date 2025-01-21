@@ -1,6 +1,12 @@
 import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Widgets/UpdatedWidgets11.4/WidgetUpdatedActiveLists.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Widgets/UpdatedWidgets11.4/WidgetUpdatedFolderPanels.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Widgets/UpdatedWidgets11.4/WidgetUpdatedKPICards.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Widgets/UpdatedWidgets11.4/WidgetUpdatedNewsAndEvents.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Widgets/UpdatedWidgets11.4/WidgetUpdatedQuickLinks.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Widgets/UpdatedWidgets11.4/WidgetUpdatedRecentActivity.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Controller/LandingPageController.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetBannerSliding.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetSlidingNotification.dart';
@@ -56,8 +62,16 @@ class UpdatedHomePage extends StatelessWidget {
               children: [
                 //Banner panel
                 WidgetBannerSlidingPanel(),
+                //::: WidgetSlidingNotificationPanel(),
+                //NOTE=== AXPERT 11.4 New UI Widgets ====>
+                WidgetUpdatedQuickLinks(),
+                WidgetUpdatedKPICards(),
+                WidgetUpdatedActiveLists(),
+                WidgetUpdatedNewsAndEvents(),
+                WidgetUpdatedRecentActivity(),
+                WidgetUpdatedFolderPanels(),
 
-                //WidgetSlidingNotificationPanel(),
+                //NOTE===================================>
                 //KPI panel
                 Widgetkpipanel(),
                 //Attendance
