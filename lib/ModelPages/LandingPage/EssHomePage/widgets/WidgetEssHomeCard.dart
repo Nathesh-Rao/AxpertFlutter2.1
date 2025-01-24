@@ -11,7 +11,6 @@ class WidgetEssHomecard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      log("HomeButton Updated");
       return Visibility(
         visible: controller.bannerWidgets.length > 0,
         child: Padding(
@@ -42,10 +41,8 @@ class WidgetEssHomecard extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children:
-                      List.generate(controller.bannerWidgets.length, (index) {
-                    var isSelected =
-                        index == controller.bannerCurrentIndex.value;
+                  children: List.generate(controller.bannerWidgets.length, (index) {
+                    var isSelected = index == controller.bannerCurrentIndex.value;
 
                     return AnimatedContainer(
                       duration: const Duration(milliseconds: 300),

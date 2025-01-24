@@ -1,14 +1,12 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/VersionUpdateClearOldData.dart';
 import 'package:axpertflutter/Constants/const.dart';
-import 'package:axpertflutter/Demo/Demo_utils.dart';
-import 'package:axpertflutter/Demo/page/Demo_validity_page.dart';
 import 'package:axpertflutter/ModelPages/ProjectListing/Model/ProjectModel.dart';
 import 'package:axpertflutter/ModelPages/location_permission.dart';
+import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -30,6 +28,7 @@ class _SplashPageState extends State<SplashPage>
 
   @override
   void initState() {
+    LogService.writeLog(message: "[>] SplashPage");
     super.initState();
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual);
     // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
@@ -40,33 +39,24 @@ class _SplashPageState extends State<SplashPage>
     checkIfDeviceSupportBiometric();
     Future.delayed(Duration(milliseconds: 1800), () {
       _animationController.stop();
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) => _askLocationPermission());
-//---------DEMO-------------
-      // DemoUtils.demoSplashConfig();
-
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _askLocationPermission();
+      });
       var cached = appStorage.retrieveValue(AppStorage.CACHED);
-//---------DEMO-------------
-// only the validity can be removed
-      if (DemoUtils.demoValidityCheck()) {
-        try {
-          if (cached == null)
-            Get.offAllNamed(Routes.ProjectListingPage);
-          else {
-            var jsonProject = appStorage.retrieveValue(cached);
-            log("Project Model in json");
-            log(jsonProject.toString());
-            projectModel = ProjectModel.fromJson(jsonProject);
-            Const.PROJECT_NAME = projectModel!.projectname;
-            Const.PROJECT_URL = projectModel!.web_url;
-            Const.ARM_URL = projectModel!.arm_url;
-            Get.offAllNamed(Routes.Login);
-          }
-        } catch (e) {
+      try {
+        if (cached == null)
           Get.offAllNamed(Routes.ProjectListingPage);
+        else {
+          var jsonProject = appStorage.retrieveValue(cached);
+          projectModel = ProjectModel.fromJson(jsonProject);
+          Const.PROJECT_NAME = projectModel!.projectname;
+          Const.PROJECT_URL = projectModel!.web_url;
+          Const.ARM_URL = projectModel!.arm_url;
+          Get.offAllNamed(Routes.Login);
         }
-      } else {
-        Get.offAll(() => DemoValidityPage());
+      } catch (e) {
+        LogService.writeLog(message: "[ERROR] \nPage: SplashPage\nScope: initState()\nError: $e");
+        Get.offAllNamed(Routes.ProjectListingPage);
       }
     });
   }
@@ -74,7 +64,9 @@ class _SplashPageState extends State<SplashPage>
   _askLocationPermission() async {
     if (Platform.isAndroid) {
       var permission = await Permission.locationAlways.request();
-      print("Location Permission: ${permission}");
+
+      // print("Location Permission: ${permission}");
+      LogService.writeLog(message: "[i] SplashPage \nScope: askLocationPermission() : $permission ");
       if (permission != PermissionStatus.granted) {
         Get.to(RequestLocationPage());
       }
@@ -129,10 +121,14 @@ class _SplashPageState extends State<SplashPage>
     final bool canAuthenticate =
         canAuthenticateWithBiometrics || await auth.isDeviceSupported();
     print("canAuthenticate: $canAuthenticate");
+    LogService.writeLog(message: "[i] SplashPage\nScope:checkIfDeviceSupportBiometric()\nCanAuthenticate: $canAuthenticate");
     if (canAuthenticate) {
       final List<BiometricType> availableBiometrics =
           await auth.getAvailableBiometrics();
       print("List: $availableBiometrics");
+      LogService.writeLog(
+          message: "[i] SplashPage\nScope:checkIfDeviceSupportBiometric()\nAvailable Biometrics: $availableBiometrics");
+
       // if (availableBiometrics.contains (BiometricType.fingerprint) ||
       //     availableBiometrics.contains(BiometricType.weak) ||
       //     availableBiometrics.contains(BiometricType.strong))

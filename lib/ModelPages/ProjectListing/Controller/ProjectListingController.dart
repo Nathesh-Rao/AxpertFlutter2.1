@@ -1,8 +1,9 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:get/get.dart';
+
+import '../../../Utils/LogServices/LogService.dart';
 
 class ProjectListingController extends GetxController {
   var needRefresh = false.obs;
@@ -19,8 +20,6 @@ class ProjectListingController extends GetxController {
   getConnections() {
     List<dynamic> list = [];
     var jsonList = appStorage.retrieveValue(AppStorage.PROJECT_LIST);
-    log("Project List");
-    log(jsonList.toString());
     if (jsonList == null) {
       return list;
     } else {

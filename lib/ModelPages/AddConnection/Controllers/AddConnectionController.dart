@@ -13,6 +13,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:scan/scan.dart';
 
+import '../../../Utils/LogServices/LogService.dart';
+
 class AddConnectionController extends GetxController {
   ProjectListingController projectListingController = Get.find();
   TextEditingController connectionCodeController = TextEditingController();
@@ -112,8 +114,8 @@ class AddConnectionController extends GetxController {
         //check whether the entered Connection name is proper
         Future<bool> isValidConnName = validateConnectionName(baseUrl);
         if (await isValidConnName) {
-          projectModel = ProjectModel(
-              conNameController.text.trim(), webUrlController.text.trim(), armUrlController.text.trim(), conCaptionController.text.trim());
+          projectModel = ProjectModel(conNameController.text.trim(), webUrlController.text.trim(), armUrlController.text.trim(),
+              conCaptionController.text.trim());
           /*conNameController.text = "";
           webUrlController.text = "";
           armUrlController.text = "";
@@ -172,7 +174,8 @@ class AddConnectionController extends GetxController {
     } else {
       projectList = jsonDecode(storedList);
       if (projectList.contains(projectModel.projectname)) {
-        Get.snackbar("Element already exists", "", snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
+        Get.snackbar("Element already exists", "",
+            snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
         if (isQr) {
           Timer(Duration(seconds: 2), () {
             qrViewController!.resumeCamera();
@@ -223,6 +226,7 @@ class AddConnectionController extends GetxController {
           connectionCodeController.text = "";
           saveDatAndRedirect(model, jsonObj);
         } catch (e) {
+          LogService.writeLog(message: "[ERROR] AddConnectionController\nScope: connectionCodeClick()\nError: $e");
           Get.snackbar("Invalid Project Code", "Please check project code and try again",
               backgroundColor: Colors.redAccent, snackPosition: SnackPosition.BOTTOM, colorText: Colors.white);
         }
@@ -312,7 +316,9 @@ class AddConnectionController extends GetxController {
         Get.snackbar("Invalid!", "Please choose a valid QR Code",
             snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red, colorText: Colors.white);
       }
-    } catch (e) {}
+    } catch (e) {
+      LogService.writeLog(message: "[ERROR] AddConnectionController\nScope: decodeQRResult()\nError: $e");
+    }
   }
 
   void pickImageFromGalleryCalled() async {
@@ -349,6 +355,7 @@ class AddConnectionController extends GetxController {
     var url = baseUrl + ServerConnections.API_GET_SIGNINDETAILS;
     var body = "{\"appname\":\"" + conNameController.text.trim() + "\"}";
     final response = await serverConnections.postToServer(url: url, body: body);
+
     if (response != "") {
       var json = jsonDecode(response);
       if (json["result"]["message"].toString().toLowerCase() == "success")

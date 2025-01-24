@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:hexcolor/hexcolor.dart';
 
+import '../../../../../Utils/LogServices/LogService.dart';
 import '../../Models/CardModel.dart';
 import '../../Widgets/WidgetOptionListTile.dart';
 
@@ -39,26 +40,23 @@ class QuickAccessTileWidget extends StatelessWidget {
             padding: const EdgeInsets.only(right: 12),
             child: GestureDetector(
               onTap: () {
+                LogService.writeLog(message: "[i] QuickAccess : Open in webview {${cardModel.stransid}");
+
                 menuHomePageController.captionOnTapFunction(cardModel.stransid);
               },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   CircleAvatar(
-                    backgroundColor: colorList[Random()
-                        .nextInt(colorList.length)], // color.withAlpha(30),
+                    backgroundColor: colorList[Random().nextInt(colorList.length)], // color.withAlpha(30),
                     foregroundColor: Colors.black,
                     radius: baseHeight / 9,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: CachedNetworkImage(
-                        imageUrl:
-                            Const.getFullProjectUrl("images/homepageicon/") +
-                                cardModel.caption.toString() +
-                                '.png',
-                        errorWidget: (context, url, error) => Image.network(
-                            Const.getFullProjectUrl(
-                                'images/homepageicon/default.png')),
+                        imageUrl: Const.getFullProjectUrl("images/homepageicon/") + cardModel.caption.toString() + '.png',
+                        errorWidget: (context, url, error) =>
+                            Image.network(Const.getFullProjectUrl('images/homepageicon/default.png')),
                       ),
                     ),
                   ),
@@ -87,11 +85,7 @@ class QuickAccessTileWidget extends StatelessWidget {
         Align(
           alignment: Alignment.topRight,
           child: Visibility(
-            visible:
-                menuHomePageController.actionData[cardModel.caption] == null &&
-                        cardModel.moreoption.isEmpty
-                    ? false
-                    : true,
+            visible: menuHomePageController.actionData[cardModel.caption] == null && cardModel.moreoption.isEmpty ? false : true,
             child: InkWell(
               onTap: () => showMenuDialog(cardModel),
               child: Icon(Icons.more_vert),
@@ -187,9 +181,7 @@ class QuickAccessTileWidget extends StatelessWidget {
     // }
     //ends
     List optionLists =
-        menuHomePageController.actionData[cardModel.caption] == null
-            ? []
-            : menuHomePageController.actionData[cardModel.caption];
+        menuHomePageController.actionData[cardModel.caption] == null ? [] : menuHomePageController.actionData[cardModel.caption];
     if (!optionLists.isEmpty || !cardModel.moreoption.isEmpty) {
       showGeneralDialog(
         context: Get.context!,
@@ -204,9 +196,7 @@ class QuickAccessTileWidget extends StatelessWidget {
               backgroundColor: Colors.transparent,
               child: SingleChildScrollView(
                 child: Container(
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20)),
+                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
                   // margin: EdgeInsets.only(left: 10, right: 10),
                   child: Padding(
                     padding: const EdgeInsets.only(left: 5, right: 5),
@@ -220,10 +210,7 @@ class QuickAccessTileWidget extends StatelessWidget {
                         ),
                         Container(
                           height: 50,
-                          decoration: BoxDecoration(
-                              border: Border(
-                                  bottom: BorderSide(
-                                      width: 1, color: Colors.grey))),
+                          decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: Colors.grey))),
                           child: Center(
                             child: Text(
                               cardModel.caption,
@@ -233,8 +220,7 @@ class QuickAccessTileWidget extends StatelessWidget {
                         ),
                         Column(
                           children: [
-                            for (var item in optionLists)
-                              WidgetOptionListTile(item),
+                            for (var item in optionLists) WidgetOptionListTile(item),
                           ],
                         ),
                         // ListView.separated(
@@ -252,13 +238,10 @@ class QuickAccessTileWidget extends StatelessWidget {
                               : SingleChildScrollView(
                                   scrollDirection: Axis.horizontal,
                                   child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 10, top: 10, bottom: 10),
+                                    padding: const EdgeInsets.only(left: 10, top: 10, bottom: 10),
                                     child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: decodeMoreOptopns(
-                                          cardModel.moreoption),
+                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      children: decodeMoreOptopns(cardModel.moreoption),
                                     ),
                                   ),
                                 ),
@@ -307,12 +290,9 @@ class QuickAccessTileWidget extends StatelessWidget {
       var btnType = "", btnName = "", btnOpen = "", btnexeJs = "";
       btnType = singleList[1];
       //if (singleList.indexOf("button") >= 0) btnType = singleList[singleList.indexOf("button") - 1];
-      if (singleList.indexOf("open") >= 0)
-        btnOpen = singleList[singleList.indexOf("open") + 1];
-      if (singleList.indexOf("title") >= 0)
-        btnName = singleList[singleList.indexOf("title") + 1];
-      if (singleList.indexOf("exejs") >= 0)
-        btnexeJs = singleList[singleList.indexOf("exejs") + 1];
+      if (singleList.indexOf("open") >= 0) btnOpen = singleList[singleList.indexOf("open") + 1];
+      if (singleList.indexOf("title") >= 0) btnName = singleList[singleList.indexOf("title") + 1];
+      if (singleList.indexOf("exejs") >= 0) btnexeJs = singleList[singleList.indexOf("exejs") + 1];
 
       btnName = btnName.replaceAll('^', ' ');
       btnName = btnName.replaceAll('\"', '');
@@ -324,13 +304,9 @@ class QuickAccessTileWidget extends StatelessWidget {
           widget = ElevatedButton(
               style: !menuHomePageController.isShowPunchIn.value
                   ? ButtonStyle(
-                      padding: WidgetStateProperty.all(EdgeInsets.only(
-                          left: 5, right: 5, top: 5, bottom: 5)),
-                      backgroundColor:
-                          WidgetStateColor.resolveWith((states) => Colors.grey))
-                  : ButtonStyle(
-                      padding: WidgetStateProperty.all(EdgeInsets.only(
-                          left: 5, right: 5, top: 5, bottom: 5))),
+                      padding: WidgetStateProperty.all(EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5)),
+                      backgroundColor: WidgetStateColor.resolveWith((states) => Colors.grey))
+                  : ButtonStyle(padding: WidgetStateProperty.all(EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5))),
               onPressed: menuHomePageController.isShowPunchIn.value
                   ? () {
                       menuHomePageController.onClick_PunchIn();
@@ -346,13 +322,9 @@ class QuickAccessTileWidget extends StatelessWidget {
             widget = ElevatedButton(
                 style: !menuHomePageController.isShowPunchOut.value
                     ? ButtonStyle(
-                        padding: WidgetStateProperty.all(EdgeInsets.only(
-                            left: 5, right: 5, top: 5, bottom: 5)),
-                        backgroundColor: WidgetStateColor.resolveWith(
-                            (states) => Colors.grey))
-                    : ButtonStyle(
-                        padding: WidgetStateProperty.all(EdgeInsets.only(
-                            left: 5, right: 5, top: 5, bottom: 5))),
+                        padding: WidgetStateProperty.all(EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5)),
+                        backgroundColor: WidgetStateColor.resolveWith((states) => Colors.grey))
+                    : ButtonStyle(padding: WidgetStateProperty.all(EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5))),
                 onPressed: menuHomePageController.isShowPunchOut.value
                     ? () {
                         menuHomePageController.onClick_PunchOut();
@@ -367,13 +339,9 @@ class QuickAccessTileWidget extends StatelessWidget {
             widget = ElevatedButton(
                 style: btnOpen == ""
                     ? ButtonStyle(
-                        padding: WidgetStateProperty.all(EdgeInsets.only(
-                            left: 5, right: 5, top: 5, bottom: 5)),
-                        backgroundColor: WidgetStateColor.resolveWith(
-                            (states) => Colors.grey))
-                    : ButtonStyle(
-                        padding: WidgetStateProperty.all(EdgeInsets.only(
-                            left: 5, right: 5, top: 5, bottom: 5))),
+                        padding: WidgetStateProperty.all(EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5)),
+                        backgroundColor: WidgetStateColor.resolveWith((states) => Colors.grey))
+                    : ButtonStyle(padding: WidgetStateProperty.all(EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5))),
                 onPressed: () {
                   if (btnOpen != "") Get.back();
                   menuHomePageController.openBtnAction(btnType, btnOpen);
@@ -400,8 +368,7 @@ class QuickAccessTileMoreWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double baseSize = MediaQuery.of(context).size.height * .25;
-    List<Widget> baseItems = List.generate(listOfOptionCards.length,
-        (index) => QuickAccessTileWidget(listOfOptionCards[index]));
+    List<Widget> baseItems = List.generate(listOfOptionCards.length, (index) => QuickAccessTileWidget(listOfOptionCards[index]));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,

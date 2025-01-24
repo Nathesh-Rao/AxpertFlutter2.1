@@ -1,9 +1,16 @@
 import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Widgets/UpdatedWidgets11.4/WidgetUpdatedActiveLists.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Widgets/UpdatedWidgets11.4/WidgetUpdatedFolderPanels.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Widgets/UpdatedWidgets11.4/WidgetUpdatedKPICards.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Widgets/UpdatedWidgets11.4/WidgetUpdatedNewsAndEvents.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Widgets/UpdatedWidgets11.4/WidgetUpdatedQuickLinks.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Widgets/UpdatedWidgets11.4/WidgetUpdatedRecentActivity.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Controller/LandingPageController.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetBannerSliding.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetSlidingNotification.dart';
+import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -24,14 +31,14 @@ class UpdatedHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    LogService.writeLog(message: "[>] UpdatedHomePage");
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: Color(0xffebeff2),
       body: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
                 SliverToBoxAdapter(
                   child: ClipRRect(
-                    borderRadius:
-                        BorderRadius.only(bottomLeft: Radius.circular(50)),
+                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50)),
                     child: Container(
                       // margin: EdgeInsets.only(left: 10, right: 10),
                       decoration: BoxDecoration(
@@ -55,8 +62,15 @@ class UpdatedHomePage extends StatelessWidget {
               children: [
                 //Banner panel
                 WidgetBannerSlidingPanel(),
-
-                //WidgetSlidingNotificationPanel(),
+                //::: WidgetSlidingNotificationPanel(),
+                //NOTE=== AXPERT 11.4 New UI Widgets ====>
+                WidgetUpdatedKPICards(),
+                WidgetUpdatedQuickLinks(),
+                WidgetUpdatedActiveLists(),
+                WidgetUpdatedNewsAndEvents(),
+                WidgetUpdatedRecentActivity(),
+                WidgetUpdatedFolderPanels(),
+                //NOTE===================================>
                 //KPI panel
                 Widgetkpipanel(),
                 //Attendance
