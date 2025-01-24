@@ -33,7 +33,7 @@ class UpdatedHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     LogService.writeLog(message: "[>] UpdatedHomePage");
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: Color(0xffebeff2),
       body: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
                 SliverToBoxAdapter(
@@ -64,13 +64,12 @@ class UpdatedHomePage extends StatelessWidget {
                 WidgetBannerSlidingPanel(),
                 //::: WidgetSlidingNotificationPanel(),
                 //NOTE=== AXPERT 11.4 New UI Widgets ====>
-                WidgetUpdatedQuickLinks(),
                 WidgetUpdatedKPICards(),
+                WidgetUpdatedQuickLinks(),
                 WidgetUpdatedActiveLists(),
                 WidgetUpdatedNewsAndEvents(),
                 WidgetUpdatedRecentActivity(),
                 WidgetUpdatedFolderPanels(),
-
                 //NOTE===================================>
                 //KPI panel
                 Widgetkpipanel(),
