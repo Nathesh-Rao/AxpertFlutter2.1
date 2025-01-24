@@ -12,21 +12,16 @@ import 'package:google_fonts/google_fonts.dart';
 class DemoUtils {
   static const String PROJECT_NAME = "agileerpdemo";
   static const String PROJECT_CAPTION = "agileerpdemo";
-  static const String PROJECT_WEB_URL =
-      "https://dev.agilecloud.biz/Axpert11.3Web";
+  static const String PROJECT_WEB_URL = "https://dev.agilecloud.biz/Axpert11.3Web";
   static const String PROJECT_ARM_URL = "https://dev.agilecloud.biz/devarmtest";
 
   static demoSplashConfig() {
     AppStorage appStorage = AppStorage();
-    final ProjectModel pModel = ProjectModel(
-        DemoUtils.PROJECT_NAME,
-        DemoUtils.PROJECT_WEB_URL,
-        DemoUtils.PROJECT_ARM_URL,
-        DemoUtils.PROJECT_CAPTION);
+    final ProjectModel pModel =
+        ProjectModel(DemoUtils.PROJECT_NAME, DemoUtils.PROJECT_WEB_URL, DemoUtils.PROJECT_ARM_URL, DemoUtils.PROJECT_CAPTION);
     appStorage.storeValue(AppStorage.CACHED, pModel.projectname);
     appStorage.storeValue(pModel.projectname, pModel.toJson());
-    appStorage.storeValue(
-        AppStorage.PROJECT_LIST, jsonEncode(["agileerpdemo"]));
+    appStorage.storeValue(AppStorage.PROJECT_LIST, jsonEncode(["agileerpdemo"]));
   }
 
   static bool demoValidityCheck() {
@@ -42,8 +37,11 @@ class DemoUtils {
   static Future<void> showDemoNotice() async {
     AppStorage appStorage = AppStorage();
     var val = appStorage.retrieveValue(AppStorage.DEMO_IS_FIRST_INSTALL);
+
+    // if (true) {
     if (val == null || val) {
       var remainingDays = Const.DEMO_END_DATE.difference(DateTime.now()).inDays;
+
       await Get.defaultDialog(
           barrierDismissible: false,
           title: "Demo Build Active",
