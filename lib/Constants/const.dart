@@ -3,7 +3,7 @@ import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:flutter/material.dart';
 
 class Const {
-  static DateTime DEMO_END_DATE = DateTime(2025, 2, 1);
+  static DateTime DEMO_END_DATE = DateTime(2025, 2, 4);
   static String RELEASE_ID = "_demo_app_test";
   static String DEVICE_ID = "";
   static String PROJECT_URL = ""; //"https://app.buzzily.com/Run";

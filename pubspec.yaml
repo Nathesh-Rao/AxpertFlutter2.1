@@ -71,7 +71,7 @@ dependencies:
   auto_size_text: ^3.0.0
   flutter_typeahead: ^5.2.0
   substring_highlight: ^1.0.33
-  location: ^7.0.0
+  location:
   file_downloader_flutter: ^0.0.5
   cupertino_icons: ^1.0.8
   bottom_picker: ^2.9.0
