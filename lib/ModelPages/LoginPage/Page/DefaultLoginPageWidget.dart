@@ -1,4 +1,3 @@
-import 'package:axpertflutter/Demo/Demo_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -50,8 +49,7 @@ class DefaultLoginPageWidget extends StatelessWidget {
                                 child: Image.asset(
                                   'assets/images/axpert_04.png',
                                   // 'assets/images/buzzily-logo.png',
-                                  height: MediaQuery.of(context).size.height *
-                                      0.090,
+                                  height: MediaQuery.of(context).size.height * 0.090,
                                   // width: MediaQuery.of(context).size.width * 0.38,
                                   fit: BoxFit.fill,
                                 ),
@@ -60,17 +58,11 @@ class DefaultLoginPageWidget extends StatelessWidget {
                             SizedBox(height: 5),
                             Text('Login',
                                 style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 20,
-                                        color: Colors.black))),
+                                    textStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 20, color: Colors.black))),
                             SizedBox(height: 10),
                             Text('Enter Your Credentials',
                                 style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 12,
-                                        color: Colors.black))),
+                                    textStyle: TextStyle(fontWeight: FontWeight.w400, fontSize: 12, color: Colors.black))),
                           ],
                         ),
                         // Align(
@@ -91,18 +83,14 @@ class DefaultLoginPageWidget extends StatelessWidget {
                     Text(
                       Const.PROJECT_NAME.toString().toUpperCase(),
                       style: GoogleFonts.poppins(
-                          textStyle: TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 10,
-                              color: Colors.black)),
+                          textStyle: TextStyle(fontWeight: FontWeight.w400, fontSize: 10, color: Colors.black)),
                     ),
                     SizedBox(height: 20),
                     TextField(
                       controller: loginController.userNameController,
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
-                        errorText: loginController
-                            .errMessage(loginController.errUserName),
+                        errorText: loginController.errMessage(loginController.errUserName),
                         labelText: "Username",
                         hintText: "Enter Username",
                         prefixIcon: Icon(Icons.person),
@@ -118,8 +106,7 @@ class DefaultLoginPageWidget extends StatelessWidget {
                       obscureText: loginController.showPassword.value,
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
-                        errorText: loginController
-                            .errMessage(loginController.errPassword),
+                        errorText: loginController.errMessage(loginController.errPassword),
                         labelText: "Password",
                         hintText: "Enter Password",
                         prefixIcon: Icon(Icons.lock),
@@ -149,10 +136,8 @@ class DefaultLoginPageWidget extends StatelessWidget {
                         child: DropdownButtonFormField(
                           value: loginController.ddSelectedValue.value,
                           items: loginController.dropdownMenuItem(),
-                          onChanged: (value) =>
-                              loginController.dropDownItemChanged(value),
-                          decoration:
-                              InputDecoration(prefixIcon: Icon(Icons.group)),
+                          onChanged: (value) => loginController.dropDownItemChanged(value),
+                          decoration: InputDecoration(prefixIcon: Icon(Icons.group)),
                           // border: OutlineInputBorder(
                           //   borderRadius: BorderRadius.circular(10),
                           // )
@@ -171,11 +156,9 @@ class DefaultLoginPageWidget extends StatelessWidget {
                             children: [
                               Checkbox(
                                 value: loginController.rememberMe.value,
-                                onChanged: (value) =>
-                                    {loginController.rememberMe.toggle()},
+                                onChanged: (value) => {loginController.rememberMe.toggle()},
                                 checkColor: Colors.white,
-                                fillColor: WidgetStateProperty.resolveWith(
-                                    loginController.getColor),
+                                fillColor: WidgetStateProperty.resolveWith(loginController.getColor),
                               ),
                               Text("Remember Me")
                             ],
@@ -191,8 +174,7 @@ class DefaultLoginPageWidget extends StatelessWidget {
                                 decoration: TextDecoration.underline,
                                 color: HexColor("#3E4153"),
                                 fontWeight: FontWeight.w600,
-                                fontSize:
-                                    MediaQuery.of(context).size.height * 0.016),
+                                fontSize: MediaQuery.of(context).size.height * 0.016),
                           ),
                         )
                       ],
@@ -202,23 +184,16 @@ class DefaultLoginPageWidget extends StatelessWidget {
                       padding: EdgeInsets.only(left: 30, right: 30),
                       child: InkWell(
                         onTap: () async {
-                          await DemoUtils.showDemoNotice().then((_) {
-                            loginController.loginButtonClicked();
-                          });
+                          loginController.loginButtonClicked();
                         },
                         child: Container(
                           height: 50,
-                          decoration: BoxDecoration(
-                              color: MyColors.blue2,
-                              borderRadius: BorderRadius.circular(20)),
+                          decoration: BoxDecoration(color: MyColors.blue2, borderRadius: BorderRadius.circular(20)),
                           child: Center(
                             child: Text(
                               "Login",
                               style: GoogleFonts.poppins(
-                                  textStyle: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                      color: MyColors.white1)),
+                                  textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: MyColors.white1)),
                             ),
                           ),
                         ),
@@ -231,20 +206,15 @@ class DefaultLoginPageWidget extends StatelessWidget {
                         padding: EdgeInsets.only(left: 30, right: 30),
                         child: ElevatedButton.icon(
                             style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20)),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                               foregroundColor: MyColors.buzzilyblack,
                               backgroundColor: MyColors.white1,
                               minimumSize: Size(double.infinity, 48),
                             ),
-                            icon: Icon(FontAwesomeIcons.google,
-                                color: MyColors.red),
+                            icon: Icon(FontAwesomeIcons.google, color: MyColors.red),
                             label: Text('Sign In With Google',
                                 style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 12,
-                                        color: HexColor("#3E4153")))),
+                                    textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 12, color: HexColor("#3E4153")))),
                             onPressed: () {
                               loginController.googleSignInClicked();
                             }),
@@ -262,10 +232,7 @@ class DefaultLoginPageWidget extends StatelessWidget {
                           children: [
                             Text("New user?  ",
                                 style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 12,
-                                        color: HexColor("#3E4153")))),
+                                    textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: HexColor("#3E4153")))),
                             Text(
                               "Sign up",
                               style: GoogleFonts.poppins(
@@ -284,11 +251,8 @@ class DefaultLoginPageWidget extends StatelessWidget {
                       child: Text(
                         "By using the software, you agree to the",
                         style: GoogleFonts.poppins(
-                            textStyle: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 12,
-                                letterSpacing: 1,
-                                color: Colors.black)),
+                            textStyle:
+                                TextStyle(fontWeight: FontWeight.w400, fontSize: 12, letterSpacing: 1, color: Colors.black)),
                       ),
                     ),
                     Row(
@@ -308,11 +272,8 @@ class DefaultLoginPageWidget extends StatelessWidget {
                         FittedBox(
                           child: Text(" and the ",
                               style: GoogleFonts.poppins(
-                                textStyle: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 12,
-                                    color: Colors.black,
-                                    letterSpacing: 1),
+                                textStyle:
+                                    TextStyle(fontWeight: FontWeight.w400, fontSize: 12, color: Colors.black, letterSpacing: 1),
                               )),
                         ),
                         FittedBox(
@@ -332,11 +293,7 @@ class DefaultLoginPageWidget extends StatelessWidget {
                     Text("Powered By",
                         textAlign: TextAlign.center,
                         style: GoogleFonts.poppins(
-                          textStyle: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 12,
-                              color: Colors.black,
-                              letterSpacing: 1),
+                          textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 12, color: Colors.black, letterSpacing: 1),
                         )),
                     Image.asset(
                       'assets/images/agilelabslogonew.png',
@@ -379,9 +336,7 @@ class DefaultLoginPageWidget extends StatelessWidget {
                                 textStyle: TextStyle(
                                     color: MyColors.buzzilyblack,
                                     fontWeight: FontWeight.w700,
-                                    fontSize:
-                                        MediaQuery.of(context).size.height *
-                                            0.012)),
+                                    fontSize: MediaQuery.of(context).size.height * 0.012)),
                           );
                         } else {
                           return Text("");

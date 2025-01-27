@@ -1,7 +1,6 @@
 import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
-import 'package:axpertflutter/Demo/Demo_utils.dart';
 
 import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:flutter/material.dart';
@@ -17,8 +16,7 @@ import '../Controller/SettingsPageController.dart';
 class SettingsPage extends StatelessWidget {
   SettingsPage({super.key});
 
-  final SettingsPageController settingsPageController =
-      Get.put(SettingsPageController());
+  final SettingsPageController settingsPageController = Get.put(SettingsPageController());
   final LandingPageController landingPageController = Get.find();
   final MenuHomePageController menuHomePageController = Get.find();
 
@@ -32,9 +30,7 @@ class SettingsPage extends StatelessWidget {
           Container(
             height: 330,
             decoration: BoxDecoration(
-                gradient: MyColors.updatedUIBackgroundGradient,
-                borderRadius:
-                    BorderRadius.vertical(bottom: Radius.circular(0))),
+                gradient: MyColors.updatedUIBackgroundGradient, borderRadius: BorderRadius.vertical(bottom: Radius.circular(0))),
           ),
           SafeArea(
             child: Padding(
@@ -88,10 +84,7 @@ class SettingsPage extends StatelessWidget {
                                     child: Container(
                                       width: 30,
                                       height: 30,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(50)),
+                                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(50)),
                                       child: Icon(
                                         Icons.edit,
                                         color: Colors.black,
@@ -107,34 +100,18 @@ class SettingsPage extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      CommonMethods.capitalize(
-                                          menuHomePageController
-                                                      .client_info_userNickname
-                                                      .value !=
-                                                  ""
-                                              ? menuHomePageController
-                                                  .client_info_userNickname
-                                                  .value
-                                              : landingPageController
-                                                  .userName.value),
+                                      CommonMethods.capitalize(menuHomePageController.client_info_userNickname.value != ""
+                                          ? menuHomePageController.client_info_userNickname.value
+                                          : landingPageController.userName.value),
                                       maxLines: 2,
                                       style: GoogleFonts.poppins(
-                                          textStyle: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.w600)),
+                                          textStyle: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.w600)),
                                     ),
                                     Visibility(
-                                      visible: menuHomePageController
-                                              .client_info_companyTitle.value !=
-                                          "",
+                                      visible: menuHomePageController.client_info_companyTitle.value != "",
                                       child: Text(
-                                        menuHomePageController
-                                            .client_info_companyTitle.value,
-                                        style: GoogleFonts.poppins(
-                                            textStyle: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15)),
+                                        menuHomePageController.client_info_companyTitle.value,
+                                        style: GoogleFonts.poppins(textStyle: TextStyle(color: Colors.white, fontSize: 15)),
                                       ),
                                     ),
                                   ],
@@ -177,8 +154,7 @@ class SettingsPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10),
                           // color: Colors.white,
                           color: Colors.white,
-                          border: Border.all(
-                              color: Colors.grey.shade300, width: 1)),
+                          border: Border.all(color: Colors.grey.shade300, width: 1)),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Column(
@@ -198,24 +174,20 @@ class SettingsPage extends StatelessWidget {
                               onTap: () {
                                 settingsPageController.onChangeNotifyStatus();
                               },
-                              leading:
-                                  Icon(Icons.notifications_active_outlined),
+                              leading: Icon(Icons.notifications_active_outlined),
                               title: Text(
                                 "Notification",
-                                style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(fontSize: 18)),
+                                style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 18)),
                               ),
                               trailing: Obx(() => SizedBox(
                                     width: 60,
                                     child: FlutterSwitch(
                                       height: 30,
-                                      value: settingsPageController
-                                          .notificationOnOffValue.value,
+                                      value: settingsPageController.notificationOnOffValue.value,
                                       showOnOff: true,
                                       activeColor: MyColors.blue2,
                                       onToggle: (bool values) {
-                                        settingsPageController
-                                            .onChangeNotifyStatus();
+                                        settingsPageController.onChangeNotifyStatus();
                                       },
                                     ),
                                   )),
@@ -242,20 +214,17 @@ class SettingsPage extends StatelessWidget {
                               leading: Icon(Icons.description_outlined),
                               title: Text(
                                 "Trace",
-                                style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(fontSize: 18)),
+                                style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 18)),
                               ),
                               trailing: Obx(() => SizedBox(
                                     width: 60,
                                     child: FlutterSwitch(
                                       height: 30,
-                                      value: settingsPageController
-                                          .logOnOffValue.value,
+                                      value: settingsPageController.logOnOffValue.value,
                                       showOnOff: true,
                                       activeColor: MyColors.blue2,
                                       onToggle: (bool values) {
-                                        settingsPageController
-                                            .onChangeLogStatus();
+                                        settingsPageController.onChangeLogStatus();
                                       },
                                     ),
                                   )),
@@ -264,14 +233,12 @@ class SettingsPage extends StatelessWidget {
                             ListTile(
                               onTap: () {
                                 // DemoUtils.showDemoBarrier();
-                                landingPageController.showManageWindow(
-                                    initialIndex: 1);
+                                landingPageController.showManageWindow(initialIndex: 1);
                               },
                               leading: Icon(Icons.lock_outline),
                               title: Text(
                                 "Reset Password",
-                                style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(fontSize: 18)),
+                                style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 18)),
                               ),
                             ),
                             Divider(),
@@ -282,8 +249,7 @@ class SettingsPage extends StatelessWidget {
                               leading: Icon(Icons.power_settings_new),
                               title: Text(
                                 "Sign out",
-                                style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(fontSize: 18)),
+                                style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 18)),
                               ),
                             ),
                             Divider(),
@@ -305,10 +271,7 @@ class SettingsPage extends StatelessWidget {
                     height: 40,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("© agile-labs.com ${DateTime.now().year}"),
-                        Text("Version: " + Const.APP_VERSION)
-                      ],
+                      children: [Text("© agile-labs.com ${DateTime.now().year}"), Text("Version: " + Const.APP_VERSION)],
                     ),
                   ),
                 ],

@@ -1,4 +1,3 @@
-import 'package:axpertflutter/Demo/Demo_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -47,12 +46,8 @@ class EssLoginPage extends StatelessWidget {
           Container(
             height: containerHeight,
             decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage("assets/images/essbg.png"),
-                    fit: BoxFit.cover),
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(40),
-                    bottomRight: Radius.circular(40))),
+                image: DecorationImage(image: AssetImage("assets/images/essbg.png"), fit: BoxFit.cover),
+                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(40), bottomRight: Radius.circular(40))),
             child: Stack(
               children: [
                 Align(
@@ -74,18 +69,12 @@ class EssLoginPage extends StatelessWidget {
                         Text('Welcome to Axpert',
                             textAlign: TextAlign.center,
                             style: GoogleFonts.poppins(
-                                textStyle: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 20,
-                                    color: Colors.white))),
+                                textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 20, color: Colors.white))),
                         SizedBox(height: 5),
                         Text(
                           Const.PROJECT_NAME.toString().toUpperCase(),
                           style: GoogleFonts.poppins(
-                              textStyle: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 12,
-                                  color: Colors.white)),
+                              textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 12, color: Colors.white)),
                         ),
                       ],
                     ),
@@ -100,8 +89,7 @@ class EssLoginPage extends StatelessWidget {
               padding: EdgeInsets.all(15),
               child: Card(
                 clipBehavior: Clip.hardEdge,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 elevation: 5,
                 child: Container(
                   height: loginContainerHeight,
@@ -116,27 +104,16 @@ class EssLoginPage extends StatelessWidget {
                         decoration: InputDecoration(
                           floatingLabelBehavior: FloatingLabelBehavior.never,
                           border: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.white, width: 0.1),
-                              borderRadius: BorderRadius.circular(10)),
+                              borderSide: BorderSide(color: Colors.white, width: 0.1), borderRadius: BorderRadius.circular(10)),
                           enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.white, width: 0.1),
-                              borderRadius: BorderRadius.circular(10)),
-                          errorText: loginController
-                              .errMessage(loginController.errUserName),
+                              borderSide: BorderSide(color: Colors.white, width: 0.1), borderRadius: BorderRadius.circular(10)),
+                          errorText: loginController.errMessage(loginController.errUserName),
                           labelText: "Username",
                           hintText: "Enter Username",
                           labelStyle: GoogleFonts.poppins(
-                              textStyle: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 15,
-                                  color: MyColors.text1)),
+                              textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: MyColors.text1)),
                           hintStyle: GoogleFonts.poppins(
-                              textStyle: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 15,
-                                  color: MyColors.text1)),
+                              textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: MyColors.text1)),
                           fillColor: MyColors.blue12,
                           filled: true,
                           // border: OutlineInputBorder(
@@ -153,27 +130,16 @@ class EssLoginPage extends StatelessWidget {
                         decoration: InputDecoration(
                           floatingLabelBehavior: FloatingLabelBehavior.never,
                           border: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.white, width: 0.1),
-                              borderRadius: BorderRadius.circular(10)),
+                              borderSide: BorderSide(color: Colors.white, width: 0.1), borderRadius: BorderRadius.circular(10)),
                           enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.white, width: 0.1),
-                              borderRadius: BorderRadius.circular(10)),
-                          errorText: loginController
-                              .errMessage(loginController.errPassword),
+                              borderSide: BorderSide(color: Colors.white, width: 0.1), borderRadius: BorderRadius.circular(10)),
+                          errorText: loginController.errMessage(loginController.errPassword),
                           labelText: "Password",
                           hintText: "Enter Password",
                           labelStyle: GoogleFonts.poppins(
-                              textStyle: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 15,
-                                  color: MyColors.text1)),
+                              textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: MyColors.text1)),
                           hintStyle: GoogleFonts.poppins(
-                              textStyle: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 15,
-                                  color: MyColors.text1)),
+                              textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: MyColors.text1)),
                           fillColor: MyColors.blue12,
                           filled: true,
                           suffixIcon: IconButton(
@@ -207,12 +173,8 @@ class EssLoginPage extends StatelessWidget {
                           child: DropdownButtonFormField(
                             value: loginController.ddSelectedValue.value,
                             items: loginController.dropdownMenuItem(),
-                            onChanged: (value) =>
-                                loginController.dropDownItemChanged(value),
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 15,
-                                color: Colors.black),
+                            onChanged: (value) => loginController.dropDownItemChanged(value),
+                            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: Colors.black),
                             decoration: InputDecoration(
                               prefixIcon: Icon(Icons.group),
                               border: OutlineInputBorder(
@@ -246,11 +208,9 @@ class EssLoginPage extends StatelessWidget {
                                     width: 20,
                                     child: Checkbox(
                                       value: loginController.rememberMe.value,
-                                      onChanged: (value) =>
-                                          {loginController.rememberMe.toggle()},
+                                      onChanged: (value) => {loginController.rememberMe.toggle()},
                                       checkColor: Colors.white,
-                                      fillColor: WidgetStateProperty.all(
-                                          MyColors.blue10),
+                                      fillColor: WidgetStateProperty.all(MyColors.blue10),
                                       // fillColor: WidgetStateProperty.resolveWith(
                                       //     loginController.getColor),
                                     ),
@@ -261,9 +221,7 @@ class EssLoginPage extends StatelessWidget {
                                     style: TextStyle(
                                         color: HexColor("#3E4153"),
                                         fontWeight: FontWeight.w600,
-                                        fontSize:
-                                            MediaQuery.of(context).size.height *
-                                                0.014),
+                                        fontSize: MediaQuery.of(context).size.height * 0.014),
                                   )
                                 ],
                               ),
@@ -278,9 +236,7 @@ class EssLoginPage extends StatelessWidget {
                                     decoration: TextDecoration.underline,
                                     color: HexColor("#3E4153"),
                                     fontWeight: FontWeight.w600,
-                                    fontSize:
-                                        MediaQuery.of(context).size.height *
-                                            0.014),
+                                    fontSize: MediaQuery.of(context).size.height * 0.014),
                               ),
                             ),
                           ],
@@ -289,9 +245,7 @@ class EssLoginPage extends StatelessWidget {
                       SizedBox(height: 15),
                       InkWell(
                         onTap: () async {
-                          await DemoUtils.showDemoNotice().then((_) {
-                            loginController.loginButtonClicked();
-                          });
+                          loginController.loginButtonClicked();
                         },
                         child: Container(
                           height: 60,
@@ -301,11 +255,9 @@ class EssLoginPage extends StatelessWidget {
                             boxShadow: [
                               BoxShadow(
                                 color: MyColors.blue11, // Shadow color
-                                offset: Offset(0,
-                                    10), // x, y offset of the shadow (0 for no horizontal shift)
+                                offset: Offset(0, 10), // x, y offset of the shadow (0 for no horizontal shift)
                                 blurRadius: 20, // Blur effect radius
-                                spreadRadius:
-                                    0, // Optional, to adjust the spread of the shadow
+                                spreadRadius: 0, // Optional, to adjust the spread of the shadow
                               ),
                             ],
                           ),
@@ -313,10 +265,7 @@ class EssLoginPage extends StatelessWidget {
                             child: Text(
                               "Sign In",
                               style: GoogleFonts.poppins(
-                                  textStyle: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 18,
-                                      color: MyColors.white1)),
+                                  textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 18, color: MyColors.white1)),
                             ),
                           ),
                         ),
@@ -357,10 +306,7 @@ class EssLoginPage extends StatelessWidget {
                                   Text(
                                     "Sign In with Google",
                                     style: GoogleFonts.poppins(
-                                        textStyle: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 18,
-                                            color: MyColors.text1)),
+                                        textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 18, color: MyColors.text1)),
                                   ),
                                 ],
                               ),
@@ -383,10 +329,8 @@ class EssLoginPage extends StatelessWidget {
                               children: [
                                 Text("New user?  ",
                                     style: GoogleFonts.poppins(
-                                        textStyle: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 12,
-                                            color: HexColor("#3E4153")))),
+                                        textStyle:
+                                            TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: HexColor("#3E4153")))),
                                 Text(
                                   "Sign up",
                                   style: GoogleFonts.poppins(
@@ -416,9 +360,7 @@ class EssLoginPage extends StatelessWidget {
                                 style: GoogleFonts.poppins(
                                     textStyle: TextStyle(
                                         fontWeight: FontWeight.w600,
-                                        fontSize:
-                                            MediaQuery.of(context).size.height *
-                                                0.014,
+                                        fontSize: MediaQuery.of(context).size.height * 0.014,
                                         color: MyColors.blue10)),
                               ),
                               SizedBox(height: 10),
@@ -449,10 +391,7 @@ class EssLoginPage extends StatelessWidget {
                                         textStyle: TextStyle(
                                             color: MyColors.buzzilyblack,
                                             fontWeight: FontWeight.w700,
-                                            fontSize: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.012)),
+                                            fontSize: MediaQuery.of(context).size.height * 0.012)),
                                   );
                                 } else {
                                   return Text("");
