@@ -64,12 +64,12 @@ class UpdatedHomePage extends StatelessWidget {
                 WidgetBannerSlidingPanel(),
                 //::: WidgetSlidingNotificationPanel(),
                 //NOTE=== AXPERT 11.4 New UI Widgets ====>
-                WidgetUpdatedKPICards(),
-                WidgetUpdatedQuickLinks(),
-                WidgetUpdatedActiveLists(),
-                WidgetUpdatedNewsAndEvents(),
-                WidgetUpdatedRecentActivity(),
-                WidgetUpdatedFolderPanels(),
+                // WidgetUpdatedKPICards(),
+                // WidgetUpdatedQuickLinks(),
+                // WidgetUpdatedActiveLists(),
+                // WidgetUpdatedNewsAndEvents(),
+                // WidgetUpdatedRecentActivity(),
+                // WidgetUpdatedFolderPanels(),
                 //NOTE===================================>
                 //KPI panel
                 Widgetkpipanel(),

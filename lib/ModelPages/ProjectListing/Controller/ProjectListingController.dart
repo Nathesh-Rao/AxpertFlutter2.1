@@ -20,7 +20,6 @@ class ProjectListingController extends GetxController {
   getConnections() {
     List<dynamic> list = [];
     var jsonList = appStorage.retrieveValue(AppStorage.PROJECT_LIST);
-
     if (jsonList == null) {
       return list;
     } else {
@@ -32,7 +31,6 @@ class ProjectListingController extends GetxController {
 
   getProjectCount() {
     List<dynamic> list = getConnections();
-
     if (list.isEmpty) {
       isCountAvailable.value = false;
       return 0;

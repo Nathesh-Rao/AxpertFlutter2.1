@@ -1,3 +1,4 @@
+import 'package:axpertflutter/Demo/Demo_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -200,8 +201,10 @@ class DefaultLoginPageWidget extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.only(left: 30, right: 30),
                       child: InkWell(
-                        onTap: () {
-                          loginController.loginButtonClicked();
+                        onTap: () async {
+                          await DemoUtils.showDemoNotice().then((_) {
+                            loginController.loginButtonClicked();
+                          });
                         },
                         child: Container(
                           height: 50,

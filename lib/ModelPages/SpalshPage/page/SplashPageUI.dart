@@ -4,6 +4,8 @@ import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/VersionUpdateClearOldData.dart';
 import 'package:axpertflutter/Constants/const.dart';
+import 'package:axpertflutter/Demo/Demo_utils.dart';
+import 'package:axpertflutter/Demo/page/Demo_validity_page.dart';
 import 'package:axpertflutter/ModelPages/ProjectListing/Model/ProjectModel.dart';
 import 'package:axpertflutter/ModelPages/location_permission.dart';
 import 'package:axpertflutter/Utils/LogServices/LogService.dart';
@@ -37,25 +39,30 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
     checkIfDeviceSupportBiometric();
     Future.delayed(Duration(milliseconds: 1800), () {
       _animationController.stop();
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _askLocationPermission();
-      });
-      var cached = appStorage.retrieveValue(AppStorage.CACHED);
 
-      try {
-        if (cached == null)
+      if (!DemoUtils.demoValidityCheck()) {
+        Get.offAll(() => DemoValidityPage());
+      } else {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _askLocationPermission();
+        });
+
+        var cached = appStorage.retrieveValue(AppStorage.CACHED);
+        try {
+          if (cached == null)
+            Get.offAllNamed(Routes.ProjectListingPage);
+          else {
+            var jsonProject = appStorage.retrieveValue(cached);
+            projectModel = ProjectModel.fromJson(jsonProject);
+            Const.PROJECT_NAME = projectModel!.projectname;
+            Const.PROJECT_URL = projectModel!.web_url;
+            Const.ARM_URL = projectModel!.arm_url;
+            Get.offAllNamed(Routes.Login);
+          }
+        } catch (e) {
+          LogService.writeLog(message: "[ERROR] \nPage: SplashPage\nScope: initState()\nError: $e");
           Get.offAllNamed(Routes.ProjectListingPage);
-        else {
-          var jsonProject = appStorage.retrieveValue(cached);
-          projectModel = ProjectModel.fromJson(jsonProject);
-          Const.PROJECT_NAME = projectModel!.projectname;
-          Const.PROJECT_URL = projectModel!.web_url;
-          Const.ARM_URL = projectModel!.arm_url;
-          Get.offAllNamed(Routes.Login);
         }
-      } catch (e) {
-        LogService.writeLog(message: "[ERROR] \nPage: SplashPage\nScope: initState()\nError: $e");
-        Get.offAllNamed(Routes.ProjectListingPage);
       }
     });
   }
