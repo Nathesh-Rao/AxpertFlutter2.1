@@ -3,12 +3,18 @@ import 'dart:math';
 
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/CommonMethods.dart';
+import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/BannerModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/CardModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/CardOptionModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/GridDashboardModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/MenuFolderModel.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Models/ActivityListModel.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Models/KPIListCardModel.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Models/NewsCardModel.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Models/TaskListModel.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Models/UpdatedHomeCardDataModel.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ExecuteApi.dart';
 import 'package:axpertflutter/Utils/ServerConnections/InternetConnectivity.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
@@ -19,6 +25,7 @@ import 'package:material_icons_named/material_icons_named.dart';
 
 import '../../../../Utils/LogServices/LogService.dart';
 import '../../../LandingPage/EssHomePage/AttendanceManagement/controller/AttendanceController.dart';
+import '../UpdatedHomePage/Models/MenuIconsModel.dart';
 import '../UpdatedHomePage/Widgets/WidgetMenuFolderPanelItem.dart';
 
 class MenuHomePageController extends GetxController {
@@ -59,12 +66,141 @@ class MenuHomePageController extends GetxController {
   MenuHomePageController() {
     body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
     getClientInfo();
+    //---------------------->
+    //NOTE Axpert 11.4
+    _getCardsWithData();
+    //---------------------->
     getCardDetails();
     getPunchINData();
     getShorcutMenuDashboardDetails();
     getAttendanceDetails();
   }
+//------------------------------------------------------------------------------------->
+  //NOTE Axpert 11.4 API calls and methods
+  var bannerCardData = [].obs;
+  var taskListData = [].obs;
+  var newsCardData = [].obs;
+  var kpiListCardData = [].obs;
+  var kpiListSliderCardData = [].obs;
+  var menuIconsData = [].obs;
+  var activityListData = [].obs;
+//---------------------------------
+  pseudoCall() {
+    _getCardsWithData();
+  }
 
+  _sortDataByPluginName({required List<UpdatedHomeCardDataModel> dataList}) {
+    for (var data in dataList) {
+      if (data.carddata != null) {
+        switch (data.pluginname) {
+          case "Banner card":
+            //NOTE - as of been data is null
+            // bannerCardData.add(parsedCardData);
+
+            break;
+          case "Task list":
+            taskListData.add(data);
+            break;
+          case "News card":
+            newsCardData.add(data);
+            break;
+          case "KPI List":
+            if (data.cardname == "KPI List") {
+              kpiListSliderCardData.add(data);
+            } else {
+              kpiListCardData.add(data);
+            }
+
+            break;
+          case "Menu icons":
+            menuIconsData.add(data);
+            break;
+          case "Activity List":
+            activityListData.add(data);
+            break;
+          default:
+        }
+      }
+    }
+  }
+
+  _getCardsWithData() async {
+    isLoading.value = true;
+    LoadingScreen.show();
+    LogService.writeLog(message: "_getCardsWithData: started");
+    var url = Const.getFullARMUrl(ServerConnections.API_GET_CARDS_WITH_DATA);
+    var getCardsBody = {
+      "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
+      "AxSessionId": "jbxqzz5tie2y3yujshe3k1x5",
+      "Trace": "false",
+      "AppName": appStorage.retrieveValue(AppStorage.PROJECT_NAME),
+      "Roles": "default",
+      "UserName": appStorage.retrieveValue(AppStorage.USER_NAME),
+      "HomePageCards": true,
+      "RefreshData": false,
+      "GlobalParams": ServerConnections.SAMPLE_GET_CARDS_WITH_DATA_GLOBAL_PARAMS
+    };
+    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(getCardsBody), isBearer: true);
+    var response = jsonDecode(resp);
+    // LogService.writeLog(message: "_getCardsWithData: resp:$response");
+    List dataList = response["result"]["data"];
+    // _clearDataLists();
+    _UpdateDataLists(dataList);
+
+    isLoading.value = false;
+    LoadingScreen.dismiss();
+    _printDataCard();
+  }
+
+  _UpdateDataLists(List dataList) {
+    _clearDataLists();
+    List<UpdatedHomeCardDataModel> cardDataList = dataList.map((e) => UpdatedHomeCardDataModel.fromJson(e)).toList();
+
+    for (var i in cardDataList) {
+      if (i.carddata != null) {
+        try {
+          i.carddata = jsonDecode(i.carddata);
+        } catch (e) {
+          print(e);
+        }
+      }
+    }
+
+    _sortDataByPluginName(dataList: cardDataList);
+
+//     Map<String, List<String>> cardDataMap = {};
+//     List<Map<String?, dynamic>> cardMap = [];
+//     for (var data in cardDataList) {
+//       cardDataMap.putIfAbsent(data.pluginname!, () => []).add(data.cardname ?? '');
+//       cardMap.add({data.cardname: data.carddata});
+//     }
+// // global vars
+//
+//     LogService.writeLog(message: "_getCardsWithData: $cardDataMap");
+//     LogService.writeLog(message: "_getCardsWithData: $cardMap");
+  }
+
+  _clearDataLists() {
+    bannerCardData.clear();
+    taskListData.clear();
+    newsCardData.clear();
+    kpiListCardData.clear();
+    kpiListSliderCardData.clear();
+    menuIconsData.clear();
+    activityListData.clear();
+  }
+
+  _printDataCard() {
+    LogService.writeLog(message: "bannerCardData length => ${bannerCardData.length}");
+    LogService.writeLog(message: "taskListData length => ${taskListData.length}");
+    LogService.writeLog(message: "newsCardData length => ${newsCardData.length}");
+    LogService.writeLog(message: "kpiListCardData length => ${kpiListCardData.length}");
+    LogService.writeLog(message: "kpiListSliderCardData length => ${kpiListSliderCardData.length}");
+    LogService.writeLog(message: "menuIconsData length => ${menuIconsData.length}");
+    LogService.writeLog(message: "activityListData length => ${activityListData.length}");
+  }
+
+//------------------------------------------------------------------------------------->
   showMenuDialog(CardModel cardModel) {
     Get.dialog(Dialog(
       backgroundColor: Colors.transparent,
@@ -384,7 +520,9 @@ class MenuHomePageController extends GetxController {
   }
 
   captionOnTapFunction(transid) {
-    var link_id = transid;
+    String link_id = transid.replaceAll('(', '').replaceAll(')', '');
+
+    LogService.writeLog(message: "captionOnTapFunction: transid => $link_id");
     var validity = false;
     if (link_id.toLowerCase().startsWith('h')) {
       if (link_id.toLowerCase().contains("hp")) {
@@ -402,9 +540,50 @@ class MenuHomePageController extends GetxController {
       }
     }
     if (validity) {
-      LogService.writeLog(message: "[i] FolderPanel : Open in webview {$link_id}");
+      // LogService.writeLog(message: "[i] FolderPanel : Open in webview {$link_id}");
 
       openBtnAction("button", link_id);
+    }
+  }
+
+  captionOnTapFunctionNew(transid) async {
+    String link_id = transid.replaceAll('(', '').replaceAll(')', '');
+
+    LogService.writeLog(message: "captionOnTapFunction: transid => $link_id");
+    var validity = false;
+    if (link_id.toLowerCase().startsWith('h')) {
+      if (link_id.toLowerCase().contains("hp")) {
+        link_id = link_id.toLowerCase().replaceAll("hp", "h");
+      }
+      validity = true;
+    } else {
+      if (link_id.toLowerCase().startsWith('i')) {
+        validity = true;
+      } else {
+        if (link_id.toLowerCase().startsWith('t')) {
+          validity = true;
+        } else
+          validity = false;
+      }
+    }
+    if (validity) {
+      // LogService.writeLog(message: "[i] FolderPanel : Open in webview {$link_id}");
+
+      if (await internetConnectivity.connectionStatus) {
+        // if (btnType.toLowerCase() == "button" && btnOpen != "") {
+        //
+        //   print("URL : $webUrl");
+        //
+        //   switchPage.toggle();
+        // } else {}
+
+        webUrl = Const.getFullProjectUrl("aspx/AxMain.aspx?authKey=AXPERT-") +
+            appStorage.retrieveValue(AppStorage.SESSIONID) +
+            "&pname=" +
+            link_id;
+
+        Get.toNamed(Routes.InApplicationWebViewer, arguments: [webUrl]);
+      }
     }
   }
 

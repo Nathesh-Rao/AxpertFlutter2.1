@@ -34,6 +34,7 @@ class WidgetMenuFolderPanelInnerItem extends StatelessWidget {
     return InkWell(
         onTap: () {
           if (isFromBottomSheet) Get.back();
+          print(item.target);
           menuHomePageController
               .captionOnTapFunction(item.target!.substring(item.target!.lastIndexOf('=') + 1, item.target.toString().length));
         },

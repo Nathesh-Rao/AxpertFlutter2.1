@@ -1,21 +1,51 @@
-import 'package:flutter/cupertino.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Models/TaskListModel.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Models/UpdatedHomeCardDataModel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../../../Constants/MyColors.dart';
 
-class WidgetUpdatedActiveLists extends StatefulWidget {
-  const WidgetUpdatedActiveLists({super.key});
+class WidgetTaskList extends StatefulWidget {
+  const WidgetTaskList({super.key});
 
   @override
-  State<WidgetUpdatedActiveLists> createState() => _WidgetUpdatedActiveListsState();
+  State<WidgetTaskList> createState() => _WidgetTaskListState();
 }
 
-class _WidgetUpdatedActiveListsState extends State<WidgetUpdatedActiveLists> {
+class _WidgetTaskListState extends State<WidgetTaskList> {
   ///NOTE => This container will be having 4 rows and therefore 4 heights depends up on the number of quicklinks available
   ///NOTE => A new way to layout the tile's height and width is needed
   ///NOTE => Ditch Gridview and Use Wrap
+  ///
+  MenuHomePageController menuHomePageController = Get.find();
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(
+      () => Visibility(
+        visible: menuHomePageController.taskListData.isNotEmpty,
+        child: Column(
+          children: List.generate(menuHomePageController.taskListData.length,
+              (index) => TaskListPanel(taskListData: menuHomePageController.taskListData[index])),
+        ),
+      ),
+    );
+  }
+}
+
+class TaskListPanel extends StatefulWidget {
+  const TaskListPanel({super.key, required this.taskListData});
+  final UpdatedHomeCardDataModel taskListData;
+  @override
+  State<TaskListPanel> createState() => _TaskListPanelState();
+}
+
+class _TaskListPanelState extends State<TaskListPanel> {
+  MenuHomePageController menuHomePageController = Get.find();
+  ScrollController scrollController = ScrollController();
+
   var bHeight = Get.height / 3.22;
 
   var bHeight1 = Get.height / 3.22;
@@ -27,6 +57,8 @@ class _WidgetUpdatedActiveListsState extends State<WidgetUpdatedActiveLists> {
       if (isSeeMore) {
         bHeight = bHeight2;
       } else {
+        scrollController.animateTo(scrollController.position.minScrollExtent,
+            duration: Duration(milliseconds: 300), curve: Curves.decelerate);
         bHeight = bHeight1;
       }
     });
@@ -54,7 +86,7 @@ class _WidgetUpdatedActiveListsState extends State<WidgetUpdatedActiveLists> {
                   borderRadius: BorderRadius.only(topRight: Radius.circular(25), topLeft: Radius.circular(25))),
               child: Column(children: [
                 InkWell(
-                  onTap: (){
+                  onTap: () {
                     _onClickSeeMore();
                   },
                   child: Padding(
@@ -62,11 +94,11 @@ class _WidgetUpdatedActiveListsState extends State<WidgetUpdatedActiveLists> {
                     child: Row(
                       children: [
                         Icon(
-                          Icons.list,
+                          Icons.local_activity_outlined,
                           // size: 17,
                         ),
                         SizedBox(width: 5),
-                        Text("Active List",
+                        Text(widget.taskListData.cardname ?? "",
                             style: GoogleFonts.urbanist(
                               fontSize: 15,
                               fontWeight: FontWeight.w700,
@@ -81,13 +113,14 @@ class _WidgetUpdatedActiveListsState extends State<WidgetUpdatedActiveLists> {
                 ),
                 Expanded(
                     child: ListView.separated(
-                  itemCount: isSeeMore ? 10 : 3,
+                  controller: scrollController,
+                  itemCount: widget.taskListData.carddata.length,
                   physics: isSeeMore
                       ? BouncingScrollPhysics(
                           decelerationRate: ScrollDecelerationRate.fast,
                         )
                       : NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) => _tileWidget(index),
+                  itemBuilder: (context, index) => _tileWidget(widget.taskListData.carddata[index]),
                   separatorBuilder: (context, index) => Divider(),
                 )),
                 Row(
@@ -149,33 +182,39 @@ class _WidgetUpdatedActiveListsState extends State<WidgetUpdatedActiveLists> {
         ));
   }
 
-  Widget _tileWidget(int index) {
+  Widget _tileWidget(cardData) {
+    var taskData = TaskListModel.fromJson(cardData);
+
+    var isCompleted = taskData.cstatus != null ? taskData.cstatus!.toLowerCase().contains("completed") : false;
     return ListTile(
+      onTap: () {
+        // menuHomePageController.captionOnTapFunctionNew(taskData.tasktype);
+      },
       leading: CircleAvatar(
-        backgroundColor: MyColors.yellow1,
+        backgroundColor: isCompleted ? MyColors.green : MyColors.yellow1,
         radius: 18,
         child: Icon(
-          Icons.message,
-          color: MyColors.blue2,
+          isCompleted ? Icons.done_rounded : Icons.pending_actions,
+          color: isCompleted ? MyColors.white1 : MyColors.blue2,
           size: 16,
         ),
       ),
       title: Text(
-        "New Sales Order has been created- 09HQ/...",
+        taskData.displaytitle ?? '',
         style: GoogleFonts.urbanist(
           fontWeight: FontWeight.w600,
           fontSize: 14,
         ),
       ),
       subtitle: Text(
-        "New Sales Order has been created- 09HQ/...",
+        taskData.displaycontent ?? '',
         style: GoogleFonts.urbanist(
           fontWeight: FontWeight.w400,
           fontSize: 12,
         ),
       ),
       trailing: Text(
-        "This Week",
+        taskData.eventdatetime != null ? taskData.eventdatetime!.split(" ")[0] : '',
         style: GoogleFonts.urbanist(
           fontWeight: FontWeight.w600,
           fontSize: 10,

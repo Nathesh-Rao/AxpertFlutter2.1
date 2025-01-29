@@ -1,20 +1,26 @@
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Models/ActivityListModel.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../../../Constants/MyColors.dart';
+import '../../../Controllers/MenuHomePageController.dart';
+import '../../Models/UpdatedHomeCardDataModel.dart';
 
-class WidgetUpdatedNewsAndEvents extends StatefulWidget {
-  const WidgetUpdatedNewsAndEvents({super.key});
+class WidgetActivityList extends StatefulWidget {
+  const WidgetActivityList({super.key});
 
   @override
-  State<WidgetUpdatedNewsAndEvents> createState() => _WidgetUpdatedNewsAndEventsState();
+  State<WidgetActivityList> createState() => _WidgetUpdatedActiveListsState();
 }
 
-class _WidgetUpdatedNewsAndEventsState extends State<WidgetUpdatedNewsAndEvents> {
+class _WidgetUpdatedActiveListsState extends State<WidgetActivityList> {
   ///NOTE => This container will be having 4 rows and therefore 4 heights depends up on the number of quicklinks available
   ///NOTE => A new way to layout the tile's height and width is needed
   ///NOTE => Ditch Gridview and Use Wrap
+  final MenuHomePageController menuHomePageController = Get.find();
+
   var bHeight = Get.height / 3.22;
 
   var bHeight1 = Get.height / 3.22;
@@ -26,6 +32,48 @@ class _WidgetUpdatedNewsAndEventsState extends State<WidgetUpdatedNewsAndEvents>
       if (isSeeMore) {
         bHeight = bHeight2;
       } else {
+        bHeight = bHeight1;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(
+      () => Visibility(
+        visible: menuHomePageController.activityListData.isNotEmpty,
+        child: Column(
+          children: List.generate(menuHomePageController.activityListData.length,
+              (index) => ActivityListPanel(activityListData: menuHomePageController.activityListData[index])),
+        ),
+      ),
+    );
+  }
+}
+
+class ActivityListPanel extends StatefulWidget {
+  const ActivityListPanel({super.key, required this.activityListData});
+  final UpdatedHomeCardDataModel activityListData;
+  @override
+  State<ActivityListPanel> createState() => _ActivityListPanelState();
+}
+
+class _ActivityListPanelState extends State<ActivityListPanel> {
+  final MenuHomePageController menuHomePageController = Get.find();
+  ScrollController scrollController = ScrollController();
+  var bHeight = Get.height / 3.22;
+
+  var bHeight1 = Get.height / 3.22;
+  var bHeight2 = Get.height / 1.89;
+  var isSeeMore = false;
+  _onClickSeeMore() {
+    setState(() {
+      isSeeMore = !isSeeMore;
+      if (isSeeMore) {
+        bHeight = bHeight2;
+      } else {
+        scrollController.animateTo(scrollController.position.minScrollExtent,
+            duration: Duration(milliseconds: 300), curve: Curves.decelerate);
         bHeight = bHeight1;
       }
     });
@@ -61,11 +109,11 @@ class _WidgetUpdatedNewsAndEventsState extends State<WidgetUpdatedNewsAndEvents>
                     child: Row(
                       children: [
                         Icon(
-                          Icons.newspaper,
-                          // size: 15,
+                          Icons.list,
+                          // size: 17,
                         ),
                         SizedBox(width: 5),
-                        Text("News & Events",
+                        Text(widget.activityListData.cardname ?? '',
                             style: GoogleFonts.urbanist(
                               fontSize: 15,
                               fontWeight: FontWeight.w700,
@@ -80,14 +128,15 @@ class _WidgetUpdatedNewsAndEventsState extends State<WidgetUpdatedNewsAndEvents>
                 ),
                 Expanded(
                     child: ListView.separated(
-                  itemCount: isSeeMore ? 10 : 3,
+                  controller: scrollController,
+                  itemCount: widget.activityListData.carddata.length,
                   physics: isSeeMore
                       ? BouncingScrollPhysics(
                           decelerationRate: ScrollDecelerationRate.fast,
                         )
                       : NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) => _tileWidget(index),
-                  separatorBuilder: (context, index) => Divider(height: 0, thickness: 1),
+                  itemBuilder: (context, index) => _tileWidget(widget.activityListData.carddata[index]),
+                  separatorBuilder: (context, index) => Divider(),
                 )),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -148,62 +197,52 @@ class _WidgetUpdatedNewsAndEventsState extends State<WidgetUpdatedNewsAndEvents>
         ));
   }
 
-  Widget _tileWidget(int index) {
-    return Container(
-      height: 100,
-      padding: EdgeInsets.all(10),
-      child: Row(
-        children: [
-          Expanded(
-              child: Container(
-            decoration: BoxDecoration(
-                color: MyColors.grey,
-                borderRadius: BorderRadius.circular(5),
-                image: DecorationImage(
-                  image: AssetImage("assets/images/default_bannerImage.jpg"),
-                  fit: BoxFit.cover,
-                )),
-          )),
-          Expanded(
-              flex: 2,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 3),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        "Meeting",
-                        style: GoogleFonts.urbanist(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ),
-                    Flexible(
-                      child: Text(
-                        "Meeting",
-                        style: GoogleFonts.urbanist(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                    Flexible(
-                      child: Text(
-                        "Last updated 1 month ago",
-                        style: GoogleFonts.urbanist(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 10,
-                          color: MyColors.text2,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              )),
-        ],
+  Widget _tileWidget(activityListData) {
+    var activityData = ActivityListModel.fromJson(activityListData);
+    var color = MyColors.getRandomColor();
+    Color darkenColor(Color color, [double amount = 0.2]) {
+      assert(amount >= 0 && amount <= 1);
+      return Color.fromARGB(
+        color.alpha,
+        (color.red * (1 - amount)).round(),
+        (color.green * (1 - amount)).round(),
+        (color.blue * (1 - amount)).round(),
+      );
+    }
+
+    return ListTile(
+      onTap: () {
+        menuHomePageController.captionOnTapFunctionNew(activityData.link);
+      },
+      leading: CircleAvatar(
+        backgroundColor: color.withAlpha(100),
+        radius: 18,
+        child: Text(
+          "CD",
+          style: GoogleFonts.urbanist(fontWeight: FontWeight.w700, color: darkenColor(color)),
+        ),
+      ),
+      title: Text(
+        activityData.title ?? '',
+        style: GoogleFonts.urbanist(
+          fontWeight: FontWeight.w600,
+          fontSize: 14,
+        ),
+      ),
+      subtitle: Text(
+        activityData.calledon ?? "",
+        style: GoogleFonts.urbanist(
+          fontWeight: FontWeight.w400,
+          fontSize: 12,
+        ),
+      ),
+      trailing: Text(
+        activityData.username ?? "",
+        style: GoogleFonts.urbanist(
+          fontWeight: FontWeight.w600,
+          fontSize: 10,
+          color: MyColors.text2,
+        ),
       ),
     );
   }

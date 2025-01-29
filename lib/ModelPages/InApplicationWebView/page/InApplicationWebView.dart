@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
+import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -49,6 +50,7 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
     } catch (e) {}
     // widget.data = "https://amazon.in"
     print(widget.data);
+    LogService.writeLog(message: "InAppWebView: ${widget.data}");
     clearCookie();
   }
 

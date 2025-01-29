@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class WidgetUpdatedFolderPanels extends StatelessWidget {
-  const WidgetUpdatedFolderPanels({super.key});
+class WidgetBannerCard extends StatelessWidget {
+  const WidgetBannerCard({super.key});
 
   @override
   Widget build(BuildContext context) {
