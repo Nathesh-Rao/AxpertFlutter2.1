@@ -520,7 +520,8 @@ class MenuHomePageController extends GetxController {
   }
 
   captionOnTapFunction(transid) {
-    String link_id = transid.replaceAll('(', '').replaceAll(')', '');
+    String link_id = transid;
+    // String link_id = transid.replaceAll('(', '').replaceAll(')', '');
 
     LogService.writeLog(message: "captionOnTapFunction: transid => $link_id");
     var validity = false;
@@ -581,7 +582,7 @@ class MenuHomePageController extends GetxController {
             appStorage.retrieveValue(AppStorage.SESSIONID) +
             "&pname=" +
             link_id;
-
+        // LogService.writeLog(message: "Web url => $webUrl");
         Get.toNamed(Routes.InApplicationWebViewer, arguments: [webUrl]);
       }
     }

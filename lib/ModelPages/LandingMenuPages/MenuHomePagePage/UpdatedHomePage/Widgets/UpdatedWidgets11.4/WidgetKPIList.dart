@@ -1,4 +1,5 @@
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Models/KPIListCardModel.dart';
+import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,16 +32,20 @@ class _WidgetKPIListState extends State<WidgetKPIList> {
     return Obx(() => Visibility(
           visible: menuHomePageController.kpiListCardData.isNotEmpty,
           child: Column(
-            children: List.generate(menuHomePageController.kpiListCardData.length,
-                (index) => KPICardsPanel(card: menuHomePageController.kpiListCardData[index])),
+            children: List.generate(menuHomePageController.kpiListCardData.length, (index) {
+              List<Color> colors = List.generate(
+                  menuHomePageController.kpiListCardData[index].carddata.length, (index) => MyColors.getRandomColor());
+              return KPICardsPanel(card: menuHomePageController.kpiListCardData[index], colors: colors);
+            }),
           ),
         ));
   }
 }
 
 class KPICardsPanel extends StatefulWidget {
-  const KPICardsPanel({super.key, required this.card});
+  const KPICardsPanel({super.key, required this.card, required this.colors});
   final UpdatedHomeCardDataModel card;
+  final List<Color> colors;
   @override
   State<KPICardsPanel> createState() => _KPICardsPanelState();
 }
@@ -67,16 +72,18 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
   }
 
   void _onClickSeeAll(cardData, {required String cardName}) async {
-    await Get.bottomSheet(ignoreSafeArea: true, QuickLinksBottomSheet(cardData, cardName: cardName)).then((_) {
-      setState(() {
-        if (isSeeMore) {
+    await Get.bottomSheet(ignoreSafeArea: true, QuickLinksBottomSheet(cardData, cardName: cardName, colors: widget.colors))
+        .then((_) {
+      if (isSeeMore) {
+        setState(() {
           scrollController.animateTo(scrollController.position.minScrollExtent,
               duration: Duration(milliseconds: 300), curve: Curves.decelerate);
           isSeeMore = !isSeeMore;
           bHeight = bHeight1;
-        }
-        ;
-      });
+
+          ;
+        });
+      }
     });
   }
 
@@ -140,7 +147,7 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
                 ),
                 itemCount: widget.card.carddata.length, // Number of items
                 itemBuilder: (context, index) {
-                  return _gridTile(widget.card.carddata[index]);
+                  return _gridTile(widget.card.carddata[index], widget.colors[index]);
                 },
               ),
             ),
@@ -216,9 +223,8 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
     );
   }
 
-  Widget _gridTile(cardData) {
+  Widget _gridTile(cardData, Color color) {
     KpiListModel kpiListData = KpiListModel.fromJson(cardData);
-    Color color = MyColors.getRandomColor();
 
     Color darkenColor(Color color, [double amount = 0.2]) {
       assert(amount >= 0 && amount <= 1);
@@ -279,11 +285,11 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
 }
 
 class QuickLinksBottomSheet extends StatelessWidget {
-  QuickLinksBottomSheet(this.menuIconsData, {super.key, required this.cardName});
+  QuickLinksBottomSheet(this.menuIconsData, {super.key, required this.cardName, required this.colors});
   final dynamic menuIconsData;
   final String cardName;
   final MenuHomePageController menuHomePageController = Get.find();
-
+  final List<Color> colors;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -328,7 +334,7 @@ class QuickLinksBottomSheet extends StatelessWidget {
               ),
               itemCount: menuIconsData.length, // Number of items
               itemBuilder: (context, index) {
-                return _gridTile(menuIconsData[index]);
+                return _gridTile(menuIconsData[index], colors[index]);
               },
             ),
           ),
@@ -337,9 +343,8 @@ class QuickLinksBottomSheet extends StatelessWidget {
     );
   }
 
-  Widget _gridTile(cardData) {
+  Widget _gridTile(cardData, Color color) {
     KpiListModel kpiListData = KpiListModel.fromJson(cardData);
-    Color color = MyColors.getRandomColor();
 
     Color darkenColor(Color color, [double amount = 0.2]) {
       assert(amount >= 0 && amount <= 1);

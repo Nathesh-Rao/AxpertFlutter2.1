@@ -66,10 +66,10 @@ class UpdatedHomePage extends StatelessWidget {
                 //::: WidgetSlidingNotificationPanel(),
                 //NOTE=== AXPERT 11.4 New UI Widgets ====>
                 WidgetKPIPanelSlider(),
-                WidgetMenuIcons(),
                 WidgetTaskList(),
-                WidgetNewsCard(),
                 WidgetKPIList(),
+                WidgetNewsCard(),
+                WidgetMenuIcons(),
 
                 WidgetActivityList(),
 
@@ -91,34 +91,11 @@ class UpdatedHomePage extends StatelessWidget {
               ],
             ),
           )),
-      floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.refresh),
-          onPressed: () {
-            menuHomePageController.pseudoCall();
-          }),
+      // floatingActionButton: FloatingActionButton(
+      //     child: Icon(Icons.refresh),
+      //     onPressed: () {
+      //       menuHomePageController.pseudoCall();
+      //     }),
     );
-  }
-
-  captionOnTapFunction(cardModel) {
-    var link_id = cardModel.stransid;
-    var validity = false;
-    if (link_id.toLowerCase().startsWith('h')) {
-      if (link_id.toLowerCase().contains("hp")) {
-        link_id = link_id.toLowerCase().replaceAll("hp", "h");
-      }
-      validity = true;
-    } else {
-      if (link_id.toLowerCase().startsWith('i')) {
-        validity = true;
-      } else {
-        if (link_id.toLowerCase().startsWith('t')) {
-          validity = true;
-        } else
-          validity = false;
-      }
-    }
-    if (validity) {
-      menuHomePageController.openBtnAction("button", link_id);
-    }
   }
 }

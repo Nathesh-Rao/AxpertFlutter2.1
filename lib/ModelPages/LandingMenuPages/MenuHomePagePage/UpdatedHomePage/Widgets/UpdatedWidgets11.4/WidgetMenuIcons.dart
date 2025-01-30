@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:math';
 
 import 'package:axpertflutter/Constants/MyColors.dart';
+import 'package:axpertflutter/Constants/extensions.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Models/MenuIconsModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Models/UpdatedHomeCardDataModel.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -31,16 +32,23 @@ class _WidgetMenuIconsState extends State<WidgetMenuIcons> {
     return Obx(() => Visibility(
           visible: menuHomePageController.menuIconsData.isNotEmpty,
           child: Column(
-            children: List.generate(menuHomePageController.menuIconsData.length,
-                (index) => MenuIconsPanel(card: menuHomePageController.menuIconsData[index])),
+            children: List.generate(menuHomePageController.menuIconsData.length, (index) {
+              List<Color> colors = List.generate(
+                  menuHomePageController.menuIconsData[index].carddata.length, (index) => MyColors.getRandomColor());
+              return MenuIconsPanel(
+                card: menuHomePageController.menuIconsData[index],
+                colors: colors,
+              );
+            }),
           ),
         ));
   }
 }
 
 class MenuIconsPanel extends StatefulWidget {
-  const MenuIconsPanel({super.key, required this.card});
+  const MenuIconsPanel({super.key, required this.card, required this.colors});
   final UpdatedHomeCardDataModel card;
+  final List<Color> colors;
   @override
   State<MenuIconsPanel> createState() => _MenuIconsPanelState();
 }
@@ -67,7 +75,13 @@ class _MenuIconsPanelState extends State<MenuIconsPanel> {
   }
 
   void _onClickSeeAll(cardData, {required String cardName}) async {
-    await Get.bottomSheet(ignoreSafeArea: true, QuickLinksBottomSheet(cardData, cardName: cardName)).then((_) {
+    await Get.bottomSheet(
+        ignoreSafeArea: true,
+        QuickLinksBottomSheet(
+          cardData,
+          cardName: cardName,
+          colors: widget.colors,
+        )).then((_) {
       setState(() {
         if (isSeeMore) {
           scrollController.animateTo(scrollController.position.minScrollExtent,
@@ -140,7 +154,7 @@ class _MenuIconsPanelState extends State<MenuIconsPanel> {
                 ),
                 itemCount: widget.card.carddata.length, // Number of items
                 itemBuilder: (context, index) {
-                  return _gridTile(widget.card.carddata[index]);
+                  return _gridTile(widget.card.carddata[index], widget.colors[index]);
                 },
               ),
             ),
@@ -214,7 +228,7 @@ class _MenuIconsPanelState extends State<MenuIconsPanel> {
     );
   }
 
-  Widget _gridTile(cardData) {
+  Widget _gridTile(cardData, Color color) {
     MenuIconsModel menuIconData = MenuIconsModel.fromJson(cardData);
 
     return InkWell(
@@ -234,15 +248,19 @@ class _MenuIconsPanelState extends State<MenuIconsPanel> {
               flex: 5,
               child: CircleAvatar(
                 radius: 30,
-                backgroundColor: MyColors.getRandomColor().withAlpha(50),
+                backgroundColor: color.withAlpha(50),
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CachedNetworkImage(
-                    imageUrl: Const.getFullProjectUrl("images/homepageicon/") + menuIconData.name.toString() + '.png',
-                    errorWidget: (context, url, error) =>
-                        Image.network(Const.getFullProjectUrl('images/homepageicon/default.png')),
-                  ),
-                ),
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      menuIconData.name != null ? menuIconData.name!.getInitials() : "0",
+                      style: GoogleFonts.urbanist(fontSize: 18, fontWeight: FontWeight.w700, color: color.darken(0.4)),
+                    )
+                    //       CachedNetworkImage(
+                    //   imageUrl: Const.getFullProjectUrl("images/homepageicon/") + menuIconData.name.toString() + '.png',
+                    //   errorWidget: (context, url, error) =>
+                    //       Image.network(Const.getFullProjectUrl('images/homepageicon/default.png')),
+                    // ),
+                    ),
               )),
           // Expanded(flex: 2, child: ),
           Padding(
@@ -266,10 +284,11 @@ class _MenuIconsPanelState extends State<MenuIconsPanel> {
 }
 
 class QuickLinksBottomSheet extends StatelessWidget {
-  QuickLinksBottomSheet(this.menuIconsData, {super.key, required this.cardName});
+  QuickLinksBottomSheet(this.menuIconsData, {super.key, required this.cardName, required this.colors});
   final dynamic menuIconsData;
   final String cardName;
   final MenuHomePageController menuHomePageController = Get.find();
+  final List<Color> colors;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -314,7 +333,7 @@ class QuickLinksBottomSheet extends StatelessWidget {
               ),
               itemCount: menuIconsData.length, // Number of items
               itemBuilder: (context, index) {
-                return _gridTile(menuIconsData[index]);
+                return _gridTile(menuIconsData[index], colors[index]);
               },
             ),
           ),
@@ -323,7 +342,7 @@ class QuickLinksBottomSheet extends StatelessWidget {
     );
   }
 
-  Widget _gridTile(cardData) {
+  Widget _gridTile(cardData, Color color) {
     MenuIconsModel menuIconData = MenuIconsModel.fromJson(cardData);
 
     return InkWell(
@@ -343,15 +362,18 @@ class QuickLinksBottomSheet extends StatelessWidget {
               flex: 5,
               child: CircleAvatar(
                 radius: 30,
-                backgroundColor: MyColors.getRandomColor().withAlpha(50),
+                backgroundColor: color.withAlpha(50),
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CachedNetworkImage(
-                    imageUrl: Const.getFullProjectUrl("images/homepageicon/") + menuIconData.name.toString() + '.png',
-                    errorWidget: (context, url, error) =>
-                        Image.network(Const.getFullProjectUrl('images/homepageicon/default.png')),
-                  ),
-                ),
+                    padding: const EdgeInsets.all(8.0),
+                    // child: CachedNetworkImage(
+                    //   imageUrl: Const.getFullProjectUrl("images/homepageicon/") + menuIconData.name.toString() + '.png',
+                    //   errorWidget: (context, url, error) =>
+                    //       Image.network(Const.getFullProjectUrl('images/homepageicon/default.png')),
+                    // ),
+                    child: Text(
+                      menuIconData.name != null ? menuIconData.name!.getInitials() : "0",
+                      style: GoogleFonts.urbanist(fontSize: 18, fontWeight: FontWeight.w700, color: color.darken(0.4)),
+                    )),
               )),
           // Expanded(flex: 2, child: ),
           Padding(

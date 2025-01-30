@@ -1,3 +1,4 @@
+import 'package:axpertflutter/Constants/extensions.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Models/ActivityListModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -43,8 +44,11 @@ class _WidgetUpdatedActiveListsState extends State<WidgetActivityList> {
       () => Visibility(
         visible: menuHomePageController.activityListData.isNotEmpty,
         child: Column(
-          children: List.generate(menuHomePageController.activityListData.length,
-              (index) => ActivityListPanel(activityListData: menuHomePageController.activityListData[index])),
+          children: List.generate(menuHomePageController.activityListData.length, (index) {
+            List<Color> colors = List.generate(
+                menuHomePageController.activityListData[index].carddata.length, (index) => MyColors.getRandomColor());
+            return ActivityListPanel(activityListData: menuHomePageController.activityListData[index], colors: colors);
+          }),
         ),
       ),
     );
@@ -52,8 +56,9 @@ class _WidgetUpdatedActiveListsState extends State<WidgetActivityList> {
 }
 
 class ActivityListPanel extends StatefulWidget {
-  const ActivityListPanel({super.key, required this.activityListData});
+  const ActivityListPanel({super.key, required this.activityListData, required this.colors});
   final UpdatedHomeCardDataModel activityListData;
+  final List<Color> colors;
   @override
   State<ActivityListPanel> createState() => _ActivityListPanelState();
 }
@@ -135,7 +140,7 @@ class _ActivityListPanelState extends State<ActivityListPanel> {
                           decelerationRate: ScrollDecelerationRate.fast,
                         )
                       : NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) => _tileWidget(widget.activityListData.carddata[index]),
+                  itemBuilder: (context, index) => _tileWidget(widget.activityListData.carddata[index], widget.colors[index]),
                   separatorBuilder: (context, index) => Divider(),
                 )),
                 Row(
@@ -197,9 +202,9 @@ class _ActivityListPanelState extends State<ActivityListPanel> {
         ));
   }
 
-  Widget _tileWidget(activityListData) {
+  Widget _tileWidget(activityListData, Color color) {
     var activityData = ActivityListModel.fromJson(activityListData);
-    var color = MyColors.getRandomColor();
+
     Color darkenColor(Color color, [double amount = 0.2]) {
       assert(amount >= 0 && amount <= 1);
       return Color.fromARGB(
@@ -218,7 +223,7 @@ class _ActivityListPanelState extends State<ActivityListPanel> {
         backgroundColor: color.withAlpha(100),
         radius: 18,
         child: Text(
-          "CD",
+          activityData.title != null ? activityData.title!.getInitials(subStringIndex: 2) : "0",
           style: GoogleFonts.urbanist(fontWeight: FontWeight.w700, color: darkenColor(color)),
         ),
       ),
