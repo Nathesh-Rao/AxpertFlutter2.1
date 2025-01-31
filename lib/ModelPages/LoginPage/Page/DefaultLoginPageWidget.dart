@@ -7,6 +7,7 @@ import 'package:hexcolor/hexcolor.dart';
 import '../../../Constants/MyColors.dart';
 import '../../../Constants/Routes.dart';
 import '../../../Constants/const.dart';
+import '../../../Demo/Demo_utils.dart';
 import '../Controller/LoginController.dart';
 
 class DefaultLoginPageWidget extends StatelessWidget {
@@ -184,7 +185,9 @@ class DefaultLoginPageWidget extends StatelessWidget {
                       padding: EdgeInsets.only(left: 30, right: 30),
                       child: InkWell(
                         onTap: () async {
-                          loginController.loginButtonClicked();
+                          await DemoUtils.showDemoNotice().then((_) {
+                            loginController.loginButtonClicked();
+                          });
                         },
                         child: Container(
                           height: 50,

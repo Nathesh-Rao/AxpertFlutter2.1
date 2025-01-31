@@ -14,6 +14,9 @@ import 'package:get/get.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../Demo/Demo_utils.dart';
+import '../../../Demo/Page/Demo_validity_page.dart';
+
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
 
@@ -39,25 +42,29 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
     Future.delayed(Duration(milliseconds: 1800), () {
       _animationController.stop();
 
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _askLocationPermission();
-      });
+      if (!DemoUtils.demoValidityCheck()) {
+        Get.offAll(() => DemoValidityPage());
+      } else {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _askLocationPermission();
+        });
 
-      var cached = appStorage.retrieveValue(AppStorage.CACHED);
-      try {
-        if (cached == null)
+        var cached = appStorage.retrieveValue(AppStorage.CACHED);
+        try {
+          if (cached == null)
+            Get.offAllNamed(Routes.ProjectListingPage);
+          else {
+            var jsonProject = appStorage.retrieveValue(cached);
+            projectModel = ProjectModel.fromJson(jsonProject);
+            Const.PROJECT_NAME = projectModel!.projectname;
+            Const.PROJECT_URL = projectModel!.web_url;
+            Const.ARM_URL = projectModel!.arm_url;
+            Get.offAllNamed(Routes.Login);
+          }
+        } catch (e) {
+          LogService.writeLog(message: "[ERROR] \nPage: SplashPage\nScope: initState()\nError: $e");
           Get.offAllNamed(Routes.ProjectListingPage);
-        else {
-          var jsonProject = appStorage.retrieveValue(cached);
-          projectModel = ProjectModel.fromJson(jsonProject);
-          Const.PROJECT_NAME = projectModel!.projectname;
-          Const.PROJECT_URL = projectModel!.web_url;
-          Const.ARM_URL = projectModel!.arm_url;
-          Get.offAllNamed(Routes.Login);
         }
-      } catch (e) {
-        LogService.writeLog(message: "[ERROR] \nPage: SplashPage\nScope: initState()\nError: $e");
-        Get.offAllNamed(Routes.ProjectListingPage);
       }
     });
   }
