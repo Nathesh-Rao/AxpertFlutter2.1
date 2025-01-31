@@ -15,10 +15,6 @@ class WidgetTaskList extends StatefulWidget {
 }
 
 class _WidgetTaskListState extends State<WidgetTaskList> {
-  ///NOTE => This container will be having 4 rows and therefore 4 heights depends up on the number of quicklinks available
-  ///NOTE => A new way to layout the tile's height and width is needed
-  ///NOTE => Ditch Gridview and Use Wrap
-  ///
   MenuHomePageController menuHomePageController = Get.find();
 
   @override
@@ -43,6 +39,8 @@ class TaskListPanel extends StatefulWidget {
 }
 
 class _TaskListPanelState extends State<TaskListPanel> {
+  ///NOTE => tod0 height settings
+
   MenuHomePageController menuHomePageController = Get.find();
   ScrollController scrollController = ScrollController();
 
@@ -51,6 +49,7 @@ class _TaskListPanelState extends State<TaskListPanel> {
   var bHeight1 = Get.height / 3.22;
   var bHeight2 = Get.height / 1.89;
   var isSeeMore = false;
+
   _onClickSeeMore() {
     setState(() {
       isSeeMore = !isSeeMore;
@@ -66,6 +65,7 @@ class _TaskListPanelState extends State<TaskListPanel> {
 
   @override
   Widget build(BuildContext context) {
+    var isSeeMoreVisible = widget.taskListData.carddata.length >= 3;
     return Card(
         clipBehavior: Clip.hardEdge,
         margin: EdgeInsets.only(top: 10, left: 15, right: 15, bottom: 10),
@@ -80,14 +80,16 @@ class _TaskListPanelState extends State<TaskListPanel> {
           width: double.infinity,
           height: bHeight,
           child: Container(
-              height: Get.height / 2,
+              height: bHeight,
               decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(topRight: Radius.circular(25), topLeft: Radius.circular(25))),
               child: Column(children: [
                 InkWell(
                   onTap: () {
-                    _onClickSeeMore();
+                    if (isSeeMoreVisible) {
+                      _onClickSeeMore();
+                    }
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(10),
@@ -123,61 +125,38 @@ class _TaskListPanelState extends State<TaskListPanel> {
                   itemBuilder: (context, index) => _tileWidget(widget.taskListData.carddata[index]),
                   separatorBuilder: (context, index) => Divider(),
                 )),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: InkWell(
-                        onTap: () {
-                          _onClickSeeMore();
-                        },
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(isSeeMore ? "See less" : "See more",
-                                style: GoogleFonts.urbanist(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w700,
-                                  color: MyColors.blue1,
-                                )),
-                            Icon(
-                              isSeeMore ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
-                              color: MyColors.blue1,
-                              size: 17,
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    // Padding(
-                    //   padding: const EdgeInsets.all(10),
-                    //   child: InkWell(
-                    //     onTap: () {
-                    //       // _onClickSeeAll();
-                    //     },
-                    //     child: Row(
-                    //       mainAxisSize: MainAxisSize.min,
-                    //       mainAxisAlignment: MainAxisAlignment.center,
-                    //       children: [
-                    //         Text("See all ",
-                    //             style: GoogleFonts.urbanist(
-                    //               fontSize: 12,
-                    //               fontWeight: FontWeight.w700,
-                    //               color: MyColors.blue1,
-                    //             )),
-                    //         Icon(
-                    //           Icons.open_in_browser,
-                    //           color: MyColors.blue1,
-                    //           size: 15,
-                    //         )
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
-                  ],
-                ),
+                isSeeMoreVisible
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: InkWell(
+                              onTap: () {
+                                _onClickSeeMore();
+                              },
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(isSeeMore ? "See less" : "See more",
+                                      style: GoogleFonts.urbanist(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700,
+                                        color: MyColors.blue1,
+                                      )),
+                                  Icon(
+                                    isSeeMore ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                                    color: MyColors.blue1,
+                                    size: 17,
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : SizedBox.shrink(),
               ])),
         ));
   }

@@ -17,13 +17,15 @@ class WidgetKPIPanelSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double baseSize = MediaQuery.of(context).size.height * .17;
-
+    List kpicardData = [];
     return Obx(
       () {
-        var kpiList = menuHomePageController.kpiListSliderCardData.first as UpdatedHomeCardDataModel;
+        if (menuHomePageController.kpiListSliderCardData.isNotEmpty) {
+          var kpiList = menuHomePageController.kpiListSliderCardData.first;
 
-        List kpicardData = kpiList.carddata.map((e) => KpiListModel.fromJson(e)).toList();
-        LogService.writeLog(message: "kpiList => ${kpicardData.length}");
+          kpicardData = kpiList.carddata.map((e) => KpiListModel.fromJson(e)).toList();
+        }
+        // LogService.writeLog(message: "kpiList => ${kpicardData.length}");
 
         return Visibility(
             visible: menuHomePageController.kpiListSliderCardData.isNotEmpty,

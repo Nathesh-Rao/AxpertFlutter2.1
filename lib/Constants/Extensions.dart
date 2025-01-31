@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 extension StringExtensions on String {
   String getInitials({int subStringIndex = 3}) {
@@ -24,5 +25,13 @@ extension ColorExtensions on Color {
       (green * (1 - amount)).round(),
       (blue * (1 - amount)).round(),
     );
+  }
+}
+//--------------------------------------------------------------
+
+extension TimeAgoExtension on String {
+  String timeAgo() {
+    DateTime dateTime = DateTime.parse(this);
+    return timeago.format(dateTime, locale: 'en');
   }
 }

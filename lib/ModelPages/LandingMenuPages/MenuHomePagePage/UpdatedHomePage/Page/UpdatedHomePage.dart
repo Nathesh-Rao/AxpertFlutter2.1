@@ -70,7 +70,6 @@ class UpdatedHomePage extends StatelessWidget {
                 WidgetKPIList(),
                 WidgetNewsCard(),
                 WidgetMenuIcons(),
-
                 WidgetActivityList(),
 
                 // WidgetBannerCard(),
@@ -91,11 +90,21 @@ class UpdatedHomePage extends StatelessWidget {
               ],
             ),
           )),
-      // floatingActionButton: FloatingActionButton(
-      //     child: Icon(Icons.refresh),
-      //     onPressed: () {
-      //       menuHomePageController.pseudoCall();
-      //     }),
+      // floatingActionButton: Row(
+      //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+      //   children: [
+      //     FloatingActionButton(
+      //         child: Icon(Icons.refresh),
+      //         onPressed: () {
+      //           menuHomePageController.pseudoCallGet();
+      //         }),
+      //     FloatingActionButton(
+      //         child: Icon(Icons.clear_all),
+      //         onPressed: () {
+      //           menuHomePageController.pseudoCallClear();
+      //         })
+      //   ],
+      // ),
     );
   }
 }

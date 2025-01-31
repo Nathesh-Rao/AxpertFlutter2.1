@@ -21,10 +21,6 @@ class WidgetKPIList extends StatefulWidget {
 }
 
 class _WidgetKPIListState extends State<WidgetKPIList> {
-  ///NOTE => This container will be having 4 rows and therefore 4 heights depends up on the number of quicklinks available
-  ///NOTE => A new way to layout the tile's height and width is needed
-  ///NOTE => Ditch Gridview and Use Wrap
-
   final MenuHomePageController menuHomePageController = Get.find();
 
   @override
@@ -53,9 +49,9 @@ class KPICardsPanel extends StatefulWidget {
 class _KPICardsPanelState extends State<KPICardsPanel> {
   final MenuHomePageController menuHomePageController = Get.find();
   ScrollController scrollController = ScrollController();
-  var bHeight = Get.height / 3.22;
+  var bHeight = Get.height / 3.8;
 
-  var bHeight1 = Get.height / 3.22;
+  var bHeight1 = Get.height / 3.8;
   var bHeight2 = Get.height / 1.89;
   var isSeeMore = false;
   _onClickSeeMore() {
@@ -89,6 +85,9 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
 
   @override
   Widget build(BuildContext context) {
+    var isSeeMoreVisible = widget.card.carddata.length > 4;
+    var isSeeAllVisible = widget.card.carddata.length > 8;
+
     return Card(
       clipBehavior: Clip.hardEdge,
       margin: EdgeInsets.only(top: 10, left: 15, right: 15, bottom: 10),
@@ -106,7 +105,9 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
           children: [
             InkWell(
               onTap: () {
-                _onClickSeeMore();
+                if (isSeeMoreVisible) {
+                  _onClickSeeMore();
+                }
               },
               child: Padding(
                 padding: const EdgeInsets.all(10),
@@ -160,10 +161,10 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
             //   alignment: WrapAlignment.start,
             //   children: List.generate(isSeeMore ? 12 : 6, (index) => _gridTile(index)),
             // )),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: widget.card.carddata.length > 4
-                  ? [
+            isSeeMoreVisible
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
                       Padding(
                         padding: const EdgeInsets.all(10),
                         child: InkWell(
@@ -189,34 +190,36 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: InkWell(
-                          onTap: () {
-                            _onClickSeeAll(widget.card.carddata, cardName: widget.card.cardname ?? "");
-                          },
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text("See all ",
-                                  style: GoogleFonts.urbanist(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w700,
-                                    color: MyColors.blue1,
-                                  )),
-                              Icon(
-                                Icons.open_in_browser,
-                                color: MyColors.blue1,
-                                size: 15,
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ]
-                  : [],
-            ),
+                      isSeeAllVisible
+                          ? Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: InkWell(
+                                onTap: () {
+                                  _onClickSeeAll(widget.card.carddata, cardName: widget.card.cardname ?? "");
+                                },
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text("See all ",
+                                        style: GoogleFonts.urbanist(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w700,
+                                          color: MyColors.blue1,
+                                        )),
+                                    Icon(
+                                      Icons.open_in_browser,
+                                      color: MyColors.blue1,
+                                      size: 15,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )
+                          : SizedBox.shrink(),
+                    ],
+                  )
+                : SizedBox.shrink(),
           ],
         ),
       ),
