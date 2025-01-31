@@ -1,4 +1,4 @@
-import 'package:axpertflutter/Constants/extensions.dart';
+import 'package:axpertflutter/Constants/Extensions.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Models/ActivityListModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,34 +9,13 @@ import '../../../../../../Constants/MyColors.dart';
 import '../../../Controllers/MenuHomePageController.dart';
 import '../../Models/UpdatedHomeCardDataModel.dart';
 
-class WidgetActivityList extends StatefulWidget {
-  const WidgetActivityList({super.key});
+class WidgetActivityList extends StatelessWidget {
+  WidgetActivityList({super.key});
 
-  @override
-  State<WidgetActivityList> createState() => _WidgetUpdatedActiveListsState();
-}
-
-class _WidgetUpdatedActiveListsState extends State<WidgetActivityList> {
   ///NOTE => This container will be having 4 rows and therefore 4 heights depends up on the number of quicklinks available
   ///NOTE => A new way to layout the tile's height and width is needed
   ///NOTE => Ditch Gridview and Use Wrap
   final MenuHomePageController menuHomePageController = Get.find();
-
-  var bHeight = Get.height / 3.22;
-
-  var bHeight1 = Get.height / 3.22;
-  var bHeight2 = Get.height / 1.89;
-  var isSeeMore = false;
-  _onClickSeeMore() {
-    setState(() {
-      isSeeMore = !isSeeMore;
-      if (isSeeMore) {
-        bHeight = bHeight2;
-      } else {
-        bHeight = bHeight1;
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -171,31 +150,6 @@ class _ActivityListPanelState extends State<ActivityListPanel> {
                         ),
                       ),
                     ),
-                    // Padding(
-                    //   padding: const EdgeInsets.all(10),
-                    //   child: InkWell(
-                    //     onTap: () {
-                    //       // _onClickSeeAll();
-                    //     },
-                    //     child: Row(
-                    //       mainAxisSize: MainAxisSize.min,
-                    //       mainAxisAlignment: MainAxisAlignment.center,
-                    //       children: [
-                    //         Text("See all ",
-                    //             style: GoogleFonts.urbanist(
-                    //               fontSize: 12,
-                    //               fontWeight: FontWeight.w700,
-                    //               color: MyColors.blue1,
-                    //             )),
-                    //         Icon(
-                    //           Icons.open_in_browser,
-                    //           color: MyColors.blue1,
-                    //           size: 15,
-                    //         )
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
                   ],
                 ),
               ])),
@@ -235,7 +189,8 @@ class _ActivityListPanelState extends State<ActivityListPanel> {
         ),
       ),
       subtitle: Text(
-        activityData.calledon ?? "",
+        // activityData.calledon ?? "",
+        activityData.calledon != null ? activityData.calledon!.timeAgo() : '',
         style: GoogleFonts.urbanist(
           fontWeight: FontWeight.w400,
           fontSize: 12,

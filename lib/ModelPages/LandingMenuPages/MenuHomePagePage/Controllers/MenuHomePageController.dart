@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/CommonMethods.dart';
+import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/BannerModel.dart';
@@ -67,9 +68,9 @@ class MenuHomePageController extends GetxController {
     body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
     getClientInfo();
     //---------------------->
-    //NOTE Axpert 11.4
+    //NOTE Axpert 11.4-------->
     _getCardsWithData();
-    //---------------------->
+    //NOTE---------------------->
     getCardDetails();
     getPunchINData();
     getShorcutMenuDashboardDetails();
@@ -84,9 +85,14 @@ class MenuHomePageController extends GetxController {
   var kpiListSliderCardData = [].obs;
   var menuIconsData = [].obs;
   var activityListData = [].obs;
+
 //---------------------------------
-  pseudoCall() {
+  pseudoCallGet() {
     _getCardsWithData();
+  }
+
+  pseudoCallClear() {
+    _clearDataLists();
   }
 
   _sortDataByPluginName({required List<UpdatedHomeCardDataModel> dataList}) {
@@ -149,7 +155,7 @@ class MenuHomePageController extends GetxController {
 
     isLoading.value = false;
     LoadingScreen.dismiss();
-    _printDataCard();
+    // _printDataCard();
   }
 
   _UpdateDataLists(List dataList) {
@@ -548,43 +554,52 @@ class MenuHomePageController extends GetxController {
   }
 
   captionOnTapFunctionNew(transid) async {
-    String link_id = transid.replaceAll('(', '').replaceAll(')', '');
+    if (transid != null) {
+      String link_id = transid.replaceAll('(', '').replaceAll(')', '');
 
-    LogService.writeLog(message: "captionOnTapFunction: transid => $link_id");
-    var validity = false;
-    if (link_id.toLowerCase().startsWith('h')) {
-      if (link_id.toLowerCase().contains("hp")) {
-        link_id = link_id.toLowerCase().replaceAll("hp", "h");
-      }
-      validity = true;
-    } else {
-      if (link_id.toLowerCase().startsWith('i')) {
+      LogService.writeLog(message: "captionOnTapFunction: transid => $link_id");
+      var validity = false;
+      if (link_id.toLowerCase().startsWith('h')) {
+        if (link_id.toLowerCase().contains("hp")) {
+          link_id = link_id.toLowerCase().replaceAll("hp", "h");
+        }
         validity = true;
       } else {
-        if (link_id.toLowerCase().startsWith('t')) {
+        if (link_id.toLowerCase().startsWith('i')) {
           validity = true;
-        } else
-          validity = false;
+        } else {
+          if (link_id.toLowerCase().startsWith('t')) {
+            validity = true;
+          } else
+            validity = false;
+        }
       }
-    }
-    if (validity) {
-      // LogService.writeLog(message: "[i] FolderPanel : Open in webview {$link_id}");
+      if (validity) {
+        // LogService.writeLog(message: "[i] FolderPanel : Open in webview {$link_id}");
 
-      if (await internetConnectivity.connectionStatus) {
-        // if (btnType.toLowerCase() == "button" && btnOpen != "") {
-        //
-        //   print("URL : $webUrl");
-        //
-        //   switchPage.toggle();
-        // } else {}
+        if (await internetConnectivity.connectionStatus) {
+          // if (btnType.toLowerCase() == "button" && btnOpen != "") {
+          //
+          //   print("URL : $webUrl");
+          //
+          //   switchPage.toggle();
+          // } else {}
 
-        webUrl = Const.getFullProjectUrl("aspx/AxMain.aspx?authKey=AXPERT-") +
-            appStorage.retrieveValue(AppStorage.SESSIONID) +
-            "&pname=" +
-            link_id;
-        // LogService.writeLog(message: "Web url => $webUrl");
-        Get.toNamed(Routes.InApplicationWebViewer, arguments: [webUrl]);
+          webUrl = Const.getFullProjectUrl("aspx/AxMain.aspx?authKey=AXPERT-") +
+              appStorage.retrieveValue(AppStorage.SESSIONID) +
+              "&pname=" +
+              link_id;
+          // LogService.writeLog(message: "Web url => $webUrl");
+          Get.toNamed(Routes.InApplicationWebViewer, arguments: [webUrl]);
+        }
       }
+    } else {
+      Get.snackbar("Invalid Link", "The Link attached is invalid or empty",
+          margin: EdgeInsets.all(10),
+          backgroundColor: MyColors.blue9,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+          duration: Duration(seconds: 3));
     }
   }
 
