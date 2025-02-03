@@ -82,7 +82,7 @@ class MenuHomePageController extends GetxController {
   var taskListData = [].obs;
   var newsCardData = [].obs;
   var kpiListCardData = [].obs;
-  var kpiListSliderCardData = [].obs;
+  var kpiSliderCardData = [].obs;
   var menuIconsData = [].obs;
   var activityListData = [].obs;
 
@@ -112,7 +112,7 @@ class MenuHomePageController extends GetxController {
             break;
           case "KPI List":
             if (data.cardname == "KPI List") {
-              kpiListSliderCardData.add(data);
+              kpiSliderCardData.add(data);
             } else {
               kpiListCardData.add(data);
             }
@@ -191,7 +191,7 @@ class MenuHomePageController extends GetxController {
     taskListData.clear();
     newsCardData.clear();
     kpiListCardData.clear();
-    kpiListSliderCardData.clear();
+    kpiSliderCardData.clear();
     menuIconsData.clear();
     activityListData.clear();
   }
@@ -201,7 +201,7 @@ class MenuHomePageController extends GetxController {
     LogService.writeLog(message: "taskListData length => ${taskListData.length}");
     LogService.writeLog(message: "newsCardData length => ${newsCardData.length}");
     LogService.writeLog(message: "kpiListCardData length => ${kpiListCardData.length}");
-    LogService.writeLog(message: "kpiListSliderCardData length => ${kpiListSliderCardData.length}");
+    LogService.writeLog(message: "kpiListSliderCardData length => ${kpiSliderCardData.length}");
     LogService.writeLog(message: "menuIconsData length => ${menuIconsData.length}");
     LogService.writeLog(message: "activityListData length => ${activityListData.length}");
   }

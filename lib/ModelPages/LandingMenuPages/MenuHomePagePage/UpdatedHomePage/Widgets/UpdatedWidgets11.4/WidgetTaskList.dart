@@ -63,6 +63,19 @@ class _TaskListPanelState extends State<TaskListPanel> {
     });
   }
 
+  // @override
+  // void initState() {
+  //   scrollController.addListener(() {
+  //     print("ScrollCO")
+  //     if (scrollController.position == scrollController.position.minScrollExtent) {
+  //       // setState(() {
+  //       //   bHeight = bHeight1;
+  //       // });
+  //     }
+  //   });
+  //   super.initState();
+  // }
+
   @override
   Widget build(BuildContext context) {
     var isSeeMoreVisible = widget.taskListData.carddata.length >= 3;

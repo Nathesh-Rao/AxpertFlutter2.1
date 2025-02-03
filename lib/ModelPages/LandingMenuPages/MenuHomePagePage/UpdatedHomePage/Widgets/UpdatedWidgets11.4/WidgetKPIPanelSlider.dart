@@ -20,15 +20,15 @@ class WidgetKPIPanelSlider extends StatelessWidget {
     List kpicardData = [];
     return Obx(
       () {
-        if (menuHomePageController.kpiListSliderCardData.isNotEmpty) {
-          var kpiList = menuHomePageController.kpiListSliderCardData.first;
+        if (menuHomePageController.kpiSliderCardData.isNotEmpty) {
+          var kpiList = menuHomePageController.kpiSliderCardData.first;
 
           kpicardData = kpiList.carddata.map((e) => KpiListModel.fromJson(e)).toList();
         }
         // LogService.writeLog(message: "kpiList => ${kpicardData.length}");
 
         return Visibility(
-            visible: menuHomePageController.kpiListSliderCardData.isNotEmpty,
+            visible: menuHomePageController.kpiSliderCardData.isNotEmpty,
             child: Padding(
               padding: EdgeInsets.only(top: 5, bottom: 20),
               child: SizedBox(
