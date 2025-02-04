@@ -8,7 +8,7 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../Constants/const.dart';
+import '../../../Constants/Const.dart';
 import '../../LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
 import '../../LandingPage/Controller/LandingPageController.dart';
 import '../Controller/SettingsPageController.dart';

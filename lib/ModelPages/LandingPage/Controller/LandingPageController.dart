@@ -5,7 +5,7 @@ import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
-import 'package:axpertflutter/Constants/const.dart';
+import 'package:axpertflutter/Constants/Const.dart';
 import 'package:axpertflutter/ModelPages/InApplicationWebView/page/WebViewCalendar.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Page/MenuActiveListPage.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuDashboardPage/Page/MenuDashboardPage.dart';
@@ -93,7 +93,17 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
         MenuActiveListPage(),
         MenuDashboardPage(),
         // MenuCalendarPage(),
-        WebViewCalendar(),
+        ///NOTE Pass a [ValueKey] with a unique identifier to force widget rebuilds.
+        //NOTE to open the WebViewCalendar page
+        WebViewFromBottomBar(
+          key: ValueKey(Const.BOTTOMBAR_CALENDAR),
+          url: Const.BOTTOMBAR_CALENDAR,
+        ),
+        //NOTE to open the WebViewAnalytics page
+        WebViewFromBottomBar(
+          key: ValueKey(Const.BOTTOMBAR_ANALYTICS),
+          url: Const.BOTTOMBAR_ANALYTICS,
+        ),
         //MenuMorePage(),
       ];
     });
@@ -741,6 +751,15 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
         onTap: () {
           Get.back();
           indexChange(4);
+        },
+        leading: Icon(Icons.analytics_outlined),
+        title: Text("Analytics"),
+      ));
+      menuList.add(ListTile(
+        tileColor: Colors.white,
+        onTap: () {
+          Get.back();
+          indexChange(5);
         },
         leading: Icon(Icons.dashboard_customize_outlined),
         title: Text("More"),

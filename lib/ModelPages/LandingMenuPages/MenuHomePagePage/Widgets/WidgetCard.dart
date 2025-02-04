@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:axpertflutter/Constants/AppStorage.dart';
-import 'package:axpertflutter/Constants/const.dart';
+import 'package:axpertflutter/Constants/Const.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/CardModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Widgets/WidgetOptionListTile.dart';
@@ -28,7 +28,7 @@ class WidgetCard extends StatelessWidget {
           color: HexColor(menuHomePageController.getCardBackgroundColor(cardModel.colorcode.trim())), // ?? "ffffff"),
           borderRadius: BorderRadius.circular(10),
           // boxShadow: [BoxShadow(color: Colors.grey.shade400, blurRadius: 7)] ,
-                    border: Border.all(width: 1, color: Colors.grey.withOpacity(0.4))),
+          border: Border.all(width: 1, color: Colors.grey.withOpacity(0.4))),
       child: Padding(
         padding: EdgeInsets.only(left: 20, top: 10, right: 2),
         child: Column(
@@ -41,8 +41,8 @@ class WidgetCard extends StatelessWidget {
                   alignment: Alignment.topLeft,
                   child: CachedNetworkImage(
                     imageUrl: Const.getFullProjectUrl("images/homepageicon/") + cardModel.caption + '.png',
-                    errorWidget: (context, url, error) =>
-                        Image.network(Const.getFullProjectUrl('images/homepageicon/default.png')), //'CustomPages/icons/homepageicon/default.png'
+                    errorWidget: (context, url, error) => Image.network(Const.getFullProjectUrl(
+                        'images/homepageicon/default.png')), //'CustomPages/icons/homepageicon/default.png'
                     width: 40,
                   ),
                 ),
@@ -75,7 +75,7 @@ class WidgetCard extends StatelessWidget {
     );
   }
 
- showMenuDialog(CardModel cardModel) async {
+  showMenuDialog(CardModel cardModel) async {
     //call api if needed
     if (cardModel.caption.toLowerCase().contains("attendance")) {
       await menuHomePageController.getPunchINData();

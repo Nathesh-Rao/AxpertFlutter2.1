@@ -36,7 +36,7 @@ import 'package:text_scroll/text_scroll.dart';
 
 import '../../../../Constants/CommonMethods.dart';
 import '../../../../Constants/MyColors.dart';
-import '../../../../Constants/const.dart';
+import '../../../../Constants/Const.dart';
 import '../../../../Utils/ServerConnections/ExecuteApi.dart';
 import '../../../../Utils/ServerConnections/ServerConnections.dart';
 import '../../../LandingMenuPages/MenuActiveListPage/Page/MenuActiveListPage.dart';
@@ -89,7 +89,18 @@ class EssController extends GetxController {
         EssHomeWidget(),
         MenuActiveListPage(),
         MenuDashboardPage(),
-        WebViewCalendar(),
+
+        ///NOTE Pass a [ValueKey] with a unique identifier to force widget rebuilds.
+        //NOTE to open the WebViewCalendar page
+        WebViewFromBottomBar(
+          key: ValueKey(Const.BOTTOMBAR_CALENDAR),
+          url: Const.BOTTOMBAR_CALENDAR,
+        ),
+        //NOTE to open the WebViewAnalytics page
+        WebViewFromBottomBar(
+          key: ValueKey(Const.BOTTOMBAR_ANALYTICS),
+          url: Const.BOTTOMBAR_ANALYTICS,
+        ),
       ];
     });
   }
@@ -1092,6 +1103,15 @@ class EssController extends GetxController {
         onTap: () {
           Get.back();
           indexChange(4);
+        },
+        leading: Icon(Icons.analytics_outlined),
+        title: Text("Analytics"),
+      ));
+      menuList.add(ListTile(
+        tileColor: Colors.white,
+        onTap: () {
+          Get.back();
+          indexChange(5);
         },
         leading: Icon(Icons.dashboard_customize_outlined),
         title: Text("More"),

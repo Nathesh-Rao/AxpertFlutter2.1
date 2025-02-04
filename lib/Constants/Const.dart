@@ -22,6 +22,9 @@ class Const {
   static final String SET_HYBRID_INFO = "/Webservice.asmx/SetHybridInfo";
   static final String SET_HYBRID_NOTIFICATION_INFO = "/Webservice.asmx/SetHybridNotifiInfo";
   static final String LOGOUT_LINK = "webservice.asmx/SignOut";
+  //NOTE BottomBar Items urls
+  static final String BOTTOMBAR_CALENDAR = 'aspx/AxMain.aspx?pname=dcalendar&authKey=AXPERT-';
+  static final String BOTTOMBAR_ANALYTICS = 'aspx/AxMain.aspx?pname=danalytics&authKey=AXPERT-';
   static bool isLogEnabled = false;
 
   static String getSQLforClientID(String clientID) => "select * from tblclientMST where " + "clientid = '" + clientID + "'";
