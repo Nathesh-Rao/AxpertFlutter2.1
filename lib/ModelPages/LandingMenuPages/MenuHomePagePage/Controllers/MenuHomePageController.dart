@@ -78,6 +78,7 @@ class MenuHomePageController extends GetxController {
   }
 //------------------------------------------------------------------------------------->
   //NOTE Axpert 11.4 API calls and methods
+  var bannerIndex = 0.obs;
   var bannerCardData = [].obs;
   var taskListData = [].obs;
   var newsCardData = [].obs;
@@ -95,13 +96,16 @@ class MenuHomePageController extends GetxController {
     _clearDataLists();
   }
 
+  updateBannerIndex(int index) {
+    bannerIndex.value = index;
+  }
+
   _sortDataByPluginName({required List<UpdatedHomeCardDataModel> dataList}) {
     for (var data in dataList) {
       if (data.carddata != null) {
         switch (data.pluginname) {
           case "Banner card":
-            //NOTE - as of been data is null
-            // bannerCardData.add(parsedCardData);
+            bannerCardData.add(data);
 
             break;
           case "Task list":

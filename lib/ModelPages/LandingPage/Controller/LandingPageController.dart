@@ -87,12 +87,10 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
     userCtrl.text = userName.value;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       pageList = [
-        // MenuHomePage(),
         UpdatedHomePage(),
-        // WebViewActiveList(),
         MenuActiveListPage(),
         MenuDashboardPage(),
-        // MenuCalendarPage(),
+
         ///NOTE Pass a [ValueKey] with a unique identifier to force widget rebuilds.
         //NOTE to open the WebViewCalendar page
         WebViewFromBottomBar(
@@ -255,7 +253,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
       if (Get.isSnackbarOpen) Get.back();
       // SystemNavigator.pop(animated: true);
       exit(0);
-      return Future.value(true);
+      // return Future.value(true);
     }
   }
 

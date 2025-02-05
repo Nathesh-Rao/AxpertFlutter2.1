@@ -128,6 +128,7 @@ class _TaskListPanelState extends State<TaskListPanel> {
                 ),
                 Expanded(
                     child: ListView.separated(
+                  padding: EdgeInsets.only(top: 15),
                   controller: scrollController,
                   itemCount: widget.taskListData.carddata.length,
                   physics: isSeeMore

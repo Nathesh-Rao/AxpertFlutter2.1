@@ -112,6 +112,7 @@ class _ActivityListPanelState extends State<ActivityListPanel> {
                 ),
                 Expanded(
                     child: ListView.separated(
+                  padding: EdgeInsets.only(top: 15),
                   controller: scrollController,
                   itemCount: widget.activityListData.carddata.length,
                   physics: isSeeMore

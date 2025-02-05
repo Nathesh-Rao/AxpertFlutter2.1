@@ -62,9 +62,10 @@ class UpdatedHomePage extends StatelessWidget {
             child: Column(
               children: [
                 //Banner panel
-                WidgetBannerSlidingPanel(),
+                // WidgetBannerSlidingPanel(),
                 //::: WidgetSlidingNotificationPanel(),
                 //NOTE=== AXPERT 11.4 New UI Widgets ====>
+                WidgetBannerCard(),
                 WidgetKPIPanelSlider(),
                 WidgetTaskList(),
                 WidgetKPIList(),
