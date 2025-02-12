@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
+import '../Utils/LogServices/LogService.dart';
+
 class RequestLocationPage extends StatefulWidget {
   const RequestLocationPage({super.key});
 
@@ -12,6 +14,12 @@ class RequestLocationPage extends StatefulWidget {
 }
 
 class _RequestLocationPageState extends State<RequestLocationPage> {
+  @override
+  void initState() {
+    LogService.writeLog(message: "[>] RequestLocationPage");
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -55,7 +63,7 @@ class _RequestLocationPageState extends State<RequestLocationPage> {
                         padding: EdgeInsets.only(left: 20, right: 20),
                         child: ElevatedButton(
                             onPressed: () {
-                              _locatonPermission();
+                              _locationPermission();
                             },
                             child: Text("Allow"))))
               ]),
@@ -83,15 +91,18 @@ class _RequestLocationPageState extends State<RequestLocationPage> {
     );
   }
 
-  _locatonPermission() async {
+  _locationPermission() async {
     await Geolocator.requestPermission();
     var permission = await Geolocator.checkPermission();
+
     if (Platform.isIOS) {
       if (permission == LocationPermission.whileInUse) {
+        LogService.writeLog(message: "[i] [IOS] RequestLocationPage\nScope: _locationPermission(): true");
         Navigator.of(context).pop();
       }
     }
     if (permission == LocationPermission.always) {
+      LogService.writeLog(message: "[i] RequestLocationPage\nScope: _locationPermission(): true");
       Navigator.of(context).pop();
     }
   }

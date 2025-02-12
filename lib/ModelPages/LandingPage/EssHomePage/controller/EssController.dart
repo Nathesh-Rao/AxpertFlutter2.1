@@ -36,7 +36,7 @@ import 'package:text_scroll/text_scroll.dart';
 
 import '../../../../Constants/CommonMethods.dart';
 import '../../../../Constants/MyColors.dart';
-import '../../../../Constants/const.dart';
+import '../../../../Constants/Const.dart';
 import '../../../../Utils/ServerConnections/ExecuteApi.dart';
 import '../../../../Utils/ServerConnections/ServerConnections.dart';
 import '../../../LandingMenuPages/MenuActiveListPage/Page/MenuActiveListPage.dart';
@@ -48,13 +48,12 @@ import '../widgets/WidgetEssFolderPanelItem.dart';
 class EssController extends GetxController {
   // final MenuMorePageController menuMorePageController =
   //     Get.put<MenuMorePageController>(MenuMorePageController());
-  final MenuHomePageController menuHomePageController =
-      Get.put(MenuHomePageController());
+  final MenuHomePageController menuHomePageController = Get.put(MenuHomePageController());
 
   InternetConnectivity internetConnectivity = Get.find();
   AppStorage appStorage = AppStorage();
   ServerConnections serverConnections = ServerConnections();
-  CarouselController essBannerController = CarouselController();
+  CarouselSliderController essBannerController = CarouselSliderController();
   @override
   void onInit() {
     scrollController.addListener(_scrollListener);
@@ -76,8 +75,7 @@ class EssController extends GetxController {
   EssController() {
     log("EssController: Rebuilds");
     body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
-    userName.value =
-        appStorage.retrieveValue(AppStorage.USER_NAME) ?? userName.value;
+    userName.value = appStorage.retrieveValue(AppStorage.USER_NAME) ?? userName.value;
     getBanners();
     getCardDetails();
     getESSRecentActivity();
@@ -91,7 +89,18 @@ class EssController extends GetxController {
         EssHomeWidget(),
         MenuActiveListPage(),
         MenuDashboardPage(),
-        WebViewCalendar(),
+
+        ///NOTE Pass a [ValueKey] with a unique identifier to force widget rebuilds.
+        //NOTE to open the WebViewCalendar page
+        WebViewFromBottomBar(
+          key: ValueKey(Const.BOTTOMBAR_CALENDAR),
+          url: Const.BOTTOMBAR_CALENDAR,
+        ),
+        //NOTE to open the WebViewAnalytics page
+        WebViewFromBottomBar(
+          key: ValueKey(Const.BOTTOMBAR_ANALYTICS),
+          url: Const.BOTTOMBAR_ANALYTICS,
+        ),
       ];
     });
   }
@@ -116,10 +125,7 @@ class EssController extends GetxController {
           messageText: Center(
             child: Text(
               "Press back again to exit",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700),
+              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700),
             ),
           ),
           margin: EdgeInsets.only(left: 10, right: 10),
@@ -152,8 +158,7 @@ class EssController extends GetxController {
   var willAuth = false;
 
   getBiometricStatus() async {
-    var willAuthLocal =
-        await getWillBiometricAuthenticateForThisUser(userName.value);
+    var willAuthLocal = await getWillBiometricAuthenticateForThisUser(userName.value);
     if (willAuthLocal == null) {
       Get.bottomSheet(
         PopScope(
@@ -161,17 +166,13 @@ class EssController extends GetxController {
           child: Container(
             margin: EdgeInsets.only(top: 150),
             padding: EdgeInsets.only(top: 10, left: 20, right: 20),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-                color: Colors.grey.shade100),
+            decoration: BoxDecoration(borderRadius: BorderRadius.vertical(top: Radius.circular(30)), color: Colors.grey.shade100),
             child: Column(
               children: [
                 Container(
                   height: 4,
                   width: 80,
-                  decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(30)),
+                  decoration: BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.circular(30)),
                 ),
                 Container(
                   height: 250,
@@ -186,9 +187,7 @@ class EssController extends GetxController {
                 SizedBox(height: 20),
                 Text(
                   "Biometric Authentication in now Available!",
-                  style: GoogleFonts.poppins(
-                      textStyle:
-                          TextStyle(fontWeight: FontWeight.w500, fontSize: 20)),
+                  style: GoogleFonts.poppins(textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 20)),
                   textAlign: TextAlign.center,
                   maxLines: 2,
                 ),
@@ -196,10 +195,7 @@ class EssController extends GetxController {
                 Text(
                   "Log into your project account using your phone's biometric credentials..",
                   style: GoogleFonts.poppins(
-                      textStyle: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
-                          color: Colors.grey.shade600)),
+                      textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.grey.shade600)),
                   textAlign: TextAlign.center,
                   maxLines: 2,
                 ),
@@ -208,8 +204,7 @@ class EssController extends GetxController {
                   onPressed: () async {
                     var willAuthenticate = await showBiometricDialog();
                     Get.back();
-                    await setWillBiometricAuthenticateForThisUser(
-                        userName.value, willAuthenticate);
+                    await setWillBiometricAuthenticateForThisUser(userName.value, willAuthenticate);
                     willAuth = willAuthenticate;
                   },
                   child: Container(
@@ -221,13 +216,10 @@ class EssController extends GetxController {
                 TextButton(
                     onPressed: () {
                       Get.back();
-                      setWillBiometricAuthenticateForThisUser(
-                          userName.value, false);
+                      setWillBiometricAuthenticateForThisUser(userName.value, false);
                       willAuth = false;
                     },
-                    style: ButtonStyle(
-                        backgroundColor: WidgetStateColor.resolveWith(
-                            (states) => Colors.grey.shade300)),
+                    style: ButtonStyle(backgroundColor: WidgetStateColor.resolveWith((states) => Colors.grey.shade300)),
                     child: Container(
                       width: 300,
                       child: Center(child: Text("Skip for now")),
@@ -276,9 +268,7 @@ class EssController extends GetxController {
       iconName = iconName.replaceAll("|material-icons", "");
       return materialIcons[iconName];
     } else {
-      switch (subMenu.pagetype.trim() != ""
-          ? subMenu.pagetype.trim().toUpperCase()[0]
-          : subMenu.pagetype.trim()) {
+      switch (subMenu.pagetype.trim() != "" ? subMenu.pagetype.trim().toUpperCase()[0] : subMenu.pagetype.trim()) {
         case "T":
           return Icons.assignment;
         case "I":
@@ -336,15 +326,14 @@ class EssController extends GetxController {
 
 //------Recent Activity----------
 //---vars-----
-  RxList<EssRecentActivityModel> listOfESSRecentActivity =
-      <EssRecentActivityModel>[].obs;
+  RxList<EssRecentActivityModel> listOfESSRecentActivity = <EssRecentActivityModel>[].obs;
   RxList<Widget> listOfRecentActivityHomeScreenWidgets = <Widget>[].obs;
 //----- calls-------
   void getESSRecentActivity() async {
     var body = {
       "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
       // "publickey": "AXPKEY000000010006",
-      "publickey": ExecuteApi.API_PublicKey_ESS_RecentActivity,
+      "publickey": ExecuteApi.API_PUBLICKEY_ESS_RECENTACTIVITY,
       "Project": Const.PROJECT_NAME,
       "getsqldata": {"trace": "true"}
     };
@@ -360,8 +349,7 @@ class EssController extends GetxController {
         var listItems = jsonResp["axm_ess_recentactivity"]["rows"];
         listOfESSRecentActivity.clear();
         for (var item in listItems) {
-          EssRecentActivityModel recentActivityModel =
-              EssRecentActivityModel.fromJson(item);
+          EssRecentActivityModel recentActivityModel = EssRecentActivityModel.fromJson(item);
           listOfESSRecentActivity.add(recentActivityModel);
         }
         _getRecentActivityHomeScreenWidgets();
@@ -447,8 +435,7 @@ class EssController extends GetxController {
 
   //---Announcement-------
 
-  RxList<EssAnnouncementModel> listOfEssAnnouncementModels =
-      <EssAnnouncementModel>[].obs;
+  RxList<EssAnnouncementModel> listOfEssAnnouncementModels = <EssAnnouncementModel>[].obs;
   RxList<Widget> listOfAnnouncementHomeScreenWidgets = <Widget>[].obs;
 
 //----- calls-------
@@ -457,7 +444,7 @@ class EssController extends GetxController {
       "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
       // "publickey": "AXPKEY000000010007",
 
-      "publickey": ExecuteApi.API_PublicKey_ESS_Announcement,
+      "publickey": ExecuteApi.API_PUBLICKEY_ESS_ANNOUNCEMENT,
       "Project": Const.PROJECT_NAME,
       "getsqldata": {"trace": "true"}
     };
@@ -473,8 +460,7 @@ class EssController extends GetxController {
         var listItems = jsonResp["axm_ess_announcement"]["rows"];
         listOfESSRecentActivity.clear();
         for (var item in listItems) {
-          EssAnnouncementModel announcementModel =
-              EssAnnouncementModel.fromJson(item);
+          EssAnnouncementModel announcementModel = EssAnnouncementModel.fromJson(item);
           listOfEssAnnouncementModels.add(announcementModel);
         }
         _getEssAnnouncementWidgets();
@@ -522,9 +508,7 @@ class EssController extends GetxController {
                 Container(
                   height: 40,
                   margin: EdgeInsets.only(bottom: 5),
-                  decoration: BoxDecoration(
-                      color: color.withAlpha(30),
-                      borderRadius: BorderRadius.circular(10)),
+                  decoration: BoxDecoration(color: color.withAlpha(30), borderRadius: BorderRadius.circular(10)),
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: InkWell(
@@ -681,14 +665,10 @@ class EssController extends GetxController {
       "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
       "username": appStorage.retrieveValue(AppStorage.USER_NAME),
       "Project": appStorage.retrieveValue(AppStorage.PROJECT_NAME),
-      "getsqldata": {
-        "username": appStorage.retrieveValue(AppStorage.USER_NAME),
-        "trace": "false"
-      },
+      "getsqldata": {"username": appStorage.retrieveValue(AppStorage.USER_NAME), "trace": "false"},
       "sqlparams": {}
     };
-    var resp = await serverConnections.postToServer(
-        url: url, body: jsonEncode(body), isBearer: true);
+    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
 
     log("Resp:|Get Punch IN data| ${resp}");
     punchInResp = resp;
@@ -739,20 +719,14 @@ class EssController extends GetxController {
             "mode": "new",
             "recordid": "0",
             "dc1": {
-              "row1": {
-                "latitude": latitude,
-                "longitude": longitude,
-                "status": "IN",
-                "inloc": address
-              }
+              "row1": {"latitude": latitude, "longitude": longitude, "status": "IN", "inloc": address}
             }
           }
         }
       }
     };
     // print("punch_IN_Body: ${jsonEncode(body)}");
-    var resp = await serverConnections.postToServer(
-        url: url, body: jsonEncode(body), isBearer: true);
+    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
 
     //print("PunchIN_resp: $resp");
     print(resp);
@@ -806,19 +780,13 @@ class EssController extends GetxController {
             "mode": "edit",
             "recordid": recordId,
             "dc1": {
-              "row1": {
-                "olatitude": latitude,
-                "olongitude": longitude,
-                "status": "OUT",
-                "outloc": address
-              }
+              "row1": {"olatitude": latitude, "olongitude": longitude, "status": "OUT", "outloc": address}
             }
           }
         }
       }
     };
-    var resp = await serverConnections.postToServer(
-        url: url, body: jsonEncode(body), isBearer: true);
+    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
     log("Resp:|Punch OUT| ${resp}");
     if (resp.toString() == '') return;
 
@@ -856,8 +824,7 @@ class EssController extends GetxController {
     // isLoading.value = true;
     LoadingScreen.show();
     var url = Const.getFullARMUrl(ServerConnections.API_GET_HOMEPAGE_CARDS_v2);
-    var resp = await serverConnections.postToServer(
-        url: url, body: jsonEncode(body), isBearer: true);
+    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
     // print(resp);
     if (resp != "") {
       print("Home card ${resp}");
@@ -905,23 +872,16 @@ class EssController extends GetxController {
       return actionData;
     } else {
       // var dataSourceUrl = baseUrl + GlobalConfiguration().get("HomeCardDataResponse").toString();
-      var dataSourceUrl = Const.getFullARMUrl(
-          ServerConnections.API_GET_HOMEPAGE_CARDSDATASOURCE);
+      var dataSourceUrl = Const.getFullARMUrl(ServerConnections.API_GET_HOMEPAGE_CARDSDATASOURCE);
       var dataSourceBody = body;
-      dataSourceBody["sqlParams"] = {
-        "param": "value",
-        "username": appStorage.retrieveValue(AppStorage.USER_NAME)
-      };
+      dataSourceBody["sqlParams"] = {"param": "value", "username": appStorage.retrieveValue(AppStorage.USER_NAME)};
 
       actionData.clear();
       for (var items in setOfDatasource) {
         if (items.toString() != "") {
           dataSourceBody["datasource"] = items;
           // setOfDatasource.remove(items);
-          var dsResp = await serverConnections.postToServer(
-              url: dataSourceUrl,
-              isBearer: true,
-              body: jsonEncode(dataSourceBody));
+          var dsResp = await serverConnections.postToServer(url: dataSourceUrl, isBearer: true, body: jsonEncode(dataSourceBody));
           if (dsResp != "") {
             var jsonDSResp = jsonDecode(dsResp);
             // print(jsonDSResp);
@@ -929,14 +889,10 @@ class EssController extends GetxController {
               var dsDataList = jsonDSResp['result']['data'];
               for (var item in dsDataList) {
                 var list = [];
-                list = actionData[item['cardname']] != null
-                    ? actionData[item['cardname']]
-                    : [];
-                CardOptionModel cardOptionModel =
-                    CardOptionModel.fromJson(item);
+                list = actionData[item['cardname']] != null ? actionData[item['cardname']] : [];
+                CardOptionModel cardOptionModel = CardOptionModel.fromJson(item);
 
-                if (list.indexOf(cardOptionModel) < 0)
-                  list.add(cardOptionModel);
+                if (list.indexOf(cardOptionModel) < 0) list.add(cardOptionModel);
                 actionData[item['cardname']] = list;
               }
             }
@@ -999,8 +955,7 @@ class EssController extends GetxController {
                 clearCacheData();
               } catch (e) {}
               appStorage.storeValue(AppStorage.USER_NAME, "");
-              await serverConnections.postToServer(
-                  url: url, body: jsonEncode(body));
+              await serverConnections.postToServer(url: url, body: jsonEncode(body));
               LoadingScreen.dismiss();
               Get.offAllNamed(Routes.Login);
               // if (resp != "" && !resp.toString().contains("error")) {
@@ -1018,8 +973,7 @@ class EssController extends GetxController {
             },
             child: Text("Yes")),
         cancel: ElevatedButton(
-            style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all(Colors.grey)),
+            style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Colors.grey)),
             onPressed: () {
               Get.back();
             },
@@ -1096,16 +1050,12 @@ class EssController extends GetxController {
         padding: EdgeInsets.zero,
         margin: EdgeInsets.zero,
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xff3764FC),
-                Color(0xff9764DA),
-              ]),
+          gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [
+            Color(0xff3764FC),
+            Color(0xff9764DA),
+          ]),
         ),
-        child: _userInfoMenuWidget(
-            username: userName.value, companyName: "Agile labs"),
+        child: _userInfoMenuWidget(username: userName.value, companyName: "Agile labs"),
       ),
     );
     var a = menu_finalList.map(build_innerListTile).toList();
@@ -1153,6 +1103,15 @@ class EssController extends GetxController {
         onTap: () {
           Get.back();
           indexChange(4);
+        },
+        leading: Icon(Icons.analytics_outlined),
+        title: Text("Analytics"),
+      ));
+      menuList.add(ListTile(
+        tileColor: Colors.white,
+        onTap: () {
+          Get.back();
+          indexChange(5);
         },
         leading: Icon(Icons.dashboard_customize_outlined),
         title: Text("More"),
@@ -1213,10 +1172,8 @@ class EssController extends GetxController {
           tilePadding: EdgeInsets.only(left: leftPadding, right: 10),
           title: Text(tile.caption),
           children: ListTile.divideTiles(
-                  context: Get.context,
-                  tiles: model_tile.childList.map((tile) =>
-                      build_innerListTile(tile, leftPadding: leftPadding + 15)))
-              .toList(),
+              context: Get.context,
+              tiles: model_tile.childList.map((tile) => build_innerListTile(tile, leftPadding: leftPadding + 15))).toList(),
         ),
       );
     }
@@ -1225,11 +1182,8 @@ class EssController extends GetxController {
   void getMenuList_v2() async {
     print("getMenuList_v2_called");
     var mUrl = Const.getFullARMUrl(ServerConnections.API_GET_MENU_V2);
-    var conectBody = {
-      'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)
-    };
-    var menuResp = await serverConnections.postToServer(
-        url: mUrl, body: jsonEncode(conectBody), isBearer: true);
+    var conectBody = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
+    var menuResp = await serverConnections.postToServer(url: mUrl, body: jsonEncode(conectBody), isBearer: true);
     if (menuResp != "") {
       print("menuResp ${menuResp}");
       var menuJson = jsonDecode(menuResp);
@@ -1261,8 +1215,7 @@ class EssController extends GetxController {
     var keysToRemove = <String>[];
 
     //To get the parent tree reverse the Map
-    final reverseM =
-        LinkedHashMap.fromEntries(map_menulist.entries.toList().reversed);
+    final reverseM = LinkedHashMap.fromEntries(map_menulist.entries.toList().reversed);
     reverseM.forEach((key, value) {
       try {
         MenuItemNewmModel md = value;
@@ -1280,8 +1233,7 @@ class EssController extends GetxController {
     keysToRemove.forEach((key) => reverseM.remove(key));
 
     // Once again reverse the Map to get the actual order.
-    final map_finalList =
-        LinkedHashMap.fromEntries(reverseM.entries.toList().reversed);
+    final map_finalList = LinkedHashMap.fromEntries(reverseM.entries.toList().reversed);
 
     // Add the Map value to List
     List<MenuItemNewmModel> newList = [];
@@ -1304,22 +1256,19 @@ class EssController extends GetxController {
       if (itemModel.url != "") {
         // menuHomePageController.webUrl = Const.getFullProjectUrl(itemModel.url);
         // menuHomePageController.switchPage.value = true;
-        Get.toNamed(Routes.InApplicationWebViewer,
-            arguments: [Const.getFullProjectUrl(itemModel.url)]);
+        Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(itemModel.url)]);
       }
     }
   }
 
-  getDrawerInnerListTile(
-      MenuMorePageController menuMorePageController, item, index) {
+  getDrawerInnerListTile(MenuMorePageController menuMorePageController, item, index) {
     List<Widget> innerTile = [];
     innerTile.add(Container(
       height: 1,
       color: Colors.white,
       // color: Colors.grey.withOpacity(0.1),
     ));
-    for (MenuItemModel subMenu
-        in menuMorePageController.finalHeadingWiseData[item] ?? [])
+    for (MenuItemModel subMenu in menuMorePageController.finalHeadingWiseData[item] ?? [])
       innerTile.add(InkWell(
         onTap: () {
           menuMorePageController.openItemClick(subMenu);
@@ -1329,9 +1278,7 @@ class EssController extends GetxController {
           padding: EdgeInsets.only(left: 20),
           // menuMorePageController.IconList[index++ % 8]
           child: ListTile(
-              leading:
-                  Icon(menuMorePageController.generateIcon(subMenu, index++)),
-              title: Text(subMenu.caption.toString())),
+              leading: Icon(menuMorePageController.generateIcon(subMenu, index++)), title: Text(subMenu.caption.toString())),
         ),
       ));
 
@@ -1389,7 +1336,7 @@ class EssController extends GetxController {
       "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
       // "publickey": "AXPKEY000000010008",
 
-      "publickey": ExecuteApi.API_PublicKey_ESS_Banners,
+      "publickey": ExecuteApi.API_PUBLICKEY_ESS_BANNERS,
       "Project": Const.PROJECT_NAME,
       "getsqldata": {"trace": "true"}
     };
@@ -1421,8 +1368,7 @@ class EssController extends GetxController {
       baseUrl += baseUrl.endsWith("/") ? "" : "/";
       var url = baseUrl + ServerConnections.BANNER_JSON_NAME;
       // url = "https://demo.agilecloud.biz/mainpagebanner.json";
-      final data = await serverConnections.getFromServer(
-          url: url, show_errorSnackbar: false);
+      final data = await serverConnections.getFromServer(url: url, show_errorSnackbar: false);
       if (data != null && data != "") {
         print("getBannerDetails1: $data");
         var jsonResp = jsonDecode(data);
@@ -1435,18 +1381,15 @@ class EssController extends GetxController {
         }
       } else {
         if (Const.PROJECT_URL.endsWith("/")) {
-          var URL =
-              Const.PROJECT_URL.substring(0, Const.PROJECT_URL.length - 1);
+          var URL = Const.PROJECT_URL.substring(0, Const.PROJECT_URL.length - 1);
           baseUrl = URL.substring(0, URL.lastIndexOf('/'));
         } else {
-          baseUrl = Const.PROJECT_URL
-              .substring(0, Const.PROJECT_URL.lastIndexOf('/'));
+          baseUrl = Const.PROJECT_URL.substring(0, Const.PROJECT_URL.lastIndexOf('/'));
         }
 
         baseUrl += baseUrl.endsWith("/") ? "" : "/";
         var url = baseUrl + ServerConnections.BANNER_JSON_NAME;
-        final data = await serverConnections.getFromServer(
-            url: url, show_errorSnackbar: false);
+        final data = await serverConnections.getFromServer(url: url, show_errorSnackbar: false);
         if (data != null && data != "") {
           print("getBannerDetails2: $data");
           var jsonResp = jsonDecode(data);

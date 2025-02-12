@@ -3,7 +3,8 @@ import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:flutter/material.dart';
 
 class Const {
-  static String RELEASE_ID = "_testRelease1";
+  static DateTime DEMO_END_DATE = DateTime(2025, 2, 8);
+  static String RELEASE_ID = "_pre_release_app_test";
   static String DEVICE_ID = "";
   static String PROJECT_URL = ""; //"https://app.buzzily.com/Run";
   static String PROJECT_NAME = "axpertqa11";
@@ -17,25 +18,23 @@ class Const {
   static String DUMMY_USER = "admin";
   static const String DUMMYUSER_PWD = "a5ca360e803b868680e2b6f7805fcb9e";
 
-  static final String URL_JSON_OBJECTGETCHOICE =
-      "asbmenurest.dll/datasnap/rest/Tasbmenurest/getchoices";
+  static final String URL_JSON_OBJECTGETCHOICE = "asbmenurest.dll/datasnap/rest/Tasbmenurest/getchoices";
   static final String SET_HYBRID_INFO = "/Webservice.asmx/SetHybridInfo";
-  static final String SET_HYBRID_NOTIFICATION_INFO =
-      "/Webservice.asmx/SetHybridNotifiInfo";
+  static final String SET_HYBRID_NOTIFICATION_INFO = "/Webservice.asmx/SetHybridNotifiInfo";
   static final String LOGOUT_LINK = "webservice.asmx/SignOut";
+  //NOTE BottomBar Items urls
+  static final String BOTTOMBAR_CALENDAR = 'aspx/AxMain.aspx?pname=dcalendar&authKey=AXPERT-';
+  static final String BOTTOMBAR_ANALYTICS = 'aspx/AxMain.aspx?pname=danalytics&authKey=AXPERT-';
   static bool isLogEnabled = false;
 
-  static String getSQLforClientID(String clientID) =>
-      "select * from tblclientMST where " + "clientid = '" + clientID + "'";
+  static String getSQLforClientID(String clientID) => "select * from tblclientMST where " + "clientid = '" + clientID + "'";
 
   static String getFullARMUrl(String Entrypoint) {
     if (ARM_URL == "") {
       var data = AppStorage().retrieveValue(AppStorage.ARM_URL) ?? "";
       return data.endsWith("/") ? data + Entrypoint : data + "/" + Entrypoint;
     } else
-      return ARM_URL.endsWith("/")
-          ? ARM_URL + Entrypoint
-          : ARM_URL + "/" + Entrypoint;
+      return ARM_URL.endsWith("/") ? ARM_URL + Entrypoint : ARM_URL + "/" + Entrypoint;
   }
 
   // static String getFullARMUrl_HardCoded(String Entrypoint) {
@@ -48,9 +47,7 @@ class Const {
       return data.endsWith("/") ? data + Entrypoint : data + "/" + Entrypoint;
     } else
       // print("form const" + PROJECT_URL);
-      return PROJECT_URL.endsWith("/")
-          ? PROJECT_URL + Entrypoint
-          : PROJECT_URL + "/" + Entrypoint;
+      return PROJECT_URL.endsWith("/") ? PROJECT_URL + Entrypoint : PROJECT_URL + "/" + Entrypoint;
   }
 
   static String getAppBody() => "{\"Appname\":\"" + PROJECT_NAME + "\"}";
@@ -63,10 +60,8 @@ class Const {
     brightness: Brightness.light,
     elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
-            backgroundColor:
-                WidgetStateColor.resolveWith((states) => MyColors.blue2),
-            foregroundColor:
-                WidgetStateColor.resolveWith((states) => Colors.white))),
+            backgroundColor: WidgetStateColor.resolveWith((states) => MyColors.blue2),
+            foregroundColor: WidgetStateColor.resolveWith((states) => Colors.white))),
     primaryColor: Color(0xff003AA5),
     scaffoldBackgroundColor: Colors.white,
     colorScheme: ThemeData().colorScheme.copyWith(primary: MyColors.blue2),

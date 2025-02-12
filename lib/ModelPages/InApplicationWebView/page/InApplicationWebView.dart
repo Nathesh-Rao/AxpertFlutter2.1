@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
+import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -49,6 +50,7 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
     } catch (e) {}
     // widget.data = "https://amazon.in"
     print(widget.data);
+    LogService.writeLog(message: "InAppWebView: ${widget.data}");
     clearCookie();
   }
 
@@ -74,71 +76,28 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
   );
 
   void _download(String url) async {
+    try {
+      print("download Url: $url");
+      String fname = url.split('/').last.split('.').first;
+      print("download FileName: $fname");
+      FileDownloaderFlutter().urlFileSaver(url: url, fileName: fname);
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  void _download_old(String url) async {
     if (Platform.isAndroid) {
       try {
         print("download Url: $url");
         String fname = url.split('/').last.split('.').first;
         print("download FileName: $fname");
-        FileDownloaderFlutter().urlFileSaver(url: url,fileName: fname);
+        FileDownloaderFlutter().urlFileSaver(url: url, fileName: fname);
       } catch (e) {
         print(e.toString());
       }
     }
-    // if (Platform.isAndroid) {
-    //   final deviceInfo = await DeviceInfoPlugin().androidInfo;
-    //   var status;
-    //   if (deviceInfo.version.sdkInt > 32) {
-    //     status = await Permission.photos.request().isGranted;
-    //     print(">32");
-    //   } else {
-    //     status = await Permission.storage.request().isGranted;
-    //   }
-    //   if (status) {
-    //     Fluttertoast.showToast(
-    //         msg: "Download Started...",
-    //         toastLength: Toast.LENGTH_SHORT,
-    //         gravity: ToastGravity.BOTTOM,
-    //         timeInSecForIosWeb: 1,
-    //         backgroundColor: Colors.green.shade200,
-    //         textColor: Colors.black,
-    //         fontSize: 16.0);
-    //
-    //     await FileDownloader.downloadFile(
-    //       url: url,
-    //       onProgress: (fileName, progress) {
-    //         // print("On Progressssss");
-    //       },
-    //       onDownloadError: (errorMessage) {
-    //         Get.snackbar("Error", "Download file error " + errorMessage,
-    //             snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red.shade300, colorText: Colors.white);
-    //       },
-    //       onDownloadCompleted: (path) {
-    //         // print("Download Completed:   $path");
-    //         //OpenFile.open(path);
-    //         OpenFile.open(path);
-    //       },
-    //     );
-    //   } else {
 
-      /*  await FileDownloader.downloadFile(
-          url: url,
-          onProgress: (fileName, progress) {
-            // print("On Progressssss");
-          },
-          onDownloadError: (errorMessage) {
-            Get.snackbar("Error", "Download file error " + errorMessage,
-                snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red.shade300, colorText: Colors.white);
-          },
-          onDownloadCompleted: (path) {
-            // print("Download Completed:   $path");
-            //OpenFile.open(path);
-            OpenFile.open(path);
-          },
-        );
-      } else {
-        print('Permission Denied');
-      }
-    } */
     if (Platform.isIOS) {
       var status = await Permission.storage.request().isGranted;
       if (status) {
@@ -151,6 +110,7 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
           showNotification: true, // show download progress in status bar (for Android)
           openFileFromNotification: true, // click on notification to open downloaded file (for Android)
         );
+
         // print("Task id: $taskId");
       } else {
         print("Permission Denied");

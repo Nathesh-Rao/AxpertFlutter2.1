@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/VersionUpdateClearOldData.dart';
-import 'package:axpertflutter/Constants/const.dart';
+import 'package:axpertflutter/Constants/Const.dart';
+
 import 'package:axpertflutter/ModelPages/ProjectListing/Model/ProjectModel.dart';
 import 'package:axpertflutter/ModelPages/location_permission.dart';
+import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -19,26 +21,28 @@ class SplashPage extends StatefulWidget {
   State<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage>
-    with SingleTickerProviderStateMixin {
+class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateMixin {
   var _animationController;
   AppStorage appStorage = AppStorage();
   ProjectModel? projectModel;
 
   @override
   void initState() {
+    LogService.writeLog(message: "[>] SplashPage");
     super.initState();
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual);
     // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-    _animationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 800));
+    _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 800));
     _animationController.forward();
     VersionUpdateClearOldData.clearAllOldData();
     checkIfDeviceSupportBiometric();
     Future.delayed(Duration(milliseconds: 1800), () {
       _animationController.stop();
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) => _askLocationPermission());
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _askLocationPermission();
+      });
+
       var cached = appStorage.retrieveValue(AppStorage.CACHED);
       try {
         if (cached == null)
@@ -52,6 +56,7 @@ class _SplashPageState extends State<SplashPage>
           Get.offAllNamed(Routes.Login);
         }
       } catch (e) {
+        LogService.writeLog(message: "[ERROR] \nPage: SplashPage\nScope: initState()\nError: $e");
         Get.offAllNamed(Routes.ProjectListingPage);
       }
     });
@@ -60,7 +65,9 @@ class _SplashPageState extends State<SplashPage>
   _askLocationPermission() async {
     if (Platform.isAndroid) {
       var permission = await Permission.locationAlways.request();
-      print("Location Permission: ${permission}");
+
+      // print("Location Permission: ${permission}");
+      LogService.writeLog(message: "[i] SplashPage \nScope: askLocationPermission() : $permission ");
       if (permission != PermissionStatus.granted) {
         Get.to(RequestLocationPage());
       }
@@ -112,13 +119,15 @@ class _SplashPageState extends State<SplashPage>
   void checkIfDeviceSupportBiometric() async {
     final LocalAuthentication auth = LocalAuthentication();
     final bool canAuthenticateWithBiometrics = await auth.canCheckBiometrics;
-    final bool canAuthenticate =
-        canAuthenticateWithBiometrics || await auth.isDeviceSupported();
+    final bool canAuthenticate = canAuthenticateWithBiometrics || await auth.isDeviceSupported();
     print("canAuthenticate: $canAuthenticate");
+    LogService.writeLog(message: "[i] SplashPage\nScope:checkIfDeviceSupportBiometric()\nCanAuthenticate: $canAuthenticate");
     if (canAuthenticate) {
-      final List<BiometricType> availableBiometrics =
-          await auth.getAvailableBiometrics();
+      final List<BiometricType> availableBiometrics = await auth.getAvailableBiometrics();
       print("List: $availableBiometrics");
+      LogService.writeLog(
+          message: "[i] SplashPage\nScope:checkIfDeviceSupportBiometric()\nAvailable Biometrics: $availableBiometrics");
+
       // if (availableBiometrics.contains (BiometricType.fingerprint) ||
       //     availableBiometrics.contains(BiometricType.weak) ||
       //     availableBiometrics.contains(BiometricType.strong))

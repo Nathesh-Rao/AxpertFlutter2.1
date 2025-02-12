@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:axpertflutter/Constants/CommonMethods.dart';
-import 'package:axpertflutter/Constants/const.dart';
+import 'package:axpertflutter/Constants/Const.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../../Utils/LogServices/LogService.dart';
 
 class SignUpController extends GetxController {
   var userTypeList = [].obs;
@@ -198,6 +200,7 @@ class SignUpController extends GetxController {
 
   void registerButtonCalled() async {
     if (validateForm()) {
+      LogService.writeLog(message: "[-] SignUpController : Signup process started");
       LoadingScreen.show();
       var body = getJsonBody();
       var url = Const.getFullARMUrl(ServerConnections.API_ADDUSER);
@@ -217,6 +220,8 @@ class SignUpController extends GetxController {
           }
         }
       } catch (e) {
+        LogService.writeLog(message: "[ERROR] SignUpController\nScope: registerButtonCalled()\nError: $e");
+
         //error
       } finally {
         LoadingScreen.dismiss();
@@ -234,6 +239,8 @@ class SignUpController extends GetxController {
         errOtp.value = "You exceeds the maximum limit.\nPlease try again later";
       }
     } catch (e) {
+      LogService.writeLog(message: "[ERROR] SignUpController\nScope: reSendOTP()\nError: $e");
+
       errOtp.value = "You exceeds the maximum limit.\nPlease try again later";
     }
     // startTimer();/

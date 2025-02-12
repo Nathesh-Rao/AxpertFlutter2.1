@@ -1,14 +1,22 @@
 import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Widgets/UpdatedWidgets11.4/WidgetBannerCard.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Widgets/UpdatedWidgets11.4/WidgetKPIList.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Widgets/UpdatedWidgets11.4/WidgetNewsCard.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Widgets/UpdatedWidgets11.4/WidgetMenuIcons.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Widgets/UpdatedWidgets11.4/WidgetTaskList.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Controller/LandingPageController.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetBannerSliding.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetSlidingNotification.dart';
+import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../LandingPage/Widgets/WidgetKPIPanel.dart';
+import '../Widgets/UpdatedWidgets11.4/WidgetActivityList.dart';
+import '../Widgets/UpdatedWidgets11.4/WidgetKPIPanelSlider.dart';
 import '../Widgets/WidgetAttendancePanel.dart';
 import '../Widgets/WidgetMenuFolderPanels.dart';
 import '../Widgets/WidgetQuickAccessPanel.dart';
@@ -24,14 +32,14 @@ class UpdatedHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    LogService.writeLog(message: "[>] UpdatedHomePage");
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: Color(0xffebeff2),
       body: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
                 SliverToBoxAdapter(
                   child: ClipRRect(
-                    borderRadius:
-                        BorderRadius.only(bottomLeft: Radius.circular(50)),
+                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50)),
                     child: Container(
                       // margin: EdgeInsets.only(left: 10, right: 10),
                       decoration: BoxDecoration(
@@ -54,17 +62,27 @@ class UpdatedHomePage extends StatelessWidget {
             child: Column(
               children: [
                 //Banner panel
-                WidgetBannerSlidingPanel(),
+                // WidgetBannerSlidingPanel(),
+                //::: WidgetSlidingNotificationPanel(),
+                //NOTE=== AXPERT 11.4 New UI Widgets ====>
+                WidgetBannerCard(),
+                WidgetKPIPanelSlider(),
+                WidgetTaskList(),
+                WidgetKPIList(),
+                WidgetNewsCard(),
+                WidgetMenuIcons(),
+                WidgetActivityList(),
 
-                //WidgetSlidingNotificationPanel(),
+                // WidgetBannerCard(),
+                //NOTE===================================>
                 //KPI panel
-                Widgetkpipanel(),
+                // Widgetkpipanel(),
                 //Attendance
-                WidgetAttendancePanel(),
+                // WidgetAttendancePanel(),
                 //Quick Links
-                WidgetQuickAccessPanel(),
+                // WidgetQuickAccessPanel(),
                 //Home configuration panels
-                WidgetMenuFolderPanels(),
+                // WidgetMenuFolderPanels(),
 
                 //add your panel here
                 //Till here
@@ -73,29 +91,21 @@ class UpdatedHomePage extends StatelessWidget {
               ],
             ),
           )),
+      // floatingActionButton: Row(
+      //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+      //   children: [
+      //     FloatingActionButton(
+      //         child: Icon(Icons.refresh),
+      //         onPressed: () {
+      //           menuHomePageController.pseudoCallGet();
+      //         }),
+      //     FloatingActionButton(
+      //         child: Icon(Icons.clear_all),
+      //         onPressed: () {
+      //           menuHomePageController.pseudoCallClear();
+      //         })
+      //   ],
+      // ),
     );
-  }
-
-  captionOnTapFunction(cardModel) {
-    var link_id = cardModel.stransid;
-    var validity = false;
-    if (link_id.toLowerCase().startsWith('h')) {
-      if (link_id.toLowerCase().contains("hp")) {
-        link_id = link_id.toLowerCase().replaceAll("hp", "h");
-      }
-      validity = true;
-    } else {
-      if (link_id.toLowerCase().startsWith('i')) {
-        validity = true;
-      } else {
-        if (link_id.toLowerCase().startsWith('t')) {
-          validity = true;
-        } else
-          validity = false;
-      }
-    }
-    if (validity) {
-      menuHomePageController.openBtnAction("button", link_id);
-    }
   }
 }

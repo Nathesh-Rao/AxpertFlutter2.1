@@ -5,7 +5,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
-import '../../../../../Constants/const.dart';
+import '../../../../../Constants/Const.dart';
+import '../../../../../Utils/LogServices/LogService.dart';
 import '../../Controllers/MenuHomePageController.dart';
 import 'WidgetMenuFolderPanelBottomSheet.dart';
 
@@ -33,7 +34,9 @@ class WidgetMenuFolderPanelInnerItem extends StatelessWidget {
     return InkWell(
         onTap: () {
           if (isFromBottomSheet) Get.back();
-          menuHomePageController.captionOnTapFunction(item.target!.substring(item.target!.lastIndexOf('=') + 1, item.target.toString().length));
+          print(item.target);
+          menuHomePageController
+              .captionOnTapFunction(item.target!.substring(item.target!.lastIndexOf('=') + 1, item.target.toString().length));
         },
         child: SizedBox(
           width: (baseWidth / 4) - 30,
@@ -48,7 +51,8 @@ class WidgetMenuFolderPanelInnerItem extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: CachedNetworkImage(
                     imageUrl: Const.getFullProjectUrl("images/homepageicon/") + item.caption.toString() + '.png',
-                    errorWidget: (context, url, error) => Image.network(Const.getFullProjectUrl('images/homepageicon/default.png')),
+                    errorWidget: (context, url, error) =>
+                        Image.network(Const.getFullProjectUrl('images/homepageicon/default.png')),
                   ),
                 ), /*Icon(
                 Icons.airplane_ticket,

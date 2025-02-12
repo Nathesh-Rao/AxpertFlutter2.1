@@ -8,7 +8,7 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../Constants/const.dart';
+import '../../../Constants/Const.dart';
 import '../../LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
 import '../../LandingPage/Controller/LandingPageController.dart';
 import '../Controller/SettingsPageController.dart';
@@ -96,24 +96,26 @@ class SettingsPage extends StatelessWidget {
                             ),
                             SizedBox(width: 30),
                             Obx(() => Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  CommonMethods.capitalize(menuHomePageController.client_info_userNickname.value != "" ? menuHomePageController.client_info_userNickname.value : landingPageController.userName.value),
-                                  maxLines: 2,
-                                  style: GoogleFonts.poppins(
-                                      textStyle: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.w600)),
-                                ),
-                                Visibility(
-                                  visible: menuHomePageController.client_info_companyTitle.value != "",
-                                  child: Text(
-                                    menuHomePageController.client_info_companyTitle.value,
-                                    style: GoogleFonts.poppins(textStyle: TextStyle(color: Colors.white, fontSize: 15)),
-                                  ),
-                                ),
-                              ],
-                            )),
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      CommonMethods.capitalize(menuHomePageController.client_info_userNickname.value != ""
+                                          ? menuHomePageController.client_info_userNickname.value
+                                          : landingPageController.userName.value),
+                                      maxLines: 2,
+                                      style: GoogleFonts.poppins(
+                                          textStyle: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.w600)),
+                                    ),
+                                    Visibility(
+                                      visible: menuHomePageController.client_info_companyTitle.value != "",
+                                      child: Text(
+                                        menuHomePageController.client_info_companyTitle.value,
+                                        style: GoogleFonts.poppins(textStyle: TextStyle(color: Colors.white, fontSize: 15)),
+                                      ),
+                                    ),
+                                  ],
+                                )),
                           ],
                         ),
                       ),
@@ -230,6 +232,7 @@ class SettingsPage extends StatelessWidget {
                             Divider(),
                             ListTile(
                               onTap: () {
+                                // DemoUtils.showDemoBarrier();
                                 landingPageController.showManageWindow(initialIndex: 1);
                               },
                               leading: Icon(Icons.lock_outline),

@@ -10,8 +10,11 @@ import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
-import 'package:scan/scan.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+// import 'package:qr_code_scanner/qr_code_scanner.dart';
+// import 'package:scan/scan.dart';
+
+import '../../../Utils/LogServices/LogService.dart';
 
 class AddConnectionController extends GetxController {
   ProjectListingController projectListingController = Get.find();
@@ -36,8 +39,10 @@ class AddConnectionController extends GetxController {
   var isFlashOn = false.obs;
   var isPlayPauseOn = false.obs;
   var heading = "Add new Connection".obs;
-  QRViewController? qrViewController;
-  Barcode? barcodeResult;
+  // QRViewController? qrViewController;
+  MobileScannerController? scannerController;
+  // Barcode? barcodeResult;
+
   ServerConnections serverConnections = ServerConnections();
   AppStorage appStorage = AppStorage();
 
@@ -52,7 +57,7 @@ class AddConnectionController extends GetxController {
     super.dispose();
   }
 
-  requestPermissionForCamera(QRViewController ctrl, bool p) {}
+  // requestPermissionForCamera(QRViewController ctrl, bool p) {}
 
   doesDeviceHasFlash() {
     return true;
@@ -112,8 +117,8 @@ class AddConnectionController extends GetxController {
         //check whether the entered Connection name is proper
         Future<bool> isValidConnName = validateConnectionName(baseUrl);
         if (await isValidConnName) {
-          projectModel = ProjectModel(
-              conNameController.text.trim(), webUrlController.text.trim(), armUrlController.text.trim(), conCaptionController.text.trim());
+          projectModel = ProjectModel(conNameController.text.trim(), webUrlController.text.trim(), armUrlController.text.trim(),
+              conCaptionController.text.trim());
           /*conNameController.text = "";
           webUrlController.text = "";
           armUrlController.text = "";
@@ -132,7 +137,7 @@ class AddConnectionController extends GetxController {
           backgroundColor: Colors.red,
           colorText: Colors.white,
         );
-        qrViewController!.resumeCamera();
+        scannerController!.start();
       }
     }
   }
@@ -172,10 +177,11 @@ class AddConnectionController extends GetxController {
     } else {
       projectList = jsonDecode(storedList);
       if (projectList.contains(projectModel.projectname)) {
-        Get.snackbar("Element already exists", "", snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
+        Get.snackbar("Element already exists", "",
+            snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
         if (isQr) {
           Timer(Duration(seconds: 2), () {
-            qrViewController!.resumeCamera();
+            scannerController!.start();
           });
         }
         return false;
@@ -223,6 +229,7 @@ class AddConnectionController extends GetxController {
           connectionCodeController.text = "";
           saveDatAndRedirect(model, jsonObj);
         } catch (e) {
+          LogService.writeLog(message: "[ERROR] AddConnectionController\nScope: connectionCodeClick()\nError: $e");
           Get.snackbar("Invalid Project Code", "Please check project code and try again",
               backgroundColor: Colors.redAccent, snackPosition: SnackPosition.BOTTOM, colorText: Colors.white);
         }
@@ -306,35 +313,67 @@ class AddConnectionController extends GetxController {
         webUrlController.text = json['p_url'];
         conNameController.text = json['pname'];
         conCaptionController.text = json['pname'];
-        qrViewController!.stopCamera();
+        // qrViewController!.stopCamera();
+        scannerController!.stop();
         projectDetailsClicked(isQr: true);
       } else {
         Get.snackbar("Invalid!", "Please choose a valid QR Code",
             snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red, colorText: Colors.white);
       }
-    } catch (e) {}
+    } catch (e) {
+      LogService.writeLog(message: "[ERROR] AddConnectionController\nScope: decodeQRResult()\nError: $e");
+    }
   }
 
+  // void pickImageFromGalleryCalled() async {
+  //   qrViewController!.pauseCamera();
+  //   final ImagePicker picker = ImagePicker();
+  //   final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+  //   if (image == null) {
+  //     qrViewController!.resumeCamera();
+  //     return;
+  //   }
+  //
+  //   print(image.path);
+  //   String path = image.path;
+  //   String? result = await Scan.parse(path);
+  //   //print(result);
+  //   var data = result ?? "";
+  //   if (data == "" || !validateQRData(data)) {
+  //     qrViewController!.resumeCamera();
+  //     Get.snackbar("Invalid!", "Please choose a valid QR Code",
+  //         snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red, colorText: Colors.white);
+  //   } else
+  //     decodeQRResult(data);
+  // }
+
   void pickImageFromGalleryCalled() async {
-    qrViewController!.pauseCamera();
+    scannerController!.pause();
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
     if (image == null) {
-      qrViewController!.resumeCamera();
+      scannerController!.start();
       return;
     }
 
     print(image.path);
     String path = image.path;
-    String? result = await Scan.parse(path);
+    BarcodeCapture? result = await scannerController!.analyzeImage(path);
     //print(result);
-    var data = result ?? "";
-    if (data == "" || !validateQRData(data)) {
-      qrViewController!.resumeCamera();
+
+    if (result == null) {
+      scannerController!.start();
       Get.snackbar("Invalid!", "Please choose a valid QR Code",
           snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red, colorText: Colors.white);
-    } else
-      decodeQRResult(data);
+    } else {
+      var data = result.barcodes.first.rawValue ?? "";
+      if (data == "" || !validateQRData(data)) {
+        scannerController!.start();
+        Get.snackbar("Invalid Data!", "Please choose a valid QR Code",
+            snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red, colorText: Colors.white);
+      } else
+        decodeQRResult(data);
+    }
   }
 
   validateQRData(data) {
@@ -349,6 +388,7 @@ class AddConnectionController extends GetxController {
     var url = baseUrl + ServerConnections.API_GET_SIGNINDETAILS;
     var body = "{\"appname\":\"" + conNameController.text.trim() + "\"}";
     final response = await serverConnections.postToServer(url: url, body: body);
+
     if (response != "") {
       var json = jsonDecode(response);
       if (json["result"]["message"].toString().toLowerCase() == "success")

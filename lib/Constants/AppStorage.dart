@@ -24,6 +24,8 @@ class AppStorage {
   static const String SHAREDPREF_NAME = "BackgroundMessages";
   static const String isShowNotifyEnabled = "isShowNotifyEnabled";
   static const String isLogEnabled = "isLogEnabled";
+  static const String DEMO_IS_FIRST_INSTALL = "demoIsFirstInstall";
+
   late final box;
 
   AppStorage() {

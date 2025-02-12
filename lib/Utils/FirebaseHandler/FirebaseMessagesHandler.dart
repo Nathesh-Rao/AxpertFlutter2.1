@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
-import 'package:axpertflutter/Constants/const.dart';
+import 'package:axpertflutter/Constants/Const.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Controller/LandingPageController.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Models/FirebaseMessageModel.dart';
 import 'package:axpertflutter/Services/LocationServiceManager/LocationServiceManager.dart';
@@ -33,8 +33,10 @@ initialize() async {
 
   AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
   DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings(
-    onDidReceiveLocalNotification: onDidReceiveLocalNotification,
-  );
+      // todo find replacement
+      /// [DarwinInitializationSettings] is updated with new sdk changes and the below callback been removed from package
+      // onDidReceiveLocalNotification: onDidReceiveLocalNotification,
+      );
   InitializationSettings initializationSettings =
       InitializationSettings(android: initializationSettingsAndroid, iOS: initializationSettingsDarwin);
   await flutterLocalNotificationsPlugin.initialize(initializationSettings,

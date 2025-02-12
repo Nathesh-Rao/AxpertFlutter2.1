@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 
+import '../../../Utils/LogServices/LogService.dart';
+
 class ProjectListingPage extends StatefulWidget {
   const ProjectListingPage({super.key});
 
@@ -20,6 +22,11 @@ class ProjectListingPage extends StatefulWidget {
 class _ProjectListingPageState extends State<ProjectListingPage> {
   ProjectListingController projectListingController = Get.put(ProjectListingController());
   AddConnectionController addConnectionController = Get.put(AddConnectionController());
+  @override
+  void initState() {
+    LogService.writeLog(message: "[>] ProjectListingPage");
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

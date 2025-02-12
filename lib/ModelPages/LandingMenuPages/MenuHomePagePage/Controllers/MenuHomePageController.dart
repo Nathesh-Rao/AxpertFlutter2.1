@@ -3,12 +3,19 @@ import 'dart:math';
 
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/CommonMethods.dart';
-import 'package:axpertflutter/Constants/const.dart';
+import 'package:axpertflutter/Constants/MyColors.dart';
+import 'package:axpertflutter/Constants/Routes.dart';
+import 'package:axpertflutter/Constants/Const.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/BannerModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/CardModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/CardOptionModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/GridDashboardModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/MenuFolderModel.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Models/ActivityListModel.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Models/KPIListCardModel.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Models/NewsCardModel.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Models/TaskListModel.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Models/UpdatedHomeCardDataModel.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ExecuteApi.dart';
 import 'package:axpertflutter/Utils/ServerConnections/InternetConnectivity.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
@@ -17,20 +24,15 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:material_icons_named/material_icons_named.dart';
 
+import '../../../../Utils/LogServices/LogService.dart';
+import '../../../LandingPage/EssHomePage/AttendanceManagement/controller/AttendanceController.dart';
+import '../UpdatedHomePage/Models/MenuIconsModel.dart';
 import '../UpdatedHomePage/Widgets/WidgetMenuFolderPanelItem.dart';
 
 class MenuHomePageController extends GetxController {
+  // final AttendanceController c = Get.put(AttendanceController());
   InternetConnectivity internetConnectivity = Get.find();
-  var colorList = [
-    "#FFFFFF",
-    "#FFFFFF",
-    "#FFFFFF",
-    "#FFFFFF",
-    "#FFFFFF",
-    "#FFFFFF",
-    "#FFFFFF",
-    "#FFFFFF"
-  ];
+  var colorList = ["#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"];
 
   // var colorList = ["#EEF2FF", "#FFF9E7", "#F5EBFF", "#FFECF6", "#E5F5FA", "#E6FAF4", "#F7F7F7", "#E8F5F8"];
   var listOfOptionCards = [].obs;
@@ -65,19 +67,156 @@ class MenuHomePageController extends GetxController {
   MenuHomePageController() {
     body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
     getClientInfo();
+    //---------------------->
+    //NOTE Axpert 11.4-------->
+    _getCardsWithData();
+    //NOTE---------------------->
     getCardDetails();
     getPunchINData();
     getShorcutMenuDashboardDetails();
     getAttendanceDetails();
   }
+//------------------------------------------------------------------------------------->
+  //NOTE Axpert 11.4 API calls and methods
+  var bannerIndex = 0.obs;
+  var bannerCardData = [].obs;
+  var taskListData = [].obs;
+  var newsCardData = [].obs;
+  var kpiListCardData = [].obs;
+  var kpiSliderCardData = [].obs;
+  var menuIconsData = [].obs;
+  var activityListData = [].obs;
 
+//---------------------------------
+  pseudoCallGet() {
+    _getCardsWithData();
+  }
+
+  pseudoCallClear() {
+    _clearDataLists();
+  }
+
+  updateBannerIndex(int index) {
+    bannerIndex.value = index;
+  }
+
+  _sortDataByPluginName({required List<UpdatedHomeCardDataModel> dataList}) {
+    for (var data in dataList) {
+      if (data.carddata != null) {
+        switch (data.pluginname) {
+          case "Banner card":
+            bannerCardData.add(data);
+
+            break;
+          case "Task list":
+            taskListData.add(data);
+            break;
+          case "News card":
+            newsCardData.add(data);
+            break;
+          case "KPI List":
+            if (data.cardname == "KPI List") {
+              kpiSliderCardData.add(data);
+            } else {
+              kpiListCardData.add(data);
+            }
+
+            break;
+          case "Menu icons":
+            menuIconsData.add(data);
+            break;
+          case "Activity List":
+            activityListData.add(data);
+            break;
+          default:
+        }
+      }
+    }
+  }
+
+  _getCardsWithData() async {
+    isLoading.value = true;
+    LoadingScreen.show();
+    LogService.writeLog(message: "_getCardsWithData: started");
+    var url = Const.getFullARMUrl(ServerConnections.API_GET_CARDS_WITH_DATA);
+    var getCardsBody = {
+      "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
+      "AxSessionId": "jbxqzz5tie2y3yujshe3k1x5",
+      "Trace": "false",
+      "AppName": appStorage.retrieveValue(AppStorage.PROJECT_NAME),
+      "Roles": "default",
+      "UserName": appStorage.retrieveValue(AppStorage.USER_NAME),
+      "HomePageCards": true,
+      "RefreshData": false,
+      "GlobalParams": ServerConnections.SAMPLE_GET_CARDS_WITH_DATA_GLOBAL_PARAMS
+    };
+    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(getCardsBody), isBearer: true);
+    var response = jsonDecode(resp);
+    // LogService.writeLog(message: "_getCardsWithData: resp:$response");
+    List dataList = response["result"]["data"];
+    // _clearDataLists();
+    _UpdateDataLists(dataList);
+
+    isLoading.value = false;
+    LoadingScreen.dismiss();
+    // _printDataCard();
+  }
+
+  _UpdateDataLists(List dataList) {
+    _clearDataLists();
+    List<UpdatedHomeCardDataModel> cardDataList = dataList.map((e) => UpdatedHomeCardDataModel.fromJson(e)).toList();
+
+    for (var i in cardDataList) {
+      if (i.carddata != null) {
+        try {
+          i.carddata = jsonDecode(i.carddata);
+        } catch (e) {
+          print(e);
+        }
+      }
+    }
+
+    _sortDataByPluginName(dataList: cardDataList);
+
+//     Map<String, List<String>> cardDataMap = {};
+//     List<Map<String?, dynamic>> cardMap = [];
+//     for (var data in cardDataList) {
+//       cardDataMap.putIfAbsent(data.pluginname!, () => []).add(data.cardname ?? '');
+//       cardMap.add({data.cardname: data.carddata});
+//     }
+// // global vars
+//
+//     LogService.writeLog(message: "_getCardsWithData: $cardDataMap");
+//     LogService.writeLog(message: "_getCardsWithData: $cardMap");
+  }
+
+  _clearDataLists() {
+    bannerCardData.clear();
+    taskListData.clear();
+    newsCardData.clear();
+    kpiListCardData.clear();
+    kpiSliderCardData.clear();
+    menuIconsData.clear();
+    activityListData.clear();
+  }
+
+  _printDataCard() {
+    LogService.writeLog(message: "bannerCardData length => ${bannerCardData.length}");
+    LogService.writeLog(message: "taskListData length => ${taskListData.length}");
+    LogService.writeLog(message: "newsCardData length => ${newsCardData.length}");
+    LogService.writeLog(message: "kpiListCardData length => ${kpiListCardData.length}");
+    LogService.writeLog(message: "kpiListSliderCardData length => ${kpiSliderCardData.length}");
+    LogService.writeLog(message: "menuIconsData length => ${menuIconsData.length}");
+    LogService.writeLog(message: "activityListData length => ${activityListData.length}");
+  }
+
+//------------------------------------------------------------------------------------->
   showMenuDialog(CardModel cardModel) {
     Get.dialog(Dialog(
       backgroundColor: Colors.transparent,
       child: Container(
         height: 300,
-        decoration: BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.circular(20)),
+        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
         margin: EdgeInsets.only(left: 30, right: 30),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -85,9 +224,7 @@ class MenuHomePageController extends GetxController {
           children: [
             Container(
               height: 50,
-              decoration: BoxDecoration(
-                  border:
-                      Border(bottom: BorderSide(width: 1, color: Colors.grey))),
+              decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: Colors.grey))),
               child: Center(
                 child: Text(
                   cardModel.caption,
@@ -105,9 +242,11 @@ class MenuHomePageController extends GetxController {
     isLoading.value = true;
     LoadingScreen.show();
     var url = Const.getFullARMUrl(ServerConnections.API_GET_HOMEPAGE_CARDS_v2);
-    var resp = await serverConnections.postToServer(
-        url: url, body: jsonEncode(body), isBearer: true);
+    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
     // print(resp);
+    // LogService.writeLog(message: "[-] UpdatedHomePage => CardDetails > API_GET_HOMEPAGE_CARDS_v2 - body: $body ");
+    // LogService.writeLog(message: "[-] UpdatedHomePage => CardDetails > API_GET_HOMEPAGE_CARDS_v2 - resp: $resp ");
+
     if (resp != "") {
       print("Home card ${resp}");
       var jsonResp = jsonDecode(resp);
@@ -118,8 +257,7 @@ class MenuHomePageController extends GetxController {
           CardModel cardModel = CardModel.fromJson(item);
           listOfOptionCards.add(cardModel);
           //setOfDatasource.add(item['datasource'].toString());
-          if (cardModel.datasource != "")
-            map_dataSource[cardModel.caption] = cardModel.datasource;
+          if (cardModel.datasource != "") map_dataSource[cardModel.caption] = cardModel.datasource;
         }
 
         var menuFolderList = [];
@@ -130,7 +268,7 @@ class MenuHomePageController extends GetxController {
         }
         parseMenuFolderData(menuFolderList);
       } else {
-        //error
+        // LogService.writeLog(message: "[ERROR] UpdatedHomePage => CardDetails > API_GET_HOMEPAGE_CARDS_v2 - Response is empty ");
       }
     }
     // if (listOfCards.length == 0) {
@@ -156,23 +294,19 @@ class MenuHomePageController extends GetxController {
       return actionData;
     } else {
       // var dataSourceUrl = baseUrl + GlobalConfiguration().get("HomeCardDataResponse").toString();
-      var dataSourceUrl = Const.getFullARMUrl(
-          ServerConnections.API_GET_HOMEPAGE_CARDSDATASOURCE);
+      var dataSourceUrl = Const.getFullARMUrl(ServerConnections.API_GET_HOMEPAGE_CARDSDATASOURCE);
       var dataSourceBody = body;
-      dataSourceBody["sqlParams"] = {
-        "param": "value",
-        "username": appStorage.retrieveValue(AppStorage.USER_NAME)
-      };
+      dataSourceBody["sqlParams"] = {"param": "value", "username": appStorage.retrieveValue(AppStorage.USER_NAME)};
 
       actionData.clear();
       for (var cardDataSource in map_dataSource.entries) {
         if (cardDataSource.value != "") {
           dataSourceBody["datasource"] = cardDataSource.value;
           // setOfDatasource.remove(items);
-          var dsResp = await serverConnections.postToServer(
-              url: dataSourceUrl,
-              isBearer: true,
-              body: jsonEncode(dataSourceBody));
+          var dsResp = await serverConnections.postToServer(url: dataSourceUrl, isBearer: true, body: jsonEncode(dataSourceBody));
+          // LogService.writeLog(
+          //     message: "[-] UpdatedHomePage => getCardDataSources > API_GET_HOMEPAGE_CARDSDATASOURCE - Response : $dsResp ");
+
           if (dsResp != "") {
             var jsonDSResp = jsonDecode(dsResp);
             // print(jsonDSResp);
@@ -180,14 +314,10 @@ class MenuHomePageController extends GetxController {
               var dsDataList = jsonDSResp['result']['data'];
               for (var item in dsDataList) {
                 var list = [];
-                list = actionData[cardDataSource.key] != null
-                    ? actionData[cardDataSource.key]
-                    : [];
-                CardOptionModel cardOptionModel =
-                    CardOptionModel.fromJson(item);
+                list = actionData[cardDataSource.key] != null ? actionData[cardDataSource.key] : [];
+                CardOptionModel cardOptionModel = CardOptionModel.fromJson(item);
 
-                if (list.indexOf(cardOptionModel) < 0)
-                  list.add(cardOptionModel);
+                if (list.indexOf(cardOptionModel) < 0) list.add(cardOptionModel);
                 actionData[cardDataSource.key] = list;
               }
             }
@@ -215,16 +345,13 @@ class MenuHomePageController extends GetxController {
 
   String getCardBackgroundColor(String colorCode) {
     final _random = new Random();
-    return !["", null, "null"].contains(colorCode)
-        ? colorCode
-        : colorList[_random.nextInt(colorList.length)];
+    return !["", null, "null"].contains(colorCode) ? colorCode : colorList[_random.nextInt(colorList.length)];
   }
 
   getEncryptedSecretKey(String key) async {
     var url = Const.getFullARMUrl(ExecuteApi.API_GET_ENCRYPTED_SECRET_KEY);
     Map<String, dynamic> body = {"secretkey": key};
-    var resp = await serverConnections.postToServer(
-        url: url, body: jsonEncode(body), isBearer: true);
+    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
     print("Resp: $resp");
     if (resp != "" && !resp.toString().contains("error")) {
       return resp;
@@ -234,8 +361,7 @@ class MenuHomePageController extends GetxController {
   getPunchINData() async {
     var secretEncryptedKey = '';
     LoadingScreen.show();
-    secretEncryptedKey =
-        await getEncryptedSecretKey(ExecuteApi.API_SECRETKEY_GET_PUNCHIN_DATA);
+    secretEncryptedKey = await getEncryptedSecretKey(ExecuteApi.API_SECRETKEY_GET_PUNCHIN_DATA);
     if (secretEncryptedKey != "") {
       var url = Const.getFullARMUrl(ExecuteApi.API_ARM_EXECUTE_PUBLISHED);
       var body = {
@@ -243,14 +369,10 @@ class MenuHomePageController extends GetxController {
         "publickey": "AXPKEY000000010003",
         "username": appStorage.retrieveValue(AppStorage.USER_NAME),
         "Project": appStorage.retrieveValue(AppStorage.PROJECT_NAME),
-        "getsqldata": {
-          "username": appStorage.retrieveValue(AppStorage.USER_NAME),
-          "trace": "false"
-        },
+        "getsqldata": {"username": appStorage.retrieveValue(AppStorage.USER_NAME), "trace": "false"},
         "sqlparams": {}
       };
-      var resp = await serverConnections.postToServer(
-          url: url, body: jsonEncode(body), isBearer: true);
+      var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
       punchInResp = resp;
       print("ExecuteApi Resp: ${resp}");
       if (resp != "" && !resp.toString().contains("error")) {
@@ -277,8 +399,7 @@ class MenuHomePageController extends GetxController {
   onClick_PunchIn() async {
     print(punchInResp);
     LoadingScreen.show();
-    var secretEncryptedKey =
-        await getEncryptedSecretKey(ExecuteApi.API_SECRETKEY_GET_DO_PUNCHIN);
+    var secretEncryptedKey = await getEncryptedSecretKey(ExecuteApi.API_SECRETKEY_GET_DO_PUNCHIN);
     Position? currentLocation = await CommonMethods.getCurrentLocation();
     var latitude = currentLocation?.latitude ?? "";
     var longitude = currentLocation?.longitude ?? "";
@@ -298,20 +419,14 @@ class MenuHomePageController extends GetxController {
             "mode": "new",
             "recordid": "0",
             "dc1": {
-              "row1": {
-                "latitude": latitude,
-                "longitude": longitude,
-                "status": "IN",
-                "inloc": address
-              }
+              "row1": {"latitude": latitude, "longitude": longitude, "status": "IN", "inloc": address}
             }
           }
         }
       }
     };
     // print("punch_IN_Body: ${jsonEncode(body)}");
-    var resp = await serverConnections.postToServer(
-        url: url, body: jsonEncode(body), isBearer: true);
+    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
 
     //print("PunchIN_resp: $resp");
     print(resp);
@@ -341,8 +456,7 @@ class MenuHomePageController extends GetxController {
 
   onClick_PunchOut() async {
     LoadingScreen.show();
-    var secretEncryptedKey =
-        await getEncryptedSecretKey(ExecuteApi.API_SECRETKEY_GET_DO_PUNCHOUT);
+    var secretEncryptedKey = await getEncryptedSecretKey(ExecuteApi.API_SECRETKEY_GET_DO_PUNCHOUT);
     Position? currentLocation = await CommonMethods.getCurrentLocation();
     var latitude = currentLocation?.latitude ?? "";
     var longitude = currentLocation?.longitude ?? "";
@@ -363,19 +477,13 @@ class MenuHomePageController extends GetxController {
             "mode": "edit",
             "recordid": recordId,
             "dc1": {
-              "row1": {
-                "olatitude": latitude,
-                "olongitude": longitude,
-                "status": "OUT",
-                "outloc": address
-              }
+              "row1": {"olatitude": latitude, "olongitude": longitude, "status": "OUT", "outloc": address}
             }
           }
         }
       }
     };
-    var resp = await serverConnections.postToServer(
-        url: url, body: jsonEncode(body), isBearer: true);
+    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
 
     print(resp);
     var jsonResp = jsonDecode(resp);
@@ -403,20 +511,18 @@ class MenuHomePageController extends GetxController {
   void getShorcutMenuDashboardDetails() async {
     var body = {
       // "SecretKey": await getEncryptedSecretKey(ExecuteApi.API_PrivateKey_DashBoard),
-      "publickey": ExecuteApi.API_PublicKey_DashBoard,
+      "publickey": ExecuteApi.API_PUBLICKEY_DASHBOARD,
       "Project": Const.PROJECT_NAME,
       "getsqldata": {"trace": "false"}
     };
-    var resp =
-        await ExecuteApi().CallFetchData_ExecuteAPI(body: jsonEncode(body));
+    var resp = await ExecuteApi().CallFetchData_ExecuteAPI(body: jsonEncode(body));
     if (resp != "") {
       var jsonResp = jsonDecode(resp);
       if (jsonResp["success"].toString() == "true") {
         var listItems = jsonResp["axm_dashboard_shortcutmenu"]["rows"];
         listOfshortcutCardItems.clear();
         for (var items in listItems) {
-          ShortcutMenuDashboardModel newModel =
-              ShortcutMenuDashboardModel.fromJson(items);
+          ShortcutMenuDashboardModel newModel = ShortcutMenuDashboardModel.fromJson(items);
           listOfshortcutCardItems.add(newModel);
         }
       }
@@ -424,7 +530,10 @@ class MenuHomePageController extends GetxController {
   }
 
   captionOnTapFunction(transid) {
-    var link_id = transid;
+    String link_id = transid;
+    // String link_id = transid.replaceAll('(', '').replaceAll(')', '');
+
+    LogService.writeLog(message: "captionOnTapFunction: transid => $link_id");
     var validity = false;
     if (link_id.toLowerCase().startsWith('h')) {
       if (link_id.toLowerCase().contains("hp")) {
@@ -442,7 +551,59 @@ class MenuHomePageController extends GetxController {
       }
     }
     if (validity) {
+      // LogService.writeLog(message: "[i] FolderPanel : Open in webview {$link_id}");
+
       openBtnAction("button", link_id);
+    }
+  }
+
+  captionOnTapFunctionNew(transid) async {
+    if (transid != null) {
+      String link_id = transid.replaceAll('(', '').replaceAll(')', '');
+
+      LogService.writeLog(message: "captionOnTapFunction: transid => $link_id");
+      var validity = false;
+      if (link_id.toLowerCase().startsWith('h')) {
+        if (link_id.toLowerCase().contains("hp")) {
+          link_id = link_id.toLowerCase().replaceAll("hp", "h");
+        }
+        validity = true;
+      } else {
+        if (link_id.toLowerCase().startsWith('i')) {
+          validity = true;
+        } else {
+          if (link_id.toLowerCase().startsWith('t')) {
+            validity = true;
+          } else
+            validity = false;
+        }
+      }
+      if (validity) {
+        // LogService.writeLog(message: "[i] FolderPanel : Open in webview {$link_id}");
+
+        if (await internetConnectivity.connectionStatus) {
+          // if (btnType.toLowerCase() == "button" && btnOpen != "") {
+          //
+          //   print("URL : $webUrl");
+          //
+          //   switchPage.toggle();
+          // } else {}
+
+          webUrl = Const.getFullProjectUrl("aspx/AxMain.aspx?authKey=AXPERT-") +
+              appStorage.retrieveValue(AppStorage.SESSIONID) +
+              "&pname=" +
+              link_id;
+          // LogService.writeLog(message: "Web url => $webUrl");
+          Get.toNamed(Routes.InApplicationWebViewer, arguments: [webUrl]);
+        }
+      }
+    } else {
+      Get.snackbar("Invalid Link", "The Link attached is invalid or empty",
+          margin: EdgeInsets.all(10),
+          backgroundColor: MyColors.blue9,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+          duration: Duration(seconds: 3));
     }
   }
 
@@ -468,32 +629,21 @@ class MenuHomePageController extends GetxController {
 
   void getAttendanceDetails() async {
     var body = {
-      "SecretKey":
-          await getEncryptedSecretKey(ExecuteApi.API_PrivateKey_Attendance),
-      "publickey": ExecuteApi.API_PublicKey_Attendance,
+      "SecretKey": await getEncryptedSecretKey(ExecuteApi.API_PRIVATEKEY_ATTENDANCE),
+      "publickey": ExecuteApi.API_PUBLICKEY_ATTENDANCE,
       "Project": Const.PROJECT_NAME, //"agilepost113",
       "getsqldata": {"trace": "false"}
     };
-    var resp =
-        await ExecuteApi().CallFetchData_ExecuteAPI(body: jsonEncode(body));
+    var resp = await ExecuteApi().CallFetchData_ExecuteAPI(body: jsonEncode(body));
     if (resp != "") {
       var jsonResp = jsonDecode(resp);
       if (jsonResp['success'].toString() == "true") {
         attendanceVisibility.value = true;
-        shift_start_time.value = jsonResp['axm_shift_time']['rows'][0]
-                ["shift_start_time"]
-            .toString();
-        shift_end_time.value =
-            jsonResp['axm_shift_time']['rows'][0]["shift_end_time"].toString();
-        last_login_date.value = jsonResp['axm_logindetails']['rows'][0]
-                ["last_login_date"]
-            .toString();
-        last_login_time.value = jsonResp['axm_logindetails']['rows'][0]
-                ["last_login_time"]
-            .toString();
-        last_login_location.value = jsonResp['axm_logindetails']['rows'][0]
-                ["last_login_location"]
-            .toString();
+        shift_start_time.value = jsonResp['axm_shift_time']['rows'][0]["shift_start_time"].toString();
+        shift_end_time.value = jsonResp['axm_shift_time']['rows'][0]["shift_end_time"].toString();
+        last_login_date.value = jsonResp['axm_logindetails']['rows'][0]["last_login_date"].toString();
+        last_login_time.value = jsonResp['axm_logindetails']['rows'][0]["last_login_time"].toString();
+        last_login_location.value = jsonResp['axm_logindetails']['rows'][0]["last_login_location"].toString();
       } else {
         attendanceVisibility.value = false;
       }
@@ -504,8 +654,7 @@ class MenuHomePageController extends GetxController {
     var cl_recId = "";
     var cl_imagePath = "";
     // var dataSourceUrl = baseUrl + GlobalConfiguration().get("HomeCardDataResponse").toString();
-    var dataSourceUrl =
-        Const.getFullARMUrl(ServerConnections.API_GET_HOMEPAGE_CARDSDATASOURCE);
+    var dataSourceUrl = Const.getFullARMUrl(ServerConnections.API_GET_HOMEPAGE_CARDSDATASOURCE);
     var body = {
       "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
       "username": appStorage.retrieveValue(AppStorage.USER_NAME),
@@ -514,8 +663,7 @@ class MenuHomePageController extends GetxController {
       "sqlParams": {"username": appStorage.retrieveValue(AppStorage.USER_NAME)}
     };
 
-    var dsResp = await serverConnections.postToServer(
-        url: dataSourceUrl, isBearer: true, body: jsonEncode(body));
+    var dsResp = await serverConnections.postToServer(url: dataSourceUrl, isBearer: true, body: jsonEncode(body));
     if (dsResp != "") {
       var jsonDSResp = jsonDecode(dsResp);
       if (jsonDSResp['result']['success'].toString() == "true") {
@@ -532,8 +680,7 @@ class MenuHomePageController extends GetxController {
         }
       }
     }
-    if (!cl_recId.isEmpty && !cl_imagePath.isEmpty)
-      getImageFlieByRecordId(cl_recId, cl_imagePath);
+    if (!cl_recId.isEmpty && !cl_imagePath.isEmpty) getImageFlieByRecordId(cl_recId, cl_imagePath);
   }
 
   getImageFlieByRecordId(recID, filePath) async {
@@ -544,8 +691,7 @@ class MenuHomePageController extends GetxController {
       "FilePath": filePath
     };
 
-    var resp =
-        await serverConnections.postToServer(url: url, body: jsonEncode(body));
+    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body));
     if (resp != "") {
       var jsonResp = jsonDecode(resp);
       if (jsonResp['success'].toString() == "true") {
@@ -565,6 +711,9 @@ class MenuHomePageController extends GetxController {
     }
     list_menuFolderData.value = map_folderList;
     print("list_menuFolderData: ${list_menuFolderData.toString()}");
+    LogService.writeLog(
+        message:
+            "[i] MenuHomePageController\nScope: parseMenuFolderData()\nlist_menuFolderData: ${list_menuFolderData.toString()}");
   }
 
   getMenuFolderPanelWidgetList() {

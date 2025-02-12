@@ -1,5 +1,5 @@
 import 'package:axpertflutter/Constants/AppStorage.dart';
-import 'package:axpertflutter/Constants/const.dart';
+import 'package:axpertflutter/Constants/Const.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuDashboardPage/Models/ChartCardModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
 import 'package:flutter/material.dart';
@@ -108,7 +108,7 @@ Widget getColumnChart(ChartCardModel cardModel) {
 
     // primaryYAxis: NumericAxis(minimum: 0, maximum: 40, interval: 10),
     legend: Legend(isVisible: true, isResponsive: true, toggleSeriesVisibility: true, position: LegendPosition.top),
-    series: <ChartSeries<dynamic, String>>[
+    series: <CartesianSeries<dynamic, String>>[
       ColumnSeries(
           onPointTap: (pointInteractionDetails) {
             openWebPage(cardModel.dataList[pointInteractionDetails.pointIndex!]);
@@ -128,7 +128,7 @@ Widget getStackedColumnChart(ChartCardModel cardModel) {
 
     // primaryYAxis: NumericAxis(minimum: 0, maximum: 40, interval: 10),
     legend: Legend(isVisible: true, isResponsive: true, toggleSeriesVisibility: true, position: LegendPosition.top),
-    series: <ChartSeries<dynamic, String>>[
+    series: <CartesianSeries<dynamic, String>>[
       for (var item in newList)
         StackedColumnSeries(
             onPointTap: (pointInteractionDetails) {
@@ -153,7 +153,7 @@ Widget getPercentageColumnChart(ChartCardModel cardModel) {
 
     // primaryYAxis: NumericAxis(minimum: 0, maximum: 40, interval: 10),
     legend: Legend(isVisible: true, isResponsive: true, toggleSeriesVisibility: true, position: LegendPosition.top),
-    series: <ChartSeries<dynamic, String>>[
+    series: <CartesianSeries<dynamic, String>>[
       ColumnSeries(
           onPointTap: (pointInteractionDetails) {
             openWebPage(cardModel.dataList[pointInteractionDetails.pointIndex!]);
@@ -176,7 +176,7 @@ Widget getLineChart(ChartCardModel cardModel) {
     tooltipBehavior: TooltipBehavior(enable: true),
     // primaryYAxis: NumericAxis(minimum: 0, maximum: 40, interval: 10),
     legend: Legend(isVisible: true, isResponsive: true, toggleSeriesVisibility: true, position: LegendPosition.top),
-    series: <ChartSeries<dynamic, String>>[
+    series: <CartesianSeries<dynamic, String>>[
       LineSeries(
           onPointTap: (pointInteractionDetails) {
             openWebPage(cardModel.dataList[pointInteractionDetails.pointIndex!]);
@@ -224,7 +224,7 @@ Widget getBarChart(ChartCardModel cardModel) {
 
     // primaryYAxis: NumericAxis(minimum: 0, maximum: 40, interval: 10),
     legend: Legend(isVisible: true, isResponsive: true, toggleSeriesVisibility: true, position: LegendPosition.top),
-    series: <ChartSeries<dynamic, String>>[
+    series: <CartesianSeries<dynamic, String>>[
       BarSeries(
           onPointTap: (pointInteractionDetails) {
             openWebPage(cardModel.dataList[pointInteractionDetails.pointIndex!]);
@@ -246,7 +246,7 @@ Widget getStackedBarChart(ChartCardModel cardModel) {
 
     // primaryYAxis: NumericAxis(minimum: 0, maximum: 40, interval: 10),
     legend: Legend(isVisible: true, isResponsive: true, toggleSeriesVisibility: true, position: LegendPosition.top),
-    series: <ChartSeries<dynamic, String>>[
+    series: <CartesianSeries<dynamic, String>>[
       for (var item in newList)
         StackedBarSeries(
             onPointTap: (pointInteractionDetails) {
