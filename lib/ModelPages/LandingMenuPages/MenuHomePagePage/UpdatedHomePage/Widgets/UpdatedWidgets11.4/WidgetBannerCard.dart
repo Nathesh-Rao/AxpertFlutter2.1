@@ -17,6 +17,7 @@ class WidgetBannerCard extends StatelessWidget {
 
     return Obx(
       () => Visibility(
+
         visible: menuHomePageController.bannerCardData.isNotEmpty,
         child: Column(
           children: [

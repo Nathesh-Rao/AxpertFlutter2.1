@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'WidgetMapView.dart';
+
 class WidgetTabInOutHub extends StatelessWidget {
   WidgetTabInOutHub({super.key});
   final AttendanceController attendanceController = Get.find();
@@ -20,10 +22,13 @@ class WidgetTabInOutHub extends StatelessWidget {
     return Column(
       children: [
         SizedBox(height: MediaQuery.of(context).padding.top - 25),
+        // Expanded(
+        //   child: Container(
+        //     decoration: BoxDecoration(image: DecorationImage(image: AssetImage("assets/images/map.png"), fit: BoxFit.cover)),
+        //   ),
+        // ),
         Expanded(
-          child: Container(
-            decoration: BoxDecoration(image: DecorationImage(image: AssetImage("assets/images/map.png"), fit: BoxFit.cover)),
-          ),
+          child: WidgetMapView(),
         ),
         Padding(
           padding: const EdgeInsets.all(15),
