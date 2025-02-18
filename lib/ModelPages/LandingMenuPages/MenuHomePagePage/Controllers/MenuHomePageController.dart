@@ -102,34 +102,32 @@ class MenuHomePageController extends GetxController {
 
   _sortDataByPluginName({required List<UpdatedHomeCardDataModel> dataList}) {
     for (var data in dataList) {
-      if (data.carddata != null) {
-        switch (data.pluginname) {
-          case "Banner card":
-            bannerCardData.add(data);
+      switch (data.pluginname) {
+        case "Banner card":
+          bannerCardData.add(data);
 
-            break;
-          case "Task list":
-            taskListData.add(data);
-            break;
-          case "News card":
-            newsCardData.add(data);
-            break;
-          case "KPI List":
-            if (data.cardname == "KPI List") {
-              kpiSliderCardData.add(data);
-            } else {
-              kpiListCardData.add(data);
-            }
+          break;
+        case "Task list":
+          taskListData.add(data);
+          break;
+        case "News card":
+          newsCardData.add(data);
+          break;
+        case "KPI List":
+          if (data.cardname == "KPI List") {
+            kpiSliderCardData.add(data);
+          } else {
+            kpiListCardData.add(data);
+          }
 
-            break;
-          case "Menu icons":
-            menuIconsData.add(data);
-            break;
-          case "Activity List":
-            activityListData.add(data);
-            break;
-          default:
-        }
+          break;
+        case "Menu icons":
+          menuIconsData.add(data);
+          break;
+        case "Activity List":
+          activityListData.add(data);
+          break;
+        default:
       }
     }
   }
@@ -151,6 +149,7 @@ class MenuHomePageController extends GetxController {
       "GlobalParams": ServerConnections.SAMPLE_GET_CARDS_WITH_DATA_GLOBAL_PARAMS
     };
     var resp = await serverConnections.postToServer(url: url, body: jsonEncode(getCardsBody), isBearer: true);
+    LogService.writeLog(message: "getcardswithdata : $resp");
     var response = jsonDecode(resp);
     // LogService.writeLog(message: "_getCardsWithData: resp:$response");
     List dataList = response["result"]["data"];
