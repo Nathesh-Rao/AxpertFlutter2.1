@@ -16,53 +16,58 @@ class WidgetBannerCard extends StatelessWidget {
     CarouselSliderController bannerController = CarouselSliderController();
 
     return Obx(
-      () => Visibility(
-
-        visible: menuHomePageController.bannerCardData.isNotEmpty,
-        child: Column(
-          children: [
-            SizedBox(
-              height: Get.height * 0.24,
-              child: CarouselSlider(
-                items: List.generate(menuHomePageController.bannerCardData[0].carddata.length,
-                    (index) => _bannerCard(menuHomePageController.bannerCardData[0].carddata[index])),
-                carouselController: bannerController,
-                options: CarouselOptions(
-                  height: double.maxFinite,
-                  autoPlay: true,
-                  autoPlayInterval: Duration(seconds: 3),
-                  enlargeCenterPage: true,
-                  viewportFraction: 1,
-                  enlargeStrategy: CenterPageEnlargeStrategy.height,
-                  onPageChanged: (index, reason) {
-                    menuHomePageController.updateBannerIndex(index);
-                  },
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(menuHomePageController.bannerCardData[0].carddata.length, (index) {
-                  var isSelected = index == menuHomePageController.bannerIndex.value;
-
-                  return AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    margin: EdgeInsets.symmetric(horizontal: 2),
-                    height: isSelected ? 10 : 8,
-                    width: isSelected ? 10 : 8,
-                    decoration: BoxDecoration(
-                      color: isSelected ? Colors.black : Colors.grey.shade300,
-                      shape: BoxShape.circle,
+      () {
+        if (!menuHomePageController.bannerCardData.value.isEmpty) {
+          return Visibility(
+            visible: menuHomePageController.bannerCardData.isNotEmpty,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: Get.height * 0.24,
+                  child: CarouselSlider(
+                    items: List.generate(menuHomePageController.bannerCardData[0].carddata.length,
+                        (index) => _bannerCard(menuHomePageController.bannerCardData[0].carddata[index])),
+                    carouselController: bannerController,
+                    options: CarouselOptions(
+                      height: double.maxFinite,
+                      autoPlay: true,
+                      autoPlayInterval: Duration(seconds: 3),
+                      enlargeCenterPage: true,
+                      viewportFraction: 1,
+                      enlargeStrategy: CenterPageEnlargeStrategy.height,
+                      onPageChanged: (index, reason) {
+                        menuHomePageController.updateBannerIndex(index);
+                      },
                     ),
-                  );
-                }),
-              ),
-            )
-          ],
-        ),
-      ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(menuHomePageController.bannerCardData[0].carddata.length, (index) {
+                      var isSelected = index == menuHomePageController.bannerIndex.value;
+
+                      return AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        margin: EdgeInsets.symmetric(horizontal: 2),
+                        height: isSelected ? 10 : 8,
+                        width: isSelected ? 10 : 8,
+                        decoration: BoxDecoration(
+                          color: isSelected ? Colors.black : Colors.grey.shade300,
+                          shape: BoxShape.circle,
+                        ),
+                      );
+                    }),
+                  ),
+                )
+              ],
+            ),
+          );
+        } else {
+          return SizedBox.shrink();
+        }
+      },
     );
   }
 

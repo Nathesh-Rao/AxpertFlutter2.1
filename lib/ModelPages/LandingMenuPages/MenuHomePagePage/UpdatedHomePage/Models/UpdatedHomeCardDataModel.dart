@@ -43,7 +43,7 @@ class UpdatedHomeCardDataModel {
         cardname: json["cardname"],
         cardicon: json["cardicon"],
         charttype: json["charttype"],
-        pluginname: json["pluginname"],
+        pluginname: json["pluginname"] ?? '',
         htmlEditorCard: json["html_editor_card"],
         cardDatasource: json["card_datasource"],
         width: json["width"],
@@ -51,7 +51,7 @@ class UpdatedHomeCardDataModel {
         autorefresh: json["autorefresh"],
         context: json["context"],
         orderno: json["orderno"],
-        carddata: json["carddata"],
+        carddata: json["carddata"] ?? [],
       );
 
   Map<String, dynamic> toJson() => {
