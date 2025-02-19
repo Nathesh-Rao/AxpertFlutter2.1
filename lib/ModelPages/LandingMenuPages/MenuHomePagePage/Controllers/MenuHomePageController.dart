@@ -80,12 +80,18 @@ class MenuHomePageController extends GetxController {
   //NOTE Axpert 11.4 API calls and methods
   var bannerIndex = 0.obs;
   var bannerCardData = [].obs;
+
   var taskListData = [].obs;
+  List<RxBool> taskListDataSwitches = [];
   var newsCardData = [].obs;
+  List<RxBool> newsCardDataSwitches = [];
   var kpiListCardData = [].obs;
+  List<RxBool> kpiListCardDataSwitches = [];
   var kpiSliderCardData = [].obs;
   var menuIconsData = [].obs;
+  List<RxBool> menuIconsDataSwitches = [];
   var activityListData = [].obs;
+  List<RxBool> activityListDataSwitches = [];
 
 //---------------------------------
   pseudoCallGet() {
@@ -130,6 +136,16 @@ class MenuHomePageController extends GetxController {
         default:
       }
     }
+
+    _initializeListSwitches();
+  }
+
+  _initializeListSwitches() {
+    taskListDataSwitches = List.generate(taskListDataSwitches.length, (index) => false.obs);
+    newsCardDataSwitches = List.generate(newsCardDataSwitches.length, (index) => false.obs);
+    kpiListCardDataSwitches = List.generate(kpiListCardDataSwitches.length, (index) => false.obs);
+    menuIconsDataSwitches = List.generate(menuIconsDataSwitches.length, (index) => false.obs);
+    activityListDataSwitches = List.generate(activityListDataSwitches.length, (index) => false.obs);
   }
 
   _getCardsWithData() async {
@@ -197,6 +213,12 @@ class MenuHomePageController extends GetxController {
     kpiSliderCardData.clear();
     menuIconsData.clear();
     activityListData.clear();
+    //
+    taskListDataSwitches.clear();
+    newsCardDataSwitches.clear();
+    kpiListCardDataSwitches.clear();
+    menuIconsDataSwitches.clear();
+    activityListDataSwitches.clear();
   }
 
   _printDataCard() {

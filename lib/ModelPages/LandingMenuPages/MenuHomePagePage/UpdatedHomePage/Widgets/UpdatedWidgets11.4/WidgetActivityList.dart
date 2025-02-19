@@ -26,7 +26,8 @@ class WidgetActivityList extends StatelessWidget {
           children: List.generate(menuHomePageController.activityListData.length, (index) {
             List<Color> colors = List.generate(
                 menuHomePageController.activityListData[index].carddata.length, (index) => MyColors.getRandomColor());
-            return ActivityListPanel(activityListData: menuHomePageController.activityListData[index], colors: colors);
+            return ActivityListPanel(
+                activityListData: menuHomePageController.activityListData[index], colors: colors, index: index);
           }),
         ),
       ),
@@ -35,9 +36,10 @@ class WidgetActivityList extends StatelessWidget {
 }
 
 class ActivityListPanel extends StatefulWidget {
-  const ActivityListPanel({super.key, required this.activityListData, required this.colors});
+  const ActivityListPanel({super.key, required this.activityListData, required this.colors, required this.index});
   final UpdatedHomeCardDataModel activityListData;
   final List<Color> colors;
+  final int index;
   @override
   State<ActivityListPanel> createState() => _ActivityListPanelState();
 }
@@ -77,6 +79,7 @@ class _ActivityListPanelState extends State<ActivityListPanel> {
           duration: const Duration(milliseconds: 300),
           curve: Curves.decelerate,
           width: double.infinity,
+          // height: menuHomePageController.activityListDataSwitches[widget.index].value ? bHeight2 : bHeight1,
           height: bHeight,
           child: Container(
               height: Get.height / 2,
