@@ -30,7 +30,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:text_scroll/text_scroll.dart';
 
-import '../../LandingMenuPages/MenuActiveListPage/Page/UpdatedMenuListPage/UpdatedMenuListPage.dart';
+import '../../LandingMenuPages/MenuActiveListPage/Page/UpdatedMenuListPage/ActiveListPage.dart';
 import '../../LandingMenuPages/MenuHomePagePage/Models/BannerModel.dart';
 import '../../LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Page/UpdatedHomePage.dart';
 import '../EssHomePage/AttendanceManagement/controller/AttendanceController.dart';
@@ -90,7 +90,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
       pageList = [
         UpdatedHomePage(),
         // MenuActiveListPage(),
-        UpdatedMenuListPage(),
+        ActiveListPage(),
         MenuDashboardPage(),
 
         ///NOTE Pass a [ValueKey] with a unique identifier to force widget rebuilds.
