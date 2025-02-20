@@ -25,8 +25,10 @@ class WidgetBannerCard extends StatelessWidget {
                 SizedBox(
                   height: Get.height * 0.24,
                   child: CarouselSlider(
-                    items: List.generate(menuHomePageController.bannerCardData[0].carddata.length,
-                        (index) => _bannerCard(menuHomePageController.bannerCardData[0].carddata[index])),
+                    items: List.generate(
+                        menuHomePageController.bannerCardData[0].carddata.length,
+                        (index) => _bannerCard(menuHomePageController.bannerCardData[0].carddata[index],
+                            menuHomePageController.bannerCardData[0].cardname)),
                     carouselController: bannerController,
                     options: CarouselOptions(
                       height: double.maxFinite,
@@ -71,8 +73,9 @@ class WidgetBannerCard extends StatelessWidget {
     );
   }
 
-  _bannerCard(dynamic cardData) {
+  _bannerCard(dynamic cardData, String? cardname) {
     var bannerData = BannerCard.fromJson(cardData);
+
     return Container(
       margin: EdgeInsets.all(15),
       decoration: BoxDecoration(
@@ -83,10 +86,15 @@ class WidgetBannerCard extends StatelessWidget {
         children: [
           Align(
               alignment: Alignment.bottomRight,
-              child: Image.asset(
-                "assets/images/slider.png",
+              child: Image.network(
+                bannerData.image ?? '',
                 width: Get.width / 3,
               )),
+          // Image.asset(
+          //   "assets/images/slider.png",
+          //   // "assets/images/slider.png",
+          //   width: Get.width / 3,
+          // )
           Align(
               child: Opacity(
             opacity: 0.3,
@@ -113,14 +121,23 @@ class WidgetBannerCard extends StatelessWidget {
                   // ),
                   // SizedBox(height: 15),
                   Text(
-                    bannerData.title ?? '',
+                    cardname ?? '',
                     style: GoogleFonts.urbanist(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
                       color: MyColors.white1,
                     ),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 20),
+                  Text(
+                    bannerData.title ?? '',
+                    style: GoogleFonts.urbanist(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: MyColors.blue2,
+                    ),
+                  ),
+                  SizedBox(height: 8),
                   SizedBox(
                     width: Get.width / 2,
                     child: Row(
@@ -137,21 +154,24 @@ class WidgetBannerCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  SizedBox(height: 15),
-                  Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                      child: Text(
-                        bannerData.time ?? '',
-                        style: GoogleFonts.urbanist(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 10,
-                          color: MyColors.blue1,
-                        ),
-                      )),
+                  // SizedBox(height: 15),
+                  // Visibility(
+                  //   visible: bannerData.time != null,
+                  //   child: Container(
+                  //       decoration: BoxDecoration(
+                  //         color: Colors.white,
+                  //         borderRadius: BorderRadius.circular(25),
+                  //       ),
+                  //       padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  //       child: Text(
+                  //         bannerData.time ?? '',
+                  //         style: GoogleFonts.urbanist(
+                  //           fontWeight: FontWeight.w700,
+                  //           fontSize: 10,
+                  //           color: MyColors.blue1,
+                  //         ),
+                  //       )),
+                  // ),
                 ],
               ),
             ),

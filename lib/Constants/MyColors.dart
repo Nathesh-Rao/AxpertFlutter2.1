@@ -42,6 +42,7 @@ class MyColors {
   static const Color grey6 = Color(0xFF999999);
   static const Color grey7 = Color(0xFFb3b3b3);
   static const Color grey8 = Color(0xFFf6f7f9);
+  static const Color grey9 = Color(0xFF575E65);
   static const Color headerback = Color(0xFF164A41);
   static const Color headerback1 = Color(0xFF164A41);
   static const Color maroon = Color(0xFFc22121);
@@ -69,18 +70,13 @@ class MyColors {
       // LinearGradient(colors: [Color.fromRGBO(6,2,68,1), Color.fromRGBO(44,44,149,1)]);
       // LinearGradient(colors: [Color.fromRGBO(10,4,112,1), Color.fromRGBO(58,58,217,1)]);
       // LinearGradient(colors: [Color.fromRGBO(15,8,148,1), Color.fromRGBO(104,104,233,1)]);
-      LinearGradient(colors: [
-    Color.fromRGBO(43, 40, 115, 1),
-    Color.fromRGBO(142, 142, 255, 1)
-  ]);
+      LinearGradient(colors: [Color.fromRGBO(43, 40, 115, 1), Color.fromRGBO(142, 142, 255, 1)]);
 
-  static const LinearGradient subBGGradientVertical = LinearGradient(
-      begin: Alignment.topCenter,
-      end: Alignment.bottomCenter,
-      colors: [
-        Color(0xff3764FC),
-        Color(0xff9764DA),
-      ]);
+  static const LinearGradient subBGGradientVertical =
+      LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [
+    Color(0xff3764FC),
+    Color(0xff9764DA),
+  ]);
 
   static const LinearGradient subBGGradientHorizontal = LinearGradient(colors: [
     Color(0xff3764FC),

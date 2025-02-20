@@ -118,6 +118,7 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
       ),
       onDetect: (capture) {
         final List<Barcode> barcodes = capture.barcodes;
+        print("barcodes length => ${barcodes.length}");
         if (barcodes.isNotEmpty) {
           var barcode = barcodes.first;
           _onQRViewCreated(barcode.rawValue);
