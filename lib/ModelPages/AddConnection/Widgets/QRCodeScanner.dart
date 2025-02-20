@@ -97,7 +97,7 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
                       icon: Icon(Icons.flip_camera_ios, color: MyColors.blue2)),
                   IconButton(
                       onPressed: () {
-                        addConnectionController.pickImageFromGalleryCalled();
+                        addConnectionController.pickImageFromGalleryCalledML();
                       },
                       icon: Icon(Icons.filter, color: MyColors.blue2)),
                 ],
@@ -118,6 +118,7 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
       ),
       onDetect: (capture) {
         final List<Barcode> barcodes = capture.barcodes;
+        print("barcodes length => ${barcodes.length}");
         if (barcodes.isNotEmpty) {
           var barcode = barcodes.first;
           _onQRViewCreated(barcode.rawValue);

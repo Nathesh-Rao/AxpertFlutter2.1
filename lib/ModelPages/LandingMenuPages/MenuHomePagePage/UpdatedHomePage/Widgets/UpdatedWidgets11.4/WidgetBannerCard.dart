@@ -73,6 +73,7 @@ class WidgetBannerCard extends StatelessWidget {
 
   _bannerCard(dynamic cardData) {
     var bannerData = BannerCard.fromJson(cardData);
+
     return Container(
       margin: EdgeInsets.all(15),
       decoration: BoxDecoration(
@@ -83,10 +84,15 @@ class WidgetBannerCard extends StatelessWidget {
         children: [
           Align(
               alignment: Alignment.bottomRight,
-              child: Image.asset(
-                "assets/images/slider.png",
+              child: Image.network(
+                bannerData.image ?? '',
                 width: Get.width / 3,
               )),
+          // Image.asset(
+          //   "assets/images/slider.png",
+          //   // "assets/images/slider.png",
+          //   width: Get.width / 3,
+          // )
           Align(
               child: Opacity(
             opacity: 0.3,
@@ -138,20 +144,23 @@ class WidgetBannerCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 15),
-                  Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                      child: Text(
-                        bannerData.time ?? '',
-                        style: GoogleFonts.urbanist(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 10,
-                          color: MyColors.blue1,
+                  Visibility(
+                    visible: bannerData.time != null,
+                    child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(25),
                         ),
-                      )),
+                        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                        child: Text(
+                          bannerData.time ?? '',
+                          style: GoogleFonts.urbanist(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 10,
+                            color: MyColors.blue1,
+                          ),
+                        )),
+                  ),
                 ],
               ),
             ),

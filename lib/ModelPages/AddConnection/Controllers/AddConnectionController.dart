@@ -8,6 +8,8 @@ import 'package:axpertflutter/ModelPages/ProjectListing/Controller/ProjectListin
 import 'package:axpertflutter/ModelPages/ProjectListing/Model/ProjectModel.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -15,6 +17,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 // import 'package:scan/scan.dart';
 
 import '../../../Utils/LogServices/LogService.dart';
+import 'package:image/image.dart' as img;
 
 class AddConnectionController extends GetxController {
   ProjectListingController projectListingController = Get.find();
@@ -346,6 +349,40 @@ class AddConnectionController extends GetxController {
   //   } else
   //     decodeQRResult(data);
   // }
+// Enhance image before QR scanning
+  Future<img.Image> enhanceImageQuality(img.Image inputImage) async {
+    // Convert to grayscale
+    img.Image grayscale = img.grayscale(inputImage);
+
+    // Adjust brightness and contrast
+    img.Image enhancedImage = img.adjustColor(grayscale, contrast: 2, brightness: 10);
+
+    return enhancedImage;
+  }
+
+  void pickImageFromGalleryCalledML() async {
+    scannerController!.pause();
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    if (image == null) {
+      scannerController!.start();
+      return;
+    }
+    final bytes = await image.readAsBytes();
+
+    // Step 2: Decode the image
+    img.Image? decodedImage = img.decodeImage(bytes);
+    if (decodedImage != null) {
+      var enImage = enhanceImageQuality(decodedImage);
+      print(image.path);
+      String path = image.path;
+      BarcodeCapture? result = await scannerController!.analyzeImage(path, formats: [BarcodeFormat.all]);
+
+      print("barcodedata is null => ${result == null}");
+    } else {
+      print("enhance image is null");
+    }
+  }
 
   void pickImageFromGalleryCalled() async {
     scannerController!.pause();
@@ -358,7 +395,7 @@ class AddConnectionController extends GetxController {
 
     print(image.path);
     String path = image.path;
-    BarcodeCapture? result = await scannerController!.analyzeImage(path);
+    BarcodeCapture? result = await scannerController!.analyzeImage(path, formats: [BarcodeFormat.all]);
     //print(result);
 
     if (result == null) {
