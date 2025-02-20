@@ -97,7 +97,7 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
                       icon: Icon(Icons.flip_camera_ios, color: MyColors.blue2)),
                   IconButton(
                       onPressed: () {
-                        addConnectionController.pickImageFromGalleryCalledML();
+                        addConnectionController.pickImageFromGalleryCalled();
                       },
                       icon: Icon(Icons.filter, color: MyColors.blue2)),
                 ],
