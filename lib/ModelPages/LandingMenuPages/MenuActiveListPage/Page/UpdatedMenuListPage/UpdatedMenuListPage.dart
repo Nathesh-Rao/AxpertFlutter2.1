@@ -37,6 +37,8 @@ class UpdatedMenuListPage extends StatelessWidget {
                   ),
                 ),
                 _iconButtons(Icons.filter, () {}),
+                _iconButtons(Icons.filter, () {}),
+                _iconButtons(Icons.filter, () {}),
               ],
             ),
           ),
@@ -47,6 +49,7 @@ class UpdatedMenuListPage extends StatelessWidget {
 
   _iconButtons(IconData icon, Function() onTap) {
     return Container(
+      margin: EdgeInsets.only(left: 10),
       height: 40,
       width: 40,
       decoration: BoxDecoration(

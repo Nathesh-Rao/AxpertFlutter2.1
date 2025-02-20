@@ -128,7 +128,7 @@ class WidgetBannerCard extends StatelessWidget {
                       color: MyColors.white1,
                     ),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 20),
                   Text(
                     bannerData.title ?? '',
                     style: GoogleFonts.urbanist(
@@ -137,7 +137,7 @@ class WidgetBannerCard extends StatelessWidget {
                       color: MyColors.blue2,
                     ),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 8),
                   SizedBox(
                     width: Get.width / 2,
                     child: Row(
