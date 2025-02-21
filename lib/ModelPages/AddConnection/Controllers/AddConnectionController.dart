@@ -13,6 +13,7 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+
 // import 'package:qr_code_scanner/qr_code_scanner.dart';
 // import 'package:scan/scan.dart';
 
@@ -42,8 +43,10 @@ class AddConnectionController extends GetxController {
   var isFlashOn = false.obs;
   var isPlayPauseOn = false.obs;
   var heading = "Add new Connection".obs;
+
   // QRViewController? qrViewController;
   MobileScannerController? scannerController;
+
   // Barcode? barcodeResult;
 
   ServerConnections serverConnections = ServerConnections();
@@ -120,8 +123,8 @@ class AddConnectionController extends GetxController {
         //check whether the entered Connection name is proper
         Future<bool> isValidConnName = validateConnectionName(baseUrl);
         if (await isValidConnName) {
-          projectModel = ProjectModel(conNameController.text.trim(), webUrlController.text.trim(), armUrlController.text.trim(),
-              conCaptionController.text.trim());
+          projectModel = ProjectModel(
+              conNameController.text.trim(), webUrlController.text.trim(), armUrlController.text.trim(), conCaptionController.text.trim());
           /*conNameController.text = "";
           webUrlController.text = "";
           armUrlController.text = "";
@@ -180,8 +183,7 @@ class AddConnectionController extends GetxController {
     } else {
       projectList = jsonDecode(storedList);
       if (projectList.contains(projectModel.projectname)) {
-        Get.snackbar("Element already exists", "",
-            snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
+        Get.snackbar("Element already exists", "", snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
         if (isQr) {
           Timer(Duration(seconds: 2), () {
             scannerController!.start();
@@ -428,10 +430,10 @@ class AddConnectionController extends GetxController {
 
     if (response != "") {
       var json = jsonDecode(response);
-      if (json["result"]["message"].toString().toLowerCase() == "success")
+      if (json["result"]["message"].toString().toLowerCase() == "success" && json["result"]["data"]["Value"] is! String)
         return true;
       else {
-        errName.value = json["result"]["message"].toString();
+        errName.value = json["result"]["data"]["Value"].toString();
         return false;
       }
     }

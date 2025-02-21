@@ -580,7 +580,7 @@ class MenuHomePageController extends GetxController {
 
   captionOnTapFunctionNew(transid) async {
     if (transid != null) {
-      String link_id = transid.replaceAll('(', '').replaceAll(')', '');
+      String link_id = getStringForWebViewParam(transid);//transid.replaceAll('(', '').replaceAll(')', '');
 
       LogService.writeLog(message: "captionOnTapFunction: transid => $link_id");
       var validity = false;
@@ -626,6 +626,21 @@ class MenuHomePageController extends GetxController {
           snackPosition: SnackPosition.BOTTOM,
           duration: Duration(seconds: 3));
     }
+  }
+
+  String getStringForWebViewParam(String input) {
+
+    if (input.contains('(')) {
+      final match = RegExp(r'(\w+)\((.*?)\)').firstMatch(input);
+      if (match != null) {
+        String base = match.group(1) ?? '';
+        String params = match.group(2) ?? '';
+
+
+        return params.isNotEmpty ? '$base&params=^$params' : base;
+      }
+    }
+    return input;
   }
 
   generateIcon(model) {

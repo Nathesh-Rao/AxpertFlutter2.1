@@ -29,8 +29,7 @@ class _WidgetKPIListState extends State<WidgetKPIList> {
           visible: menuHomePageController.kpiListCardData.isNotEmpty,
           child: Column(
             children: List.generate(menuHomePageController.kpiListCardData.length, (index) {
-              List<Color> colors = List.generate(
-                  menuHomePageController.kpiListCardData[index].carddata.length, (index) => MyColors.getRandomColor());
+              List<Color> colors = List.generate(menuHomePageController.kpiListCardData[index].carddata.length, (index) => MyColors.getRandomColor());
               return KPICardsPanel(card: menuHomePageController.kpiListCardData[index], colors: colors);
             }),
           ),
@@ -40,8 +39,10 @@ class _WidgetKPIListState extends State<WidgetKPIList> {
 
 class KPICardsPanel extends StatefulWidget {
   const KPICardsPanel({super.key, required this.card, required this.colors});
+
   final UpdatedHomeCardDataModel card;
   final List<Color> colors;
+
   @override
   State<KPICardsPanel> createState() => _KPICardsPanelState();
 }
@@ -54,26 +55,24 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
   var bHeight1 = Get.height / 3.8;
   var bHeight2 = Get.height / 1.89;
   var isSeeMore = false;
+
   _onClickSeeMore() {
     setState(() {
       isSeeMore = !isSeeMore;
       if (isSeeMore) {
-        bHeight = bHeight2;
+        bHeight = (widget.card.carddata.length > 10 ? bHeight2 : _getHeight_card(widget.card.carddata.length));
       } else {
-        scrollController.animateTo(scrollController.position.minScrollExtent,
-            duration: Duration(milliseconds: 300), curve: Curves.decelerate);
+        scrollController.animateTo(scrollController.position.minScrollExtent, duration: Duration(milliseconds: 300), curve: Curves.decelerate);
         bHeight = bHeight1;
       }
     });
   }
 
   void _onClickSeeAll(cardData, {required String cardName}) async {
-    await Get.bottomSheet(ignoreSafeArea: true, QuickLinksBottomSheet(cardData, cardName: cardName, colors: widget.colors))
-        .then((_) {
+    await Get.bottomSheet(ignoreSafeArea: true, QuickLinksBottomSheet(cardData, cardName: cardName, colors: widget.colors)).then((_) {
       if (isSeeMore) {
         setState(() {
-          scrollController.animateTo(scrollController.position.minScrollExtent,
-              duration: Duration(milliseconds: 300), curve: Curves.decelerate);
+          scrollController.animateTo(scrollController.position.minScrollExtent, duration: Duration(milliseconds: 300), curve: Curves.decelerate);
           isSeeMore = !isSeeMore;
           bHeight = bHeight1;
 
@@ -100,8 +99,9 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
         duration: const Duration(milliseconds: 300),
         curve: Curves.decelerate,
         width: double.infinity,
-        height: bHeight,
+        height: widget.card.carddata.length > 4 ? bHeight : null,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             InkWell(
               onTap: () {
@@ -131,7 +131,7 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
               height: 1,
               thickness: 1,
             ),
-            Expanded(
+            Flexible(
               child: GridView.builder(
                 controller: scrollController,
                 physics: isSeeMore
@@ -140,13 +140,15 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
                       )
                     : NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.all(10),
+                shrinkWrap: true,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2, // 3 items in a row
                   crossAxisSpacing: 5, // Spacing between columns
                   mainAxisSpacing: 5, // Spacing between rows
                   childAspectRatio: 7 / 3, // Width to height ratio
                 ),
-                itemCount: widget.card.carddata.length, // Number of items
+                itemCount: widget.card.carddata.length,
+                // Number of items
                 itemBuilder: (context, index) {
                   return _gridTile(widget.card.carddata[index], widget.colors[index]);
                 },
@@ -275,7 +277,7 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
                     ),
                   ),
                   Flexible(
-                      child: Text(kpiListData.value ?? '',
+                      child: Text(kpiListData.value?.toString() ?? '',
                           style: GoogleFonts.urbanist(fontSize: 14, fontWeight: FontWeight.w700, color: darkenColor(color)))),
                 ],
               ),
@@ -287,18 +289,30 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
   }
 }
 
+_getHeight_card(itemCount) {
+
+  int crossAxisCount = 2;
+  int rowCount = (itemCount / crossAxisCount).ceil();
+
+  double itemHeight = 50;
+  double spacing = 5 * (rowCount-1);
+
+  return rowCount * itemHeight + spacing + 200;
+}
+
 class QuickLinksBottomSheet extends StatelessWidget {
   QuickLinksBottomSheet(this.menuIconsData, {super.key, required this.cardName, required this.colors});
+
   final dynamic menuIconsData;
   final String cardName;
   final MenuHomePageController menuHomePageController = Get.find();
   final List<Color> colors;
+
   @override
   Widget build(BuildContext context) {
     return Container(
       height: menuIconsData.length > 9 ? Get.height * 0.75 : Get.height / 2.5,
-      decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.only(topRight: Radius.circular(25), topLeft: Radius.circular(25))),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.only(topRight: Radius.circular(25), topLeft: Radius.circular(25))),
       child: Column(
         children: [
           Padding(
@@ -335,7 +349,8 @@ class QuickLinksBottomSheet extends StatelessWidget {
                 mainAxisSpacing: 8.0, // Spacing between rows
                 childAspectRatio: 7 / 3, // Width to height ratio
               ),
-              itemCount: menuIconsData.length, // Number of items
+              itemCount: menuIconsData.length,
+              // Number of items
               itemBuilder: (context, index) {
                 return _gridTile(menuIconsData[index], colors[index]);
               },
