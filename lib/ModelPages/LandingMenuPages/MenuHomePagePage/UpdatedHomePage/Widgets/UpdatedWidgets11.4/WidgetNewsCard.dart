@@ -183,7 +183,7 @@ class _NewsPanelState extends State<NewsPanel> {
     var newsData = NewsCardModel.fromJson(newsCardData);
     return InkWell(
       onTap: () {
-        menuHomePageController.captionOnTapFunction(newsData.link);
+        menuHomePageController.captionOnTapFunctionNew(newsData.link);
       },
       child: Container(
         height: 100,

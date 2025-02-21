@@ -20,9 +20,22 @@ class MenuDashboardController extends GetxController {
 
   fetchDataFromServer() async {
     LoadingScreen.show();
-    var dBody = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
+    var url = Const.getFullARMUrl(ServerConnections.API_GET_CARDS_WITH_DATA);
+    var getCardsBody = {
+      "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
+      "AxSessionId": "jbxqzz5tie2y3yujshe3k1x5",
+      "Trace": "false",
+      "AppName": appStorage.retrieveValue(AppStorage.PROJECT_NAME),
+      "Roles": "default",
+      "UserName": appStorage.retrieveValue(AppStorage.USER_NAME),
+      "HomePageCards": false,
+      "RefreshData": false,
+      "GlobalParams": ServerConnections.SAMPLE_GET_CARDS_WITH_DATA_GLOBAL_PARAMS
+    };
+    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(getCardsBody), isBearer: true);
+    /*var dBody = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
     var url = Const.getFullARMUrl(ServerConnections.API_GET_DASHBOARD_DATA);
-    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(dBody), isBearer: true);
+    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(dBody), isBearer: true);*/
     LoadingScreen.dismiss();
     if (resp.toString() != "") {
       var jsonResp = jsonDecode(resp);

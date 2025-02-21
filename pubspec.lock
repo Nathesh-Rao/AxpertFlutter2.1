@@ -114,10 +114,10 @@ packages:
     dependency: "direct main"
     description:
       name: background_location_tracker
-      sha256: dde872088cdfa1d3ba516e6254c36b34197ff13355c74d7b6a5987064b57eb8a
+      sha256: "29aa41ac4cc2f3b492eadaa4948d657f69bb0414eaea167a409c2af0da95d638"
       url: "https://pub.dev"
     source: hosted
-    version: "1.5.0"
+    version: "1.4.4"
   badges:
     dependency: "direct main"
     description:
@@ -138,10 +138,10 @@ packages:
     dependency: "direct main"
     description:
       name: bottom_picker
-      sha256: "032fa8bcfc17dc2df6620e22ebcb65e4d2b17d31a3a790817c82665f3ae65445"
+      sha256: "8ede549685825df389135bebc7984416ed95f24d4f19631d21ad25c9c23db482"
       url: "https://pub.dev"
     source: hosted
-    version: "2.11.0"
+    version: "2.10.1"
   build:
     dependency: transitive
     description:
@@ -986,10 +986,10 @@ packages:
     dependency: transitive
     description:
       name: google_maps_flutter_platform_interface
-      sha256: "72957351f91656128d8f1090ce9e624486a8a7dada21e615ebc9af9fadffdedd"
+      sha256: a951981c22d790848efb9f114f81794945bc5c06bc566238a419a92f110af6cb
       url: "https://pub.dev"
     source: hosted
-    version: "2.10.0"
+    version: "2.9.5"
   google_maps_flutter_web:
     dependency: transitive
     description:

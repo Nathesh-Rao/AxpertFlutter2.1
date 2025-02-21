@@ -89,8 +89,8 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       pageList = [
         UpdatedHomePage(),
-        // MenuActiveListPage(),
-        UpdatedMenuListPage(),
+        MenuActiveListPage(),
+        //UpdatedMenuListPage(),
         MenuDashboardPage(),
 
         ///NOTE Pass a [ValueKey] with a unique identifier to force widget rebuilds.
