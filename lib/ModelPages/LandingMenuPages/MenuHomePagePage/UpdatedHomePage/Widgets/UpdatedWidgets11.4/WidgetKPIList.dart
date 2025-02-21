@@ -29,7 +29,8 @@ class _WidgetKPIListState extends State<WidgetKPIList> {
           visible: menuHomePageController.kpiListCardData.isNotEmpty,
           child: Column(
             children: List.generate(menuHomePageController.kpiListCardData.length, (index) {
-              List<Color> colors = List.generate(menuHomePageController.kpiListCardData[index].carddata.length, (index) => MyColors.getRandomColor());
+              List<Color> colors = List.generate(
+                  menuHomePageController.kpiListCardData[index].carddata.length, (index) => MyColors.getRandomColor());
               return KPICardsPanel(card: menuHomePageController.kpiListCardData[index], colors: colors);
             }),
           ),
@@ -62,17 +63,20 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
       if (isSeeMore) {
         bHeight = (widget.card.carddata.length > 10 ? bHeight2 : _getHeight_card(widget.card.carddata.length));
       } else {
-        scrollController.animateTo(scrollController.position.minScrollExtent, duration: Duration(milliseconds: 300), curve: Curves.decelerate);
+        scrollController.animateTo(scrollController.position.minScrollExtent,
+            duration: Duration(milliseconds: 300), curve: Curves.decelerate);
         bHeight = bHeight1;
       }
     });
   }
 
   void _onClickSeeAll(cardData, {required String cardName}) async {
-    await Get.bottomSheet(ignoreSafeArea: true, QuickLinksBottomSheet(cardData, cardName: cardName, colors: widget.colors)).then((_) {
+    await Get.bottomSheet(ignoreSafeArea: true, QuickLinksBottomSheet(cardData, cardName: cardName, colors: widget.colors))
+        .then((_) {
       if (isSeeMore) {
         setState(() {
-          scrollController.animateTo(scrollController.position.minScrollExtent, duration: Duration(milliseconds: 300), curve: Curves.decelerate);
+          scrollController.animateTo(scrollController.position.minScrollExtent,
+              duration: Duration(milliseconds: 300), curve: Curves.decelerate);
           isSeeMore = !isSeeMore;
           bHeight = bHeight1;
 
@@ -290,12 +294,11 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
 }
 
 _getHeight_card(itemCount) {
-
   int crossAxisCount = 2;
   int rowCount = (itemCount / crossAxisCount).ceil();
 
   double itemHeight = 50;
-  double spacing = 5 * (rowCount-1);
+  double spacing = 5 * (rowCount - 1);
 
   return rowCount * itemHeight + spacing + 200;
 }
@@ -312,7 +315,8 @@ class QuickLinksBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: menuIconsData.length > 9 ? Get.height * 0.75 : Get.height / 2.5,
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.only(topRight: Radius.circular(25), topLeft: Radius.circular(25))),
+      decoration: BoxDecoration(
+          color: Colors.white, borderRadius: BorderRadius.only(topRight: Radius.circular(25), topLeft: Radius.circular(25))),
       child: Column(
         children: [
           Padding(
@@ -410,7 +414,7 @@ class QuickLinksBottomSheet extends StatelessWidget {
                     ),
                   ),
                   Flexible(
-                      child: Text(kpiListData.value ?? '',
+                      child: Text(kpiListData.value == null ? "" : kpiListData.value.toString(),
                           style: GoogleFonts.urbanist(fontSize: 14, fontWeight: FontWeight.w700, color: darkenColor(color)))),
                 ],
               ),

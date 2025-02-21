@@ -44,11 +44,18 @@ class ActiveListPage extends StatelessWidget {
             ),
           ),
           Expanded(
-              child: ListView.separated(
+              // child: ListView.separated(
+              //     padding: EdgeInsets.only(top: 20),
+              //     physics: BouncingScrollPhysics(),
+              //     itemBuilder: (context, index) => _listTile(index: index),
+              //     separatorBuilder: (context, index) => Divider(
+              //           color: Colors.white,
+              //         ),
+              //     itemCount: 15))
+              child: ListView.builder(
                   padding: EdgeInsets.only(top: 20),
                   physics: BouncingScrollPhysics(),
                   itemBuilder: (context, index) => _listTile(index: index),
-                  separatorBuilder: (context, index) => Divider(),
                   itemCount: 15))
         ],
       ),

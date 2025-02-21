@@ -56,13 +56,25 @@ class _ActivityListPanelState extends State<ActivityListPanel> {
     setState(() {
       isSeeMore = !isSeeMore;
       if (isSeeMore) {
-        bHeight = bHeight2;
+        // bHeight = bHeight2;
+        bHeight =
+            (widget.activityListData.carddata.length > 11 ? bHeight2 : _getHeight_card(widget.activityListData.carddata.length));
       } else {
         scrollController.animateTo(scrollController.position.minScrollExtent,
             duration: Duration(milliseconds: 300), curve: Curves.decelerate);
         bHeight = bHeight1;
       }
     });
+  }
+
+  _getHeight_card(itemCount) {
+    int crossAxisCount = 2;
+    int rowCount = (itemCount / crossAxisCount).ceil();
+
+    double itemHeight = 50;
+    double spacing = 5 * (rowCount - 1);
+
+    return rowCount * itemHeight + spacing + 200;
   }
 
   @override
