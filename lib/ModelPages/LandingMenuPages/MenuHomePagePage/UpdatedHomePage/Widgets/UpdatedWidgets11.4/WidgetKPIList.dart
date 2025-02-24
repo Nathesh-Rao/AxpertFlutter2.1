@@ -51,17 +51,26 @@ class KPICardsPanel extends StatefulWidget {
 class _KPICardsPanelState extends State<KPICardsPanel> {
   final MenuHomePageController menuHomePageController = Get.find();
   ScrollController scrollController = ScrollController();
+  final GlobalKey _key = GlobalKey();
+
   var bHeight = Get.height / 3.8;
 
   var bHeight1 = Get.height / 3.8;
   var bHeight2 = Get.height / 1.89;
+
   var isSeeMore = false;
+
+  double getWidgetHeight() {
+    final RenderBox? renderBox = _key.currentContext?.findRenderObject() as RenderBox?;
+    return renderBox?.size.height ?? 0;
+  }
 
   _onClickSeeMore() {
     setState(() {
       isSeeMore = !isSeeMore;
       if (isSeeMore) {
-        bHeight = (widget.card.carddata.length > 10 ? bHeight2 : _getHeight_card(widget.card.carddata.length));
+        // bHeight = (widget.card.carddata.length > 10 ? bHeight2 : _getHeight_card(widget.card.carddata.length));
+        bHeight = bHeight2;
       } else {
         scrollController.animateTo(scrollController.position.minScrollExtent,
             duration: Duration(milliseconds: 300), curve: Curves.decelerate);
@@ -90,7 +99,8 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
   Widget build(BuildContext context) {
     var isSeeMoreVisible = widget.card.carddata.length > 4;
     var isSeeAllVisible = widget.card.carddata.length > 8;
-
+    bHeight1 = (getWidgetHeight() * 3) + 20;
+    bHeight2 = (getWidgetHeight() * (widget.card.carddata.length / 1.5)) + 30;
     return Card(
       clipBehavior: Clip.hardEdge,
       margin: EdgeInsets.only(top: 10, left: 15, right: 15, bottom: 10),
@@ -154,19 +164,11 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
                 itemCount: widget.card.carddata.length,
                 // Number of items
                 itemBuilder: (context, index) {
-                  return _gridTile(widget.card.carddata[index], widget.colors[index]);
+                  return _gridTile(widget.card.carddata[index], widget.colors[index], index);
                 },
               ),
             ),
             SizedBox(height: 5),
-            // Expanded(
-            //     child: Wrap(
-            //   spacing: 10,
-            //   runSpacing: 10,
-            //   runAlignment: WrapAlignment.spaceAround,
-            //   alignment: WrapAlignment.start,
-            //   children: List.generate(isSeeMore ? 12 : 6, (index) => _gridTile(index)),
-            // )),
             isSeeMoreVisible
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -232,7 +234,7 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
     );
   }
 
-  Widget _gridTile(cardData, Color color) {
+  Widget _gridTile(cardData, Color color, int index) {
     KpiListModel kpiListData = KpiListModel.fromJson(cardData);
 
     Color darkenColor(Color color, [double amount = 0.2]) {
@@ -246,8 +248,10 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
     }
 
     return InkWell(
+      key: index == 0 ? _key : null,
       onTap: () {
         menuHomePageController.captionOnTapFunctionNew(kpiListData.link);
+        // print(getWidgetHeight().toString());
       },
       child: Container(
         padding: EdgeInsets.all(10),
