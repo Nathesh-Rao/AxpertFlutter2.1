@@ -1,4 +1,5 @@
 import 'package:axpertflutter/ModelPages/InApplicationWebView/page/InApplicationWebView.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Controllers/UpdatedActiveTaskListController/ActiveTaskListController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Controller/LandingPageController.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetBottomNavigation.dart';
@@ -11,9 +12,8 @@ class LandingPage extends StatelessWidget {
   LandingPage({super.key});
 
   final LandingPageController landingPageController = Get.find();
-  final MenuHomePageController menuHomePageController =
-      Get.put(MenuHomePageController());
-
+  final MenuHomePageController menuHomePageController = Get.put(MenuHomePageController());
+  final ActiveTaskListController _c = Get.put(ActiveTaskListController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,8 +28,7 @@ class LandingPage extends StatelessWidget {
                   landingPageController.getPage(),
                   Visibility(
                       visible: menuHomePageController.switchPage.value,
-                      child:
-                          InApplicationWebViewer(menuHomePageController.webUrl))
+                      child: InApplicationWebViewer(menuHomePageController.webUrl))
                 ],
               ))
           /* menuHomePageController.switchPage.value == true

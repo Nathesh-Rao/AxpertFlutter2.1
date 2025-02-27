@@ -84,6 +84,7 @@ dependencies:
   animate_do: ^3.3.4
   easy_stepper: ^0.8.5+1
   timeago: ^3.7.0
+  flutter_expanded_tile: ^0.4.0
   # board_datetime_picker: ^2.2.0
   # gradient_circular_progress_indicator: ^0.0.4
   # syncfusion_flutter_datepicker: ^28.1.35
