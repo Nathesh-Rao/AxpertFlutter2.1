@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Models/PendingListModel.dart';
+
 class ActiveTaskListModel {
   String? touser;
   dynamic processname;
@@ -119,6 +121,53 @@ class ActiveTaskListModel {
 
   String toRawJson() => json.encode(toJson());
 
+  PendingListModel toPendingListModel() => PendingListModel(
+        touser: touser ?? "",
+        processname: processname ?? "",
+        taskname: taskname ?? "",
+        taskid: taskid ?? "",
+        tasktype: tasktype ?? "",
+        edatetime: edatetime ?? "",
+        eventdatetime: eventdatetime ?? "",
+        fromuser: fromuser ?? "",
+        fromrole: fromrole ?? "",
+        displayicon: displayicon ?? "",
+        displaytitle: displaytitle ?? "",
+        displaycontent: displaycontent ?? "",
+        displaymcontent: displaymcontent ?? "",
+        displaybuttons: displaybuttons ?? "",
+        keyfield: keyfield ?? "",
+        keyvalue: keyvalue ?? "",
+        transid: transid ?? "",
+        priorindex: priorindex.toString(),
+        indexno: indexno.toString(),
+        subindexno: subindexno.toString(),
+        approvereasons: approvereasons ?? "",
+        defapptext: defapptext ?? "",
+        returnreasons: returnreasons ?? "",
+        defrettext: defrettext ?? "",
+        rejectreasons: rejectreasons ?? "",
+        defregtext: defregtext ?? "",
+        recordid: recordid.toString(),
+        approvalcomments: approvalcomments ?? "",
+        rejectcomments: rejectcomments ?? "",
+        returncomments: returncomments ?? "",
+        rectype: rectype ?? "",
+        msgtype: msgtype ?? "",
+        returnable: returnable ?? "",
+        initiator: initiator ?? "",
+        initiator_approval: initiatorApproval ?? "",
+        displaysubtitle: displaysubtitle ?? "",
+        amendment: amendment ?? "",
+        allowsend: allowsend ?? "",
+        allowsendflg: allowsendflg ?? "",
+        cmsg_appcheck: cmsgAppcheck ?? "",
+        cmsg_return: cmsgReturn ?? "",
+        cmsg_reject: cmsgReject ?? "",
+        showbuttons: showbuttons ?? "",
+        hlink_transid: hlinkTransid ?? "",
+        hlink_params: hlinkParams ?? "",
+      );
   factory ActiveTaskListModel.fromJson(Map<String, dynamic> json) => ActiveTaskListModel(
         touser: json["touser"],
         processname: json["processname"],
