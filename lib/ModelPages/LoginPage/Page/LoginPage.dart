@@ -48,19 +48,22 @@ class _LoginPageState extends State<LoginPage> {
               //     ? Colors.white
               //     : Color(0xff3764FC),
               backgroundColor: Colors.transparent,
-              title: SizedBox(
-                width: dropdownWidth,
-                child: DropdownButton(
-                  isExpanded: true,
-                  style: GoogleFonts.poppins(
-                      textStyle: TextStyle(
-                          fontWeight: FontWeight.w500, fontSize: 18, color: loginController.isPortalDefault.value ? Colors.black : Colors.white)),
-                  dropdownColor: loginController.isPortalDefault.value ? Colors.white : Color(0xff3764FC),
-                  iconEnabledColor: loginController.isPortalDefault.value ? Color(0xff3764FC) : Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  items: loginController.portalDropdownMenuItem(),
-                  onChanged: (value) => loginController.portalDropDownItemChanged(value),
-                  value: loginController.portalDropdownValue.value,
+              title: Visibility(
+                visible: false,
+                child: SizedBox(
+                  width: dropdownWidth,
+                  child: DropdownButton(
+                    isExpanded: true,
+                    style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                            fontWeight: FontWeight.w500, fontSize: 18, color: loginController.isPortalDefault.value ? Colors.black : Colors.white)),
+                    dropdownColor: loginController.isPortalDefault.value ? Colors.white : Color(0xff3764FC),
+                    iconEnabledColor: loginController.isPortalDefault.value ? Color(0xff3764FC) : Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    items: loginController.portalDropdownMenuItem(),
+                    onChanged: (value) => loginController.portalDropDownItemChanged(value),
+                    value: loginController.portalDropdownValue.value,
+                  ),
                 ),
               ),
               actions: [

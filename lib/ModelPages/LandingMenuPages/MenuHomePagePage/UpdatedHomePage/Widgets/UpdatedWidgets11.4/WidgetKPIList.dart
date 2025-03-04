@@ -29,8 +29,7 @@ class _WidgetKPIListState extends State<WidgetKPIList> {
           visible: menuHomePageController.kpiListCardData.isNotEmpty,
           child: Column(
             children: List.generate(menuHomePageController.kpiListCardData.length, (index) {
-              List<Color> colors = List.generate(
-                  menuHomePageController.kpiListCardData[index].carddata.length, (index) => MyColors.getRandomColor());
+              List<Color> colors = List.generate(menuHomePageController.kpiListCardData[index].carddata.length, (index) => MyColors.getRandomColor());
               return KPICardsPanel(card: menuHomePageController.kpiListCardData[index], colors: colors);
             }),
           ),
@@ -51,43 +50,50 @@ class KPICardsPanel extends StatefulWidget {
 class _KPICardsPanelState extends State<KPICardsPanel> {
   final MenuHomePageController menuHomePageController = Get.find();
   ScrollController scrollController = ScrollController();
-  final GlobalKey _key = GlobalKey();
+  final GlobalKey _cardKey = GlobalKey();
+  var card_height = Get.height / 3.8;
 
-  var bHeight = Get.height / 3.8;
-
-  var bHeight1 = Get.height / 3.8;
-  var bHeight2 = Get.height / 1.89;
-
+  var card_heightBeforeExpand = 0.0;
+  var card_heightAfterExpand = Get.height / 1.89;
   var isSeeMore = false;
 
-  double getWidgetHeight() {
-    final RenderBox? renderBox = _key.currentContext?.findRenderObject() as RenderBox?;
-    return renderBox?.size.height ?? 0;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getCardHeight();
+    });
+  }
+
+  void _getCardHeight() {
+    final RenderBox? renderBox = _cardKey.currentContext?.findRenderObject() as RenderBox?;
+    if (renderBox != null) {
+      setState(() {
+        card_heightBeforeExpand = renderBox.size.height;
+        card_height = card_heightBeforeExpand;
+      });
+    }
   }
 
   _onClickSeeMore() {
     setState(() {
       isSeeMore = !isSeeMore;
       if (isSeeMore) {
-        // bHeight = (widget.card.carddata.length > 10 ? bHeight2 : _getHeight_card(widget.card.carddata.length));
-        bHeight = bHeight2;
+        card_height = (widget.card.carddata.length > 10 ? card_heightAfterExpand : _getHeight_card(widget.card.carddata.length));
       } else {
-        scrollController.animateTo(scrollController.position.minScrollExtent,
-            duration: Duration(milliseconds: 300), curve: Curves.decelerate);
-        bHeight = bHeight1;
+        scrollController.animateTo(scrollController.position.minScrollExtent, duration: Duration(milliseconds: 300), curve: Curves.decelerate);
+        card_height = card_heightBeforeExpand;
       }
     });
   }
 
   void _onClickSeeAll(cardData, {required String cardName}) async {
-    await Get.bottomSheet(ignoreSafeArea: true, QuickLinksBottomSheet(cardData, cardName: cardName, colors: widget.colors))
-        .then((_) {
+    await Get.bottomSheet(ignoreSafeArea: true, QuickLinksBottomSheet(cardData, cardName: cardName, colors: widget.colors)).then((_) {
       if (isSeeMore) {
         setState(() {
-          scrollController.animateTo(scrollController.position.minScrollExtent,
-              duration: Duration(milliseconds: 300), curve: Curves.decelerate);
+          scrollController.animateTo(scrollController.position.minScrollExtent, duration: Duration(milliseconds: 300), curve: Curves.decelerate);
           isSeeMore = !isSeeMore;
-          bHeight = bHeight1;
+          card_height = card_heightBeforeExpand;
 
           ;
         });
@@ -99,142 +105,153 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
   Widget build(BuildContext context) {
     var isSeeMoreVisible = widget.card.carddata.length > 4;
     var isSeeAllVisible = widget.card.carddata.length > 8;
-    bHeight1 = (getWidgetHeight() * 3) + 20;
-    bHeight2 = (getWidgetHeight() * (widget.card.carddata.length / 1.5)) + 30;
-    return Card(
-      clipBehavior: Clip.hardEdge,
-      margin: EdgeInsets.only(top: 10, left: 15, right: 15, bottom: 10),
-      elevation: 2,
-      shadowColor: MyColors.color_grey,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.decelerate,
-        width: double.infinity,
-        height: widget.card.carddata.length > 4 ? bHeight : null,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            InkWell(
-              onTap: () {
-                if (isSeeMoreVisible) {
-                  _onClickSeeMore();
-                }
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.link,
-                      // size: 17,
-                    ),
-                    SizedBox(width: 5),
-                    Text(widget.card.cardname ?? "",
-                        style: GoogleFonts.urbanist(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                        )),
-                  ],
-                ),
-              ),
-            ),
-            Divider(
-              height: 1,
-              thickness: 1,
-            ),
-            Flexible(
-              child: GridView.builder(
-                controller: scrollController,
-                physics: isSeeMore
-                    ? BouncingScrollPhysics(
-                        decelerationRate: ScrollDecelerationRate.fast,
-                      )
-                    : NeverScrollableScrollPhysics(),
-                padding: EdgeInsets.all(10),
-                shrinkWrap: true,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // 3 items in a row
-                  crossAxisSpacing: 5, // Spacing between columns
-                  mainAxisSpacing: 5, // Spacing between rows
-                  childAspectRatio: 7 / 3, // Width to height ratio
-                ),
-                itemCount: widget.card.carddata.length,
-                // Number of items
-                itemBuilder: (context, index) {
-                  return _gridTile(widget.card.carddata[index], widget.colors[index], index);
+
+    return Visibility(
+      visible: widget.card.carddata.length > 0,
+      child: Card(
+        key: _cardKey,
+        clipBehavior: Clip.hardEdge,
+        margin: EdgeInsets.only(top: 10, left: 15, right: 15, bottom: 10),
+        elevation: 2,
+        shadowColor: MyColors.color_grey,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.decelerate,
+          width: double.infinity,
+          height: widget.card.carddata.length > 4 ? card_height : null,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              InkWell(
+                onTap: () {
+                  if (isSeeMoreVisible) {
+                    _onClickSeeMore();
+                  }
                 },
-              ),
-            ),
-            SizedBox(height: 5),
-            isSeeMoreVisible
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Row(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: InkWell(
-                          onTap: () {
-                            _onClickSeeMore();
-                          },
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(isSeeMore ? "See less" : "See more",
-                                  style: GoogleFonts.urbanist(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w700,
-                                    color: MyColors.blue1,
-                                  )),
-                              Icon(
-                                isSeeMore ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
-                                color: MyColors.blue1,
-                                size: 17,
-                              )
-                            ],
+                      Icon(
+                        Icons.link,
+                        // size: 17,
+                      ),
+                      SizedBox(width: 5),
+                      Text(widget.card.cardname ?? "",
+                          style: GoogleFonts.urbanist(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                          )),
+                    ],
+                  ),
+                ),
+              ),
+              Divider(
+                height: 1,
+                thickness: 1,
+              ),
+              Flexible(
+                child: GridView.builder(
+                  controller: scrollController,
+                  physics: isSeeMore
+                      ? BouncingScrollPhysics(
+                          decelerationRate: ScrollDecelerationRate.fast,
+                        )
+                      : NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.all(10),
+                  shrinkWrap: true,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2, // 3 items in a row
+                    crossAxisSpacing: 5, // Spacing between columns
+                    mainAxisSpacing: 5, // Spacing between rows
+                    childAspectRatio: 7 / 3, // Width to height ratio
+                  ),
+                  itemCount: widget.card.carddata.length,
+                  // Number of items
+                  itemBuilder: (context, index) {
+                    return _gridTile(widget.card.carddata[index], widget.colors[index]);
+                  },
+                ),
+              ),
+              SizedBox(height: 5),
+              // Expanded(
+              //     child: Wrap(
+              //   spacing: 10,
+              //   runSpacing: 10,
+              //   runAlignment: WrapAlignment.spaceAround,
+              //   alignment: WrapAlignment.start,
+              //   children: List.generate(isSeeMore ? 12 : 6, (index) => _gridTile(index)),
+              // )),
+              isSeeMoreVisible
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: InkWell(
+                            onTap: () {
+                              _onClickSeeMore();
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(isSeeMore ? "See less" : "See more",
+                                    style: GoogleFonts.urbanist(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                      color: MyColors.blue1,
+                                    )),
+                                Icon(
+                                  isSeeMore ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                                  color: MyColors.blue1,
+                                  size: 17,
+                                )
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      isSeeAllVisible
-                          ? Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: InkWell(
-                                onTap: () {
-                                  _onClickSeeAll(widget.card.carddata, cardName: widget.card.cardname ?? "");
-                                },
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text("See all ",
-                                        style: GoogleFonts.urbanist(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w700,
-                                          color: MyColors.blue1,
-                                        )),
-                                    Icon(
-                                      Icons.open_in_browser,
-                                      color: MyColors.blue1,
-                                      size: 15,
-                                    )
-                                  ],
+                        isSeeAllVisible
+                            ? Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: InkWell(
+                                  onTap: () {
+                                    _onClickSeeAll(widget.card.carddata, cardName: widget.card.cardname ?? "");
+                                  },
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text("See all ",
+                                          style: GoogleFonts.urbanist(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w700,
+                                            color: MyColors.blue1,
+                                          )),
+                                      Icon(
+                                        Icons.open_in_browser,
+                                        color: MyColors.blue1,
+                                        size: 15,
+                                      )
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            )
-                          : SizedBox.shrink(),
-                    ],
-                  )
-                : SizedBox.shrink(),
-          ],
+                              )
+                            : SizedBox.shrink(),
+                      ],
+                    )
+                  : SizedBox.shrink(),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _gridTile(cardData, Color color, int index) {
+  Widget _gridTile(cardData, Color color) {
     KpiListModel kpiListData = KpiListModel.fromJson(cardData);
 
     Color darkenColor(Color color, [double amount = 0.2]) {
@@ -248,10 +265,8 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
     }
 
     return InkWell(
-      key: index == 0 ? _key : null,
       onTap: () {
         menuHomePageController.captionOnTapFunctionNew(kpiListData.link);
-        // print(getWidgetHeight().toString());
       },
       child: Container(
         padding: EdgeInsets.all(10),
@@ -304,7 +319,7 @@ _getHeight_card(itemCount) {
   double itemHeight = 50;
   double spacing = 5 * (rowCount - 1);
 
-  return rowCount * itemHeight + spacing + 200;
+  return (rowCount * (itemHeight + spacing ))+ 150;
 }
 
 class QuickLinksBottomSheet extends StatelessWidget {
@@ -319,8 +334,7 @@ class QuickLinksBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: menuIconsData.length > 9 ? Get.height * 0.75 : Get.height / 2.5,
-      decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.only(topRight: Radius.circular(25), topLeft: Radius.circular(25))),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.only(topRight: Radius.circular(25), topLeft: Radius.circular(25))),
       child: Column(
         children: [
           Padding(
@@ -418,7 +432,7 @@ class QuickLinksBottomSheet extends StatelessWidget {
                     ),
                   ),
                   Flexible(
-                      child: Text(kpiListData.value == null ? "" : kpiListData.value.toString(),
+                      child: Text(kpiListData.value ?? '',
                           style: GoogleFonts.urbanist(fontSize: 14, fontWeight: FontWeight.w700, color: darkenColor(color)))),
                 ],
               ),

@@ -1,6 +1,6 @@
-import 'package:axpertflutter/Constants/Extensions.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Models/BannerCardModel.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,7 +10,9 @@ import '../../../../../../Constants/MyColors.dart';
 
 class WidgetBannerCard extends StatelessWidget {
   WidgetBannerCard({super.key});
+
   final MenuHomePageController menuHomePageController = Get.find();
+
   @override
   Widget build(BuildContext context) {
     CarouselSliderController bannerController = CarouselSliderController();
@@ -27,8 +29,8 @@ class WidgetBannerCard extends StatelessWidget {
                   child: CarouselSlider(
                     items: List.generate(
                         menuHomePageController.bannerCardData[0].carddata.length,
-                        (index) => _bannerCard(menuHomePageController.bannerCardData[0].carddata[index],
-                            menuHomePageController.bannerCardData[0].cardname)),
+                        (index) =>
+                            _bannerCard(menuHomePageController.bannerCardData[0].carddata[index], menuHomePageController.bannerCardData[0].cardname)),
                     carouselController: bannerController,
                     options: CarouselOptions(
                       height: double.maxFinite,
@@ -86,15 +88,18 @@ class WidgetBannerCard extends StatelessWidget {
         children: [
           Align(
               alignment: Alignment.bottomRight,
-              child: Image.network(
-                bannerData.image ?? '',
+              child: CachedNetworkImage(
+                imageUrl: bannerData.image ?? '',
                 width: Get.width / 3,
+                /*placeholder: (context, url) => Center(
+                  child: CircularProgressIndicator.adaptive(), // Show while loading
+                ),*/
+                errorWidget: (context, url, error) => Image.asset(
+                  'assets/images/banner_default_slider.png',
+                  width: Get.width / 3,
+                ),
+                fadeInDuration: Duration(milliseconds: 300),
               )),
-          // Image.asset(
-          //   "assets/images/slider.png",
-          //   // "assets/images/slider.png",
-          //   width: Get.width / 3,
-          // )
           Align(
               child: Opacity(
             opacity: 0.3,
@@ -111,15 +116,6 @@ class WidgetBannerCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Text(
-                  //   "Daily Quotes",
-                  //   style: GoogleFonts.urbanist(
-                  //     fontSize: 20,
-                  //     fontWeight: FontWeight.w700,
-                  //     color: Colors.white,
-                  //   ),
-                  // ),
-                  // SizedBox(height: 15),
                   Text(
                     cardname ?? '',
                     style: GoogleFonts.urbanist(

@@ -33,8 +33,7 @@ class _WidgetMenuIconsState extends State<WidgetMenuIcons> {
           visible: menuHomePageController.menuIconsData.isNotEmpty,
           child: Column(
             children: List.generate(menuHomePageController.menuIconsData.length, (index) {
-              List<Color> colors = List.generate(
-                  menuHomePageController.menuIconsData[index].carddata.length, (index) => MyColors.getRandomColor());
+              List<Color> colors = List.generate(menuHomePageController.menuIconsData[index].carddata.length, (index) => MyColors.getRandomColor());
               return MenuIconsPanel(
                 card: menuHomePageController.menuIconsData[index],
                 colors: colors,
@@ -47,30 +46,53 @@ class _WidgetMenuIconsState extends State<WidgetMenuIcons> {
 
 class MenuIconsPanel extends StatefulWidget {
   const MenuIconsPanel({super.key, required this.card, required this.colors});
+
   final UpdatedHomeCardDataModel card;
   final List<Color> colors;
+
   @override
   State<MenuIconsPanel> createState() => _MenuIconsPanelState();
 }
 
 class _MenuIconsPanelState extends State<MenuIconsPanel> {
   final MenuHomePageController menuHomePageController = Get.find();
+  final GlobalKey _cardKey = GlobalKey();
   ScrollController scrollController = ScrollController();
-  var bHeight = Get.height / 3.22;
+  var card_height = Get.height / 3.8;
 
-  var bHeight1 = Get.height / 3.22;
-  var bHeight2 = Get.height / 1.89;
+  var card_heightBeforeExpand = 0.0;
+  var card_heightAfterExpand = Get.height / 1.89;
   var isSeeMore = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getCardHeight();
+    });
+  }
+
+  void _getCardHeight() {
+    final RenderBox? renderBox =
+    _cardKey.currentContext?.findRenderObject() as RenderBox?;
+    if (renderBox != null) {
+      setState(() {
+        card_heightBeforeExpand = renderBox.size.height+20;
+        card_height = card_heightBeforeExpand;
+      });
+    }
+  }
+
   _onClickSeeMore() {
     setState(() {
       isSeeMore = !isSeeMore;
       if (isSeeMore) {
-        // bHeight = bHeight2;
-        bHeight = (widget.card.carddata.length > 11 ? bHeight2 : _getHeight_card(widget.card.carddata.length));
+       // bHeight = bHeight2;
+        card_height = (widget.card.carddata.length > 10 ? card_heightAfterExpand : _getHeight_card(widget.card.carddata.length));
       } else {
-        scrollController.animateTo(scrollController.position.minScrollExtent,
-            duration: Duration(milliseconds: 300), curve: Curves.decelerate);
-        bHeight = bHeight1;
+        scrollController.animateTo(scrollController.position.minScrollExtent, duration: Duration(milliseconds: 300), curve: Curves.decelerate);
+       // bHeight = bHeight1;
+        card_height = card_heightBeforeExpand;
       }
     });
   }
@@ -85,19 +107,33 @@ class _MenuIconsPanelState extends State<MenuIconsPanel> {
         )).then((_) {
       setState(() {
         if (isSeeMore) {
-          scrollController.animateTo(scrollController.position.minScrollExtent,
-              duration: Duration(milliseconds: 300), curve: Curves.decelerate);
+          scrollController.animateTo(scrollController.position.minScrollExtent, duration: Duration(milliseconds: 300), curve: Curves.decelerate);
           isSeeMore = !isSeeMore;
-          bHeight = bHeight1;
+         // bHeight = bHeight1;
+          card_height = card_heightBeforeExpand;
         }
         ;
       });
     });
   }
 
+  _getHeight_card(itemCount) {
+
+    int crossAxisCount = 3;
+    int rowCount = (itemCount / crossAxisCount).ceil();
+
+    double itemHeight = 50;
+    double spacing = 10 * (rowCount-1);
+
+    return rowCount * itemHeight + spacing + 200;
+  }
+
   @override
   Widget build(BuildContext context) {
+    var isSeeMoreVisible = widget.card.carddata.length > 6;
+    var isSeeAllVisible = widget.card.carddata.length > 12;
     return Card(
+      key: _cardKey,
       clipBehavior: Clip.hardEdge,
       margin: EdgeInsets.only(top: 10, left: 15, right: 15, bottom: 10),
       elevation: 2,
@@ -109,7 +145,7 @@ class _MenuIconsPanelState extends State<MenuIconsPanel> {
         duration: const Duration(milliseconds: 300),
         curve: Curves.decelerate,
         width: double.infinity,
-        height: bHeight,
+        height: widget.card.carddata.length > 6 ? card_height : null,
         child: Column(
           children: [
             InkWell(
@@ -147,13 +183,15 @@ class _MenuIconsPanelState extends State<MenuIconsPanel> {
                       )
                     : NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.all(10),
+                shrinkWrap: true,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3, // 3 items in a row
                   crossAxisSpacing: 5, // Spacing between columns
                   mainAxisSpacing: 5, // Spacing between rows
                   childAspectRatio: 4 / 3, // Width to height ratio
                 ),
-                itemCount: widget.card.carddata.length, // Number of items
+                itemCount: widget.card.carddata.length,
+                // Number of items
                 itemBuilder: (context, index) {
                   return _gridTile(widget.card.carddata[index], widget.colors[index]);
                 },
@@ -168,75 +206,69 @@ class _MenuIconsPanelState extends State<MenuIconsPanel> {
             //   alignment: WrapAlignment.start,
             //   children: List.generate(isSeeMore ? 12 : 6, (index) => _gridTile(index)),
             // )),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: InkWell(
-                    onTap: () {
-                      _onClickSeeMore();
-                    },
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(isSeeMore ? "See less" : "See more",
-                            style: GoogleFonts.urbanist(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w700,
-                              color: MyColors.blue1,
-                            )),
-                        Icon(
-                          isSeeMore ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
-                          color: MyColors.blue1,
-                          size: 17,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: InkWell(
-                    onTap: () {
-                      _onClickSeeAll(widget.card.carddata, cardName: widget.card.cardname ?? "");
-                    },
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("See all ",
-                            style: GoogleFonts.urbanist(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w700,
-                              color: MyColors.blue1,
-                            )),
-                        Icon(
-                          Icons.open_in_browser,
-                          color: MyColors.blue1,
-                          size: 15,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            isSeeMoreVisible
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: InkWell(
+                          onTap: () {
+                            _onClickSeeMore();
+                          },
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(isSeeMore ? "See less" : "See more",
+                                  style: GoogleFonts.urbanist(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                    color: MyColors.blue1,
+                                  )),
+                              Icon(
+                                isSeeMore ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                                color: MyColors.blue1,
+                                size: 17,
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      isSeeAllVisible
+                          ? Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: InkWell(
+                                onTap: () {
+                                  _onClickSeeAll(widget.card.carddata, cardName: widget.card.cardname ?? "");
+                                },
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text("See all ",
+                                        style: GoogleFonts.urbanist(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w700,
+                                          color: MyColors.blue1,
+                                        )),
+                                    Icon(
+                                      Icons.open_in_browser,
+                                      color: MyColors.blue1,
+                                      size: 15,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )
+                          : SizedBox.shrink()
+                    ],
+                  )
+                : SizedBox.shrink()
           ],
         ),
       ),
     );
-  }
-
-  _getHeight_card(itemCount) {
-    int crossAxisCount = 3;
-    int rowCount = (itemCount / crossAxisCount).ceil();
-
-    double itemHeight = 50;
-    double spacing = 5 * (rowCount - 1);
-
-    return rowCount * itemHeight + spacing + 200;
   }
 
   Widget _gridTile(cardData, Color color) {
@@ -296,16 +328,17 @@ class _MenuIconsPanelState extends State<MenuIconsPanel> {
 
 class QuickLinksBottomSheet extends StatelessWidget {
   QuickLinksBottomSheet(this.menuIconsData, {super.key, required this.cardName, required this.colors});
+
   final dynamic menuIconsData;
   final String cardName;
   final MenuHomePageController menuHomePageController = Get.find();
   final List<Color> colors;
+
   @override
   Widget build(BuildContext context) {
     return Container(
       height: menuIconsData.length > 9 ? Get.height * 0.75 : Get.height / 2.5,
-      decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.only(topRight: Radius.circular(25), topLeft: Radius.circular(25))),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.only(topRight: Radius.circular(25), topLeft: Radius.circular(25))),
       child: Column(
         children: [
           Padding(
@@ -342,7 +375,8 @@ class QuickLinksBottomSheet extends StatelessWidget {
                 mainAxisSpacing: 8.0, // Spacing between rows
                 childAspectRatio: 4 / 3, // Width to height ratio
               ),
-              itemCount: menuIconsData.length, // Number of items
+              itemCount: menuIconsData.length,
+              // Number of items
               itemBuilder: (context, index) {
                 return _gridTile(menuIconsData[index], colors[index]);
               },

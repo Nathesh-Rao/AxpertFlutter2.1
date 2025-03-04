@@ -40,7 +40,8 @@ class MenuDashboardController extends GetxController {
     if (resp.toString() != "") {
       var jsonResp = jsonDecode(resp);
       if (jsonResp['result']['success'].toString().toLowerCase() == "true") {
-        var cards = jsonResp['result']['cards']['data'];
+       //
+        var cards = jsonResp['result']['data'];
         for (var card in cards) {
           //cards
           if (card['cardtype'].toString().toLowerCase() == "chart" || card['cardtype'].toString().toLowerCase() == "kpi") {
@@ -56,10 +57,10 @@ class MenuDashboardController extends GetxController {
               case 'stacked-percentage-column':
               case '':
                 try {
-                  var jsonSqlData = jsonDecode(card['cardsql']);
-                  var rows = jsonSqlData['row'];
+                  var jsonSqlData = jsonDecode(card['carddata']);
+                  //var rows = jsonSqlData['row'];
                   List<ChartData> bar = [];
-                  for (var eachData in rows) {
+                  for (var eachData in jsonSqlData) {
                     ChartData bmodel = ChartData.fromJson(eachData);
                     bar.add(bmodel);
                   }

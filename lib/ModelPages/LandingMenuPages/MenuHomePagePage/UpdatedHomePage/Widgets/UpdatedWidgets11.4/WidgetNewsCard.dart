@@ -28,8 +28,8 @@ class _WidgetNewsCardState extends State<WidgetNewsCard> {
       () => Visibility(
         visible: menuHomePageController.newsCardData.isNotEmpty,
         child: Column(
-          children: List.generate(menuHomePageController.newsCardData.length,
-              (index) => NewsPanel(newsCardData: menuHomePageController.newsCardData[index])),
+          children: List.generate(
+              menuHomePageController.newsCardData.length, (index) => NewsPanel(newsCardData: menuHomePageController.newsCardData[index])),
         ),
       ),
     );
@@ -38,7 +38,9 @@ class _WidgetNewsCardState extends State<WidgetNewsCard> {
 
 class NewsPanel extends StatefulWidget {
   const NewsPanel({super.key, required this.newsCardData});
+
   final UpdatedHomeCardDataModel newsCardData;
+
   @override
   State<NewsPanel> createState() => _NewsPanelState();
 }
@@ -46,27 +48,27 @@ class NewsPanel extends StatefulWidget {
 class _NewsPanelState extends State<NewsPanel> {
   MenuHomePageController menuHomePageController = Get.find();
   ScrollController scrollController = ScrollController();
-  var bHeight = Get.height / 3.8;
+  var bHeight = Get.height / 3.22;
 
-  var bHeight1 = Get.height / 3.8;
+  var bHeight1 = Get.height / 3.22;
   var bHeight2 = Get.height / 1.89;
   var isSeeMore = false;
+
   _onClickSeeMore() {
-    if (widget.newsCardData.carddata.length > 2) {
-      setState(() {
-        isSeeMore = !isSeeMore;
-        if (isSeeMore) {
-          bHeight = bHeight2;
-          // bHeight = (widget.newsCardData.carddata.length > 10 ? bHeight2 : _getHeight_card(widget.newsCardData.carddata.length));
-        } else {
-          bHeight = bHeight1;
-        }
-      });
-    }
+    setState(() {
+      isSeeMore = !isSeeMore;
+      if (isSeeMore) {
+        bHeight = bHeight2;
+      } else {
+        bHeight = bHeight1;
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    var isSeeMoreVisible = widget.newsCardData.carddata.length > 2;
+    var isSeeAllVisible = widget.newsCardData.carddata.length > 4;
     return Card(
         clipBehavior: Clip.hardEdge,
         margin: EdgeInsets.only(top: 10, left: 15, right: 15, bottom: 10),
@@ -82,9 +84,8 @@ class _NewsPanelState extends State<NewsPanel> {
           height: bHeight,
           child: Container(
               height: Get.height / 2,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(topRight: Radius.circular(25), topLeft: Radius.circular(25))),
+              decoration:
+                  BoxDecoration(color: Colors.white, borderRadius: BorderRadius.only(topRight: Radius.circular(25), topLeft: Radius.circular(25))),
               child: Column(children: [
                 InkWell(
                   onTap: () {
@@ -123,7 +124,7 @@ class _NewsPanelState extends State<NewsPanel> {
                   itemBuilder: (context, index) => _tileWidget(widget.newsCardData.carddata[index]),
                   separatorBuilder: (context, index) => Divider(height: 0, thickness: 1),
                 )),
-                widget.newsCardData.carddata.length > 2
+                isSeeMoreVisible
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -179,19 +180,9 @@ class _NewsPanelState extends State<NewsPanel> {
                           // ),
                         ],
                       )
-                    : SizedBox.shrink(),
+                    : SizedBox.shrink()
               ])),
         ));
-  }
-
-  _getHeight_card(itemCount) {
-    int crossAxisCount = 2;
-    int rowCount = (itemCount / crossAxisCount).ceil();
-
-    double itemHeight = 90;
-    double spacing = 5 * (rowCount - 1);
-
-    return rowCount * itemHeight + spacing + 200;
   }
 
   Widget _tileWidget(newsCardData) {

@@ -24,10 +24,8 @@ class WidgetActivityList extends StatelessWidget {
         visible: menuHomePageController.activityListData.isNotEmpty,
         child: Column(
           children: List.generate(menuHomePageController.activityListData.length, (index) {
-            List<Color> colors = List.generate(
-                menuHomePageController.activityListData[index].carddata.length, (index) => MyColors.getRandomColor());
-            return ActivityListPanel(
-                activityListData: menuHomePageController.activityListData[index], colors: colors, index: index);
+            List<Color> colors = List.generate(menuHomePageController.activityListData[index].carddata.length, (index) => MyColors.getRandomColor());
+            return ActivityListPanel(activityListData: menuHomePageController.activityListData[index], colors: colors, index: index);
           }),
         ),
       ),
@@ -37,9 +35,11 @@ class WidgetActivityList extends StatelessWidget {
 
 class ActivityListPanel extends StatefulWidget {
   const ActivityListPanel({super.key, required this.activityListData, required this.colors, required this.index});
+
   final UpdatedHomeCardDataModel activityListData;
   final List<Color> colors;
   final int index;
+
   @override
   State<ActivityListPanel> createState() => _ActivityListPanelState();
 }
@@ -52,6 +52,7 @@ class _ActivityListPanelState extends State<ActivityListPanel> {
   var bHeight1 = Get.height / 3.22;
   var bHeight2 = Get.height / 1.89;
   var isSeeMore = false;
+
   _onClickSeeMore() {
     setState(() {
       isSeeMore = !isSeeMore;
@@ -60,8 +61,7 @@ class _ActivityListPanelState extends State<ActivityListPanel> {
         bHeight =
             (widget.activityListData.carddata.length > 11 ? bHeight2 : _getHeight_card(widget.activityListData.carddata.length));
       } else {
-        scrollController.animateTo(scrollController.position.minScrollExtent,
-            duration: Duration(milliseconds: 300), curve: Curves.decelerate);
+        scrollController.animateTo(scrollController.position.minScrollExtent, duration: Duration(milliseconds: 300), curve: Curves.decelerate);
         bHeight = bHeight1;
       }
     });
@@ -79,6 +79,8 @@ class _ActivityListPanelState extends State<ActivityListPanel> {
 
   @override
   Widget build(BuildContext context) {
+    var isSeeMoreVisible = widget.activityListData.carddata.length > 2;
+    var isSeeAllVisible = widget.activityListData.carddata.length > 4;
     return Card(
         clipBehavior: Clip.hardEdge,
         margin: EdgeInsets.only(top: 10, left: 15, right: 15, bottom: 10),
@@ -95,9 +97,8 @@ class _ActivityListPanelState extends State<ActivityListPanel> {
           height: bHeight,
           child: Container(
               height: Get.height / 2,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(topRight: Radius.circular(25), topLeft: Radius.circular(25))),
+              decoration:
+                  BoxDecoration(color: Colors.white, borderRadius: BorderRadius.only(topRight: Radius.circular(25), topLeft: Radius.circular(25))),
               child: Column(children: [
                 InkWell(
                   onTap: () {
@@ -138,36 +139,38 @@ class _ActivityListPanelState extends State<ActivityListPanel> {
                   itemBuilder: (context, index) => _tileWidget(widget.activityListData.carddata[index], widget.colors[index]),
                   separatorBuilder: (context, index) => Divider(),
                 )),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: InkWell(
-                        onTap: () {
-                          _onClickSeeMore();
-                        },
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(isSeeMore ? "See less" : "See more",
-                                style: GoogleFonts.urbanist(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w700,
-                                  color: MyColors.blue1,
-                                )),
-                            Icon(
-                              isSeeMore ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
-                              color: MyColors.blue1,
-                              size: 17,
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                isSeeMoreVisible
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: InkWell(
+                              onTap: () {
+                                _onClickSeeMore();
+                              },
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(isSeeMore ? "See less" : "See more",
+                                      style: GoogleFonts.urbanist(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700,
+                                        color: MyColors.blue1,
+                                      )),
+                                  Icon(
+                                    isSeeMore ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                                    color: MyColors.blue1,
+                                    size: 17,
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : SizedBox.shrink()
               ])),
         ));
   }

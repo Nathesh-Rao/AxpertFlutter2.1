@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/Const.dart';
@@ -34,6 +35,7 @@ var hasNotificationPermission = true;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await CommonMethods.requestLocationPermission();
   await GetStorage.init();
   await FlutterDownloader.initialize(debug: true);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);

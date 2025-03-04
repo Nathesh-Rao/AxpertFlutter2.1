@@ -12,6 +12,7 @@ import 'package:get/get.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:local_auth_android/local_auth_android.dart';
 import 'package:local_auth_darwin/local_auth_darwin.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 isTablet() {
   return MediaQueryData.fromView(WidgetsBinding.instance.window).size.shortestSide < 600 ? true : false;
@@ -59,14 +60,10 @@ class CommonMethods {
   ) {
     var url = "";
     var msgType = activeList.msgtype.toString().toUpperCase().trim();
-    if (msgType == "MESSAGE" ||
-        msgType == "FORM NOTIFICATION" ||
-        msgType == "PERIODIC NOTIFICATION" ||
-        msgType == "CACHED SAVE") {
+    if (msgType == "MESSAGE" || msgType == "FORM NOTIFICATION" || msgType == "PERIODIC NOTIFICATION" || msgType == "CACHED SAVE") {
       var hlink_TRANID = activeList.hlink_transid.toString();
-      var hlink_PARAMS = activeList.hlink_params.toString().startsWith("^")
-          ? activeList.hlink_params.toString()
-          : "^" + activeList.hlink_params.toString();
+      var hlink_PARAMS =
+          activeList.hlink_params.toString().startsWith("^") ? activeList.hlink_params.toString() : "^" + activeList.hlink_params.toString();
       url = "aspx/AxMain.aspx?pname=" +
           hlink_TRANID +
           "&authKey=AXPERT-" +
@@ -119,6 +116,19 @@ class CommonMethods {
       output = placemarks[0].toString();
     });
     return output;
+  }
+
+  static Future<void> requestLocationPermission() async {
+    var status = await Permission.location.request();
+
+    if (status.isGranted) {
+      print("✅ Location Permission Granted");
+    } else if (status.isDenied) {
+      print("⚠️ Location Permission Denied");
+    } else if (status.isPermanentlyDenied) {
+      print("🚨 Permission Permanently Denied. Redirecting to Settings...");
+      await openAppSettings(); // Opens settings for manual permission
+    }
   }
 }
 
