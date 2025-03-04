@@ -52,6 +52,45 @@ class WidgetKPIPanelSlider extends StatelessWidget {
   }
 }
 
+class WidgetKPIPanelSlider1 extends StatelessWidget {
+  WidgetKPIPanelSlider1({super.key, required this.cardData});
+  final List cardData;
+  @override
+  Widget build(BuildContext context) {
+    final double baseSize = MediaQuery.of(context).size.height * .17;
+    List kpicardData = [];
+    return Obx(
+      () {
+        if (cardData.isNotEmpty) {
+          kpicardData = cardData.map((e) => KpiListModel.fromJson(e)).toList();
+        }
+        // LogService.writeLog(message: "kpiList => ${kpicardData.length}");
+
+        return Visibility(
+            visible: kpicardData.isNotEmpty,
+            child: Padding(
+              padding: EdgeInsets.only(top: 5, bottom: 20),
+              child: SizedBox(
+                height: baseSize,
+                child: ListView.separated(
+                    physics: BouncingScrollPhysics(),
+                    padding: EdgeInsets.only(left: 15),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: kpicardData.length,
+                    separatorBuilder: (context, index) => SizedBox(
+                          width: 10,
+                        ),
+                    itemBuilder: (context, index) => WidgetKPIPanelSliderItem(
+                          index: index,
+                          cardData: kpicardData[index],
+                        )),
+              ),
+            ));
+      },
+    );
+  }
+}
+
 // import 'package:flutter/material.dart';
 
 class WidgetKPIPanelSliderItem extends StatelessWidget {

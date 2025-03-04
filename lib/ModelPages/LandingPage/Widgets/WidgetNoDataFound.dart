@@ -16,12 +16,12 @@ class WidgetNoDataFound extends StatelessWidget {
               width: 300,
             ),
             Text(
-              "No Data Available.",
+              "No Chart Data Available.",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
             ),
             SizedBox(height: 10),
             Text(
-              "There is no data to show you\nright now.",
+              "There is no chart data to show you\nright now.",
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w200),
               textAlign: TextAlign.center,
             )

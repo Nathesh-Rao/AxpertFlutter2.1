@@ -324,7 +324,7 @@ class ActiveTaskListController extends GetxController {
 
   //---------------------------------------
 
-  void onTaskClick(ActiveTaskListModel task) {
+  void onTaskClick(ActiveTaskListModel task) async {
     var pendingModel = task.toPendingListModel();
 
     print(pendingModel.tasktype);
@@ -338,10 +338,11 @@ class ActiveTaskListController extends GetxController {
       case "APPROVE":
         listItemDetailsController.openModel = pendingModel;
 
-        Get.toNamed(Routes.ProjectListingPageDetails)?.then((_) {
-          pageNumber--;
-          _parseTaskMap();
-        });
+        print("Going to active details page");
+        await Get.toNamed(Routes.ProjectListingPageDetails);
+        print("returned from active details page");
+        refreshList();
+
         ;
         break;
       case "":

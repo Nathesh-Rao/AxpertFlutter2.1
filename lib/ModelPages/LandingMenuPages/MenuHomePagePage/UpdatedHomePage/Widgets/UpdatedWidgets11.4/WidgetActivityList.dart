@@ -24,8 +24,9 @@ class WidgetActivityList extends StatelessWidget {
         visible: menuHomePageController.activityListData.isNotEmpty,
         child: Column(
           children: List.generate(menuHomePageController.activityListData.length, (index) {
-            List<Color> colors = List.generate(menuHomePageController.activityListData[index].carddata.length, (index) => MyColors.getRandomColor());
-            return ActivityListPanel(activityListData: menuHomePageController.activityListData[index], colors: colors, index: index);
+            List<Color> colors = List.generate(
+                menuHomePageController.activityListData[index].carddata.length, (index) => MyColors.getRandomColor());
+            return ActivityListPanel(activityListData: menuHomePageController.activityListData[index], colors: colors);
           }),
         ),
       ),
@@ -34,11 +35,11 @@ class WidgetActivityList extends StatelessWidget {
 }
 
 class ActivityListPanel extends StatefulWidget {
-  const ActivityListPanel({super.key, required this.activityListData, required this.colors, required this.index});
+  const ActivityListPanel({super.key, required this.activityListData, required this.colors});
 
   final UpdatedHomeCardDataModel activityListData;
   final List<Color> colors;
-  final int index;
+  // final int index;
 
   @override
   State<ActivityListPanel> createState() => _ActivityListPanelState();
@@ -61,7 +62,8 @@ class _ActivityListPanelState extends State<ActivityListPanel> {
         bHeight =
             (widget.activityListData.carddata.length > 11 ? bHeight2 : _getHeight_card(widget.activityListData.carddata.length));
       } else {
-        scrollController.animateTo(scrollController.position.minScrollExtent, duration: Duration(milliseconds: 300), curve: Curves.decelerate);
+        scrollController.animateTo(scrollController.position.minScrollExtent,
+            duration: Duration(milliseconds: 300), curve: Curves.decelerate);
         bHeight = bHeight1;
       }
     });
@@ -97,8 +99,9 @@ class _ActivityListPanelState extends State<ActivityListPanel> {
           height: bHeight,
           child: Container(
               height: Get.height / 2,
-              decoration:
-                  BoxDecoration(color: Colors.white, borderRadius: BorderRadius.only(topRight: Radius.circular(25), topLeft: Radius.circular(25))),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(topRight: Radius.circular(25), topLeft: Radius.circular(25))),
               child: Column(children: [
                 InkWell(
                   onTap: () {

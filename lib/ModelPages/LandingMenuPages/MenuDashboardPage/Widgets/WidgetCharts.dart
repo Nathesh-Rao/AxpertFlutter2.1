@@ -15,7 +15,8 @@ class WidgetCharts extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(6),
-      decoration: BoxDecoration(border: Border.all(width: 2, color: HexColor('EDF0F8')), borderRadius: BorderRadius.circular(10)),
+      decoration: BoxDecoration(
+          color: Colors.white, border: Border.all(width: 2, color: HexColor('EDF0F8')), borderRadius: BorderRadius.circular(10)),
       child: Theme(
         data: ThemeData().copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(

@@ -37,6 +37,7 @@ class ActiveListPage extends StatelessWidget {
                     isActive: activeTaskListController.isFilterOn.value)),
                 // _iconButtons(Icons.select_all_rounded, () {}),
                 _iconButtons(Icons.done_all, () {
+                  pendingListController.bulkCommentController.clear();
                   Get.dialog(showBulkApprovalProcessDialog(context, pendingListController));
                 }),
               ],
@@ -505,7 +506,9 @@ class ActiveListPage extends StatelessWidget {
                           child: Text("Cancel")),
                       ElevatedButton(
                           onPressed: () {
-                            pendingListController.doBulkApprove();
+                            pendingListController.doBulkApprove().then((_) {
+                              activeTaskListController.refreshList();
+                            });
                           },
                           child: Text("Bulk Approve"))
                     ],

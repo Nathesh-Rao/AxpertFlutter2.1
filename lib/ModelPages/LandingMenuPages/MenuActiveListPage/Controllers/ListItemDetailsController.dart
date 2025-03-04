@@ -339,7 +339,14 @@ class ListItemDetailsController extends GetxController {
         pendingTaskModel!.keyvalue +
         "~pprocess=" +
         pendingTaskModel!.processname;
-    Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(url)]);
+
+    var urlNew = "aspx/AxMain.aspx?authKey=AXPERT-" +
+        appStorage.retrieveValue(AppStorage.SESSIONID) +
+        "&pname=iad___pth&params=pkeyvalue~" +
+        pendingTaskModel!.keyvalue +
+        "^pprocess~" +
+        pendingTaskModel!.processname;
+    Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(urlNew)]);
   }
 
   void viewBtnClicked() {
@@ -349,6 +356,12 @@ class ListItemDetailsController extends GetxController {
         pendingTaskModel!.transid +
         "&params=~act=load~recordid=" +
         pendingTaskModel!.recordid;
-    Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(url)]);
+    var urlNew = "aspx/AxMain.aspx?authKey=AXPERT-" +
+        appStorage.retrieveValue(AppStorage.SESSIONID) +
+        "&pname=t" +
+        pendingTaskModel!.transid +
+        "&params=act~load^recordid~" +
+        pendingTaskModel!.recordid;
+    Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(urlNew)]);
   }
 }

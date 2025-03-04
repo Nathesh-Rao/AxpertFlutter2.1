@@ -2,6 +2,7 @@ import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/Const.dart';
 import 'package:axpertflutter/ModelPages/InApplicationWebView/page/InApplicationWebView.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Controllers/ListItemDetailsController.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Controllers/UpdatedActiveTaskListController/ActiveTaskListController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Widgets/WidgetPendingStatusScrollbar.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetLandingAppBar.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ class PendingListItemDetails extends StatelessWidget {
 
   // PendingListController pendingListController=Get.find();
   ListItemDetailsController listItemDetailsController = Get.find();
+  ActiveTaskListController taskListController = Get.find();
 
   @override
   Widget build(BuildContext context) {
