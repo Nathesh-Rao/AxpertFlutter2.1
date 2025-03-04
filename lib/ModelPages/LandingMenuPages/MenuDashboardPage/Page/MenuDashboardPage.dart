@@ -1,3 +1,4 @@
+import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuDashboardPage/Controllers/MenuDashboaardController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuDashboardPage/Widgets/WidgetCharts.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetNoDataFound.dart';
@@ -5,32 +6,49 @@ import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetSlidingNotifi
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../Models/ChartCardModel.dart';
+
 class MenuDashboardPage extends StatelessWidget {
   MenuDashboardPage({super.key});
   final MenuDashboardController menuDashboardController = Get.put(MenuDashboardController());
   final index = 2;
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        WidgetSlidingNotificationPanel(),
-        SizedBox(height: 5),
-        Visibility(visible: menuDashboardController.chartList.length == 0 ? true : false, child: WidgetNoDataFound()),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: ListView.separated(
-              itemCount: menuDashboardController.chartList.length,
-              shrinkWrap: true,
-              physics: ClampingScrollPhysics(),
-              separatorBuilder: (context, index) => SizedBox(height: 30),
-              itemBuilder: (context, index) {
-                return WidgetCharts(menuDashboardController.chartList[index]);
-              },
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // menuDashboardController.fetchDataFromServer();
+    });
+
+    return Scaffold(
+      backgroundColor: MyColors.white3.withAlpha(130),
+      body: Column(
+        children: [
+          WidgetSlidingNotificationPanel(),
+          SizedBox(height: 5),
+          Visibility(visible: menuDashboardController.chartList.length == 0 ? true : false, child: WidgetNoDataFound()),
+          Expanded(
+            child: Obx(
+              () => ListView(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                shrinkWrap: true,
+                physics: ClampingScrollPhysics(),
+                children: [
+                  ...List.generate(
+                      menuDashboardController.chartList.length,
+                      (index) => Visibility(
+                            visible: validateModel(menuDashboardController.chartList[index]),
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 20, left: 15, right: 15),
+                              child: WidgetCharts(menuDashboardController.chartList[index]),
+                            ),
+                          )),
+                  ...List.generate(menuDashboardController.dashBoardWidgetList.length,
+                      (index) => menuDashboardController.dashBoardWidgetList[index]),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -117,3 +135,15 @@ Column(
               ],
             ),
  */
+
+validateModel(ChartCardModel cardModel) {
+  List<ChartData> datas = cardModel.dataList;
+  try {
+    for (ChartData item in datas) {
+      double.parse(item.value);
+    }
+  } catch (e) {
+    return false;
+  }
+  return true;
+}

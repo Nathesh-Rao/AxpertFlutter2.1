@@ -204,7 +204,7 @@ reBuild(PendingListController pendingListController, BuildContext context) {
             child: ListView.separated(
                 itemBuilder: (context, index) {
                   return ListTile(
-                    onTap: () {
+                    onTap: () async {
                       print(pendingListController.pending_activeList[index].toJson());
                       switch (pendingListController.pending_activeList[index].tasktype.toString().toUpperCase()) {
                         case "MAKE":
@@ -216,8 +216,9 @@ reBuild(PendingListController pendingListController, BuildContext context) {
                         case "APPROVE":
                           ListItemDetailsController listItemDetailsController = Get.put(ListItemDetailsController());
                           listItemDetailsController.openModel = pendingListController.pending_activeList[index];
-
-                          Get.toNamed(Routes.ProjectListingPageDetails);
+                          print("Going to active details page");
+                          await Get.toNamed(Routes.ProjectListingPageDetails);
+                          print("returned from active details page");
                           break;
                         case "":
                         case "NULL":
