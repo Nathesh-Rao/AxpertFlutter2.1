@@ -46,20 +46,23 @@ class NewsPanel extends StatefulWidget {
 class _NewsPanelState extends State<NewsPanel> {
   MenuHomePageController menuHomePageController = Get.find();
   ScrollController scrollController = ScrollController();
-  var bHeight = Get.height / 3.22;
+  var bHeight = Get.height / 3.8;
 
-  var bHeight1 = Get.height / 3.22;
+  var bHeight1 = Get.height / 3.8;
   var bHeight2 = Get.height / 1.89;
   var isSeeMore = false;
   _onClickSeeMore() {
-    setState(() {
-      isSeeMore = !isSeeMore;
-      if (isSeeMore) {
-        bHeight = bHeight2;
-      } else {
-        bHeight = bHeight1;
-      }
-    });
+    if (widget.newsCardData.carddata.length > 2) {
+      setState(() {
+        isSeeMore = !isSeeMore;
+        if (isSeeMore) {
+          bHeight = bHeight2;
+          // bHeight = (widget.newsCardData.carddata.length > 10 ? bHeight2 : _getHeight_card(widget.newsCardData.carddata.length));
+        } else {
+          bHeight = bHeight1;
+        }
+      });
+    }
   }
 
   @override
@@ -120,63 +123,75 @@ class _NewsPanelState extends State<NewsPanel> {
                   itemBuilder: (context, index) => _tileWidget(widget.newsCardData.carddata[index]),
                   separatorBuilder: (context, index) => Divider(height: 0, thickness: 1),
                 )),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: InkWell(
-                        onTap: () {
-                          _onClickSeeMore();
-                        },
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(isSeeMore ? "See less" : "See more",
-                                style: GoogleFonts.urbanist(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w700,
-                                  color: MyColors.blue1,
-                                )),
-                            Icon(
-                              isSeeMore ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
-                              color: MyColors.blue1,
-                              size: 17,
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    // Padding(
-                    //   padding: const EdgeInsets.all(10),
-                    //   child: InkWell(
-                    //     onTap: () {
-                    //       // _onClickSeeAll();
-                    //     },
-                    //     child: Row(
-                    //       mainAxisSize: MainAxisSize.min,
-                    //       mainAxisAlignment: MainAxisAlignment.center,
-                    //       children: [
-                    //         Text("See all ",
-                    //             style: GoogleFonts.urbanist(
-                    //               fontSize: 12,
-                    //               fontWeight: FontWeight.w700,
-                    //               color: MyColors.blue1,
-                    //             )),
-                    //         Icon(
-                    //           Icons.open_in_browser,
-                    //           color: MyColors.blue1,
-                    //           size: 15,
-                    //         )
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
-                  ],
-                ),
+                widget.newsCardData.carddata.length > 2
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: InkWell(
+                              onTap: () {
+                                _onClickSeeMore();
+                              },
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(isSeeMore ? "See less" : "See more",
+                                      style: GoogleFonts.urbanist(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700,
+                                        color: MyColors.blue1,
+                                      )),
+                                  Icon(
+                                    isSeeMore ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                                    color: MyColors.blue1,
+                                    size: 17,
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          // Padding(
+                          //   padding: const EdgeInsets.all(10),
+                          //   child: InkWell(
+                          //     onTap: () {
+                          //       // _onClickSeeAll();
+                          //     },
+                          //     child: Row(
+                          //       mainAxisSize: MainAxisSize.min,
+                          //       mainAxisAlignment: MainAxisAlignment.center,
+                          //       children: [
+                          //         Text("See all ",
+                          //             style: GoogleFonts.urbanist(
+                          //               fontSize: 12,
+                          //               fontWeight: FontWeight.w700,
+                          //               color: MyColors.blue1,
+                          //             )),
+                          //         Icon(
+                          //           Icons.open_in_browser,
+                          //           color: MyColors.blue1,
+                          //           size: 15,
+                          //         )
+                          //       ],
+                          //     ),
+                          //   ),
+                          // ),
+                        ],
+                      )
+                    : SizedBox.shrink(),
               ])),
         ));
+  }
+
+  _getHeight_card(itemCount) {
+    int crossAxisCount = 2;
+    int rowCount = (itemCount / crossAxisCount).ceil();
+
+    double itemHeight = 90;
+    double spacing = 5 * (rowCount - 1);
+
+    return rowCount * itemHeight + spacing + 200;
   }
 
   Widget _tileWidget(newsCardData) {

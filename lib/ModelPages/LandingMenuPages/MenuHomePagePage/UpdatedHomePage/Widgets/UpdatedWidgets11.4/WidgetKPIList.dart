@@ -29,7 +29,8 @@ class _WidgetKPIListState extends State<WidgetKPIList> {
           visible: menuHomePageController.kpiListCardData.isNotEmpty,
           child: Column(
             children: List.generate(menuHomePageController.kpiListCardData.length, (index) {
-              List<Color> colors = List.generate(menuHomePageController.kpiListCardData[index].carddata.length, (index) => MyColors.getRandomColor());
+              List<Color> colors = List.generate(
+                  menuHomePageController.kpiListCardData[index].carddata.length, (index) => MyColors.getRandomColor());
               return KPICardsPanel(card: menuHomePageController.kpiListCardData[index], colors: colors);
             }),
           ),
@@ -50,29 +51,41 @@ class KPICardsPanel extends StatefulWidget {
 class _KPICardsPanelState extends State<KPICardsPanel> {
   final MenuHomePageController menuHomePageController = Get.find();
   ScrollController scrollController = ScrollController();
+  final GlobalKey _key = GlobalKey();
+
   var bHeight = Get.height / 3.8;
 
   var bHeight1 = Get.height / 3.8;
   var bHeight2 = Get.height / 1.89;
+
   var isSeeMore = false;
+
+  double getWidgetHeight() {
+    final RenderBox? renderBox = _key.currentContext?.findRenderObject() as RenderBox?;
+    return renderBox?.size.height ?? 0;
+  }
 
   _onClickSeeMore() {
     setState(() {
       isSeeMore = !isSeeMore;
       if (isSeeMore) {
-        bHeight = (widget.card.carddata.length > 10 ? bHeight2 : _getHeight_card(widget.card.carddata.length));
+        // bHeight = (widget.card.carddata.length > 10 ? bHeight2 : _getHeight_card(widget.card.carddata.length));
+        bHeight = bHeight2;
       } else {
-        scrollController.animateTo(scrollController.position.minScrollExtent, duration: Duration(milliseconds: 300), curve: Curves.decelerate);
+        scrollController.animateTo(scrollController.position.minScrollExtent,
+            duration: Duration(milliseconds: 300), curve: Curves.decelerate);
         bHeight = bHeight1;
       }
     });
   }
 
   void _onClickSeeAll(cardData, {required String cardName}) async {
-    await Get.bottomSheet(ignoreSafeArea: true, QuickLinksBottomSheet(cardData, cardName: cardName, colors: widget.colors)).then((_) {
+    await Get.bottomSheet(ignoreSafeArea: true, QuickLinksBottomSheet(cardData, cardName: cardName, colors: widget.colors))
+        .then((_) {
       if (isSeeMore) {
         setState(() {
-          scrollController.animateTo(scrollController.position.minScrollExtent, duration: Duration(milliseconds: 300), curve: Curves.decelerate);
+          scrollController.animateTo(scrollController.position.minScrollExtent,
+              duration: Duration(milliseconds: 300), curve: Curves.decelerate);
           isSeeMore = !isSeeMore;
           bHeight = bHeight1;
 
@@ -86,7 +99,8 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
   Widget build(BuildContext context) {
     var isSeeMoreVisible = widget.card.carddata.length > 4;
     var isSeeAllVisible = widget.card.carddata.length > 8;
-
+    bHeight1 = (getWidgetHeight() * 3) + 20;
+    bHeight2 = (getWidgetHeight() * (widget.card.carddata.length / 1.5)) + 30;
     return Card(
       clipBehavior: Clip.hardEdge,
       margin: EdgeInsets.only(top: 10, left: 15, right: 15, bottom: 10),
@@ -150,19 +164,11 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
                 itemCount: widget.card.carddata.length,
                 // Number of items
                 itemBuilder: (context, index) {
-                  return _gridTile(widget.card.carddata[index], widget.colors[index]);
+                  return _gridTile(widget.card.carddata[index], widget.colors[index], index);
                 },
               ),
             ),
             SizedBox(height: 5),
-            // Expanded(
-            //     child: Wrap(
-            //   spacing: 10,
-            //   runSpacing: 10,
-            //   runAlignment: WrapAlignment.spaceAround,
-            //   alignment: WrapAlignment.start,
-            //   children: List.generate(isSeeMore ? 12 : 6, (index) => _gridTile(index)),
-            // )),
             isSeeMoreVisible
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -228,7 +234,7 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
     );
   }
 
-  Widget _gridTile(cardData, Color color) {
+  Widget _gridTile(cardData, Color color, int index) {
     KpiListModel kpiListData = KpiListModel.fromJson(cardData);
 
     Color darkenColor(Color color, [double amount = 0.2]) {
@@ -242,8 +248,10 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
     }
 
     return InkWell(
+      key: index == 0 ? _key : null,
       onTap: () {
         menuHomePageController.captionOnTapFunctionNew(kpiListData.link);
+        // print(getWidgetHeight().toString());
       },
       child: Container(
         padding: EdgeInsets.all(10),
@@ -290,12 +298,11 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
 }
 
 _getHeight_card(itemCount) {
-
   int crossAxisCount = 2;
   int rowCount = (itemCount / crossAxisCount).ceil();
 
   double itemHeight = 50;
-  double spacing = 5 * (rowCount-1);
+  double spacing = 5 * (rowCount - 1);
 
   return rowCount * itemHeight + spacing + 200;
 }
@@ -312,7 +319,8 @@ class QuickLinksBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: menuIconsData.length > 9 ? Get.height * 0.75 : Get.height / 2.5,
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.only(topRight: Radius.circular(25), topLeft: Radius.circular(25))),
+      decoration: BoxDecoration(
+          color: Colors.white, borderRadius: BorderRadius.only(topRight: Radius.circular(25), topLeft: Radius.circular(25))),
       child: Column(
         children: [
           Padding(
@@ -410,7 +418,7 @@ class QuickLinksBottomSheet extends StatelessWidget {
                     ),
                   ),
                   Flexible(
-                      child: Text(kpiListData.value ?? '',
+                      child: Text(kpiListData.value == null ? "" : kpiListData.value.toString(),
                           style: GoogleFonts.urbanist(fontSize: 14, fontWeight: FontWeight.w700, color: darkenColor(color)))),
                 ],
               ),

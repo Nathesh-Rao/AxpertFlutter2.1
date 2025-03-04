@@ -65,7 +65,8 @@ class _MenuIconsPanelState extends State<MenuIconsPanel> {
     setState(() {
       isSeeMore = !isSeeMore;
       if (isSeeMore) {
-        bHeight = bHeight2;
+        // bHeight = bHeight2;
+        bHeight = (widget.card.carddata.length > 11 ? bHeight2 : _getHeight_card(widget.card.carddata.length));
       } else {
         scrollController.animateTo(scrollController.position.minScrollExtent,
             duration: Duration(milliseconds: 300), curve: Curves.decelerate);
@@ -226,6 +227,16 @@ class _MenuIconsPanelState extends State<MenuIconsPanel> {
         ),
       ),
     );
+  }
+
+  _getHeight_card(itemCount) {
+    int crossAxisCount = 3;
+    int rowCount = (itemCount / crossAxisCount).ceil();
+
+    double itemHeight = 50;
+    double spacing = 5 * (rowCount - 1);
+
+    return rowCount * itemHeight + spacing + 200;
   }
 
   Widget _gridTile(cardData, Color color) {

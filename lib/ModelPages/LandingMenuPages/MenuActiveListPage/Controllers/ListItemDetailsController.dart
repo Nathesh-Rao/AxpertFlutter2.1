@@ -122,19 +122,24 @@ class ListItemDetailsController extends GetxController {
   }
 
   void actionApproveOrRejectOrCheck(bool hasComments, action) async {
+    print("Approve called 1");
     errCom.value = "";
-    if (hasComments) {
-      if (comments.text.toString().trim() == "") errCom.value = "Please enter comments";
-      return;
-    }
+    // if (hasComments) {
+    //   if (comments.text.toString().trim() == "") errCom.value = "Please enter comments";
+    //   return;
+    // }
+    print("Approve called 2");
+
     var body = {
       "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
       "TaskId": pendingTaskModel!.taskid ?? "",
       "TaskType": pendingTaskModel!.tasktype ?? "",
       "Action": action,
       "StatusReason": "Approved by Manager",
-      "StatusText": comments.text.toString().trim()
+      "StatusText": comments.text.toString().trim(),
     };
+    print("Approve called 3");
+
     LoadingScreen.show();
     var url = Const.getFullARMUrl(ServerConnections.API_DO_TASK_ACTIONS);
     var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);

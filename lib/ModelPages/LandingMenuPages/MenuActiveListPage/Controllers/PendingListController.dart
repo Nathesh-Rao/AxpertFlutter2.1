@@ -271,19 +271,37 @@ class PendingListController extends GetxController {
     bulkApproval_activeList.refresh();
   }
 
-  doBulkApprove() {
+  TextEditingController bulkCommentController = TextEditingController();
+  doBulkApprove() async {
     var list_taskId = "";
     for (var item in bulkApproval_activeList) {
       if (item.bulkApprove_isSelected.value == true)
         list_taskId.isEmpty ? list_taskId += item.taskid : list_taskId += "," + item.taskid;
     }
+
     print("list_taskId: $list_taskId");
+
     if (list_taskId.isEmpty) {
       Get.snackbar("Oops!", "Select atleast one task for approval.",
           backgroundColor: Colors.redAccent,
           colorText: Colors.white,
           snackPosition: SnackPosition.BOTTOM,
           duration: Duration(seconds: 3));
+    } else {
+      var url = Const.getFullARMUrl(ServerConnections.API_POST_BULK_DO_BULK_ACTION);
+      var body = {
+        "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
+        "TaskId": list_taskId, //comma seperated
+        "TaskType": "APPROVE",
+        "Action": "BULKAPPROVE",
+        "StatusText": bulkCommentController.text,
+        "AppName": Const.PROJECT_NAME.toString(),
+        "User": appStorage.retrieveValue(AppStorage.USER_NAME)
+      };
+      var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
+
+      print("resp => doBulkAction");
+      print(resp);
     }
   }
 }

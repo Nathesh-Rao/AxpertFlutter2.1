@@ -127,8 +127,10 @@ class ServerConnections {
   static const String API_GET_COMPLETED_ACTIVETASK_COUNT = "api/v1/ARMGetCompletedTasksCount";
   static const String API_GET_FILTERED_COMPLETED_TASK = "api/v1/ARMGetFilteredCompletedTasks";
   static const String API_DO_TASK_ACTIONS = "api/v1/ARMDoTaskAction";
+  static const String API_GET_ALL_ACTIVE_TASKS = "api/v1/ARMGetAllActiveTasks";
   static const String API_GET_BULK_APPROVAL_COUNT = "api/v1/ARMGetBulkApprovalCount";
   static const String API_GET_BULK_ACTIVETASKS = "api/v1/ARMGetBulkActiveTasks";
+  static const String API_POST_BULK_DO_BULK_ACTION = "/api/v1/ARMDoBulkAction";
   static const String API_GET_SENDTOUSERS = "api/v1/ARMGetSendToUsers";
   static const String API_GET_FILE_BY_RECORDID = "api/v1/GetFileByRecordId";
   static const String BANNER_JSON_NAME = "mainpagebanner.json";

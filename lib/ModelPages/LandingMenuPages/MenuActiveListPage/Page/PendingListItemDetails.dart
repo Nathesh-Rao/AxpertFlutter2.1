@@ -30,6 +30,7 @@ class PendingListItemDetails extends StatelessWidget {
   }
 
   reBuild(size) => Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: WidgetLandingAppBar(),
         body: Padding(
           padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 20),
@@ -44,6 +45,7 @@ class PendingListItemDetails extends StatelessWidget {
                     BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: HexColor('707070').withOpacity(0.2)))),
                 // color: Colors.red,
                 child: ListView.separated(
+                    shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
                     controller: listItemDetailsController.scrollController,
                     itemBuilder: (context, index) {
@@ -80,8 +82,9 @@ class PendingListItemDetails extends StatelessWidget {
                       // height: size.height - 200,
                       // width: double.maxFinite,
                       // color: Colors.red,
-                      child: InApplicationWebViewer(Const.getFullProjectUrl(
-                          CommonMethods.activeList_CreateURL_MAKE(listItemDetailsController.openModel, 0))),
+                      child: InApplicationWebViewer(Const.getFullProjectUrl(CommonMethods.activeList_CreateURL_MAKE(
+                        listItemDetailsController.openModel,
+                      ))),
                     )),
               ] else ...[
                 Visibility(
