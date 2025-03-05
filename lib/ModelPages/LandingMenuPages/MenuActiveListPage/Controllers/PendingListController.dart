@@ -5,6 +5,7 @@ import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/Const.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Models/BulkApprovalCountModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Models/PendingListModel.dart';
+import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -222,7 +223,7 @@ class PendingListController extends GetxController {
       if (jsonResp['result']['message'].toString() == "success") {
         bulkApprovalCount_list.clear();
         var dataList = jsonResp['result']['data'];
-
+        LogService.writeLog(message: "getBulkApprovalCount=> $dataList");
         for (var item in dataList) {
           BulkApprovalCountModel bulkApprovalCountModel = BulkApprovalCountModel.fromJson(item);
           bulkApprovalCount_list.add(bulkApprovalCountModel);

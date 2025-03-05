@@ -168,6 +168,11 @@ class _MenuIconsPanelState extends State<MenuIconsPanel> {
                           fontSize: 15,
                           fontWeight: FontWeight.w700,
                         )),
+                    // Text(card_height.toString(),
+                    //     style: GoogleFonts.urbanist(
+                    //       fontSize: 15,
+                    //       fontWeight: FontWeight.w700,
+                    //     )),
                   ],
                 ),
               ),
