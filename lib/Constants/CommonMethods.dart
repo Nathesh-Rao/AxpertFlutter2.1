@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/Const.dart';
@@ -60,10 +61,14 @@ class CommonMethods {
   ) {
     var url = "";
     var msgType = activeList.msgtype.toString().toUpperCase().trim();
-    if (msgType == "MESSAGE" || msgType == "FORM NOTIFICATION" || msgType == "PERIODIC NOTIFICATION" || msgType == "CACHED SAVE") {
+    if (msgType == "MESSAGE" ||
+        msgType == "FORM NOTIFICATION" ||
+        msgType == "PERIODIC NOTIFICATION" ||
+        msgType == "CACHED SAVE") {
       var hlink_TRANID = activeList.hlink_transid.toString();
-      var hlink_PARAMS =
-          activeList.hlink_params.toString().startsWith("^") ? activeList.hlink_params.toString() : "^" + activeList.hlink_params.toString();
+      var hlink_PARAMS = activeList.hlink_params.toString().startsWith("^")
+          ? activeList.hlink_params.toString()
+          : "^" + activeList.hlink_params.toString();
       url = "aspx/AxMain.aspx?pname=" +
           hlink_TRANID +
           "&authKey=AXPERT-" +
@@ -127,7 +132,9 @@ class CommonMethods {
       print("⚠️ Location Permission Denied");
     } else if (status.isPermanentlyDenied) {
       print("🚨 Permission Permanently Denied. Redirecting to Settings...");
-      await openAppSettings(); // Opens settings for manual permission
+      if (!Platform.isIOS) {
+        await openAppSettings(); // Opens settings for manual permission
+      }
     }
   }
 }
