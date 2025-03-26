@@ -5,6 +5,7 @@ import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Con
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Controllers/UpdatedActiveTaskListController/ActiveTaskListController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Widgets/WidgetPendingStatusScrollbar.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetLandingAppBar.dart';
+import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -463,16 +464,25 @@ class PendingListItemDetails extends StatelessWidget {
                           listItemDetailsController.pendingTaskModel!.cmsg_appcheck.toString(),
                         )),
                       ),
+                      // Visibility(visible: hasComments, child: Text("*")),
                       Visibility(
                         visible: true,
                         child: Obx(() => Container(
                               margin: EdgeInsets.only(top: 10),
-                              child: TextField(
+                              child: TextFormField(
                                 controller: listItemDetailsController.comments,
+                                validator: (text) {
+                                  return (text == null && hasComments || text == '' && hasComments)
+                                      ? "Comments are mandatory"
+                                      : null;
+                                },
                                 decoration: InputDecoration(
+                                    floatingLabelBehavior: FloatingLabelBehavior.always,
                                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                                    hintText: "Enter Comments",
-                                    labelText: "Enter Comments",
+                                    hintText: "Enter Comments${hasComments ? "*" : ""}",
+                                    // labelText: "Enter Comments${hasComments ? "*" : ""}",
+                                    labelText: hasComments ? "*" : "",
+                                    labelStyle: TextStyle(color: Colors.red),
                                     errorText: listItemDetailsController.errCom.value == ''
                                         ? null
                                         : listItemDetailsController.errCom.value,
@@ -496,6 +506,15 @@ class PendingListItemDetails extends StatelessWidget {
                             ),
                             ElevatedButton(
                                 onPressed: () {
+                                  if (hasComments && listItemDetailsController.comments.text.isEmpty) {
+                                    Get.showSnackbar(GetSnackBar(
+                                      duration: Duration(seconds: 2),
+                                      title: "Add Comments",
+                                      message: "Comments are Mandatory",
+                                    ));
+                                    return;
+                                  }
+
                                   listItemDetailsController.actionApproveOrRejectOrCheck(hasComments, "Approve");
                                 },
                                 child: Text("Approve"))
@@ -646,7 +665,8 @@ class PendingListItemDetails extends StatelessWidget {
   }
 
   widgetRejectButton(size) {
-    var hasComments = listItemDetailsController.pendingTaskModel?.approvalcomments.toString().toLowerCase() != 't' ? true : false;
+    var hasComments = listItemDetailsController.pendingTaskModel?.rejectcomments.toString().toLowerCase() == 't' ? true : false;
+
     listItemDetailsController.comments.text = "";
     listItemDetailsController.errCom.value = "";
     return AspectRatio(
@@ -666,7 +686,7 @@ class PendingListItemDetails extends StatelessWidget {
                     children: [
                       Center(
                           child: Text(
-                        'Reject?',
+                        'Reject',
                         style: TextStyle(fontSize: 20),
                       )),
                       Container(
@@ -682,15 +702,17 @@ class PendingListItemDetails extends StatelessWidget {
                         )),
                       ),
                       Visibility(
-                        visible: hasComments,
+                        visible: true,
                         child: Obx(() => Container(
                               margin: EdgeInsets.only(top: 10),
                               child: TextField(
                                 controller: listItemDetailsController.comments,
                                 decoration: InputDecoration(
                                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                                    hintText: "Enter Comments",
-                                    labelText: "Enter Comments",
+                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                    hintText: "Enter Comments${hasComments ? "*" : ""}",
+                                    labelText: hasComments ? "*" : "",
+                                    labelStyle: TextStyle(color: Colors.red),
                                     errorText: listItemDetailsController.errCom.value == ''
                                         ? null
                                         : listItemDetailsController.errCom.value,
@@ -714,7 +736,18 @@ class PendingListItemDetails extends StatelessWidget {
                             ),
                             ElevatedButton(
                                 onPressed: () {
+                                  if (hasComments && listItemDetailsController.comments.text.isEmpty) {
+                                    Get.showSnackbar(GetSnackBar(
+                                      duration: Duration(seconds: 2),
+                                      title: "Add Comments",
+                                      message: "Comments are Mandatory",
+                                    ));
+                                    return;
+                                  }
+
                                   listItemDetailsController.actionApproveOrRejectOrCheck(hasComments, "Reject");
+
+                                  // listItemDetailsController.actionApproveOrRejectOrCheck(hasComments, "Reject");
                                 },
                                 child: Text("Reject"))
                           ],
@@ -755,7 +788,7 @@ class PendingListItemDetails extends StatelessWidget {
   }
 
   widgetReturnButton(size) {
-    var hasComments = listItemDetailsController.pendingTaskModel?.approvalcomments.toString().toLowerCase() != 't' ? true : false;
+    var hasComments = listItemDetailsController.pendingTaskModel?.returncomments.toString().toLowerCase() == 't' ? true : false;
     listItemDetailsController.comments.text = "";
     listItemDetailsController.errCom.value = "";
     return AspectRatio(
@@ -805,15 +838,17 @@ class PendingListItemDetails extends StatelessWidget {
                         ),
                       ),
                       Visibility(
-                        visible: hasComments,
+                        visible: true,
                         child: Obx(() => Container(
                               margin: EdgeInsets.only(top: 10),
                               child: TextField(
                                 controller: listItemDetailsController.comments,
                                 decoration: InputDecoration(
                                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                                    hintText: "Enter Comments",
-                                    labelText: "Enter Comments",
+                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                    hintText: "Enter Comments${hasComments ? "*" : ""}",
+                                    labelText: hasComments ? "*" : "",
+                                    labelStyle: TextStyle(color: Colors.red),
                                     errorText: listItemDetailsController.errCom.value == ''
                                         ? null
                                         : listItemDetailsController.errCom.value,
@@ -837,6 +872,17 @@ class PendingListItemDetails extends StatelessWidget {
                             ),
                             ElevatedButton(
                                 onPressed: () {
+                                  if (hasComments && listItemDetailsController.comments.text.isEmpty) {
+                                    Get.showSnackbar(GetSnackBar(
+                                      duration: Duration(seconds: 2),
+                                      title: "Add Comments",
+                                      message: "Comments are Mandatory",
+                                    ));
+                                    return;
+                                  }
+
+                                  // listItemDetailsController.actionApproveOrRejectOrCheck(hasComments, "Reject");
+
                                   listItemDetailsController.actionReturn(hasComments);
                                 },
                                 child: Text("Return"))

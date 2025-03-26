@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/CommonMethods.dart';
@@ -9,7 +10,6 @@ import 'package:axpertflutter/ModelPages/ProjectListing/Model/ProjectModel.dart'
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -29,6 +29,7 @@ class AddConnectionController extends GetxController {
   TextEditingController conCaptionController = TextEditingController();
 
   var tempProjectName = "";
+  var tempProjectCaption = "";
 
   var selectedRadioValue = "QR".obs;
   var index = 0.obs;
@@ -69,6 +70,7 @@ class AddConnectionController extends GetxController {
     return true;
   }
 
+//NOTE checkpoint 2
   bool validateProjectDetailsForm() {
     Pattern pattern = r"(https?|http)://([-a-z-A-Z0-9.]+)(/[-a-z-A-Z0-9+&@#/%=~_|!:,.;]*)?(\?[a-zA-Z0-9+&@#/%=~_|!:,.;]*)?";
     RegExp regex = RegExp(pattern.toString());
@@ -110,6 +112,7 @@ class AddConnectionController extends GetxController {
     return controller.value == '' ? null : controller.value;
   }
 
+//NOTE checkpoint 1
   projectDetailsClicked({isQr = false}) async {
     ProjectModel projectModel;
     if (validateProjectDetailsForm()) {
@@ -123,8 +126,8 @@ class AddConnectionController extends GetxController {
         //check whether the entered Connection name is proper
         Future<bool> isValidConnName = validateConnectionName(baseUrl);
         if (await isValidConnName) {
-          projectModel = ProjectModel(
-              conNameController.text.trim(), webUrlController.text.trim(), armUrlController.text.trim(), conCaptionController.text.trim());
+          projectModel = ProjectModel(conNameController.text.trim(), webUrlController.text.trim(), armUrlController.text.trim(),
+              conCaptionController.text.trim());
           /*conNameController.text = "";
           webUrlController.text = "";
           armUrlController.text = "";
@@ -148,25 +151,73 @@ class AddConnectionController extends GetxController {
     }
   }
 
-  void saveDatAndRedirect(projectModel, json, {isQr = false}) {
-    //if update is required
-    if (updateProjectDetails) {
-      //project name is same as previous
-      if (tempProjectName == projectModel.projectname) {
-        appStorage.storeValue(projectModel.projectname, json);
-        projectListingController.needRefresh.value = true;
-        Get.back(result: "{refresh:true}");
-        updateProjectDetails = false;
+  bool checkDuplicateProject(ProjectModel model) {
+    var storedValue = appStorage.retrieveValue(AppStorage.PROJECT_LIST);
+
+    List<String> storedList = [];
+
+    if (storedValue is String) {
+      storedList = List<String>.from(jsonDecode(storedValue)); // Properly parse JSON
+    } else if (storedValue is List) {
+      storedList = List<String>.from(storedValue.first); // Unwrap nested list
+    }
+
+    log("storedList => $storedList");
+
+    if (storedList.contains(model.projectCaption)) {
+      log("${model.projectCaption}");
+
+      var project = appStorage.retrieveValue(model.projectCaption);
+
+      var pModel = ProjectModel.fromJson(project);
+
+      if (webUrlController.text.trim() == pModel.web_url &&
+          armUrlController.text.trim() == pModel.arm_url &&
+          conNameController.text.trim() == pModel.projectname) {
+        Get.snackbar("Element already exists", "",
+            snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
+        return true;
       } else {
-        //project name is different from previous
-        deleteExistingProjectWithProjectName(tempProjectName);
-        bool isSaved = createFreshNewProject(projectModel, json);
+        return false;
+      }
+    }
+
+    return false;
+  }
+
+//NOTE checkpoint 4
+  void saveDatAndRedirect(projectModel, json, {isQr = false}) {
+    if (checkDuplicateProject(projectModel)) {
+      log("========================>>>>>>>>>>>>FOUND duplicate");
+    } else {
+      log("========================>>>>>>>>>>>>NO duplicate");
+      if (updateProjectDetails) {
+        //project name is same as previous
+        // if (tempProjectName == projectModel.projectname) {
+        //   appStorage.storeValue(projectModel.projectname, json);
+        // if (tempProjectName == projectModel.projectCaption) {
+        log("checkpoint 4 {tempProjectCaption ($tempProjectCaption) == projectModel.projectCaption (${projectModel.projectCaption}) => ${tempProjectCaption == projectModel.projectCaption}");
+        if (tempProjectCaption == projectModel.projectCaption) {
+          appStorage.storeValue(projectModel.projectCaption, json);
+          projectListingController.needRefresh.value = true;
+          Get.back(result: "{refresh:true}");
+          updateProjectDetails = false;
+        } else {
+          //project name is different from previous
+          deleteExistingProjectWithProjectName(tempProjectCaption);
+
+          // deleteExistingProjectWithProjectName(tempProjectName);
+          bool isSaved = createFreshNewProject(projectModel, json);
+
+          log("createFreshNewProject => isSaved => $isSaved");
+
+          projectListingController.needRefresh.value = isSaved;
+        }
+      } else {
+        //create a fresh one
+        bool isSaved = createFreshNewProject(projectModel, json, isQr: isQr);
         projectListingController.needRefresh.value = isSaved;
       }
-    } else {
-      //create a fresh one
-      bool isSaved = createFreshNewProject(projectModel, json, isQr: isQr);
-      projectListingController.needRefresh.value = isSaved;
     }
   }
 
@@ -175,15 +226,21 @@ class AddConnectionController extends GetxController {
     var storedList = appStorage.retrieveValue(AppStorage.PROJECT_LIST);
     print(storedList);
     if (storedList == null) {
-      projectList.add(projectModel.projectname);
-      appStorage.storeValue(projectModel.projectname, json);
+      projectList.add(projectModel.projectCaption);
+      // projectList.add(projectModel.projectname);
+
+      appStorage.storeValue(projectModel.projectCaption, json);
       appStorage.storeValue(AppStorage.PROJECT_LIST, jsonEncode(projectList));
       Get.back(result: "{refresh:true}");
       return true;
     } else {
       projectList = jsonDecode(storedList);
-      if (projectList.contains(projectModel.projectname)) {
-        Get.snackbar("Element already exists", "", snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
+      log("projectList.toString() => $projectList");
+      if (projectList.contains(projectModel.projectCaption)) {
+        log("projectList.contains(projectModel.projectCaption) => ${projectList.contains(projectModel.projectCaption)}");
+
+        Get.snackbar("Element already exists", "",
+            snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
         if (isQr) {
           Timer(Duration(seconds: 2), () {
             scannerController!.start();
@@ -191,8 +248,8 @@ class AddConnectionController extends GetxController {
         }
         return false;
       } else {
-        projectList.add(projectModel.projectname);
-        appStorage.storeValue(projectModel.projectname, json);
+        projectList.add(projectModel.projectCaption);
+        appStorage.storeValue(projectModel.projectCaption, json);
         appStorage.storeValue(AppStorage.PROJECT_LIST, jsonEncode(projectList));
         Get.back(result: "{refresh:true}");
         return true;
@@ -251,6 +308,8 @@ class AddConnectionController extends GetxController {
     conNameController.text = projectModel.projectname;
     conCaptionController.text = projectModel.projectCaption;
     tempProjectName = projectModel.projectname;
+    tempProjectCaption = projectModel.projectCaption;
+
     errArmUrl.value = errCaption.value = errCode.value = errName.value = errWebUrl.value = '';
     Get.toNamed(Routes.AddNewConnection, arguments: [2]);
   }
@@ -423,6 +482,7 @@ class AddConnectionController extends GetxController {
     return true;
   }
 
+//NOTE checkpoint 3
   Future<bool> validateConnectionName(String baseUrl) async {
     var url = baseUrl + ServerConnections.API_GET_SIGNINDETAILS;
     var body = "{\"appname\":\"" + conNameController.text.trim() + "\"}";

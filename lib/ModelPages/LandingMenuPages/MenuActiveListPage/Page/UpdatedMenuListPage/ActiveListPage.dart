@@ -1,6 +1,8 @@
 import 'package:axpertflutter/Constants/Extensions.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Controllers/UpdatedActiveTaskListController/ActiveTaskListController.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Page/UpdatedMenuListPage/Widgets/WidgetActiveListBulkApprovalDialog.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Page/UpdatedMenuListPage/Widgets/WidgetActiveListSearchField.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expanded_tile/flutter_expanded_tile.dart';
@@ -10,7 +12,7 @@ import 'package:hexcolor/hexcolor.dart';
 
 import '../../Controllers/CompletedListController.dart';
 import '../../Controllers/PendingListController.dart';
-import '../../Models/UpdatedActiveTaskListModel/ActiveTaskListModel.dart';
+import 'Widgets/WidgetActiveListTile.dart';
 
 class ActiveListPage extends StatelessWidget {
   ActiveListPage({super.key});
@@ -32,13 +34,14 @@ class ActiveListPage extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _searchFieldWidget(),
+                WidgetActiveListSearchField(),
                 Obx(() => _iconButtons(Icons.filter_alt, activeTaskListController.openFilterPrompt,
                     isActive: activeTaskListController.isFilterOn.value)),
                 // _iconButtons(Icons.select_all_rounded, () {}),
-                _iconButtons(Icons.done_all, () {
+                _iconButtons(Icons.done_all, () async {
                   pendingListController.bulkCommentController.clear();
-                  Get.dialog(showBulkApprovalProcessDialog(context, pendingListController));
+                  await pendingListController.getBulkApprovalCount();
+                  Get.dialog(WidgetActiveListBulkApprovalDialog());
                 }),
               ],
             ),
@@ -81,7 +84,7 @@ class ActiveListPage extends StatelessWidget {
                         style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
                       ),
                       content: Column(
-                        children: List.generate(_currentList!.length, (i) => _listTile(model: _currentList[i])),
+                        children: List.generate(_currentList!.length, (i) => WidgetActiveLisTile(model: _currentList[i])),
                       ),
                       onTap: () {
                         // debugPrint("tapped!!");
@@ -97,114 +100,6 @@ class ActiveListPage extends StatelessWidget {
           )),
           _bottomTextInfoWidget(),
         ],
-      ),
-    );
-  }
-
-  _listTile({required ActiveTaskListModel model}) {
-    var style = GoogleFonts.poppins();
-    var color = model.cstatus?.toLowerCase() == "active" ? Color(0xff9898FF) : Color(0xff319F43);
-    return InkWell(
-      onTap: () {
-        activeTaskListController.onTaskClick(model);
-      },
-      child: Container(
-        margin: EdgeInsets.only(top: 2, bottom: 2),
-        padding: EdgeInsets.only(bottom: 5),
-        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: MyColors.grey2))),
-        height: 115,
-        child: Center(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                margin: EdgeInsets.only(right: 25),
-                color: model.cstatus?.toLowerCase() == "active" ? Color(0xff9898FF) : null,
-                width: 5,
-              ),
-              CircleAvatar(
-                radius: 25,
-                backgroundColor: color.withAlpha(70),
-                child: Icon(
-                  model.cstatus?.toLowerCase() == "active" ? Icons.file_open_rounded : Icons.done,
-                  color: color,
-                ),
-              ),
-              SizedBox(width: 15),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Flexible(
-                              child: activeTaskListController.highlightedText(
-                                  model.displaytitle.toString(), style.copyWith(fontSize: 14, fontWeight: FontWeight.w600),
-                                  isTitle: true),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            RichText(
-                              text: TextSpan(
-                                style: style.copyWith(
-                                  fontSize: 9,
-                                  color: MyColors.grey9,
-                                  // color: Color(0xff666D80),
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                children: activeTaskListController.formatDateTimeSpan(
-                                  activeTaskListController.formatToDayTime(model.eventdatetime.toString()),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Flexible(
-                              child: activeTaskListController.highlightedText(
-                                  model.displaycontent.toString(),
-                                  style.copyWith(
-                                    fontSize: 12,
-                                  )),
-                            ),
-                            SizedBox(width: 40),
-                          ],
-                        ),
-                      ],
-                    ),
-                    SizedBox.shrink(),
-                    Row(
-                      children: [
-                        _tileInfoWidget(model.fromuser.toString(), Color(0xff737674)),
-                        SizedBox(width: 10),
-                        model.cstatus?.toLowerCase() != "active"
-                            ? _tileInfoWidget(model.cstatus.toString(), Color(0xff319F43))
-                            : SizedBox.shrink(),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(width: 15),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  _tileInfoWidget(String label, Color color) {
-    return Container(
-      decoration: BoxDecoration(color: color.withAlpha(50), borderRadius: BorderRadius.circular(20)),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-        child: Text(label, style: GoogleFonts.poppins(fontSize: 10, color: color.darken(0.5), fontWeight: FontWeight.w500)),
       ),
     );
   }
@@ -267,338 +162,5 @@ class ActiveListPage extends StatelessWidget {
             ),
           )
         : SizedBox.shrink());
-  }
-
-  _searchFieldWidget() {
-    return Expanded(
-      child: Obx(
-        () => TextField(
-          controller: activeTaskListController.searchTextController,
-          onChanged: activeTaskListController.searchTask,
-          decoration: InputDecoration(
-              prefixIcon: Icon(
-                CupertinoIcons.search,
-                color: MyColors.grey9,
-                size: 24,
-              ),
-              suffixIcon: activeTaskListController.taskSearchText.value.isNotEmpty
-                  ? InkWell(
-                      onTap: activeTaskListController.clearSearch,
-                      child: Icon(
-                        CupertinoIcons.clear_circled_solid,
-                        color: MyColors.baseRed.withAlpha(150),
-                        size: 24,
-                      ),
-                    )
-                  : null,
-              isDense: true,
-              contentPadding: EdgeInsets.zero,
-              hintText: "Search...",
-              hintStyle: GoogleFonts.poppins(
-                color: MyColors.grey6,
-              ),
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(50), borderSide: BorderSide(width: 1, color: Color(0xffD0D0D0)))),
-        ),
-      ),
-    );
-  }
-
-  Widget showBulkApprovalProcessDialog(BuildContext context, PendingListController pendingListController) {
-    return Obx(() => GestureDetector(
-          onTap: () {
-            FocusManager.instance.primaryFocus?.unfocus();
-          },
-          child: Dialog(
-            child: Padding(
-              padding: EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 20),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Center(
-                      child: Text(
-                        "Bulk Approve",
-                        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Container(margin: EdgeInsets.only(top: 10), height: 1, color: Colors.grey.withOpacity(0.6)),
-                    SizedBox(height: 20),
-                    ConstrainedBox(
-                      constraints: new BoxConstraints(
-                        maxHeight: 300.0,
-                      ),
-                      child: ListView.separated(
-                        shrinkWrap: true,
-                        itemCount: pendingListController.bulkApprovalCount_list.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return ListTile(
-                            onTap: () {
-                              Get.back();
-                              pendingListController
-                                  .getBulkActiveTasks(pendingListController.bulkApprovalCount_list[index].processname.toString());
-                              Get.dialog(showBulkApproval_DetailDialog(context, pendingListController));
-                            },
-                            title: WidgetBulkAppr_CountItem(pendingListController.bulkApprovalCount_list[index]),
-                          );
-                        },
-                        separatorBuilder: (context, index) {
-                          return Divider();
-                        },
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    Container(
-                      height: 1,
-                      color: Colors.grey.withOpacity(0.4),
-                    ),
-                    SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 30),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TextButton(
-                              onPressed: () {
-                                Get.back();
-                              },
-                              child: Text("Cancel")),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ));
-  }
-
-  Widget WidgetBulkAppr_CountItem(var bulkApprovalCountModel) {
-    return Container(
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Container(
-          height: 40,
-          width: 40,
-          child: Container(
-            padding: EdgeInsets.all(5),
-            child: Image.asset(
-              'assets/images/createoffer.png',
-            ),
-            //AssetImage( 'assets/images/createoffer.png'),
-          ),
-        ),
-        SizedBox(width: 10),
-        Container(
-          height: 40,
-          child: Center(
-            child: Text(bulkApprovalCountModel.processname.toString(),
-                textAlign: TextAlign.center,
-                style: GoogleFonts.roboto(
-                  textStyle: TextStyle(
-                    fontSize: 16,
-                    color: HexColor('#495057'),
-                  ),
-                )),
-          ),
-        ),
-        Expanded(child: SizedBox(width: 10)),
-        Container(
-          height: 40,
-          width: 40,
-          child: Center(
-            child: Container(
-              height: 30,
-              width: 30,
-              padding: EdgeInsets.all(0),
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), color: Colors.red, boxShadow: [
-                BoxShadow(
-                  color: Colors.grey,
-                  offset: Offset(1, 1),
-                )
-              ]),
-              child: Center(
-                  child: Text(
-                bulkApprovalCountModel.pendingapprovals.toString(),
-                style: TextStyle(color: Colors.white),
-              )),
-            ),
-          ),
-        ),
-      ]),
-    );
-  }
-
-  Widget showBulkApproval_DetailDialog(BuildContext context, PendingListController pendingListController) {
-    return Obx(() => Dialog(
-          child: Padding(
-            padding: EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 20),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Center(
-                    child: CheckboxListTile(
-                      title: Text(
-                        "Bulk Approval ",
-                        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                      ),
-                      value: pendingListController.isBulkAppr_SelectAll.value,
-                      controlAffinity: ListTileControlAffinity.trailing,
-                      onChanged: (bool? value) {
-                        pendingListController.selectAll_BulkApproveList_item(value);
-                      },
-                    ),
-                  ),
-                  Container(margin: EdgeInsets.only(top: 10), height: 1, color: Colors.grey.withOpacity(0.6)),
-                  SizedBox(height: 20),
-                  ConstrainedBox(
-                    constraints: new BoxConstraints(
-                      maxHeight: 300.0,
-                    ),
-                    child: ListView.separated(
-                      shrinkWrap: true,
-                      itemCount: pendingListController.bulkApproval_activeList.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return CheckboxListTile(
-                          value: pendingListController.bulkApproval_activeList[index].bulkApprove_isSelected.value,
-                          controlAffinity: ListTileControlAffinity.trailing,
-                          contentPadding: EdgeInsets.zero,
-                          dense: true,
-                          onChanged: (value) {
-                            pendingListController.onChange_BulkApprItem(index, value);
-                          },
-                          title: widgetBulkApproval_ListItem(
-                              pendingListController, pendingListController.bulkApproval_activeList[index]),
-                        );
-                      },
-                      separatorBuilder: (context, index) {
-                        return Divider();
-                      },
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Container(
-                    height: 1,
-                    color: Colors.grey.withOpacity(0.4),
-                  ),
-                  SizedBox(height: 10),
-                  Container(
-                    margin: EdgeInsets.only(top: 10),
-                    child: TextField(
-                      controller: pendingListController.bulkCommentController,
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                          hintText: "Enter Comments",
-                          labelText: "Enter Comments",
-                          filled: true,
-                          fillColor: Colors.grey.shade100),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      TextButton(
-                          onPressed: () {
-                            Get.back();
-                          },
-                          child: Text("Cancel")),
-                      ElevatedButton(
-                          onPressed: () {
-                            pendingListController.doBulkApprove().then((_) {
-                              activeTaskListController.refreshList();
-                            });
-                          },
-                          child: Text("Bulk Approve"))
-                    ],
-                  )
-                ],
-              ),
-            ),
-          ),
-        ));
-  }
-
-  Widget widgetBulkApproval_ListItem(PendingListController pendingListController, itemModel) {
-    return Container(
-      padding: EdgeInsets.only(top: 5, bottom: 5),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Expanded(
-                child: Text(
-                  itemModel.displaytitle.toString(),
-                  style: GoogleFonts.roboto(
-                      textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: HexColor('#495057'))),
-                  textAlign: TextAlign.left,
-                  maxLines: 2,
-                  // selectable: true,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 5),
-          Text(itemModel.displaycontent.toString(),
-              maxLines: 1,
-              style: GoogleFonts.roboto(
-                textStyle: TextStyle(
-                  fontSize: 11,
-                  color: HexColor('#495057'),
-                ),
-              )),
-          SizedBox(height: 5),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Icon(
-                Icons.person,
-              ),
-              SizedBox(
-                width: 5,
-              ),
-              Text(itemModel.fromuser.toString().capitalize!,
-                  style: GoogleFonts.roboto(
-                    textStyle: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: HexColor('#495057'),
-                    ),
-                  ))
-            ],
-          ),
-          SizedBox(height: 5),
-          Row(
-            children: [
-              Icon(Icons.calendar_today_outlined, size: 16),
-              SizedBox(width: 10),
-              Text(pendingListController.getDateValue(itemModel.eventdatetime),
-                  style: GoogleFonts.roboto(
-                    textStyle: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: HexColor('#495057'),
-                    ),
-                  )),
-              Expanded(child: Text("")),
-              Icon(Icons.access_time, size: 16),
-              SizedBox(width: 5),
-              Text(pendingListController.getTimeValue(itemModel.eventdatetime),
-                  style: GoogleFonts.roboto(
-                    textStyle: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: HexColor('#495057'),
-                    ),
-                  )),
-              SizedBox(width: 10),
-            ],
-          ),
-        ],
-      ),
-    );
   }
 }

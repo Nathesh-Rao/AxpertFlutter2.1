@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/CommonMethods.dart';
@@ -70,6 +71,7 @@ class ListItemDetailsController extends GetxController {
     }
 
     var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
+    log("Fetch details => ${resp.toString()}");
     if (resp != "") {
       var jsonResp = jsonDecode(resp);
       if (jsonResp['result']['message'].toString() == "success") {
@@ -269,6 +271,7 @@ class ListItemDetailsController extends GetxController {
       value: "Initiator",
       child: Text("Initiator"),
     ));
+
     myList.add(DropdownMenuItem(
       value: "Previous Level",
       child: Text("Previous Level"),
