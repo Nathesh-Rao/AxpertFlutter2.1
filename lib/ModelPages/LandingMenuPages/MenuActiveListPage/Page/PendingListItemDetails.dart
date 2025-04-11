@@ -21,7 +21,9 @@ class PendingListItemDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     listItemDetailsController.fetchDetails();
-    var size = MediaQuery.of(context).size;
+    // var size = MediaQuery.of(context).size;
+
+    var size = Get.size;
     print("size1 $size");
     return Obx(() {
       if (listItemDetailsController.widgetProcessFlowNeedRefresh.value == true) {

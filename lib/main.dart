@@ -17,6 +17,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+// import 'package:flutter_local_network_ios/flutter_local_network_ios.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -39,6 +40,7 @@ Future<void> main() async {
   await GetStorage.init();
   await FlutterDownloader.initialize(debug: true);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // await initPlatformState();
   initialize();
   initLocationService();
   LogService.initLogs();
@@ -57,6 +59,12 @@ Future<void> main() async {
     Const.DEVICE_ID = await PlatformDeviceId.getDeviceId ?? "00";
   } on PlatformException {}
 }
+
+// Future<void> initPlatformState() async {
+//   final _flutterLocalNetworkIosPlugin = FlutterLocalNetworkIos();
+//   bool? result = await _flutterLocalNetworkIosPlugin.requestAuthorization();
+//   print("result  $result");
+// }
 
 void configureEasyLoading() {
   EasyLoading.instance

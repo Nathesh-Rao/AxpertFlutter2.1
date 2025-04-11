@@ -31,6 +31,7 @@ class LoginController extends GetxController {
   var errPassword = ''.obs;
   var fcmId;
   var willAuthenticate = false.obs;
+  var isBiometricAvailable = false.obs;
 
   LoginController() {
     fetchUserTypeList();
@@ -381,6 +382,8 @@ class LoginController extends GetxController {
   }
 
   void displayAuthenticationDialog() async {
+    LogService.writeLog(message: "[^] LoginController\nScope: displayAuthenticationDialog()\n Fingerprint Clicked");
+
     if (willAuthenticate == true) {
       try {
         if (await showBiometricDialog()) {
@@ -391,6 +394,8 @@ class LoginController extends GetxController {
         if (e.toString().contains('NotAvailable') && e.toString().contains('Authentication failure'))
           showErrorSnack(title: "Oops!", message: "Only Biometric is allowed.");
       }
+    } else {
+      print("willAuthenticate => $willAuthenticate");
     }
   }
 
@@ -441,5 +446,26 @@ class LoginController extends GetxController {
       isPortalDefault.value = false;
     }
     // print(value);
+  }
+
+  checkBiometricFlag() async {
+    var baseUrl = Const.ARM_URL.trim();
+    baseUrl += baseUrl.endsWith("/") ? "" : "/";
+    var url = baseUrl + ServerConnections.API_GET_SIGNINDETAILS;
+    var body = "{\"appname\":\"" + Const.PROJECT_NAME.trim() + "\"}";
+    final response = await serverConnections.postToServer(url: url, body: body);
+
+    if (response != "") {
+      var json = jsonDecode(response);
+      var isBMValue = json["result"]["data"]["Value"]["result"]["data"]["enablefingerprint"].toString().toLowerCase();
+      print("checkBiometricFlag() => isBMValue: $isBMValue");
+      if (isBMValue == "true") {
+        isBiometricAvailable.value = true;
+      } else {
+        isBiometricAvailable.value = false;
+      }
+    } else {
+      isBiometricAvailable.value = false;
+    }
   }
 }

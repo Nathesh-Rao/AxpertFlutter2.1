@@ -15,6 +15,9 @@ class DefaultLoginPageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     LoginController loginController = Get.find();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      loginController.checkBiometricFlag();
+    });
     return Obx(
       () => SafeArea(
         child: Stack(
@@ -302,7 +305,8 @@ class DefaultLoginPageWidget extends StatelessWidget {
                       fit: BoxFit.fill,
                     ),
                     Visibility(
-                      visible: loginController.willAuthenticate.value,
+                      // visible: true,
+                      visible: loginController.isBiometricAvailable.value,
                       child: GestureDetector(
                         onTap: () {
                           loginController.displayAuthenticationDialog();

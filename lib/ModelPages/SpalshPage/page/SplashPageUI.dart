@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:axpertflutter/Constants/AppStorage.dart';
@@ -13,6 +14,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import '../../../Utils/ServerConnections/ServerConnections.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -38,10 +41,6 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
     checkIfDeviceSupportBiometric();
     Future.delayed(Duration(milliseconds: 1800), () {
       _animationController.stop();
-
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _askLocationPermission();
-      });
 
       var cached = appStorage.retrieveValue(AppStorage.CACHED);
       try {
@@ -87,6 +86,11 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _askLocationPermission();
+      // await ensureLocalNetworkPermission();
+    });
+
     return Scaffold(
       // color: Colors.red,
       body: Stack(
@@ -138,6 +142,17 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
       }
     }
   }
+
+  // Future<void> ensureLocalNetworkPermission() async {
+  //   try {
+  //     final response = await ServerConnections().getFromServer(url: 'http://192.168.1.1');
+  //     Timer(const Duration(seconds: 2), () {
+  //       print("2 seconds passed");
+  //     });
+  //   } catch (e) {
+  //     print("Local network access error (might trigger permission): $e");
+  //   }
+  // }
 }
 /*
 AnimatedSplashScreen(
