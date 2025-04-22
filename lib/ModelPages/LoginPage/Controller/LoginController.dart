@@ -22,7 +22,7 @@ class LoginController extends GetxController {
   AppStorage appStorage = AppStorage();
   var rememberMe = false.obs;
   var googleSignInVisible = false.obs;
-  var ddSelectedValue = "".obs;
+  var ddSelectedValue = "power".obs;
   var userTypeList = [].obs;
   var showPassword = true.obs;
   TextEditingController userNameController = TextEditingController();
@@ -34,7 +34,7 @@ class LoginController extends GetxController {
   var isBiometricAvailable = false.obs;
 
   LoginController() {
-    fetchUserTypeList();
+    // fetchUserTypeList();
     fetchRememberedData();
     dropDownItemChanged(ddSelectedValue);
     if (userNameController.text.toString().trim() != "") rememberMe.value = true;
@@ -154,7 +154,8 @@ class LoginController extends GetxController {
       "deviceid": Const.DEVICE_ID,
       "appname": Const.PROJECT_NAME,
       "username": userNameController.text.toString().trim(),
-      "userGroup": ddSelectedValue.value.toString().toLowerCase(),
+      "userGroup": "power",
+      // "userGroup": ddSelectedValue.value.toString().toLowerCase(),
       "biometricType": "LOGIN",
       "password": userPasswordController.text.toString().trim()
     };
@@ -162,7 +163,7 @@ class LoginController extends GetxController {
   }
 
   void loginButtonClicked({bodyArgs = ''}) async {
-    LogService.writeLog(message: "[i] LoginController\nSelected UserGroup : ${ddSelectedValue.value}");
+    LogService.writeLog(message: "[i] LoginController\nSelected UserGroup : power");
     if (validateForm()) {
       FocusManager.instance.primaryFocus?.unfocus();
       LoadingScreen.show();
@@ -226,7 +227,8 @@ class LoginController extends GetxController {
         Map body = {
           'appname': Const.PROJECT_NAME,
           'userid': googleUser.email.toString(),
-          'userGroup': ddSelectedValue.value.toString(),
+          'userGroup': "power",
+          // 'userGroup': ddSelectedValue.value.toString(),
           'ssoType': 'Google',
           'ssodetails': {
             'id': googleUser.id,
@@ -339,7 +341,8 @@ class LoginController extends GetxController {
       appStorage.storeValue(AppStorage.USER_PASSWORD, passes);
 
       var groups = appStorage.retrieveValue(AppStorage.USER_GROUP) ?? {};
-      groups[Const.PROJECT_NAME] = ddSelectedValue.value;
+      groups[Const.PROJECT_NAME] = "power";
+      // groups[Const.PROJECT_NAME] = ddSelectedValue.value;
       appStorage.storeValue(AppStorage.USER_GROUP, groups);
     } catch (e) {
       appStorage.remove(AppStorage.USERID);
@@ -373,7 +376,7 @@ class LoginController extends GetxController {
       userPasswordController.text = passes[Const.PROJECT_NAME] ?? "";
 
       var groups = appStorage.retrieveValue(AppStorage.USER_GROUP) ?? {};
-      ddSelectedValue.value = groups[Const.PROJECT_NAME] ?? "Power";
+      ddSelectedValue.value = "Power";
     } catch (e) {
       // appStorage.remove(AppStorage.USERID);
       // appStorage.remove(AppStorage.USER_PASSWORD);
