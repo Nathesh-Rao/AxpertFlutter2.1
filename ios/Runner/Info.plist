@@ -44,14 +44,12 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Camera permission is requires to scan the QR Code</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>This app requires background location access to continuously verify work site presence and attendance.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-    <string>This app requires background location access to continuously verify work site presence and attendance.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-    <string>This app uses your location to confirm that you are at the designated work site for attendance tracking and job verification.</string>
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>Need permission for accessing the work site local network</string>
+
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Need permission for access gallery for QR Code</string>
+
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>

@@ -115,9 +115,10 @@ class ProjectController extends GetxController {
   ///----------------------------------
   saveOrUpdateConnection({ProjectModel? model, bool isQr = false}) async {
     if (!validateProjectDetailsForm()) {
-      print("validateProjectDetailsForm => false");
+      LogService.writeOnConsole(message: "validateProjectDetailsForm => false");
+
       if (isQr) {
-        print("saveOrUpdateConnection => isQR: $isQr");
+        LogService.writeOnConsole(message: "saveOrUpdateConnection => isQR: $isQr");
         if (!isDuplicate(model)) {
           var project = ProjectModel(DateTime.now().toString(), conNameController.text, webUrlController.text,
               armUrlController.text, conCaptionController.text);
@@ -134,7 +135,7 @@ class ProjectController extends GetxController {
         }
       }
     } else {
-      print("validateProjectDetailsForm => true");
+      LogService.writeOnConsole(message: "validateProjectDetailsForm => true");
 
       if (isQr) {
         var project = ProjectModel(DateTime.now().toString(), conNameController.text, webUrlController.text,
@@ -250,32 +251,6 @@ class ProjectController extends GetxController {
     return false;
   }
 
-  // bool isDuplicate(ProjectModel? model) {
-  //   var tempList = projects.where((p) => p.projectCaption.trim().toLowerCase() == conCaptionController.text.trim().toLowerCase());
-  //
-  //   if (model == null) {
-  //     if (tempList.isNotEmpty) return true;
-  //   } else {
-  //     if (conCaptionController.text.trim() != model.projectCaption.trim() &&
-  //         tempList.any((p) => p.projectCaption.trim().toLowerCase() == conCaptionController.text.trim().toLowerCase())) {
-  //       Get.snackbar("Element already exists.", "",
-  //           snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
-  //       return true;
-  //     }
-  //
-  //     // Check if any fields have changed
-  //     if (webUrlController.text.trim() == model.web_url &&
-  //         armUrlController.text.trim() == model.arm_url &&
-  //         conNameController.text.trim() == model.projectname &&
-  //         conCaptionController.text.trim() == model.projectCaption) {
-  //       Get.snackbar("Nothing to save.", "",
-  //           snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
-  //       return true;
-  //     }
-  //   }
-  //   return false;
-  // }
-
   evaluateErrorText(controller) {
     return controller.value == '' ? null : controller.value;
   }
@@ -322,6 +297,8 @@ class ProjectController extends GetxController {
     var url = baseUrl + ServerConnections.API_GET_SIGNINDETAILS;
     var body = "{\"appname\":\"" + conNameController.text.trim() + "\"}";
     final response = await serverConnections.postToServer(url: url, body: body);
+
+    LogService.writeOnConsole(message: "validateConnectionName(String $baseUrl)=> response: $response");
 
     if (response != "") {
       var json = jsonDecode(response);

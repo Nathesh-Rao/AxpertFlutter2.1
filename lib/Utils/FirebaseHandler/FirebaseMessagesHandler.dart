@@ -17,6 +17,8 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../LogServices/LogService.dart';
+
 initialize() async {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   if (Platform.isAndroid) {
@@ -44,6 +46,7 @@ initialize() async {
 
   var fcmID = await messaging.getToken();
   print("FCMID: $fcmID");
+  LogService.writeOnConsole(message: "initialize()=> FirebaseMessagesHandler: FCMID: $fcmID");
 }
 
 onMessageListener(RemoteMessage message) {

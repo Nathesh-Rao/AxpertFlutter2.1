@@ -22,6 +22,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:platform_device_id/platform_device_id.dart';
+import 'package:http/http.dart' as http;
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
@@ -36,11 +37,19 @@ var hasNotificationPermission = true;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  LogService.writeOnConsole(message: "Main method started.......");
   await CommonMethods.requestLocationPermission();
   await GetStorage.init();
   await FlutterDownloader.initialize(debug: true);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   // await initPlatformState();
+  //
+  // await fetchData();
+  //
+
+  await triggerLocalNetworkPrompt();
+  await Future.delayed(Duration(seconds: 1));
+  //
   initialize();
   initLocationService();
   LogService.initLogs();
@@ -78,6 +87,39 @@ void configureEasyLoading() {
     ..radius = 20.0;
 }
 
+@pragma('vm:entry-point')
+Future<void> triggerLocalNetworkPrompt() async {
+  try {
+    var url = "192.168.1.1";
+    // var url = "google.com";
+    var addrss = await InternetAddress.lookup(url);
+    LogService.writeOnConsole(message: "triggerLocalNetworkPrompt()=> addrss => $addrss");
+    print("triggerLocalNetworkPrompt()=> addrss => $addrss");
+    await Future.delayed(Duration(seconds: 3));
+  } catch (e) {
+    LogService.writeOnConsole(message: "triggerLocalNetworkPrompt()=> Local network prompt triggered err => : $e");
+    print("triggerLocalNetworkPrompt()=> Local network prompt triggered err => : $e");
+  }
+}
+
+Future<void> fetchData() async {
+  try {
+    var url = "192.168.1.1";
+    final response = await http.get(Uri.parse(url));
+    LogService.writeOnConsole(message: "fetchData()=> url=> $url\n response => ${response.body}");
+
+    // handle response
+  } catch (e) {
+    if (e is SocketException) {
+      await Future.delayed(Duration(seconds: 2));
+      LogService.writeOnConsole(message: "fetchData() triggered err 1 => : $e");
+      // Retry once
+      // final response = await http.get(Uri.parse("http://192.168.1.1"));
+    }
+    LogService.writeOnConsole(message: "fetchData() triggered err 2 => : $e");
+  }
+}
+
 class MyApp extends StatelessWidget {
   MyApp({super.key});
 
@@ -87,6 +129,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       LogService.writeLog(message: "[>] App initialized");
+      LogService.writeOnConsole(message: "[>] App initialized");
     });
 
     return GetMaterialApp(

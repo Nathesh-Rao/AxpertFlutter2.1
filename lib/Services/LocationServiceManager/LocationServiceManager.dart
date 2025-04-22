@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:axpertflutter/Utils/FirebaseHandler/FirebaseMessagesHandler.dart';
+import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:background_location_tracker/background_location_tracker.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -124,6 +125,7 @@ initLocationService() async {
       ),
     ),
   );
+  LogService.writeOnConsole(message: "initLocationService()=> BackgroundLocationTrackerManager initialized");
 }
 
 Future startLocationTracking() async {
