@@ -314,35 +314,35 @@ class ForgetPassword extends StatelessWidget {
                                 color: MyColors.blue2),
                           ),
                           SizedBox(height: 30),
-                          DropdownButtonFormField(
-                            value: forgetPasswordController.ddSelectedValue.value,
-                            isExpanded: true,
-                            items: forgetPasswordController.dropdownMenuItem().toList(),
-                            onChanged: forgetPasswordController.dropDownItemChanged,
-                            decoration: InputDecoration(
-                              hintStyle: const TextStyle(
-                                fontSize: 15,
-                              ),
-                              filled: true,
-                              fillColor: MyColors.color_grey,
-                              labelStyle: const TextStyle(
-                                fontSize: 15,
-                                fontFamily: 'Proxima_Nova_Regular',
-                              ),
-                              contentPadding: const EdgeInsets.only(left: 10),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                  color: MyColors.white1,
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(color: Colors.blueGrey),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 10),
+                          // DropdownButtonFormField(
+                          //   value: forgetPasswordController.ddSelectedValue.value,
+                          //   isExpanded: true,
+                          //   items: forgetPasswordController.dropdownMenuItem().toList(),
+                          //   onChanged: forgetPasswordController.dropDownItemChanged,
+                          //   decoration: InputDecoration(
+                          //     hintStyle: const TextStyle(
+                          //       fontSize: 15,
+                          //     ),
+                          //     filled: true,
+                          //     fillColor: MyColors.color_grey,
+                          //     labelStyle: const TextStyle(
+                          //       fontSize: 15,
+                          //       fontFamily: 'Proxima_Nova_Regular',
+                          //     ),
+                          //     contentPadding: const EdgeInsets.only(left: 10),
+                          //     enabledBorder: OutlineInputBorder(
+                          //       borderSide: const BorderSide(
+                          //         color: MyColors.white1,
+                          //       ),
+                          //       borderRadius: BorderRadius.circular(10),
+                          //     ),
+                          //     focusedBorder: OutlineInputBorder(
+                          //       borderSide: const BorderSide(color: Colors.blueGrey),
+                          //       borderRadius: BorderRadius.circular(10),
+                          //     ),
+                          //   ),
+                          // ),
+                          // SizedBox(height: 10),
                           TextField(
                             controller: forgetPasswordController.userNameController,
                             textInputAction: TextInputAction.next,

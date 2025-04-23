@@ -15,6 +15,8 @@ import 'package:local_auth_android/local_auth_android.dart';
 import 'package:local_auth_darwin/local_auth_darwin.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../Utils/LogServices/LogService.dart';
+
 isTablet() {
   return MediaQueryData.fromView(WidgetsBinding.instance.window).size.shortestSide < 600 ? true : false;
 }
@@ -127,11 +129,12 @@ class CommonMethods {
     var status = await Permission.location.request();
 
     if (status.isGranted) {
-      print("✅ Location Permission Granted");
+      // print("✅ Location Permission Granted");
+      LogService.writeOnConsole(message: "✅ Location Permission Granted");
     } else if (status.isDenied) {
-      print("⚠️ Location Permission Denied");
+      LogService.writeOnConsole(message: "⚠️ Location Permission Denied");
     } else if (status.isPermanentlyDenied) {
-      print("🚨 Permission Permanently Denied. Redirecting to Settings...");
+      LogService.writeOnConsole(message: "🚨 Permission Permanently Denied. Redirecting to Settings...");
       if (!Platform.isIOS) {
         await openAppSettings(); // Opens settings for manual permission
       }

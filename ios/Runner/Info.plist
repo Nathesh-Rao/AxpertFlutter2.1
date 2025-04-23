@@ -44,14 +44,12 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Camera permission is requires to scan the QR Code</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>The application need The Location Access</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>The application need The Location Access</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>The application need The Location Access</string>
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>Need permission for accessing the work site local network</string>
+
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Need permission for access gallery for QR Code</string>
+
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>

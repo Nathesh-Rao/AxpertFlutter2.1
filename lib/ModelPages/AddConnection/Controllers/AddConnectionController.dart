@@ -30,6 +30,7 @@ class AddConnectionController extends GetxController {
 
   var tempProjectName = "";
   var tempProjectCaption = "";
+  var tempProjectId = '';
 
   var selectedRadioValue = "QR".obs;
   var index = 0.obs;
@@ -52,6 +53,10 @@ class AddConnectionController extends GetxController {
 
   ServerConnections serverConnections = ServerConnections();
   AppStorage appStorage = AppStorage();
+//------------------
+  String ConnectionListName = 'ConnectionListName';
+
+  var projectList = [];
 
   @override
   void onInit() {
@@ -121,17 +126,12 @@ class AddConnectionController extends GetxController {
       baseUrl += baseUrl.endsWith("/") ? "" : "/";
       var url = baseUrl + ServerConnections.API_GET_APPSTATUS;
       final data = await serverConnections.getFromServer(url: url);
-
       if (data != "" && data.toString().toLowerCase().contains("running successfully".toLowerCase())) {
-        //check whether the entered Connection name is proper
         Future<bool> isValidConnName = validateConnectionName(baseUrl);
         if (await isValidConnName) {
-          projectModel = ProjectModel(conNameController.text.trim(), webUrlController.text.trim(), armUrlController.text.trim(),
-              conCaptionController.text.trim());
-          /*conNameController.text = "";
-          webUrlController.text = "";
-          armUrlController.text = "";
-          conCaptionController.text = "";*/
+          projectModel = ProjectModel(DateTime.now().toString(), conNameController.text.trim(), webUrlController.text.trim(),
+              armUrlController.text.trim(), conCaptionController.text.trim());
+
           var json = projectModel.toJson();
           saveDatAndRedirect(projectModel, json, isQr: isQr);
         }
@@ -151,8 +151,49 @@ class AddConnectionController extends GetxController {
     }
   }
 
-  bool checkDuplicateProject(ProjectModel model) {
-    var storedValue = appStorage.retrieveValue(AppStorage.PROJECT_LIST);
+  Future<bool> checkDuplicateProject1(ProjectModel model) async {
+    var storedValue = await appStorage.retrieveValue(AppStorage.PROJECT_LIST);
+
+    List<String> storedList = [];
+
+    if (storedValue is String) {
+      storedList = List<String>.from(jsonDecode(storedValue)); // Properly parse JSON
+    } else if (storedValue is List) {
+      storedList = List<String>.from(storedValue.first); // Unwrap nested list
+    }
+
+    log("storedList => $storedList");
+
+    if (tempProjectId.isNotEmpty) {
+      log("${model.projectCaption}");
+
+      var project = appStorage.retrieveValue(tempProjectId);
+
+      var pModel = ProjectModel.fromJson(project);
+
+      if (webUrlController.text.trim() == pModel.web_url &&
+          armUrlController.text.trim() == pModel.arm_url &&
+          conNameController.text.trim() == pModel.projectname &&
+          conCaptionController.text.trim() == pModel.projectCaption) {
+        Get.snackbar("Element already exists . ", "",
+            snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    // if (storedList.contains(model.id)) {
+    //   Get.snackbar("Element already exists", "",
+    //       snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
+    //   return true;
+    // }
+
+    return false;
+  }
+
+  Future<bool> checkDuplicateProject(ProjectModel model) async {
+    var storedValue = await appStorage.retrieveValue(AppStorage.PROJECT_LIST);
 
     List<String> storedList = [];
 
@@ -186,8 +227,14 @@ class AddConnectionController extends GetxController {
   }
 
 //NOTE checkpoint 4
-  void saveDatAndRedirect(projectModel, json, {isQr = false}) {
-    if (checkDuplicateProject(projectModel)) {
+  void saveDatAndRedirect(projectModel, json, {isQr = false}) async {
+    // if (await checkDuplicateProject(projectModel)) {
+    //   log("========================>>>>>>>>>>>>FOUND duplicate");
+    // } else {
+    //   log("========================>>>>>>>>>>>>NO duplicate");
+    // }
+
+    if (await checkDuplicateProject1(projectModel)) {
       log("========================>>>>>>>>>>>>FOUND duplicate");
     } else {
       log("========================>>>>>>>>>>>>NO duplicate");
@@ -197,22 +244,23 @@ class AddConnectionController extends GetxController {
         //   appStorage.storeValue(projectModel.projectname, json);
         // if (tempProjectName == projectModel.projectCaption) {
         log("checkpoint 4 {tempProjectCaption ($tempProjectCaption) == projectModel.projectCaption (${projectModel.projectCaption}) => ${tempProjectCaption == projectModel.projectCaption}");
-        if (tempProjectCaption == projectModel.projectCaption) {
-          appStorage.storeValue(projectModel.projectCaption, json);
-          projectListingController.needRefresh.value = true;
-          Get.back(result: "{refresh:true}");
-          updateProjectDetails = false;
-        } else {
-          //project name is different from previous
-          deleteExistingProjectWithProjectName(tempProjectCaption);
 
-          // deleteExistingProjectWithProjectName(tempProjectName);
-          bool isSaved = createFreshNewProject(projectModel, json);
-
-          log("createFreshNewProject => isSaved => $isSaved");
-
-          projectListingController.needRefresh.value = isSaved;
-        }
+        // if (tempProjectCaption == projectModel.projectCaption) {
+        //   appStorage.storeValue(projectModel.projectCaption, json);
+        //   projectListingController.needRefresh.value = true;
+        //   Get.back(result: "{refresh:true}");
+        //   updateProjectDetails = false;
+        // } else {
+        //   //project name is different from previous
+        //   deleteExistingProjectWithProjectName(tempProjectCaption);
+        //
+        //   // deleteExistingProjectWithProjectName(tempProjectName);
+        //   bool isSaved = createFreshNewProject(projectModel, json);
+        //
+        //   log("createFreshNewProject => isSaved => $isSaved");
+        //
+        //   projectListingController.needRefresh.value = isSaved;
+        // }
       } else {
         //create a fresh one
         bool isSaved = createFreshNewProject(projectModel, json, isQr: isQr);
@@ -226,18 +274,18 @@ class AddConnectionController extends GetxController {
     var storedList = appStorage.retrieveValue(AppStorage.PROJECT_LIST);
     print(storedList);
     if (storedList == null) {
-      projectList.add(projectModel.projectCaption);
+      projectList.add(projectModel.id);
       // projectList.add(projectModel.projectname);
 
-      appStorage.storeValue(projectModel.projectCaption, json);
+      appStorage.storeValue(projectModel.id, json);
       appStorage.storeValue(AppStorage.PROJECT_LIST, jsonEncode(projectList));
       Get.back(result: "{refresh:true}");
       return true;
     } else {
       projectList = jsonDecode(storedList);
       log("projectList.toString() => $projectList");
-      if (projectList.contains(projectModel.projectCaption)) {
-        log("projectList.contains(projectModel.projectCaption) => ${projectList.contains(projectModel.projectCaption)}");
+      if (projectList.contains(projectModel.id)) {
+        log("projectList.contains(projectModel.projectCaption) => ${projectList.contains(projectModel.id)}");
 
         Get.snackbar("Element already exists", "",
             snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
@@ -248,8 +296,8 @@ class AddConnectionController extends GetxController {
         }
         return false;
       } else {
-        projectList.add(projectModel.projectCaption);
-        appStorage.storeValue(projectModel.projectCaption, json);
+        projectList.add(projectModel.id);
+        appStorage.storeValue(projectModel.id, json);
         appStorage.storeValue(AppStorage.PROJECT_LIST, jsonEncode(projectList));
         Get.back(result: "{refresh:true}");
         return true;
@@ -287,7 +335,8 @@ class AddConnectionController extends GetxController {
           jsonObj = jsonObj['result'];
           jsonObj = jsonObj['row'][0];
           ProjectModel model = ProjectModel.fromJson(jsonObj);
-          print(model.projectCaption);
+          model.id = DateTime.now().toString();
+          print(model.id);
           connectionCodeController.text = "";
           saveDatAndRedirect(model, jsonObj);
         } catch (e) {
@@ -309,6 +358,7 @@ class AddConnectionController extends GetxController {
     conCaptionController.text = projectModel.projectCaption;
     tempProjectName = projectModel.projectname;
     tempProjectCaption = projectModel.projectCaption;
+    tempProjectId = projectModel.id;
 
     errArmUrl.value = errCaption.value = errCode.value = errName.value = errWebUrl.value = '';
     Get.toNamed(Routes.AddNewConnection, arguments: [2]);

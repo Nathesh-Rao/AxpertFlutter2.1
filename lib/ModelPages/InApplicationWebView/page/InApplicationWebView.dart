@@ -166,6 +166,12 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
                   print("Requested url: ${downloadStartRequest.url.toString()}");
                   _download(downloadStartRequest.url.toString());
                 },
+                onPermissionRequest: (controller, request) async {
+                  return PermissionResponse(
+                    resources: request.resources,
+                    action: PermissionResponseAction.GRANT, // Grant the required permissions
+                  );
+                },
                 onConsoleMessage: (controller, consoleMessage) {
                   print("Console Message received");
                   print(consoleMessage.toString());

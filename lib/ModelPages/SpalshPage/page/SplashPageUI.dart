@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:axpertflutter/Constants/AppStorage.dart';
@@ -14,6 +15,8 @@ import 'package:get/get.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../Utils/ServerConnections/ServerConnections.dart';
+
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
 
@@ -29,6 +32,7 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
   @override
   void initState() {
     LogService.writeLog(message: "[>] SplashPage");
+    LogService.writeOnConsole(message: "[>] SplashPage");
     super.initState();
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual);
     // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
@@ -36,14 +40,14 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
     _animationController.forward();
     VersionUpdateClearOldData.clearAllOldData();
     checkIfDeviceSupportBiometric();
+    //
+
+//
     Future.delayed(Duration(milliseconds: 1800), () {
       _animationController.stop();
 
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _askLocationPermission();
-      });
-
       var cached = appStorage.retrieveValue(AppStorage.CACHED);
+
       try {
         if (cached == null)
           Get.offAllNamed(Routes.ProjectListingPage);
@@ -53,10 +57,12 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
           Const.PROJECT_NAME = projectModel!.projectname;
           Const.PROJECT_URL = projectModel!.web_url;
           Const.ARM_URL = projectModel!.arm_url;
+          LogService.writeOnConsole(message: " splash-page projectModel => $jsonProject");
           Get.offAllNamed(Routes.Login);
         }
       } catch (e) {
         LogService.writeLog(message: "[ERROR] \nPage: SplashPage\nScope: initState()\nError: $e");
+        LogService.writeOnConsole(message: "[ERROR] \nPage: SplashPage\nScope: initState()\nError: $e");
         Get.offAllNamed(Routes.ProjectListingPage);
       }
     });
@@ -87,6 +93,11 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _askLocationPermission();
+      // await ensureLocalNetworkPermission();
+    });
+
     return Scaffold(
       // color: Colors.red,
       body: Stack(
@@ -120,11 +131,11 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
     final LocalAuthentication auth = LocalAuthentication();
     final bool canAuthenticateWithBiometrics = await auth.canCheckBiometrics;
     final bool canAuthenticate = canAuthenticateWithBiometrics || await auth.isDeviceSupported();
-    print("canAuthenticate: $canAuthenticate");
+    LogService.writeOnConsole(message: "canAuthenticate: $canAuthenticate");
     LogService.writeLog(message: "[i] SplashPage\nScope:checkIfDeviceSupportBiometric()\nCanAuthenticate: $canAuthenticate");
     if (canAuthenticate) {
       final List<BiometricType> availableBiometrics = await auth.getAvailableBiometrics();
-      print("List: $availableBiometrics");
+      LogService.writeOnConsole(message: "List: $availableBiometrics");
       LogService.writeLog(
           message: "[i] SplashPage\nScope:checkIfDeviceSupportBiometric()\nAvailable Biometrics: $availableBiometrics");
 
@@ -139,39 +150,3 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
     }
   }
 }
-/*
-AnimatedSplashScreen(
-      duration: 2000,
-      splash: Image.asset(
-        'assets/images/agilelabslogo.png',
-        height: 200,
-        width: 200,
-      ),
-      splashTransition: SplashTransition.rotationTransition,
-      nextScreen: ProjectListingPage(),
-      // nextRoute: Routes.SplashScreen,
-    )
-*
-AnimatedBuilder(
-              builder: (context, child) {
-                var v = Transform.rotate(
-                  angle: _animationController.value < 1 ? _animationController.value * 8 : 1,
-                  child: child,
-                );
-                print(_animationController.value);
-                return v;
-              },
-              animation: _animationController,
-              child: Container(
-                height: 150,
-                width: 150,
-                child: Image.asset(
-                  'assets/images/agilelabslogo.png',
-                  fit: BoxFit.cover,
-                ),
-              ),
-            )
-
-
-
-*/

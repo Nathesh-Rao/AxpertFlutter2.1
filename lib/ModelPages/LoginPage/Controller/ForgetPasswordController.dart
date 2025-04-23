@@ -36,10 +36,10 @@ class ForgetPasswordController extends GetxController {
   var reSendOtpCount = 0;
 
   var userTypeList = [].obs;
-  var ddSelectedValue = ''.obs;
+  var ddSelectedValue = "power".obs;
 
   ForgetPasswordController() {
-    fetchUserTypeList();
+    // fetchUserTypeList();
   }
 
   fetchUserTypeList() async {
@@ -138,7 +138,8 @@ class ForgetPasswordController extends GetxController {
       Map body = {
         "appname": Const.PROJECT_NAME,
         "username": userNameController.text.toString().trim(),
-        "usergroup": ddSelectedValue.value.toString().toLowerCase(),
+        "usergroup": "power",
+        // "usergroup": ddSelectedValue.value.toString().toLowerCase(),
         'email': emailController.text.trim().toString()
       };
       var url = Const.getFullARMUrl(ServerConnections.API_FORGOTPASSWORD);

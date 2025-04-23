@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../Utils/LogServices/LogService.dart';
+import '../../ProjectListing/Model/ProjectModel.dart';
 
 class AddNewConnection extends StatefulWidget {
   const AddNewConnection({super.key});
@@ -18,11 +19,17 @@ class AddNewConnection extends StatefulWidget {
 class _AddNewConnectionState extends State<AddNewConnection> {
   AddConnectionController connectionController = Get.find();
   dynamic argumentData = Get.arguments;
+  ProjectModel? project;
+  var pages = [];
 
   @override
   void initState() {
     super.initState();
     LogService.writeLog(message: "[>] AddNewConnection");
+    if (argumentData != null && argumentData is List && argumentData.length > 1) {
+      project = argumentData[1];
+    }
+    pages = [QRCodeScanner(), ConnectCode(), URLDetails(project: project)];
 
     try {
       connectionController.index.value = 0;
@@ -45,8 +52,6 @@ class _AddNewConnectionState extends State<AddNewConnection> {
         break;
     }
   }
-
-  var pages = [QRCodeScanner(), ConnectCode(), URLDetails()];
 
   @override
   void dispose() {

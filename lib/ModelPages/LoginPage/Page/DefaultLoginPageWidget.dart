@@ -15,6 +15,9 @@ class DefaultLoginPageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     LoginController loginController = Get.find();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      loginController.checkBiometricFlag();
+    });
     return Obx(
       () => SafeArea(
         child: Stack(
@@ -129,21 +132,21 @@ class DefaultLoginPageWidget extends StatelessWidget {
                         // )
                       ),
                     ),
-                    SizedBox(height: 10),
-                    DropdownButtonHideUnderline(
-                      child: ButtonTheme(
-                        alignedDropdown: true,
-                        child: DropdownButtonFormField(
-                          value: loginController.ddSelectedValue.value,
-                          items: loginController.dropdownMenuItem(),
-                          onChanged: (value) => loginController.dropDownItemChanged(value),
-                          decoration: InputDecoration(prefixIcon: Icon(Icons.group)),
-                          // border: OutlineInputBorder(
-                          //   borderRadius: BorderRadius.circular(10),
-                          // )
-                        ),
-                      ),
-                    ),
+                    // SizedBox(height: 10),
+                    // DropdownButtonHideUnderline(
+                    //   child: ButtonTheme(
+                    //     alignedDropdown: true,
+                    //     child: DropdownButtonFormField(
+                    //       value: loginController.ddSelectedValue.value,
+                    //       items: loginController.dropdownMenuItem(),
+                    //       onChanged: (value) => loginController.dropDownItemChanged(value),
+                    //       decoration: InputDecoration(prefixIcon: Icon(Icons.group)),
+                    //       // border: OutlineInputBorder(
+                    //       //   borderRadius: BorderRadius.circular(10),
+                    //       // )
+                    //     ),
+                    //   ),
+                    // ),
                     SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -220,32 +223,32 @@ class DefaultLoginPageWidget extends StatelessWidget {
                             }),
                       ),
                     ),
-                    SizedBox(height: 10),
-                    InkWell(
-                      onTap: () {
-                        Get.toNamed(Routes.SignUp);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 70, right: 70),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("New user?  ",
-                                style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: HexColor("#3E4153")))),
-                            Text(
-                              "Sign up",
-                              style: GoogleFonts.poppins(
-                                  textStyle: TextStyle(
-                                      decoration: TextDecoration.underline,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 12,
-                                      color: HexColor("#4E9AF5"))),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
+                    // SizedBox(height: 10),
+                    // InkWell(
+                    //   onTap: () {
+                    //     Get.toNamed(Routes.SignUp);
+                    //   },
+                    //   child: Padding(
+                    //     padding: const EdgeInsets.only(left: 70, right: 70),
+                    //     child: Row(
+                    //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //       children: [
+                    //         Text("New user?  ",
+                    //             style: GoogleFonts.poppins(
+                    //                 textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: HexColor("#3E4153")))),
+                    //         Text(
+                    //           "Sign up",
+                    //           style: GoogleFonts.poppins(
+                    //               textStyle: TextStyle(
+                    //                   decoration: TextDecoration.underline,
+                    //                   fontWeight: FontWeight.w600,
+                    //                   fontSize: 12,
+                    //                   color: HexColor("#4E9AF5"))),
+                    //         )
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
                     SizedBox(height: 20),
                     FittedBox(
                       child: Text(
@@ -302,7 +305,8 @@ class DefaultLoginPageWidget extends StatelessWidget {
                       fit: BoxFit.fill,
                     ),
                     Visibility(
-                      visible: loginController.willAuthenticate.value,
+                      // visible: true,
+                      visible: loginController.isBiometricAvailable.value,
                       child: GestureDetector(
                         onTap: () {
                           loginController.displayAuthenticationDialog();

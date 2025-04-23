@@ -3,6 +3,7 @@ import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/Const.dart';
 import 'package:axpertflutter/ModelPages/AddConnection/Controllers/AddConnectionController.dart';
+import 'package:axpertflutter/ModelPages/AddConnection/Controllers/ProjectController.dart';
 import 'package:axpertflutter/ModelPages/ProjectListing/Model/ProjectModel.dart';
 import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:flutter/material.dart';
@@ -12,13 +13,12 @@ class ProjectItemListTile extends StatelessWidget {
   String? keyValue;
   final AppStorage appStorage = AppStorage();
 
-  ProjectItemListTile(String value) {
-    keyValue = value;
-    var jsonProject = appStorage.retrieveValue(keyValue ?? "");
-    projectModel = ProjectModel.fromJson(jsonProject);
+  ProjectItemListTile(ProjectModel value) {
+    projectModel = value;
   }
   ProjectModel? projectModel;
   AddConnectionController addConnectionController = Get.find();
+  ProjectController projectController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +88,8 @@ class ProjectItemListTile extends StatelessWidget {
                 icon: const Icon(Icons.edit_sharp, size: 28, color: MyColors.green),
                 tooltip: 'Edit',
                 onPressed: () async {
-                  addConnectionController.edit(keyValue);
+                  // addConnectionController.edit(keyValue);
+                  projectController.edit(projectModel!);
                   // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => EditWelcomeSmallScreen(weburllist[i], armurllist[i], connectionnamelist[i], connectioncaptionlist[i], i)));
                 },
               ),
@@ -97,7 +98,8 @@ class ProjectItemListTile extends StatelessWidget {
                 tooltip: 'Delete',
                 onPressed: () async {
                   LogService.writeLog(message: "[i] ProjectListingPage\n${projectModel!.projectname} Project Deleted");
-                  addConnectionController.delete(keyValue);
+                  // addConnectionController.delete(keyValue);
+                  projectController.delete(projectModel!);
                 },
               ),
             ])),

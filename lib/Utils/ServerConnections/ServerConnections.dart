@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:axpertflutter/Constants/AppStorage.dart';
@@ -184,8 +185,8 @@ class ServerConnections {
               message:
                   "[ERROR] API_ERROR\nURL:$url\nAPI_NAME: $API_NAME\nBody: $body\nStatusCode: ${response.statusCode}\nResponse: ${response.body}");
 
-          // Get.snackbar("Error " + response.statusCode.toString(), "Invalid Url",
-          //     snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
+          Get.snackbar("Error " + response.statusCode.toString(), "Invalid Url",
+              snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
           showErrorSnack(title: "Error!", message: response.statusCode.toString(), show_errorSnackbar: show_errorSnackbar);
         } else {
           if (response.statusCode == 400) {
@@ -246,6 +247,7 @@ class ServerConnections {
       if (header == '') header = {"Content-Type": "application/json"};
       print("Get Url: $url");
       var response = await client.get(Uri.parse(url), headers: header);
+
       if (response.statusCode == 200) {
         var decodedBody = utf8.decode(response.bodyBytes);
         return decodedBody;
@@ -268,6 +270,38 @@ class ServerConnections {
       }
     } catch (e) {
       LogService.writeLog(message: "[ERROR] API_ERROR\nURL:$url\nAPI_NAME: $API_NAME\nError: ${e.toString()}");
+      if (e.toString().contains("ClientException with SocketException")) {
+        await Future.delayed(Duration(seconds: 4));
+
+        try {
+          var reResponse = await client.get(Uri.parse(url), headers: header);
+
+          if (reResponse.statusCode == 200) {
+            var decodedBody = utf8.decode(reResponse.bodyBytes);
+            return decodedBody;
+            // return response.body;
+          }
+
+          if (reResponse.statusCode == 404) {
+            if (API_NAME.toString().toLowerCase() == "ARMAppStatus".toLowerCase()) {
+              showErrorSnack(title: "Error!", message: "Invalid ARM URL", show_errorSnackbar: show_errorSnackbar);
+            } else {
+              showErrorSnack(
+                  title: "Error " + reResponse.statusCode.toString(),
+                  message: "Invalid Url",
+                  show_errorSnackbar: show_errorSnackbar);
+            }
+          } else {
+            // LogService.writeLog(message: "[ERROR] API_ERROR\nURL:$url\nAPI_NAME: $API_NAME\nError: ${e.toString()}");
+            showErrorSnack(
+                title: "Error! " + reResponse.statusCode.toString(),
+                message: "Internal server error",
+                show_errorSnackbar: show_errorSnackbar);
+          }
+        } catch (err) {
+          showErrorSnack(title: "Error!", message: err.toString(), show_errorSnackbar: show_errorSnackbar);
+        }
+      }
 
       showErrorSnack(title: "Error!", message: e.toString(), show_errorSnackbar: show_errorSnackbar);
       // LogService.writeLog(message: "getFromServer(): ${e.toString()}");
@@ -287,5 +321,21 @@ class ServerConnections {
         "\"sql\":\"${Const.getSQLforClientID(ClientId)}\","
         "\"direct\":\"false\","
         "\"params\":\"\"}}]}";
+  }
+
+  Future<void> fetchDataWithRetry() async {
+    try {
+      final response = await http.get(Uri.parse("https://your.api.com"));
+      // handle response
+    } catch (e) {
+      // Retry once after short delay
+      await Future.delayed(Duration(seconds: 2));
+      try {
+        final retryResponse = await http.get(Uri.parse("https://your.api.com"));
+        // handle retry response
+      } catch (retryError) {
+        print("Final failure: $retryError");
+      }
+    }
   }
 }
