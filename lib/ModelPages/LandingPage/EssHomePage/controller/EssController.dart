@@ -77,7 +77,7 @@ class EssController extends GetxController {
     body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
     userName.value = appStorage.retrieveValue(AppStorage.USER_NAME) ?? userName.value;
     getBanners();
-    getCardDetails();
+    //getCardDetails();
     getESSRecentActivity();
     getESSAnnouncement();
     getMenuList_v2();

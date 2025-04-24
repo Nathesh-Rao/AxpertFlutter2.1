@@ -14,7 +14,7 @@ import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ListItemDetailsController extends GetxController {
+class ListItemDetailsController extends GetxController{
   AppStorage appStorage = AppStorage();
   String selectedTaskID = "";
   PendingListModel? openModel;
@@ -30,6 +30,30 @@ class ListItemDetailsController extends GetxController {
   var ddSelectedValue = "Initiator".obs;
   var ddSendToUsers_SelectedValue = "".obs;
   var sendToUsersList = [].obs;
+  //bool isKeyboardVisible = false;
+
+  /*@override
+  void onInit() {
+    WidgetsBinding.instance.addObserver(this);
+    super.onInit();
+  }
+
+  @override
+  void onClose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.onClose();
+  }
+
+  @override
+  void didChangeMetrics() {
+    final bottomInset = WidgetsBinding.instance.window.viewInsets.bottom;
+    bool newKeyboardState = bottomInset > 0;
+
+    if (isKeyboardVisible != newKeyboardState) {
+      isKeyboardVisible = newKeyboardState;
+      update(); // Update controller state, NOT the UI
+    }
+  }*/
 
   fetchDetails({hasArgument = false, PendingProcessFlowModel? pendingProcessFlowModel = null}) async {
     LoadingScreen.show();

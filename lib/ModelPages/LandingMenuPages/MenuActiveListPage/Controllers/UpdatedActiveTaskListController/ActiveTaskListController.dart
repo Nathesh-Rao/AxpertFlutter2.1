@@ -339,6 +339,7 @@ class ActiveTaskListController extends GetxController {
         listItemDetailsController.openModel = pendingModel;
 
         print("Going to active details page");
+        //listItemDetailsController.fetchDetails();
         await Get.toNamed(Routes.ProjectListingPageDetails);
         print("returned from active details page");
         refreshList();

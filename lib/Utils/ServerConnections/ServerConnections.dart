@@ -27,6 +27,7 @@ class ServerConnections {
   static const String API_GET_HOMEPAGE_CARDS = "api/v1/ARMGetHomePageCards";
   static const String API_GET_HOMEPAGE_CARDS_v2 = "api/v2/ARMGetHomePageCards";
   static const String API_GET_HOMEPAGE_CARDSDATASOURCE = "api/v1/ARMGetDataResponse";
+
 //-------------------->
   //NOTE AXPERT 11.4
   static const String API_GET_CARDS_WITH_DATA = "api/v1/GetCardsWithData";
@@ -110,6 +111,7 @@ class ServerConnections {
     "appvartypes": "cccccccccccccccccccccccccccnccccdcccccccdcccccnnnccccddccd",
     "auth_path": "D:\\Codeset\\11\\Axpert11.3\\AxpertWebScripts"
   };
+
   //-------------------->
   // static const String API_GET_PENDING_ACTIVELIST = "api/v1/ARMGetActiveTasks"; //OLD
   static const String API_MOBILE_NOTIFICATION = "api/v1/ARMMobileNotification";
@@ -147,12 +149,7 @@ class ServerConnections {
   String _baseUrl = "http://demo.agile-labs.com/axmclientidscripts/asbmenurest.dll/datasnap/rest/Tasbmenurest/getchoices";
 
   postToServer(
-      {String url = '',
-      var header = '',
-      String body = '',
-      String ClientID = '',
-      bool isBearer = false,
-      var show_errorSnackbar = true}) async {
+      {String url = '', var header = '', String body = '', String ClientID = '', bool isBearer = false, var show_errorSnackbar = true}) async {
     var API_NAME = url.substring(url.lastIndexOf("/") + 1, url.length);
     if (await internetConnectivity.connectionStatus)
       try {
@@ -174,8 +171,7 @@ class ServerConnections {
         // print("");
         if (response.statusCode == 200) {
           LogService.writeLog(
-              message:
-                  "[^] [POST] URL:$url\nAPI_NAME: $API_NAME\nBody: $body\nStatusCode: ${response.statusCode}\nResponse: ${response.body}");
+              message: "[^] [POST] URL:$url\nAPI_NAME: $API_NAME\nBody: $body\nStatusCode: ${response.statusCode}\nResponse: ${response.body}");
           return response.body;
         }
         ;
@@ -202,7 +198,17 @@ class ServerConnections {
 
             // Get.snackbar("Error " + response.statusCode.toString(), "Internal server error",
             //     snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
-            showErrorSnack(title: "Error!", message: response.statusCode.toString(), show_errorSnackbar: show_errorSnackbar);
+            var msg = response.body.toString();
+            if (response.body.toString().contains("message")) {
+              try {
+                var jsonResp = jsonDecode(response.body);
+                // print(jsonResp);
+                msg = jsonResp['result']['message'].toString();
+              } catch (e) {
+                print(e);
+              }
+            }
+            showErrorSnack(title: "Error! ${response.statusCode.toString()}", message: API_NAME + ": " + msg, show_errorSnackbar: show_errorSnackbar);
           }
         }
       } catch (e) {
@@ -258,15 +264,11 @@ class ServerConnections {
         if (API_NAME.toString().toLowerCase() == "ARMAppStatus".toLowerCase()) {
           showErrorSnack(title: "Error!", message: "Invalid ARM URL", show_errorSnackbar: show_errorSnackbar);
         } else {
-          showErrorSnack(
-              title: "Error " + response.statusCode.toString(), message: "Invalid Url", show_errorSnackbar: show_errorSnackbar);
+          showErrorSnack(title: "Error " + response.statusCode.toString(), message: "Invalid Url", show_errorSnackbar: show_errorSnackbar);
         }
       } else {
         // LogService.writeLog(message: "[ERROR] API_ERROR\nURL:$url\nAPI_NAME: $API_NAME\nError: ${e.toString()}");
-        showErrorSnack(
-            title: "Error! " + response.statusCode.toString(),
-            message: "Internal server error",
-            show_errorSnackbar: show_errorSnackbar);
+        showErrorSnack(title: "Error! " + response.statusCode.toString(), message: "Internal server error", show_errorSnackbar: show_errorSnackbar);
       }
     } catch (e) {
       LogService.writeLog(message: "[ERROR] API_ERROR\nURL:$url\nAPI_NAME: $API_NAME\nError: ${e.toString()}");

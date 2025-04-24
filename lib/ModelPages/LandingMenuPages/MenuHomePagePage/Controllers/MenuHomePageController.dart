@@ -71,7 +71,7 @@ class MenuHomePageController extends GetxController {
     //NOTE Axpert 11.4-------->
     _getCardsWithData();
     //NOTE---------------------->
-    getCardDetails();
+    //getCardDetails();
     getPunchINData();
     getShorcutMenuDashboardDetails();
     getAttendanceDetails();
@@ -121,12 +121,13 @@ class MenuHomePageController extends GetxController {
           newsCardData.add(data);
           break;
         case "KPI LIST":
-          if (data.cardname?.toUpperCase() == "KPI LIST") {
-            kpiSliderCardData.add(data);
-          } else {
-            kpiListCardData.add(data);
+          if (data.carddata is! String) {
+            if (data.cardname?.toUpperCase() == "KPI LIST") {
+              kpiSliderCardData.add(data);
+            } else {
+              kpiListCardData.add(data);
+            }
           }
-
           break;
         case "MENU ICONS":
           menuIconsData.add(data);
@@ -342,10 +343,7 @@ class MenuHomePageController extends GetxController {
       print("hit $btnType");
       print("pname: $btnOpen");
       if (btnType.toLowerCase() == "button" && btnOpen != "") {
-        webUrl = Const.getFullProjectUrl("aspx/AxMain.aspx?authKey=AXPERT-") +
-            appStorage.retrieveValue(AppStorage.SESSIONID) +
-            "&pname=" +
-            btnOpen;
+        webUrl = Const.getFullProjectUrl("aspx/AxMain.aspx?authKey=AXPERT-") + appStorage.retrieveValue(AppStorage.SESSIONID) + "&pname=" + btnOpen;
         print("URL : $webUrl");
 
         switchPage.toggle();
@@ -446,10 +444,7 @@ class MenuHomePageController extends GetxController {
     if (jsonResp['success'].toString() == "true") {
       // var result = jsonResp['result'].toString();
       Get.snackbar("Punch-In success", "",
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM,
-          duration: Duration(seconds: 3));
+          backgroundColor: Colors.green, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM, duration: Duration(seconds: 3));
       isShowPunchIn.value = false;
       isShowPunchOut.value = true;
       actionData.clear();
@@ -457,10 +452,7 @@ class MenuHomePageController extends GetxController {
     } else {
       // var errMessage = jsonResp['message'].toString();
       Get.snackbar("Error", jsonResp['message'].toString(),
-          backgroundColor: Colors.redAccent,
-          colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM,
-          duration: Duration(seconds: 3));
+          backgroundColor: Colors.redAccent, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM, duration: Duration(seconds: 3));
     }
   }
 
@@ -501,19 +493,13 @@ class MenuHomePageController extends GetxController {
     if (jsonResp['success'].toString() == "true") {
       // var result = jsonResp['result'].toString();
       Get.snackbar("Punch-Out success", "",
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM,
-          duration: Duration(seconds: 3));
+          backgroundColor: Colors.green, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM, duration: Duration(seconds: 3));
       actionData.clear();
       await getCardDataSources();
     } else {
       // var errMessage = jsonResp['message'].toString();
       Get.snackbar("Error", jsonResp['message'].toString(),
-          backgroundColor: Colors.redAccent,
-          colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM,
-          duration: Duration(seconds: 3));
+          backgroundColor: Colors.redAccent, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM, duration: Duration(seconds: 3));
     }
     LoadingScreen.dismiss();
   }
@@ -592,10 +578,7 @@ class MenuHomePageController extends GetxController {
         // LogService.writeLog(message: "[i] FolderPanel : Open in webview {$link_id}");
 
         if (await internetConnectivity.connectionStatus) {
-          webUrl = Const.getFullProjectUrl("aspx/AxMain.aspx?authKey=AXPERT-") +
-              appStorage.retrieveValue(AppStorage.SESSIONID) +
-              "&pname=" +
-              link_id;
+          webUrl = Const.getFullProjectUrl("aspx/AxMain.aspx?authKey=AXPERT-") + appStorage.retrieveValue(AppStorage.SESSIONID) + "&pname=" + link_id;
           print("Web_URL_card: $webUrl");
           // LogService.writeLog(message: "Web url => $webUrl");
           Get.toNamed(Routes.InApplicationWebViewer, arguments: [webUrl]);
@@ -728,9 +711,7 @@ class MenuHomePageController extends GetxController {
     }
     list_menuFolderData.value = map_folderList;
     print("list_menuFolderData: ${list_menuFolderData.toString()}");
-    LogService.writeLog(
-        message:
-            "[i] MenuHomePageController\nScope: parseMenuFolderData()\nlist_menuFolderData: ${list_menuFolderData.toString()}");
+    LogService.writeLog(message: "[i] MenuHomePageController\nScope: parseMenuFolderData()\nlist_menuFolderData: ${list_menuFolderData.toString()}");
   }
 
   getMenuFolderPanelWidgetList() {

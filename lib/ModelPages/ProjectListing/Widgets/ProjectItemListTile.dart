@@ -24,7 +24,8 @@ class ProjectItemListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        appStorage.storeValue(AppStorage.CACHED, projectModel!.projectname);
+        appStorage.storeValue(AppStorage.CACHED, projectModel!.projectCaption);
+        appStorage.storeValue(projectModel!.projectCaption, projectModel);
         Const.PROJECT_NAME = projectModel!.projectname;
         Const.PROJECT_URL = projectModel!.web_url;
         Const.ARM_URL = projectModel!.arm_url;
