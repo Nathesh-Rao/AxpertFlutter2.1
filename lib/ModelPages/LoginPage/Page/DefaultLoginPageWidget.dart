@@ -16,7 +16,7 @@ class DefaultLoginPageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     LoginController loginController = Get.find();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      loginController.checkBiometricFlag();
+      //loginController.checkBiometricFlag();
     });
     return Obx(
       () => SafeArea(

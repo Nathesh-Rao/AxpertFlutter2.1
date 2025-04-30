@@ -35,6 +35,7 @@ class LoginController extends GetxController {
 
   LoginController() {
     // fetchUserTypeList();
+
     fetchRememberedData();
     dropDownItemChanged(ddSelectedValue);
     if (userNameController.text.toString().trim() != "") rememberMe.value = true;
@@ -46,6 +47,7 @@ class LoginController extends GetxController {
   }
 
   setWillAuthenticate() async {
+    await checkBiometricFlag();
     var willAuth = await getWillBiometricAuthenticateForThisUser(userNameController.text.toString().trim());
     print(("Login willAuth: $willAuth"));
     LogService.writeLog(message: "[i] LoginController\nScope: setWillAuthenticate()\nLogin willAuth: $willAuth");
@@ -53,7 +55,7 @@ class LoginController extends GetxController {
     if (willAuth != null) {
       willAuthenticate.value = willAuth;
     }
-    displayAuthenticationDialog();
+    if (isBiometricAvailable == true) displayAuthenticationDialog();
   }
 
   fetchUserTypeList() async {
@@ -257,8 +259,7 @@ class LoginController extends GetxController {
             await _processLoginAndGoToHomePage();
           }
         } else {
-          Get.snackbar("Error", "Some Error occured",
-              backgroundColor: Colors.red, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM);
+          Get.snackbar("Error", "Some Error occured", backgroundColor: Colors.red, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM);
         }
         LoadingScreen.dismiss();
         // print(resp);
@@ -269,8 +270,7 @@ class LoginController extends GetxController {
     } catch (e) {
       LogService.writeLog(message: "[ERROR] LoginController\nScope: googleSignInClicked()\nError: $e");
 
-      Get.snackbar("Error", "User is not Registered!",
-          snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
+      Get.snackbar("Error", "User is not Registered!", snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
     }
   }
 
@@ -389,9 +389,9 @@ class LoginController extends GetxController {
 
     if (willAuthenticate == true) {
       try {
-       if (await showBiometricDialog()) {
+        if (await showBiometricDialog()) {
           loginButtonClicked(bodyArgs: retrieveLastLoginData());
-       }
+        }
       } catch (e) {
         print(e.toString());
         if (e.toString().contains('NotAvailable') && e.toString().contains('Authentication failure'))
@@ -416,6 +416,7 @@ class LoginController extends GetxController {
     Map lastData = appStorage.retrieveValue(AppStorage.LAST_LOGIN_DATA) ?? {};
     return lastData[projectName] ?? '';
   }
+
 //----------------------------------------------------
   //---------------------- to switch portal---------->
 //----------------------------------------------------
