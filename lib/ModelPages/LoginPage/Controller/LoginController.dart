@@ -30,7 +30,7 @@ class LoginController extends GetxController {
   var errUserName = ''.obs;
   var errPassword = ''.obs;
   var fcmId;
-  var willAuthenticate = false.obs;
+  var willBio_userAuthenticate = false.obs;
   var isBiometricAvailable = false.obs;
 
   LoginController() {
@@ -53,7 +53,7 @@ class LoginController extends GetxController {
     LogService.writeLog(message: "[i] LoginController\nScope: setWillAuthenticate()\nLogin willAuth: $willAuth");
 
     if (willAuth != null) {
-      willAuthenticate.value = willAuth;
+      willBio_userAuthenticate.value = willAuth;
     }
     if (isBiometricAvailable == true) displayAuthenticationDialog();
   }
@@ -387,7 +387,7 @@ class LoginController extends GetxController {
   void displayAuthenticationDialog() async {
     LogService.writeLog(message: "[^] LoginController\nScope: displayAuthenticationDialog()\n Fingerprint Clicked");
 
-    if (willAuthenticate == true) {
+    if (willBio_userAuthenticate == true) {
       try {
         if (await showBiometricDialog()) {
           loginButtonClicked(bodyArgs: retrieveLastLoginData());
@@ -398,7 +398,7 @@ class LoginController extends GetxController {
           showErrorSnack(title: "Oops!", message: "Only Biometric is allowed.");
       }
     } else {
-      print("willAuthenticate => $willAuthenticate");
+      print("willAuthenticate => $willBio_userAuthenticate");
     }
   }
 

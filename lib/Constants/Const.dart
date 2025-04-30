@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class Const {
   static DateTime DEMO_END_DATE = DateTime(2025, 2, 8);
-  static String RELEASE_ID = "";
+  static String RELEASE_ID = "_testRelease300425";
   static String DEVICE_ID = "";
   static String PROJECT_URL = ""; //"https://app.buzzily.com/Run";
   static String PROJECT_NAME = "axpertqa11";

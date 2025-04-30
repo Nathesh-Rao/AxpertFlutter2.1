@@ -347,7 +347,7 @@ class EssLoginPage extends StatelessWidget {
                       ),
                       Spacer(),
                       Visibility(
-                        visible: loginController.willAuthenticate.value,
+                        visible: loginController.willBio_userAuthenticate.value,
                         child: GestureDetector(
                           onTap: () {
                             loginController.displayAuthenticationDialog();

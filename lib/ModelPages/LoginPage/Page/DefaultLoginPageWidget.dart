@@ -306,7 +306,7 @@ class DefaultLoginPageWidget extends StatelessWidget {
                     ),
                     Visibility(
                       // visible: true,
-                      visible: loginController.isBiometricAvailable.value,
+                      visible: loginController.isBiometricAvailable.value && loginController.willBio_userAuthenticate.value,
                       child: GestureDetector(
                         onTap: () {
                           loginController.displayAuthenticationDialog();
