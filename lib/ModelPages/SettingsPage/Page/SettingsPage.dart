@@ -157,111 +157,113 @@ class SettingsPage extends StatelessWidget {
                           border: Border.all(color: Colors.grey.shade300, width: 1)),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(height: 20),
-                            Image.asset(
-                              'assets/images/axpert_full.png',
-                              // 'assets/images/buzzily-logo.png',
-                              height: MediaQuery.of(context).size.height * 0.06,
-                              // width: MediaQuery.of(context).size.width * 0.38,
-                              // fit: BoxFit.fill,
-                            ),
-                            SizedBox(height: 18),
-                            ListTile(
-                              onTap: () {
-                                settingsPageController.onChangeNotifyStatus();
-                              },
-                              leading: Icon(Icons.notifications_active_outlined),
-                              title: Text(
-                                "Notification",
-                                style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 18)),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 20),
+                              Image.asset(
+                                'assets/images/axpert_full.png',
+                                // 'assets/images/buzzily-logo.png',
+                                height: MediaQuery.of(context).size.height * 0.06,
+                                // width: MediaQuery.of(context).size.width * 0.38,
+                                // fit: BoxFit.fill,
                               ),
-                              trailing: Obx(() => SizedBox(
-                                    width: 60,
-                                    child: FlutterSwitch(
-                                      height: 30,
-                                      value: settingsPageController.notificationOnOffValue.value,
-                                      showOnOff: true,
-                                      activeColor: MyColors.blue2,
-                                      onToggle: (bool values) {
-                                        settingsPageController.onChangeNotifyStatus();
-                                      },
-                                    ),
-                                  )),
-                            ),
-                            Divider(),
-                            ListTile(
-                              onTap: () async {
-                                await Get.defaultDialog(
-                                  barrierDismissible: false,
-                                  title: "Action",
-                                  middleText: "Please select option",
-                                  confirm: ElevatedButton(
-                                      onPressed: () async {
-                                        Get.back();
-                                      },
-                                      child: Text("Open File")),
-                                  cancel: TextButton(
-                                      onPressed: () async {
-                                        Get.back();
-                                      },
-                                      child: Text("Cancel")),
-                                );
-                              },
-                              leading: Icon(Icons.description_outlined),
-                              title: Text(
-                                "Trace",
-                                style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 18)),
+                              SizedBox(height: 18),
+                              ListTile(
+                                onTap: () {
+                                  settingsPageController.onChangeNotifyStatus();
+                                },
+                                leading: Icon(Icons.notifications_active_outlined),
+                                title: Text(
+                                  "Notification",
+                                  style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 18)),
+                                ),
+                                trailing: Obx(() => SizedBox(
+                                      width: 60,
+                                      child: FlutterSwitch(
+                                        height: 30,
+                                        value: settingsPageController.notificationOnOffValue.value,
+                                        showOnOff: true,
+                                        activeColor: MyColors.blue2,
+                                        onToggle: (bool values) {
+                                          settingsPageController.onChangeNotifyStatus();
+                                        },
+                                      ),
+                                    )),
                               ),
-                              trailing: Obx(() => SizedBox(
-                                    width: 60,
-                                    child: FlutterSwitch(
-                                      height: 30,
-                                      value: settingsPageController.logOnOffValue.value,
-                                      showOnOff: true,
-                                      activeColor: MyColors.blue2,
-                                      onToggle: (bool values) {
-                                        settingsPageController.onChangeLogStatus();
-                                      },
-                                    ),
-                                  )),
-                            ),
-                            Divider(),
-                            ListTile(
-                              onTap: () {
-                                // DemoUtils.showDemoBarrier();
-                                landingPageController.showManageWindow(initialIndex: 1);
-                              },
-                              leading: Icon(Icons.lock_outline),
-                              title: Text(
-                                "Reset Password",
-                                style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 18)),
+                              Divider(),
+                              ListTile(
+                                onTap: () async {
+                                  await Get.defaultDialog(
+                                    barrierDismissible: false,
+                                    title: "Action",
+                                    middleText: "Please select option",
+                                    confirm: ElevatedButton(
+                                        onPressed: () async {
+                                          Get.back();
+                                        },
+                                        child: Text("Open File")),
+                                    cancel: TextButton(
+                                        onPressed: () async {
+                                          Get.back();
+                                        },
+                                        child: Text("Cancel")),
+                                  );
+                                },
+                                leading: Icon(Icons.description_outlined),
+                                title: Text(
+                                  "Trace",
+                                  style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 18)),
+                                ),
+                                trailing: Obx(() => SizedBox(
+                                      width: 60,
+                                      child: FlutterSwitch(
+                                        height: 30,
+                                        value: settingsPageController.logOnOffValue.value,
+                                        showOnOff: true,
+                                        activeColor: MyColors.blue2,
+                                        onToggle: (bool values) {
+                                          settingsPageController.onChangeLogStatus();
+                                        },
+                                      ),
+                                    )),
                               ),
-                            ),
-                            Divider(),
-                            ListTile(
-                              onTap: () {
-                                landingPageController.signOut();
-                              },
-                              leading: Icon(Icons.power_settings_new),
-                              title: Text(
-                                "Sign out",
-                                style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 18)),
+                              Divider(),
+                              ListTile(
+                                onTap: () {
+                                  // DemoUtils.showDemoBarrier();
+                                  landingPageController.showManageWindow(initialIndex: 1);
+                                },
+                                leading: Icon(Icons.lock_outline),
+                                title: Text(
+                                  "Reset Password",
+                                  style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 18)),
+                                ),
                               ),
-                            ),
-                            Divider(),
-
-                            // TextButton(
-                            //     onPressed: () {
-                            //       Aes().encryptString(ExecuteApi.API_PrivateKey_DashBoard);
-                            //       Aes().decryptString("G7H+G66Z+peBK7zJ3Rq1SA==", ExecuteApi.API_PrivateKey_DashBoard);
-                            //       // Aes().encryptString(ExecuteApi.API_PrivateKey_DashBoard);
-                            //     },
-                            //     child: Text("Encrypt")),
-                          ],
+                              Divider(),
+                              ListTile(
+                                onTap: () {
+                                  landingPageController.signOut();
+                                },
+                                leading: Icon(Icons.power_settings_new),
+                                title: Text(
+                                  "Sign out",
+                                  style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 18)),
+                                ),
+                              ),
+                              Divider(),
+                          
+                              // TextButton(
+                              //     onPressed: () {
+                              //       Aes().encryptString(ExecuteApi.API_PrivateKey_DashBoard);
+                              //       Aes().decryptString("G7H+G66Z+peBK7zJ3Rq1SA==", ExecuteApi.API_PrivateKey_DashBoard);
+                              //       // Aes().encryptString(ExecuteApi.API_PrivateKey_DashBoard);
+                              //     },
+                              //     child: Text("Encrypt")),
+                            ],
+                          ),
                         ),
                       ),
                     ),

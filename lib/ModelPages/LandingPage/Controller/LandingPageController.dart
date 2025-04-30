@@ -114,7 +114,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
 
   getBiometricStatus() async {
     var willAuthLocal = await getWillBiometricAuthenticateForThisUser(userName.value);
-    if (willAuthLocal == null) {
+    if (willAuthLocal == null || willAuthLocal == false) {
       Get.bottomSheet(
         PopScope(
           canPop: false,

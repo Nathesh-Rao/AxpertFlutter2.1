@@ -389,9 +389,9 @@ class LoginController extends GetxController {
 
     if (willAuthenticate == true) {
       try {
-        if (await showBiometricDialog()) {
+       if (await showBiometricDialog()) {
           loginButtonClicked(bodyArgs: retrieveLastLoginData());
-        }
+       }
       } catch (e) {
         print(e.toString());
         if (e.toString().contains('NotAvailable') && e.toString().contains('Authentication failure'))

@@ -63,14 +63,10 @@ class CommonMethods {
   ) {
     var url = "";
     var msgType = activeList.msgtype.toString().toUpperCase().trim();
-    if (msgType == "MESSAGE" ||
-        msgType == "FORM NOTIFICATION" ||
-        msgType == "PERIODIC NOTIFICATION" ||
-        msgType == "CACHED SAVE") {
+    if (msgType == "MESSAGE" || msgType == "FORM NOTIFICATION" || msgType == "PERIODIC NOTIFICATION" || msgType == "CACHED SAVE") {
       var hlink_TRANID = activeList.hlink_transid.toString();
-      var hlink_PARAMS = activeList.hlink_params.toString().startsWith("^")
-          ? activeList.hlink_params.toString()
-          : "^" + activeList.hlink_params.toString();
+      var hlink_PARAMS =
+          activeList.hlink_params.toString().startsWith("^") ? activeList.hlink_params.toString() : "^" + activeList.hlink_params.toString();
       url = "aspx/AxMain.aspx?pname=" +
           hlink_TRANID +
           "&authKey=AXPERT-" +
@@ -186,9 +182,9 @@ showBiometricDialog() async {
             cancelButton: 'No thanks',
           )
         ],
-        options: AuthenticationOptions(biometricOnly: true, useErrorDialogs: false));
+        options: AuthenticationOptions(biometricOnly: true, useErrorDialogs: true));
   } catch (e) {
-    // print(e.toString());
+    print(e.toString());
     // if (e.toString().contains('NotAvailable') && e.toString().contains('Authentication failure'))
     //   showErrorSnack(title: "Oops!", message: "Only Biometric is allowed.");
   }
