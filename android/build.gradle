@@ -29,7 +29,7 @@ allprojects {
             kotlinOptions {
                 jvmTarget = "17"
             }
-        } else if (project.name == "flutter_downloader" || project.name == "fluttertoast" || project.name == "webview_flutter_android" | project.name == "location" || project.name == "shared_preferences_android") {
+        } else if (project.name == "flutter_downloader" || project.name == "fluttertoast" || project.name == "webview_flutter_android" || project.name == "location" || project.name == "shared_preferences_android") {
             kotlinOptions {
                 jvmTarget = "11"
             }

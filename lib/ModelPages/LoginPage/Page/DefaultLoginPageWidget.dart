@@ -3,7 +3,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
-
+import 'package:local_auth/local_auth.dart';
+import 'package:local_auth_android/local_auth_android.dart';
+import 'package:local_auth_darwin/local_auth_darwin.dart';
 import '../../../Constants/MyColors.dart';
 import '../../../Constants/Routes.dart';
 import '../../../Constants/Const.dart';
@@ -310,6 +312,7 @@ class DefaultLoginPageWidget extends StatelessWidget {
                       child: GestureDetector(
                         onTap: () {
                           loginController.displayAuthenticationDialog();
+                          // showBiometricDialog();
                         },
                         child: Container(
                           color: Colors.transparent,
@@ -352,4 +355,27 @@ class DefaultLoginPageWidget extends StatelessWidget {
       ),
     );
   }
+
+  // showBiometricDialog() async {
+  //   try {
+  //     LocalAuthentication auth = LocalAuthentication();
+  //     return await auth.authenticate(
+  //         localizedReason: "Please use your touch id to login",
+  //         authMessages: const <AuthMessages>[
+  //           AndroidAuthMessages(
+  //             signInTitle: 'Biometric authentication required!',
+  //             cancelButton: 'No thanks',
+  //           ),
+  //           IOSAuthMessages(
+  //             cancelButton: 'No thanks',
+  //           )
+  //         ],
+  //         options: AuthenticationOptions(biometricOnly: true, useErrorDialogs: true, stickyAuth: true));
+  //   } catch (e) {
+  //     print(e.toString());
+  //     // if (e.toString().contains('NotAvailable') && e.toString().contains('Authentication failure'))
+  //     //   showErrorSnack(title: "Oops!", message: "Only Biometric is allowed.");
+  //   }
+  //   return false;
+  // }
 }
