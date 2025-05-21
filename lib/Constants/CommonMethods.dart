@@ -63,10 +63,14 @@ class CommonMethods {
   ) {
     var url = "";
     var msgType = activeList.msgtype.toString().toUpperCase().trim();
-    if (msgType == "MESSAGE" || msgType == "FORM NOTIFICATION" || msgType == "PERIODIC NOTIFICATION" || msgType == "CACHED SAVE") {
+    if (msgType == "MESSAGE" ||
+        msgType == "FORM NOTIFICATION" ||
+        msgType == "PERIODIC NOTIFICATION" ||
+        msgType == "CACHED SAVE") {
       var hlink_TRANID = activeList.hlink_transid.toString();
-      var hlink_PARAMS =
-          activeList.hlink_params.toString().startsWith("^") ? activeList.hlink_params.toString() : "^" + activeList.hlink_params.toString();
+      var hlink_PARAMS = activeList.hlink_params.toString().startsWith("^")
+          ? activeList.hlink_params.toString()
+          : "^" + activeList.hlink_params.toString();
       url = "aspx/AxMain.aspx?pname=" +
           hlink_TRANID +
           "&authKey=AXPERT-" +
@@ -168,27 +172,32 @@ showErrorSnack({title = 'Error', message = 'Server busy, Please try again later.
     Get.snackbar(title, message, snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.redAccent);
 }
 
-showBiometricDialog() async {
+Future<bool> showBiometricDialog() async {
   try {
-    LocalAuthentication auth = LocalAuthentication();
-    return await auth.authenticate(
-        localizedReason: "Please use your touch id to login",
-        authMessages: const <AuthMessages>[
-          AndroidAuthMessages(
-            signInTitle: 'Biometric authentication required!',
-            cancelButton: 'No thanks',
-          ),
-          IOSAuthMessages(
-            cancelButton: 'No thanks',
-          )
-        ],
-        options: AuthenticationOptions(biometricOnly: true, useErrorDialogs: true));
+    final auth = LocalAuthentication();
+
+    final isAuthenticated = await auth.authenticate(
+      localizedReason: "Please use your touch ID to login",
+      authMessages: const <AuthMessages>[
+        AndroidAuthMessages(
+          signInTitle: 'Biometric authentication required!',
+          cancelButton: 'No thanks',
+        ),
+        IOSAuthMessages(
+          cancelButton: 'No thanks',
+        )
+      ],
+      options: const AuthenticationOptions(
+        biometricOnly: true,
+        useErrorDialogs: false,
+        stickyAuth: false,
+      ),
+    );
+
+    return isAuthenticated;
   } catch (e) {
-    print(e.toString());
-    // if (e.toString().contains('NotAvailable') && e.toString().contains('Authentication failure'))
-    //   showErrorSnack(title: "Oops!", message: "Only Biometric is allowed.");
+    return false;
   }
-  return false;
 }
 
 willShowSetBiometricDialog(user) async {
