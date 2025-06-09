@@ -32,7 +32,7 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
   @override
   void initState() {
     LogService.writeLog(message: "[>] SplashPage");
-    LogService.writeOnConsole(message: "[>] SplashPage");
+    // LogService.writeOnConsole(message: "[>] SplashPage");
     super.initState();
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual);
     // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));

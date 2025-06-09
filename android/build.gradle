@@ -25,7 +25,7 @@ allprojects {
 }
 allprojects {
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-        if (project.name == "device_info_plus" || project.name == "package_info_plus") {//||project.name == "background_location_tracker") {
+        if (project.name == "device_info_plus" || project.name == "package_info_plus" ||project.name == "background_location_tracker") {
             kotlinOptions {
                 jvmTarget = "17"
             }

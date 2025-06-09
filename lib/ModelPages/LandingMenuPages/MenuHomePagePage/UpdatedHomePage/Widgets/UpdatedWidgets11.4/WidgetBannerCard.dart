@@ -1,5 +1,6 @@
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Models/BannerCardModel.dart';
+import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -77,8 +78,9 @@ class WidgetBannerCard extends StatelessWidget {
   }
 
   _bannerCard(dynamic cardData, String? cardname) {
-    var bannerData = BannerCard.fromJson(cardData);
+    // print(cardData);
 
+    var bannerData = BannerCard.fromJson(cardData);
     return Container(
       margin: EdgeInsets.all(15),
       decoration: BoxDecoration(

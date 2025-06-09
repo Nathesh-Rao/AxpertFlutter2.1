@@ -115,10 +115,10 @@ class ProjectController extends GetxController {
   ///----------------------------------
   saveOrUpdateConnection({ProjectModel? model, bool isQr = false}) async {
     if (!validateProjectDetailsForm()) {
-      LogService.writeOnConsole(message: "validateProjectDetailsForm => false");
+      LogService.writeLog(message: "validateProjectDetailsForm => false");
 
       if (isQr) {
-        LogService.writeOnConsole(message: "saveOrUpdateConnection => isQR: $isQr");
+        LogService.writeLog(message: "saveOrUpdateConnection => isQR: $isQr");
         if (!isDuplicate(model)) {
           var project = ProjectModel(DateTime.now().toString(), conNameController.text, webUrlController.text,
               armUrlController.text, conCaptionController.text);
@@ -135,7 +135,7 @@ class ProjectController extends GetxController {
         }
       }
     } else {
-      LogService.writeOnConsole(message: "validateProjectDetailsForm => true");
+      LogService.writeLog(message: "validateProjectDetailsForm => true");
 
       if (isQr) {
         var project = ProjectModel(DateTime.now().toString(), conNameController.text, webUrlController.text,
@@ -298,7 +298,7 @@ class ProjectController extends GetxController {
     var body = "{\"appname\":\"" + conNameController.text.trim() + "\"}";
     final response = await serverConnections.postToServer(url: url, body: body);
 
-    LogService.writeOnConsole(message: "validateConnectionName(String $baseUrl)=> response: $response");
+    LogService.writeLog(message: "validateConnectionName(String $baseUrl)=> response: $response");
 
     if (response != "") {
       var json = jsonDecode(response);

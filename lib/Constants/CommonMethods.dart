@@ -130,11 +130,11 @@ class CommonMethods {
 
     if (status.isGranted) {
       // print("✅ Location Permission Granted");
-      LogService.writeOnConsole(message: "✅ Location Permission Granted");
+      LogService.writeLog(message: "✅ Location Permission Granted");
     } else if (status.isDenied) {
-      LogService.writeOnConsole(message: "⚠️ Location Permission Denied");
+      LogService.writeLog(message: "⚠️ Location Permission Denied");
     } else if (status.isPermanentlyDenied) {
-      LogService.writeOnConsole(message: "🚨 Permission Permanently Denied. Redirecting to Settings...");
+      LogService.writeLog(message: "🚨 Permission Permanently Denied. Redirecting to Settings...");
       if (!Platform.isIOS) {
         await openAppSettings(); // Opens settings for manual permission
       }

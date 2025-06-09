@@ -165,8 +165,13 @@ class MenuHomePageController extends GetxController {
       "RefreshData": false,
       "GlobalParams": ServerConnections.SAMPLE_GET_CARDS_WITH_DATA_GLOBAL_PARAMS
     };
+    // LogService.writeOnConsole(message: "getcardswithdata");
+    // LogService.writeOnConsole(message: url);
+    // LogService.writeOnConsole(message: "$getCardsBody");
+
     var resp = await serverConnections.postToServer(url: url, body: jsonEncode(getCardsBody), isBearer: true);
     LogService.writeLog(message: "getcardswithdata : $resp");
+    LogService.writeOnConsole(message: "getcardswithdata : $resp");
     var response = jsonDecode(resp);
     // LogService.writeLog(message: "_getCardsWithData: resp:$response");
     List dataList = response["result"]["data"];
@@ -570,7 +575,10 @@ class MenuHomePageController extends GetxController {
 
   captionOnTapFunctionNew(transid) async {
     if (transid != null) {
+      LogService.writeOnConsole(message: "captionOnTapFunction: transid => $transid");
+
       String link_id = getStringForWebViewParam(transid); //transid.replaceAll('(', '').replaceAll(')', '');
+      LogService.writeOnConsole(message: "captionOnTapFunction: link_id => $link_id");
 
       LogService.writeLog(message: "captionOnTapFunction: transid => $link_id");
       var validity = false;
@@ -598,7 +606,9 @@ class MenuHomePageController extends GetxController {
               "&pname=" +
               link_id;
           print("Web_URL_card: $webUrl");
-          // LogService.writeLog(message: "Web url => $webUrl");
+          LogService.writeOnConsole(message: "captionOnTapFunction: final-webUrl => $webUrl");
+
+          LogService.writeLog(message: "Web url => $webUrl");
           Get.toNamed(Routes.InApplicationWebViewer, arguments: [webUrl]);
         }
       }
@@ -682,6 +692,8 @@ class MenuHomePageController extends GetxController {
     };
 
     var dsResp = await serverConnections.postToServer(url: dataSourceUrl, isBearer: true, body: jsonEncode(body));
+    LogService.writeOnConsole(message: "MenuHomePageController:\ngetClientInfo()=> dsResp:$dsResp");
+
     if (dsResp != "") {
       var jsonDSResp = jsonDecode(dsResp);
       if (jsonDSResp['result']['success'].toString() == "true") {

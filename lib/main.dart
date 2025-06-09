@@ -93,12 +93,12 @@ Future<void> triggerLocalNetworkPrompt() async {
     var url = "192.168.1.1";
     // var url = "google.com";
     var addrss = await InternetAddress.lookup(url);
-    LogService.writeOnConsole(message: "triggerLocalNetworkPrompt()=> addrss => $addrss");
-    print("triggerLocalNetworkPrompt()=> addrss => $addrss");
+    LogService.writeLog(message: "triggerLocalNetworkPrompt()=> addrss => $addrss");
+    // print("triggerLocalNetworkPrompt()=> addrss => $addrss");
     await Future.delayed(Duration(seconds: 3));
   } catch (e) {
-    LogService.writeOnConsole(message: "triggerLocalNetworkPrompt()=> Local network prompt triggered err => : $e");
-    print("triggerLocalNetworkPrompt()=> Local network prompt triggered err => : $e");
+    LogService.writeLog(message: "triggerLocalNetworkPrompt()=> Local network prompt triggered err => : $e");
+    // print("triggerLocalNetworkPrompt()=> Local network prompt triggered err => : $e");
   }
 }
 
@@ -106,17 +106,17 @@ Future<void> fetchData() async {
   try {
     var url = "192.168.1.1";
     final response = await http.get(Uri.parse(url));
-    LogService.writeOnConsole(message: "fetchData()=> url=> $url\n response => ${response.body}");
+    LogService.writeLog(message: "fetchData()=> url=> $url\n response => ${response.body}");
 
     // handle response
   } catch (e) {
     if (e is SocketException) {
       await Future.delayed(Duration(seconds: 2));
-      LogService.writeOnConsole(message: "fetchData() triggered err 1 => : $e");
+      LogService.writeLog(message: "fetchData() triggered err 1 => : $e");
       // Retry once
       // final response = await http.get(Uri.parse("http://192.168.1.1"));
     }
-    LogService.writeOnConsole(message: "fetchData() triggered err 2 => : $e");
+    LogService.writeLog(message: "fetchData() triggered err 2 => : $e");
   }
 }
 
@@ -129,7 +129,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       LogService.writeLog(message: "[>] App initialized");
-      LogService.writeOnConsole(message: "[>] App initialized");
+      // LogService.writeOnConsole(message: "[>] App initialized");
     });
 
     return GetMaterialApp(

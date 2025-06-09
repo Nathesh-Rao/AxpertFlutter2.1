@@ -49,6 +49,8 @@ class LogService {
   }
 
   static writeOnConsole({String message = ""}) async {
+    return;
+
     _logWithColor("console-log: $message", skyBlue);
   }
 
