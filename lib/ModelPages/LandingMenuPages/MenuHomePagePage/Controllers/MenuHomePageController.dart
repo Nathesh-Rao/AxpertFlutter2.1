@@ -617,9 +617,14 @@ class MenuHomePageController extends GetxController {
       final match = RegExp(r'(\w+)\((.*?)\)').firstMatch(input);
       if (match != null) {
         String base = match.group(1) ?? '';
-        String params = match.group(2) ?? '';
-
-        return params.isNotEmpty ? '$base&params=^$params' : base;
+        String inputParams = match.group(2) ?? '';
+        String outputParams = inputParams.split('~').map((pair) {
+          var parts = pair.split('=');
+          var key = parts[0];
+          var value = parts.sublist(1).join('=');
+          return '$key~$value';
+        }).join('^');
+        return outputParams.isNotEmpty ? '$base&params=$outputParams' : base;
       }
     }
     return input;
