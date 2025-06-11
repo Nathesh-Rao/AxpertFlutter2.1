@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 
+import '../../../../LandingPage/Widgets/EmptyInfoWidget.dart';
 import '../../Controllers/CompletedListController.dart';
 import '../../Controllers/PendingListController.dart';
 import 'Widgets/WidgetActiveListTile.dart';
@@ -129,7 +130,10 @@ class ActiveListPage extends StatelessWidget {
   Widget _floatingActionButton() {
     return Obx(
       () => activeTaskListController.activeTaskList.isEmpty
-          ? SizedBox.shrink()
+          ? EmptyInfoWidget(
+              title: "No Task Data Available",
+              subTitle: "There is no task data to show you\nright now",
+            )
           : FloatingActionButton(
               backgroundColor: MyColors.blue9,
               foregroundColor: MyColors.white1,

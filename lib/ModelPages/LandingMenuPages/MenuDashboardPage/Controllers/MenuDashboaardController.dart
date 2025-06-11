@@ -22,7 +22,7 @@ import '../../MenuHomePagePage/UpdatedHomePage/Widgets/UpdatedWidgets11.4/Widget
 class MenuDashboardController extends GetxController {
   AppStorage appStorage = AppStorage();
   ServerConnections serverConnections = ServerConnections();
-  List<ChartCardModel> chartList = [];
+  RxList<ChartCardModel> chartList = <ChartCardModel>[].obs;
   var dashBoardWidgetList = [].obs;
   MenuDashboardController() {
     fetchDataFromServer();

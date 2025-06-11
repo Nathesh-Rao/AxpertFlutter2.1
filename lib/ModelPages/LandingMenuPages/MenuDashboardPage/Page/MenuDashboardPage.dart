@@ -6,6 +6,7 @@ import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetSlidingNotifi
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../LandingPage/Widgets/EmptyInfoWidget.dart';
 import '../Models/ChartCardModel.dart';
 
 class MenuDashboardPage extends StatelessWidget {
@@ -24,10 +25,22 @@ class MenuDashboardPage extends StatelessWidget {
         children: [
           WidgetSlidingNotificationPanel(),
           SizedBox(height: 5),
-          Visibility(visible: menuDashboardController.chartList.length == 0 ? true : false, child: WidgetNoDataFound()),
-          Expanded(
-            child: Obx(
-              () => ListView(
+          Obx(
+            () => Expanded(
+              child: Visibility(
+                  visible: menuDashboardController.chartList.length == 0,
+                  child: EmptyInfoWidget(
+                    image: "assets/images/empty-chart.png",
+                    title: "No Chart Data Available",
+                    subTitle: "There is chart data to show you right now",
+                    widthFactor: 2.5,
+                  )),
+            ),
+          ),
+          Obx(
+            () => Expanded(
+              flex: (menuDashboardController.chartList.isEmpty && menuDashboardController.dashBoardWidgetList.isEmpty) ? 0 : 1,
+              child: ListView(
                 padding: EdgeInsets.symmetric(vertical: 10),
                 shrinkWrap: true,
                 physics: ClampingScrollPhysics(),
