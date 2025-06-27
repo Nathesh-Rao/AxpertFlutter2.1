@@ -153,13 +153,14 @@ class LoginController extends GetxController {
 
   getSignInBody() async {
     Map body = {
-      "deviceid": Const.DEVICE_ID,
       "appname": Const.PROJECT_NAME,
       "username": userNameController.text.toString().trim(),
-      "userGroup": "power",
+      "password": userPasswordController.text.toString().trim(),
+      "Language": "English"
+      //"deviceid": Const.DEVICE_ID,
+      //"userGroup": "power",
       // "userGroup": ddSelectedValue.value.toString().toLowerCase(),
-      "biometricType": "LOGIN",
-      "password": userPasswordController.text.toString().trim()
+      //"biometricType": "LOGIN",
     };
     return jsonEncode(body);
   }
@@ -170,13 +171,8 @@ class LoginController extends GetxController {
       FocusManager.instance.primaryFocus?.unfocus();
       LoadingScreen.show();
       var body = bodyArgs == '' ? await getSignInBody() : bodyArgs;
-      var url = Const.getFullARMUrl(ServerConnections.API_SIGNIN);
-      // print(body.toString());
-      // var response = await http.post(Uri.parse(url),
-      //     headers: {"Content-Type": "application/json"}, body: body);
-      // var data = serverConnections.parseData(response);
-      // LogService.writeLog(message: "[-] LoginController => loginButtonClicked() => LoginBody : $body");
-
+      //var url = Const.getFullARMUrl(ServerConnections.API_SIGNIN);
+      var url = Const.getFullARMUrl(ServerConnections.API_AX_START_SESSION);
       var response = await serverConnections.postToServer(url: url, body: body);
       // LogService.writeLog(message: "[-] LoginController => loginButtonClicked() => LoginResponse : $response");
 
@@ -188,6 +184,7 @@ class LoginController extends GetxController {
           await appStorage.storeValue(AppStorage.SESSIONID, json["result"]["sessionid"].toString());
           await appStorage.storeValue(AppStorage.USER_NAME, userNameController.text.trim());
           await appStorage.storeValue(AppStorage.USER_CHANGE_PASSWORD, json["result"]["ChangePassword"].toString());
+          await appStorage.storeValue(AppStorage.NICK_NAME, json["result"]["NickName"].toString() ?? userNameController.text.trim());
           storeLastLoginData(body);
           print("User_change_password: ${appStorage.retrieveValue(AppStorage.USER_CHANGE_PASSWORD)}");
           LogService.writeLog(
@@ -278,6 +275,18 @@ class LoginController extends GetxController {
     //mobile Notification
     await _callApiForMobileNotification();
     //connect to Axpert
+    await _callApiForConnectToAxpert();
+    // Get.offAllNamed(Routes.LandingPage);
+    //
+    //burnur code for navigating to ess portal - amrith--->
+    if (isPortalDefault.value) {
+      Get.offAllNamed(Routes.LandingPage);
+    } else {
+      Get.offAllNamed(Routes.EssHomePage);
+    } //------------------------------------------------>
+  }
+
+  Future<void> _callApiForConnectToAxpert() async {
     var connectBody = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
     var cUrl = Const.getFullARMUrl(ServerConnections.API_CONNECTTOAXPERT);
     var connectResp = await serverConnections.postToServer(url: cUrl, body: jsonEncode(connectBody), isBearer: true);
@@ -295,14 +304,6 @@ class LoginController extends GetxController {
     } else {
       showErrorSnack();
     }
-    // Get.offAllNamed(Routes.LandingPage);
-    //
-    //burnur code for navigating to ess portal - amrith--->
-    if (isPortalDefault.value) {
-      Get.offAllNamed(Routes.LandingPage);
-    } else {
-      Get.offAllNamed(Routes.EssHomePage);
-    } //------------------------------------------------>
   }
 
   _callApiForMobileNotification() async {
