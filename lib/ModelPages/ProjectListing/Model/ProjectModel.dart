@@ -44,7 +44,7 @@ class ProjectModel {
   ProjectModel.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         projectname = json['projectname'],
-        projectCaption = json['projectCaption'] ?? json['projectname'],
+        projectCaption = json['project_cap'] ?? json['projectname'],
         url = json['url'],
         scripts_uri = json['scripts_uri'],
         dbtype = json['dbtype'],
@@ -55,7 +55,7 @@ class ProjectModel {
 
   Map<String, dynamic> toJson() => {
         'id': id,
-        'projectCaption': projectCaption,
+        'project_cap': projectCaption,
         'projectname': projectname,
         'url': url,
         'scripts_uri': scripts_uri,

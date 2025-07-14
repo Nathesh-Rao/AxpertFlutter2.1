@@ -1,10 +1,8 @@
 import 'package:axpertflutter/Constants/MyColors.dart';
-import 'package:axpertflutter/ModelPages/AddConnection/Controllers/AddConnectionController.dart';
-import 'package:axpertflutter/ModelPages/AddConnection/Controllers/ProjectController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../ProjectListing/Model/ProjectModel.dart';
+import '../Controllers/AddConnectionController.dart';
 
 class URLDetails extends StatefulWidget {
   const URLDetails({super.key, this.project});
@@ -16,7 +14,7 @@ class URLDetails extends StatefulWidget {
 
 class _URLDetailsState extends State<URLDetails> {
   // AddConnectionController addConnectionController = Get.find();
-  ProjectController projectController = Get.find();
+  AddConnectionController projectController = Get.find();
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(

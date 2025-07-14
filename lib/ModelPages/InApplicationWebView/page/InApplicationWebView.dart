@@ -73,6 +73,8 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
     // mediaPlaybackRequiresUserGesture: false,
     useHybridComposition: false,
     hardwareAcceleration: false,
+    geolocationEnabled: true,
+    clearCache: false,
   );
 
   void _download(String url) async {
@@ -161,6 +163,24 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
                 onWebViewCreated: (controller) {
                   _webViewController = controller;
                 },
+                onGeolocationPermissionsShowPrompt: (InAppWebViewController controller, String origin) async {
+                  var status = await Permission.locationWhenInUse.status;
+
+                  if (status.isGranted) {
+                    return GeolocationPermissionShowPromptResponse(
+                      origin: origin,
+                      allow: true,
+                      retain: true,
+                    );
+                  } else {
+                    requestLocationPermission();
+                    return GeolocationPermissionShowPromptResponse(
+                      origin: origin,
+                      allow: false,
+                      retain: false,
+                    );
+                  }
+                },
                 onDownloadStartRequest: (controller, downloadStartRequest) {
                   print("Download");
                   print("Requested url: ${downloadStartRequest.url.toString()}");
@@ -222,6 +242,45 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
         ),
         //floatingActionButton: favoriteButton(),
       ),
+    );
+  }
+
+  Future<void> requestLocationPermission() async {
+    var status = await Permission.locationWhenInUse.status;
+
+    if (status.isDenied || status.isPermanentlyDenied) {
+      // Request permission
+      if (await Permission.locationWhenInUse.request().isGranted) {
+        print("Location permission granted.");
+      } else {
+        print("Location permission denied.");
+        showPermissionDialog();
+      }
+    }
+  }
+
+  void showPermissionDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Location Permission Required"),
+          content: Text("This feature requires location access. Please enable location permissions in settings."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                openAppSettings(); // Opens app settings to enable permissions
+                Navigator.of(context).pop();
+              },
+              child: Text("Open Settings"),
+            ),
+          ],
+        );
+      },
     );
   }
 

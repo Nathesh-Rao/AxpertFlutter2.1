@@ -1,7 +1,8 @@
-import 'package:axpertflutter/ModelPages/AddConnection/Controllers/AddConnectionController.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../Controllers/AddConnectionController.dart';
 
 class ConnectCode extends StatefulWidget {
   const ConnectCode({super.key});
@@ -11,7 +12,8 @@ class ConnectCode extends StatefulWidget {
 }
 
 class _ConnectCodeState extends State<ConnectCode> {
-  AddConnectionController addConnectionController = Get.find();
+  AddConnectionController projectController = Get.find();
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -30,12 +32,12 @@ class _ConnectCodeState extends State<ConnectCode> {
                 Text("Connection Code", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                 SizedBox(height: 20),
                 TextField(
-                  controller: addConnectionController.connectionCodeController,
-                  onSubmitted: (value) => addConnectionController.connectionCodeClick(),
+                  controller: projectController.connectionCodeController,
+                  onSubmitted: (value) => projectController.connectionCodeClick(),
                   decoration: InputDecoration(
                       border: OutlineInputBorder(borderSide: BorderSide(width: 1), borderRadius: BorderRadius.circular(10)),
                       hintText: "Enter Connection Code",
-                      errorText: addConnectionController.evaluateErrorText(addConnectionController.errCode),
+                      errorText: projectController.evaluateErrorText(projectController.errCode),
                       label: Text("Connection Code")),
                 ),
                 SizedBox(height: 20),
@@ -44,7 +46,7 @@ class _ConnectCodeState extends State<ConnectCode> {
                       style: ElevatedButton.styleFrom(
                         minimumSize: Size(200, 40),
                       ),
-                      onPressed: addConnectionController.connectionCodeClick,
+                      onPressed: projectController.connectionCodeClick,
                       child: Text("SAVE")),
                 ),
               ]),

@@ -17,7 +17,7 @@ class AddNewConnection extends StatefulWidget {
 }
 
 class _AddNewConnectionState extends State<AddNewConnection> {
-  AddConnectionController connectionController = Get.find();
+  AddConnectionController projectController = Get.find();
   dynamic argumentData = Get.arguments;
   ProjectModel? project;
   var pages = [];
@@ -32,35 +32,35 @@ class _AddNewConnectionState extends State<AddNewConnection> {
     pages = [QRCodeScanner(), ConnectCode(), URLDetails(project: project)];
 
     try {
-      connectionController.index.value = 0;
-      connectionController.heading.value = "Add new Connection";
-      if (argumentData != null) connectionController.index.value = argumentData[0]?.toInt() ?? 0;
+      projectController.index.value = 0;
+      projectController.heading.value = "Add new Connection";
+      if (argumentData != null) projectController.index.value = argumentData[0]?.toInt() ?? 0;
     } catch (e) {
       LogService.writeLog(message: "[ERROR] AddNewConnection\Scope: initState\nError: $e");
     }
-    print(connectionController.index.value);
-    switch (connectionController.index.value) {
+    print(projectController.index.value);
+    switch (projectController.index.value) {
       case 0:
-        connectionController.selectedRadioValue.value = "QR";
+        projectController.selectedRadioValue.value = "QR";
         break;
       case 1:
-        connectionController.selectedRadioValue.value = "CC";
+        projectController.selectedRadioValue.value = "CC";
         break;
       case 2:
-        connectionController.selectedRadioValue.value = "URL";
-        connectionController.heading.value = "Edit Connection";
+        projectController.selectedRadioValue.value = "URL";
+        projectController.heading.value = "Edit Connection";
         break;
     }
   }
 
   @override
   void dispose() {
-    connectionController.updateProjectDetails = false;
-    connectionController.connectionCodeController.text = "";
-    connectionController.conCaptionController.text = "";
-    connectionController.conNameController.text = "";
-    connectionController.webUrlController.text = "";
-    connectionController.armUrlController.text = "";
+    //projectController.updateProjectDetails = false;
+    projectController.connectionCodeController.text = "";
+    projectController.conCaptionController.text = "";
+    projectController.conNameController.text = "";
+    projectController.webUrlController.text = "";
+    projectController.armUrlController.text = "";
     super.dispose();
   }
 
@@ -69,7 +69,7 @@ class _AddNewConnectionState extends State<AddNewConnection> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(connectionController.heading.value),
+          title: Text(projectController.heading.value),
           foregroundColor: MyColors.blue2,
           backgroundColor: Colors.white,
           centerTitle: true,
@@ -109,10 +109,10 @@ class _AddNewConnectionState extends State<AddNewConnection> {
                                 contentPadding: EdgeInsets.zero,
                                 visualDensity: const VisualDensity(horizontal: VisualDensity.minimumDensity),
                                 value: "QR",
-                                groupValue: connectionController.selectedRadioValue.value,
+                                groupValue: projectController.selectedRadioValue.value,
                                 onChanged: (v) {
-                                  connectionController.selectedRadioValue.value = v.toString();
-                                  connectionController.index.value = 0;
+                                  projectController.selectedRadioValue.value = v.toString();
+                                  projectController.index.value = 0;
                                 },
                                 title: Text(
                                   "Scan QR Code",
@@ -131,10 +131,10 @@ class _AddNewConnectionState extends State<AddNewConnection> {
                                 contentPadding: EdgeInsets.zero,
                                 visualDensity: const VisualDensity(horizontal: VisualDensity.minimumDensity),
                                 value: "CC",
-                                groupValue: connectionController.selectedRadioValue.value,
+                                groupValue: projectController.selectedRadioValue.value,
                                 onChanged: (v) {
-                                  connectionController.selectedRadioValue.value = v.toString();
-                                  connectionController.index.value = 1;
+                                  projectController.selectedRadioValue.value = v.toString();
+                                  projectController.index.value = 1;
                                 },
                                 title: Text(
                                   "Connection Code",
@@ -153,10 +153,10 @@ class _AddNewConnectionState extends State<AddNewConnection> {
                                 contentPadding: EdgeInsets.zero,
                                 visualDensity: const VisualDensity(horizontal: VisualDensity.minimumDensity),
                                 value: "URL",
-                                groupValue: connectionController.selectedRadioValue.value,
+                                groupValue: projectController.selectedRadioValue.value,
                                 onChanged: (v) {
-                                  connectionController.selectedRadioValue.value = v.toString();
-                                  connectionController.index.value = 2;
+                                  projectController.selectedRadioValue.value = v.toString();
+                                  projectController.index.value = 2;
                                 },
                                 title: Text(
                                   "URL Details",
@@ -172,7 +172,7 @@ class _AddNewConnectionState extends State<AddNewConnection> {
                         ),
                       ),
                     ),
-                    Expanded(child: pages[connectionController.index.value])
+                    Expanded(child: pages[projectController.index.value])
                   ],
                 )),
           ],

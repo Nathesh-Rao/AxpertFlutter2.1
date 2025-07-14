@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:axpertflutter/Constants/MyColors.dart';
-import 'package:axpertflutter/ModelPages/AddConnection/Controllers/AddConnectionController.dart';
 import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import '../Controllers/AddConnectionController.dart';
 
-import '../Controllers/ProjectController.dart';
+
 
 class QRCodeScanner extends StatefulWidget {
   const QRCodeScanner({super.key});
@@ -18,7 +18,7 @@ class QRCodeScanner extends StatefulWidget {
 
 class _QRCodeScannerState extends State<QRCodeScanner> {
   // AddConnectionController addConnectionController = Get.find();
-  ProjectController projectController = Get.find();
+  AddConnectionController projectController = Get.find();
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
   @override

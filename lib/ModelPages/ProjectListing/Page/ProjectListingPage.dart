@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:animated_icon/animated_icon.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
-import 'package:axpertflutter/ModelPages/AddConnection/Controllers/AddConnectionController.dart';
 import 'package:axpertflutter/ModelPages/ProjectListing/Controller/ProjectListingController.dart';
 import 'package:axpertflutter/ModelPages/ProjectListing/Widgets/ProjectItemListTile.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +10,7 @@ import 'package:get/get.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 
 import '../../../Utils/LogServices/LogService.dart';
-import '../../AddConnection/Controllers/ProjectController.dart';
+import '../../AddConnection/Controllers/AddConnectionController.dart';
 
 class ProjectListingPage extends StatefulWidget {
   const ProjectListingPage({super.key});
@@ -22,8 +21,7 @@ class ProjectListingPage extends StatefulWidget {
 
 class _ProjectListingPageState extends State<ProjectListingPage> {
   ProjectListingController projectListingController = Get.put(ProjectListingController());
-  AddConnectionController addConnectionController = Get.put(AddConnectionController());
-  ProjectController projectController = Get.put(ProjectController());
+  AddConnectionController projectController = Get.put(AddConnectionController());
   @override
   void initState() {
     LogService.writeLog(message: "[>] ProjectListingPage");
@@ -195,11 +193,9 @@ class _ProjectListingPageState extends State<ProjectListingPage> {
                                                           ),
                                                           confirmDismiss: (direction) async {
                                                             if (direction == DismissDirection.endToStart) {
-                                                              // addConnectionController.edit(snapshot.data![index]);
                                                               projectController.edit(projectController.projects[index]);
                                                             }
                                                             if (direction == DismissDirection.startToEnd) {
-                                                              // return addConnectionController.delete(snapshot.data![index]);
                                                               projectController.delete(projectController.projects[index]);
                                                             }
                                                             return false;
