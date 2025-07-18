@@ -12,7 +12,7 @@ class ConnectCode extends StatefulWidget {
 }
 
 class _ConnectCodeState extends State<ConnectCode> {
-  AddConnectionController projectController = Get.find();
+  AddConnectionController addConnectionController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +32,12 @@ class _ConnectCodeState extends State<ConnectCode> {
                 Text("Connection Code", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                 SizedBox(height: 20),
                 TextField(
-                  controller: projectController.connectionCodeController,
-                  onSubmitted: (value) => projectController.connectionCodeClick(),
+                  controller: addConnectionController.connectionCodeController,
+                  onSubmitted: (value) => addConnectionController.connectionCodeClick(),
                   decoration: InputDecoration(
                       border: OutlineInputBorder(borderSide: BorderSide(width: 1), borderRadius: BorderRadius.circular(10)),
                       hintText: "Enter Connection Code",
-                      errorText: projectController.evaluateErrorText(projectController.errCode),
+                      errorText: addConnectionController.evaluateErrorText(addConnectionController.errCode),
                       label: Text("Connection Code")),
                 ),
                 SizedBox(height: 20),
@@ -46,7 +46,7 @@ class _ConnectCodeState extends State<ConnectCode> {
                       style: ElevatedButton.styleFrom(
                         minimumSize: Size(200, 40),
                       ),
-                      onPressed: projectController.connectionCodeClick,
+                      onPressed: addConnectionController.connectionCodeClick,
                       child: Text("SAVE")),
                 ),
               ]),

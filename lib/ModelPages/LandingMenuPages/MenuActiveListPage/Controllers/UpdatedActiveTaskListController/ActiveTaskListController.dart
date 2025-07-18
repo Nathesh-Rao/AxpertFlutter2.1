@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:axpertflutter/Constants/GlobalVariableController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Models/UpdatedActiveTaskListModel/ActiveTaskListModel.dart';
 import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,7 @@ import '../ListItemDetailsController.dart';
 class ActiveTaskListController extends GetxController {
   //----
   ListItemDetailsController listItemDetailsController = Get.put(ListItemDetailsController());
+  final globalVariableController = Get.find<GlobalVariableController>();
   // PendingListController
   ServerConnections serverConnections = ServerConnections();
   AppStorage appStorage = AppStorage();
@@ -102,7 +104,7 @@ class ActiveTaskListController extends GetxController {
     body = {
       'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID),
       "AxSessionId": "meecdkr3rfj4dg5g4131xxrt",
-      "AppName": Const.PROJECT_NAME.toString(),
+      "AppName": globalVariableController.PROJECT_NAME.value.toString(),
       "Trace": "false",
       "PageSize": pageSize,
       "PageNo": pageNo,
@@ -331,7 +333,7 @@ class ActiveTaskListController extends GetxController {
     switch (pendingModel.tasktype.toString().toUpperCase()) {
       case "MAKE":
         var URL = CommonMethods.activeList_CreateURL_MAKE(pendingModel);
-        if (!URL.isEmpty) Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(URL)]);
+        if (!URL.isEmpty) Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullWebUrl(URL)]);
         break;
       // break;
       case "CHECK":
@@ -351,7 +353,7 @@ class ActiveTaskListController extends GetxController {
       case "CACHED SAVE":
         var URL = CommonMethods.activeList_CreateURL_MESSAGE(pendingModel);
         if (!URL.isEmpty)
-          Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(URL)])?.then((_) {
+          Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullWebUrl(URL)])?.then((_) {
             pageNumber--;
             _parseTaskMap();
           });

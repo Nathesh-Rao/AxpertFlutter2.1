@@ -35,6 +35,7 @@ import 'package:material_icons_named/material_icons_named.dart';
 import 'package:text_scroll/text_scroll.dart';
 
 import '../../../../Constants/CommonMethods.dart';
+import '../../../../Constants/GlobalVariableController.dart';
 import '../../../../Constants/MyColors.dart';
 import '../../../../Constants/Const.dart';
 import '../../../../Utils/ServerConnections/ExecuteApi.dart';
@@ -51,6 +52,7 @@ class EssController extends GetxController {
   final MenuHomePageController menuHomePageController = Get.put(MenuHomePageController());
 
   InternetConnectivity internetConnectivity = Get.find();
+  final globalVariableController = Get.find<GlobalVariableController>();
   AppStorage appStorage = AppStorage();
   ServerConnections serverConnections = ServerConnections();
   CarouselSliderController essBannerController = CarouselSliderController();
@@ -334,7 +336,7 @@ class EssController extends GetxController {
       "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
       // "publickey": "AXPKEY000000010006",
       "publickey": ExecuteApi.API_PUBLICKEY_ESS_RECENTACTIVITY,
-      "Project": Const.PROJECT_NAME,
+      "Project": globalVariableController.PROJECT_NAME,
       "getsqldata": {"trace": "true"}
     };
     var resp = await ExecuteApi().CallFetchData_ExecuteAPI(
@@ -389,7 +391,7 @@ class EssController extends GetxController {
       }
     }
     if (validity) {
-      var webUrl = Const.getFullProjectUrl("aspx/AxMain.aspx?authKey=AXPERT-") +
+      var webUrl = Const.getFullWebUrl("aspx/AxMain.aspx?authKey=AXPERT-") +
           appStorage.retrieveValue(AppStorage.SESSIONID) +
           "&pname=" +
           link_id;
@@ -445,7 +447,7 @@ class EssController extends GetxController {
       // "publickey": "AXPKEY000000010007",
 
       "publickey": ExecuteApi.API_PUBLICKEY_ESS_ANNOUNCEMENT,
-      "Project": Const.PROJECT_NAME,
+      "Project": globalVariableController.PROJECT_NAME.value,
       "getsqldata": {"trace": "true"}
     };
     var resp = await ExecuteApi().CallFetchData_ExecuteAPI(
@@ -1256,7 +1258,7 @@ class EssController extends GetxController {
       if (itemModel.url != "") {
         // menuHomePageController.webUrl = Const.getFullProjectUrl(itemModel.url);
         // menuHomePageController.switchPage.value = true;
-        Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(itemModel.url)]);
+        Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullWebUrl(itemModel.url)]);
       }
     }
   }
@@ -1337,7 +1339,7 @@ class EssController extends GetxController {
       // "publickey": "AXPKEY000000010008",
 
       "publickey": ExecuteApi.API_PUBLICKEY_ESS_BANNERS,
-      "Project": Const.PROJECT_NAME,
+      "Project": globalVariableController.PROJECT_NAME.value,
       "getsqldata": {"trace": "true"}
     };
 
@@ -1364,7 +1366,7 @@ class EssController extends GetxController {
     }
     try {
       subBannerList.clear();
-      var baseUrl = Const.PROJECT_URL;
+      var baseUrl = globalVariableController.WEB_URL.value;
       baseUrl += baseUrl.endsWith("/") ? "" : "/";
       var url = baseUrl + ServerConnections.BANNER_JSON_NAME;
       // url = "https://demo.agilecloud.biz/mainpagebanner.json";
@@ -1380,11 +1382,11 @@ class EssController extends GetxController {
           }
         }
       } else {
-        if (Const.PROJECT_URL.endsWith("/")) {
-          var URL = Const.PROJECT_URL.substring(0, Const.PROJECT_URL.length - 1);
+        if (globalVariableController.WEB_URL.value.endsWith("/")) {
+          var URL = globalVariableController.WEB_URL.value.substring(0, globalVariableController.WEB_URL.value.length - 1);
           baseUrl = URL.substring(0, URL.lastIndexOf('/'));
         } else {
-          baseUrl = Const.PROJECT_URL.substring(0, Const.PROJECT_URL.lastIndexOf('/'));
+          baseUrl = globalVariableController.WEB_URL.value.substring(0, globalVariableController.WEB_URL.value.lastIndexOf('/'));
         }
 
         baseUrl += baseUrl.endsWith("/") ? "" : "/";

@@ -901,7 +901,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
 
   void openWebView(String item) {
     try {
-      var url = Const.getFullProjectUrl('aspx/AxMain.aspx?authKey=AXPERT-') + appStorage.retrieveValue(AppStorage.SESSIONID);
+      var url = Const.getFullWebUrl('aspx/AxMain.aspx?authKey=AXPERT-') + appStorage.retrieveValue(AppStorage.SESSIONID);
       var jsonData = jsonDecode(item);
       var messageClicked = jsonData["msg_onclick"] ?? "";
       print(messageClicked);

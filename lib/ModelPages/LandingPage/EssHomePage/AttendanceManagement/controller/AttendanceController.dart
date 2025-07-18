@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../../Constants/AppStorage.dart';
 import '../../../../../Constants/Const.dart';
+import '../../../../../Constants/GlobalVariableController.dart';
 import '../../../../../Utils/ServerConnections/ExecuteApi.dart';
 import '../../../../../Utils/ServerConnections/ServerConnections.dart';
 
@@ -19,6 +20,7 @@ class AttendanceController extends GetxController {
   ServerConnections serverConnections = ServerConnections();
 // topBar-control--------------
   final PageController pageController = PageController();
+  final globalVariableController = Get.find<GlobalVariableController>();
 
   AttendanceController() {}
 
@@ -64,7 +66,7 @@ class AttendanceController extends GetxController {
     var body = {
       "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
       "publickey": ExecuteApi.API_PUBLICKEY_ATTENDANCE_TEAMMEMBERS,
-      "Project": Const.PROJECT_NAME,
+      "Project": globalVariableController.PROJECT_NAME.value,
       "getsqldata": {"trace": "true"},
       "sqlparams": {"username": "EID001"}
     };
@@ -154,7 +156,7 @@ class AttendanceController extends GetxController {
     var body = {
       "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
       "publickey": ExecuteApi.API_PUBLICKEY_ATTENDANCE_ATTENDANCEREPORT,
-      "Project": Const.PROJECT_NAME,
+      "Project": globalVariableController.PROJECT_NAME.value,
       "getsqldata": {"trace": "true"},
       "sqlparams": {"username": "EID001"}
     };
@@ -193,7 +195,7 @@ class AttendanceController extends GetxController {
     var body = {
       "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
       "publickey": ExecuteApi.API_PUBLICKEY_ATTENDANCE_LEAVEDETAILS,
-      "Project": Const.PROJECT_NAME,
+      "Project": globalVariableController.PROJECT_NAME.value,
       "getsqldata": {"trace": "true"},
       "sqlparams": {"username": "EID001"}
     };

@@ -207,7 +207,7 @@ class AddConnectionController extends GetxController {
           conNameController.text.trim() == model.projectname &&
           newCaption == model.projectCaption.trim().toLowerCase()) {
         if (!Get.isSnackbarOpen) {
-          Get.snackbar("Nothing to save.", "", snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
+          Get.snackbar("Project already exists.", "", snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
         }
         return true;
       }
@@ -235,7 +235,7 @@ class AddConnectionController extends GetxController {
           conNameController.text.trim() == model.projectname &&
           newCaption == model.projectCaption.trim().toLowerCase()) {
         if (!Get.isSnackbarOpen) {
-          Get.snackbar("Nothing to save.", "", snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
+          Get.snackbar("Project already exists.", "", snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
         }
         return true;
       }

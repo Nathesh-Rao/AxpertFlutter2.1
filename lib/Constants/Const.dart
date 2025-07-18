@@ -9,11 +9,11 @@ final globalVariableController = Get.find<GlobalVariableController>();
 
 class Const {
   static DateTime DEMO_END_DATE = DateTime(2025, 2, 8);
-  static String RELEASE_ID = "_testRelease240625";
+  static String RELEASE_ID = ".1_testRelease180725";
   static String DEVICE_ID = "";
-  static String PROJECT_URL = ""; //"https://app.buzzily.com/Run";
+/*  static String PROJECT_URL = ""; //"https://app.buzzily.com/Run";
   static String PROJECT_NAME = "axpertqa11";
-  static String ARM_URL = "";
+  static String ARM_URL = "";*/
   static String GUID = "";
   static String APP_VERSION = "";
   static String FIREBASE_TOKEN = "";
@@ -49,7 +49,7 @@ class Const {
   //   return "http://20.244.123.19/ARM113/" + Entrypoint;
   // }
 
-  static String getFullProjectUrl(String Entrypoint) {
+  static String getFullWebUrl(String Entrypoint) {
     if (globalVariableController.WEB_URL.value == "") {
       var data = AppStorage().retrieveValue(AppStorage.PROJECT_URL) ?? "";
       return data.endsWith("/") ? data + Entrypoint : data + "/" + Entrypoint;

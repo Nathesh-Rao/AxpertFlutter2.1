@@ -460,10 +460,10 @@ class LoginController extends GetxController {
   }
 
   checkBiometricFlag() async {
-    var baseUrl = Const.ARM_URL.trim();
+    var baseUrl = globalVariableController.ARM_URL.trim();
     baseUrl += baseUrl.endsWith("/") ? "" : "/";
     var url = baseUrl + ServerConnections.API_GET_SIGNINDETAILS;
-    var body = "{\"appname\":\"" + Const.PROJECT_NAME.trim() + "\"}";
+    var body = "{\"appname\":\"" + globalVariableController.PROJECT_NAME.value.trim() + "\"}";
     final response = await serverConnections.postToServer(url: url, body: body);
 
     if (response != "") {

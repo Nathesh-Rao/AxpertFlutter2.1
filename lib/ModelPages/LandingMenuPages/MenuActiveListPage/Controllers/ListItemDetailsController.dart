@@ -376,7 +376,7 @@ class ListItemDetailsController extends GetxController {
         pendingTaskModel!.keyvalue +
         "^pprocess~" +
         pendingTaskModel!.processname;
-    Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(urlNew)]);
+    Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullWebUrl(urlNew)]);
   }
 
   void viewBtnClicked() {
@@ -392,6 +392,6 @@ class ListItemDetailsController extends GetxController {
         pendingTaskModel!.transid +
         "&params=act~load^recordid~" +
         pendingTaskModel!.recordid;
-    Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(urlNew)]);
+    Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullWebUrl(urlNew)]);
   }
 }

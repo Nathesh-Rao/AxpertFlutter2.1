@@ -72,7 +72,7 @@ class EssLoginPage extends StatelessWidget {
                                 textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 20, color: Colors.white))),
                         SizedBox(height: 5),
                         Text(
-                          Const.PROJECT_NAME.toString().toUpperCase(),
+                          globalVariableController.PROJECT_NAME.value.toString().toUpperCase(),
                           style: GoogleFonts.poppins(
                               textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 12, color: Colors.white)),
                         ),

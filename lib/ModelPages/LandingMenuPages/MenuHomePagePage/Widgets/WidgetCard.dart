@@ -40,8 +40,8 @@ class WidgetCard extends StatelessWidget {
                 Align(
                   alignment: Alignment.topLeft,
                   child: CachedNetworkImage(
-                    imageUrl: Const.getFullProjectUrl("images/homepageicon/") + cardModel.caption + '.png',
-                    errorWidget: (context, url, error) => Image.network(Const.getFullProjectUrl(
+                    imageUrl: Const.getFullWebUrl("images/homepageicon/") + cardModel.caption + '.png',
+                    errorWidget: (context, url, error) => Image.network(Const.getFullWebUrl(
                         'images/homepageicon/default.png')), //'CustomPages/icons/homepageicon/default.png'
                     width: 40,
                   ),

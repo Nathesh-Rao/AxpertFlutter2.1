@@ -163,7 +163,7 @@ class CompletedListPage extends StatelessWidget {
                             var URL =
                                 CommonMethods.activeList_CreateURL_MAKE(completedListController.completed_activeList[index]);
                             if (!URL.isEmpty)
-                              Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(URL)]);
+                              Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullWebUrl(URL)]);
                             break;
                           case "CHECK":
                           case "APPROVE":
@@ -178,7 +178,7 @@ class CompletedListPage extends StatelessWidget {
                             var URL =
                                 CommonMethods.activeList_CreateURL_MESSAGE(completedListController.completed_activeList[index]);
                             if (!URL.isEmpty)
-                              Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullProjectUrl(URL)]);
+                              Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullWebUrl(URL)]);
                             break;
                           default:
                             break;

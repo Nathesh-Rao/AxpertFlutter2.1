@@ -86,7 +86,7 @@ class DefaultLoginPageWidget extends StatelessWidget {
                     ),
                     SizedBox(height: 5),
                     Text(
-                      Const.PROJECT_NAME.toString().toUpperCase(),
+                      globalVariableController.PROJECT_NAME.value.toString().toUpperCase(),
                       style: GoogleFonts.poppins(
                           textStyle: TextStyle(fontWeight: FontWeight.w400, fontSize: 10, color: Colors.black)),
                     ),
