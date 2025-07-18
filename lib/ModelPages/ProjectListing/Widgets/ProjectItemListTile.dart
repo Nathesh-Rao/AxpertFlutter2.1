@@ -7,6 +7,7 @@ import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../Constants/GlobalVariableController.dart';
 import '../../AddConnection/Controllers/AddConnectionController.dart';
 
 class ProjectItemListTile extends StatelessWidget {
@@ -18,6 +19,7 @@ class ProjectItemListTile extends StatelessWidget {
   }
   ProjectModel? projectModel;
   AddConnectionController projectController = Get.find();
+  final globalVariableController = Get.find<GlobalVariableController>();
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +27,13 @@ class ProjectItemListTile extends StatelessWidget {
       onTap: () async {
         appStorage.storeValue(AppStorage.CACHED, projectModel!.projectCaption);
         appStorage.storeValue(projectModel!.projectCaption, projectModel);
-        Const.PROJECT_NAME = projectModel!.projectname;
-        Const.PROJECT_URL = projectModel!.web_url;
-        Const.ARM_URL = projectModel!.arm_url;
+        globalVariableController.PROJECT_NAME.value = projectModel!.projectname;
+        globalVariableController.WEB_URL.value = projectModel!.web_url;
+        globalVariableController.ARM_URL.value = projectModel!.arm_url;
         await appStorage.storeValue(AppStorage.PROJECT_NAME, projectModel!.projectname);
         await appStorage.storeValue(AppStorage.PROJECT_URL, projectModel!.web_url);
         await appStorage.storeValue(AppStorage.ARM_URL, projectModel!.arm_url);
-        LogService.writeLog(message: "[i] ProjectListingPage\nSelected Project : ${projectModel!.projectname}");
+        LogService.writeOnConsole(message: "Const.ARM_URL => ${globalVariableController.ARM_URL.value}");
         Get.offAllNamed(Routes.Login);
       },
       child: Card(

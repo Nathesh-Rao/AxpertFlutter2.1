@@ -15,6 +15,7 @@ import 'package:get/get.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../Constants/GlobalVariableController.dart';
 import '../../../Utils/ServerConnections/ServerConnections.dart';
 
 class SplashPage extends StatefulWidget {
@@ -28,6 +29,7 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
   var _animationController;
   AppStorage appStorage = AppStorage();
   ProjectModel? projectModel;
+  final GlobalVariableController globalVariableController = Get.put(GlobalVariableController(), permanent: true);
 
   @override
   void initState() {
@@ -54,9 +56,9 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
         else {
           var jsonProject = appStorage.retrieveValue(cached);
           projectModel = ProjectModel.fromJson(jsonProject);
-          Const.PROJECT_NAME = projectModel!.projectname;
-          Const.PROJECT_URL = projectModel!.web_url;
-          Const.ARM_URL = projectModel!.arm_url;
+          globalVariableController.PROJECT_NAME.value = projectModel!.projectname;
+          globalVariableController.WEB_URL.value = projectModel!.web_url;
+          globalVariableController.ARM_URL.value = projectModel!.arm_url;
           LogService.writeOnConsole(message: " splash-page projectModel => $jsonProject");
           Get.offAllNamed(Routes.Login);
         }

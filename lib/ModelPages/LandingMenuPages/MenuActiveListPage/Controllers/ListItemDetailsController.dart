@@ -14,7 +14,10 @@ import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ListItemDetailsController extends GetxController{
+import '../../../../Constants/GlobalVariableController.dart';
+
+class ListItemDetailsController extends GetxController {
+  final globalVariableController = Get.find<GlobalVariableController>();
   AppStorage appStorage = AppStorage();
   String selectedTaskID = "";
   PendingListModel? openModel;
@@ -66,7 +69,7 @@ class ListItemDetailsController extends GetxController{
 
       body = {
         'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID),
-        "AppName": Const.PROJECT_NAME.toString(),
+        "AppName": globalVariableController.PROJECT_NAME.value.toString(),
         "processname": pendingProcessFlowModel!.processname,
         "tasktype": pendingProcessFlowModel!.tasktype,
         "taskid": pendingProcessFlowModel!.taskid,
@@ -78,7 +81,7 @@ class ListItemDetailsController extends GetxController{
       if (openModel!.taskid.toString() == "" || openModel!.taskid.toString().toLowerCase() == "null") shouldCall = false;
       body = {
         'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID),
-        "AppName": Const.PROJECT_NAME.toString(),
+        "AppName": globalVariableController.PROJECT_NAME.value.toString(),
         "processname": openModel!.processname,
         "tasktype": openModel!.tasktype,
         "taskid": openModel!.taskid,

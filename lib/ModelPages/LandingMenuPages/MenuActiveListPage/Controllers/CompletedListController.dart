@@ -9,7 +9,11 @@ import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../Constants/GlobalVariableController.dart';
+
 class CompletedListController extends GetxController {
+  final globalVariableController = Get.find<GlobalVariableController>();
+
   var subPage = true.obs;
   var needRefresh = true.obs;
   var completed_activeList = [].obs;
@@ -66,7 +70,7 @@ class CompletedListController extends GetxController {
     var body = {
       'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID),
       "Trace": "false",
-      "AppName": Const.PROJECT_NAME.toString(),
+      "AppName": globalVariableController.PROJECT_NAME.value.toString(),
       "pagesize": double.parse(completedCount).toInt(),
       "pageno": 1,
     };
@@ -202,7 +206,7 @@ class CompletedListController extends GetxController {
     var url = Const.getFullARMUrl(ServerConnections.API_GET_FILTERED_COMPLETED_TASK);
     Map<String, dynamic> body = {
       "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
-      "AppName": Const.PROJECT_NAME.toString(),
+      "AppName": globalVariableController.PROJECT_NAME.value.toString(),
       "pagesize": 1000,
       "pageno": 1,
     };

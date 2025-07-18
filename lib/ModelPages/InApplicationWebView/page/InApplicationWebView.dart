@@ -18,6 +18,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:file_downloader_flutter/file_downloader_flutter.dart';
 
+import '../../../Utils/Utility/Utility.dart';
+
 class InApplicationWebViewer extends StatefulWidget {
   InApplicationWebViewer(this.data);
 
@@ -30,6 +32,8 @@ class InApplicationWebViewer extends StatefulWidget {
 class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
   dynamic argumentData = Get.arguments;
   MenuHomePageController menuHomePageController = Get.find();
+  Map<int, InAppWebViewController> windowControllers = {};
+  BuildContext? context_popUpScreen;
 
   // final Completer<InAppWebViewController> _controller = Completer<InAppWebViewController>();
   late InAppWebViewController _webViewController;
@@ -50,7 +54,6 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
     } catch (e) {}
     // widget.data = "https://amazon.in"
     print(widget.data);
-    LogService.writeLog(message: "InAppWebView: ${widget.data}");
     clearCookie();
   }
 
@@ -75,6 +78,8 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
     hardwareAcceleration: false,
     geolocationEnabled: true,
     clearCache: false,
+
+    supportMultipleWindows: true,
   );
 
   void _download(String url) async {
@@ -90,6 +95,7 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
 
   void _download_old(String url) async {
     if (Platform.isAndroid) {
+      print("ANDROID download---------------------------->");
       try {
         print("download Url: $url");
         String fname = url.split('/').last.split('.').first;
@@ -99,23 +105,57 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
         print(e.toString());
       }
     }
+    // if (Platform.isAndroid) {
+    //   final deviceInfo = await DeviceInfoPlugin().androidInfo;
+    //   var status;
+    //   if (deviceInfo.version.sdkInt > 32) {
+    //     status = await Permission.photos.request().isGranted;
+    //     print(">32");
+    //   } else {
+    //     status = await Permission.storage.request().isGranted;
+    //   }
+    //   if (status) {
+    //     Fluttertoast.showToast(
+    //         msg: "Download Started...",
+    //         toastLength: Toast.LENGTH_SHORT,
+    //         gravity: ToastGravity.BOTTOM,
+    //         timeInSecForIosWeb: 1,
+    //         backgroundColor: Colors.green.shade200,
+    //         textColor: Colors.black,
+    //         fontSize: 16.0);
+    //
+    //     await FileDownloader.downloadFile(
+    //       url: url,
+    //       onProgress: (fileName, progress) {
+    //         // print("On Progressssss");
+    //       },
+    //       onDownloadError: (errorMessage) {
+    //         Get.snackbar("Error", "Download file error " + errorMessage,
+    //             snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red.shade300, colorText: Colors.white);
+    //       },
+    //       onDownloadCompleted: (path) {
+    //         // print("Download Completed:   $path");
+    //         //OpenFile.open(path);
+    //         OpenFile.open(path);
+    //       },
+    //     );
+    //   } else {
 
     if (Platform.isIOS) {
+      print("IOS download---------------------------->");
       var status = await Permission.storage.request().isGranted;
-      if (status) {
-        Directory documents = await getApplicationDocumentsDirectory();
-        print(documents.path);
-        await FlutterDownloader.enqueue(
-          url: url,
-          // fileName: "Download.pdf",
-          savedDir: documents.path,
-          showNotification: true, // show download progress in status bar (for Android)
-          openFileFromNotification: true, // click on notification to open downloaded file (for Android)
-        );
-
-        // print("Task id: $taskId");
-      } else {
-        print("Permission Denied");
+      try {
+        if (status) {
+          Directory documents = await getApplicationDocumentsDirectory();
+          print(documents.path);
+          String fname = url.split('/').last.split('.').first;
+          print("download FileName: $fname");
+          FileDownloaderFlutter().urlFileSaver(url: url, fileName: fname);
+        } else {
+          print("Permission Denied");
+        }
+      } catch (e) {
+        print("IOS download error $e");
       }
     }
   }
@@ -142,12 +182,8 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Image.asset(
-                        "assets/images/axpert_03.png",
-                        height: 25,
-                      ),
-                      Text(
-                        "xpert",
-                        style: TextStyle(fontFamily: 'Gellix-Black', color: HexColor("#133884"), fontWeight: FontWeight.bold),
+                        "assets/images/axAppLogo.png",
+                        // height: 25,
                       ),
                     ],
                   ),
@@ -182,18 +218,17 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
                   }
                 },
                 onDownloadStartRequest: (controller, downloadStartRequest) {
-                  print("Download");
+                  LogService.writeLog(
+                      message: "onDownloadStartRequest\nwith requested url: ${downloadStartRequest.url.toString()}");
+                  print("Download...");
                   print("Requested url: ${downloadStartRequest.url.toString()}");
                   _download(downloadStartRequest.url.toString());
-                },
-                onPermissionRequest: (controller, request) async {
-                  return PermissionResponse(
-                    resources: request.resources,
-                    action: PermissionResponseAction.GRANT, // Grant the required permissions
-                  );
+                  // _downloadToDevice("url");
                 },
                 onConsoleMessage: (controller, consoleMessage) {
-                  print("Console Message received");
+                  // LogService.writeLog(message: "onConsoleMessage: ${consoleMessage.toString()}");
+
+                  print("Console Message received...");
                   print(consoleMessage.toString());
                   if (consoleMessage.toString().contains("axm_mainpageloaded")) {
                     try {
@@ -206,6 +241,8 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
                   }
                 },
                 onProgressChanged: (controller, value) {
+                  LogService.writeLog(message: "onProgressChanged: value=> $value");
+
                   print('Progress---: $value : DT ${DateTime.now()}');
                   if (value == 100) {
                     setState(() {
@@ -216,11 +253,46 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
                 shouldOverrideUrlLoading: (controller, navigationAction) async {
                   var uri = navigationAction.request.url!;
                   print("Override url: $uri");
+                  LogService.writeLog(message: "shouldOverrideUrlLoading: url=> $uri");
+
                   if (imageExtensions.any((ext) => uri.toString().endsWith(ext))) {
                     _download(uri.toString());
+                    // _downloadToDevice("url");
+
                     return Future.value(NavigationActionPolicy.CANCEL);
                   }
                   return Future.value(NavigationActionPolicy.ALLOW);
+                },
+                onCreateWindow: (controller, createWindowRequest) async {
+                  final windowId = createWindowRequest.windowId;
+                  if (windowId != null) {
+                    // // Open a new window for the given windowId
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => NewWindowPage(
+                    //       windowId: windowId,
+                    //       onWindowCreated: (newController) {
+                    //         windowControllers[windowId] = newController;
+                    //         context_popUpScreen = context;
+                    //       },
+                    //     ),
+                    //   ),
+                    // );
+
+                    Get.to(
+                        () => NewWindowPage(
+                              windowId: windowId,
+                              onWindowCreated: (newController) {
+                                windowControllers[windowId] = newController;
+                                context_popUpScreen = context;
+                              },
+                            ),
+                        transition: Transition.cupertino,
+                        duration: Duration(milliseconds: 500));
+                    return true; // Allow the window creation
+                  }
+                  return false;
                 },
               ),
               _progressBarActive
@@ -287,5 +359,61 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
   void clearCookie() async {
     await cookieManager.deleteAllCookies();
     print("Cookie cleared");
+  }
+}
+
+class NewWindowPage extends StatefulWidget {
+  final int windowId;
+  final Function(InAppWebViewController) onWindowCreated;
+  const NewWindowPage({
+    required this.windowId,
+    required this.onWindowCreated,
+  });
+  @override
+  _NewWindowPageState createState() => _NewWindowPageState();
+}
+
+class _NewWindowPageState extends State<NewWindowPage> {
+  late InAppWebViewController newWebViewController;
+  @override
+  Widget build(BuildContext context) {
+    print("new-Window => ${widget.windowId}");
+    return Scaffold(
+      // appBar: AppBar(
+      //   title: Text('New Window'),
+      // ),
+      body: SafeArea(
+        child: InAppWebView(
+            initialSettings: InAppWebViewSettings(
+              javaScriptEnabled: true,
+            ),
+            windowId: widget.windowId, // Associate this WebView with the windowId
+            onWebViewCreated: (controller) {
+              newWebViewController = controller;
+              widget.onWindowCreated(controller);
+            },
+            onConsoleMessage: (controller, consoleMessage) {
+              print("Console Message_new_window $consoleMessage");
+            },
+            onDownloadStartRequest: (controller, downloadStartRequest) {
+              Utility.downloadFile_inAppWebView(
+                  controller: controller,
+                  downloadStartRequest: downloadStartRequest,
+                  onDownloadComplete: (path) {
+                    print("Download path => $path");
+                    Get.back();
+                  },
+                  onDownloadError: (e) {
+                    print("Download Error => $e");
+                    Get.back();
+                  });
+            }
+
+            // onPageCommitVisible: (controller,consolemsg){
+            //
+            // },
+            ),
+      ),
+    );
   }
 }

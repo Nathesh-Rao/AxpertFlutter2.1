@@ -1,9 +1,13 @@
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import 'GlobalVariableController.dart';
+
+final globalVariableController = Get.find<GlobalVariableController>();
 
 class Const {
-
   static DateTime DEMO_END_DATE = DateTime(2025, 2, 8);
   static String RELEASE_ID = "_testRelease240625";
   static String DEVICE_ID = "";
@@ -31,11 +35,14 @@ class Const {
   static String getSQLforClientID(String clientID) => "select * from tblclientMST where " + "clientid = '" + clientID + "'";
 
   static String getFullARMUrl(String Entrypoint) {
-    if (ARM_URL == "") {
+    print("getFullARMUrl => ${globalVariableController.ARM_URL.value}");
+    if (globalVariableController.ARM_URL.value == "") {
       var data = AppStorage().retrieveValue(AppStorage.ARM_URL) ?? "";
       return data.endsWith("/") ? data + Entrypoint : data + "/" + Entrypoint;
     } else
-      return ARM_URL.endsWith("/") ? ARM_URL + Entrypoint : ARM_URL + "/" + Entrypoint;
+      return globalVariableController.ARM_URL.value.endsWith("/")
+          ? globalVariableController.ARM_URL.value + Entrypoint
+          : globalVariableController.ARM_URL.value + "/" + Entrypoint;
   }
 
   // static String getFullARMUrl_HardCoded(String Entrypoint) {
@@ -43,15 +50,17 @@ class Const {
   // }
 
   static String getFullProjectUrl(String Entrypoint) {
-    if (PROJECT_URL == "") {
+    if (globalVariableController.WEB_URL.value == "") {
       var data = AppStorage().retrieveValue(AppStorage.PROJECT_URL) ?? "";
       return data.endsWith("/") ? data + Entrypoint : data + "/" + Entrypoint;
     } else
       // print("form const" + PROJECT_URL);
-      return PROJECT_URL.endsWith("/") ? PROJECT_URL + Entrypoint : PROJECT_URL + "/" + Entrypoint;
+      return globalVariableController.WEB_URL.value.endsWith("/")
+          ? globalVariableController.WEB_URL.value + Entrypoint
+          : globalVariableController.WEB_URL.value + "/" + Entrypoint;
   }
 
-  static String getAppBody() => "{\"Appname\":\"" + PROJECT_NAME + "\"}";
+  static String getAppBody() => "{\"Appname\":\"" + globalVariableController.PROJECT_NAME.value + "\"}";
 
   // static String getSQLforClientID(String clientID) =>
   //     "select projectname, scripts_uri,dbtype, expirydate, notify_uri,web_url,arm_url from tblclientMST   where " +

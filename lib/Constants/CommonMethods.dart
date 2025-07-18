@@ -16,10 +16,13 @@ import 'package:local_auth_darwin/local_auth_darwin.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../Utils/LogServices/LogService.dart';
+import 'GlobalVariableController.dart';
 
 isTablet() {
   return MediaQueryData.fromView(WidgetsBinding.instance.window).size.shortestSide < 600 ? true : false;
 }
+
+final globalVariableController = Get.find<GlobalVariableController>();
 
 class CommonMethods {
   static String capitalize(String value) {
@@ -206,7 +209,7 @@ willShowSetBiometricDialog(user) async {
   if (data.isEmpty) {
     return true;
   } else {
-    var projectWise = data[Const.PROJECT_NAME] ?? {};
+    var projectWise = data[globalVariableController.PROJECT_NAME.value] ?? {};
     var userWise = projectWise[user] ?? {};
     if (userWise.isEmpty)
       return true;
@@ -218,9 +221,9 @@ willShowSetBiometricDialog(user) async {
 setWillBiometricAuthenticateForThisUser(user, willAuthenticate) async {
   AppStorage appStorage = AppStorage();
   var data = await appStorage.retrieveValue(AppStorage.WILL_AUTHENTICATE_FOR_USER) ?? {};
-  var projectWise = data[Const.PROJECT_NAME] ?? {};
+  var projectWise = data[globalVariableController.PROJECT_NAME.value] ?? {};
   projectWise[user] = willAuthenticate;
-  data[Const.PROJECT_NAME] = projectWise;
+  data[globalVariableController.PROJECT_NAME.value] = projectWise;
   await appStorage.storeValue(AppStorage.WILL_AUTHENTICATE_FOR_USER, data);
 }
 
@@ -232,7 +235,7 @@ getWillBiometricAuthenticateForThisUser(user) async {
   if (data.isEmpty) {
     return null;
   } else {
-    var projectWise = data[Const.PROJECT_NAME] ?? {};
+    var projectWise = data[globalVariableController.PROJECT_NAME.value] ?? {};
     var userWise = projectWise[user] ?? {};
     try {
       if (userWise.isEmpty) return null;

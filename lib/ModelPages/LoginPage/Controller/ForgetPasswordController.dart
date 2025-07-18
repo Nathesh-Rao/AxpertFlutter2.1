@@ -7,7 +7,11 @@ import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../Constants/GlobalVariableController.dart';
+
 class ForgetPasswordController extends GetxController {
+  final globalVariableController = Get.find<GlobalVariableController>();
+
   TextEditingController emailController = TextEditingController();
   TextEditingController userNameController = TextEditingController();
   TextEditingController otpController = TextEditingController();
@@ -136,7 +140,7 @@ class ForgetPasswordController extends GetxController {
     if (vaidateForm()) {
       LoadingScreen.show();
       Map body = {
-        "appname": Const.PROJECT_NAME,
+        "appname": globalVariableController.PROJECT_NAME.value,
         "username": userNameController.text.toString().trim(),
         "usergroup": "power",
         // "usergroup": ddSelectedValue.value.toString().toLowerCase(),
@@ -228,7 +232,7 @@ class ForgetPasswordController extends GetxController {
       // {"appname": "hcmdev","email": "debasish@agile-labs.com","regid":
       // "4091b470-f0ea-4819-bf4e-a9dc3f457ce6","updatedPassword": "Qwer@123","otp": "334444"}
       Map body = {
-        'appname': Const.PROJECT_NAME,
+        'appname': globalVariableController.PROJECT_NAME.value,
         'email': emailController.text.trim().toString(),
         'regid': regID.value,
         'updatedPassword': passwordController.text.trim().toString(),

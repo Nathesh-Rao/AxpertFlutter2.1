@@ -10,7 +10,11 @@ import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../Constants/GlobalVariableController.dart';
+
 class PendingListController extends GetxController {
+  final globalVariableController = Get.find<GlobalVariableController>();
+
   var subPage = true.obs;
   var needRefresh = true.obs;
   var pending_activeList = [].obs;
@@ -75,7 +79,7 @@ class PendingListController extends GetxController {
     var body = {
       'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID),
       "Trace": "false",
-      "AppName": Const.PROJECT_NAME.toString(),
+      "AppName": globalVariableController.PROJECT_NAME.value.toString(),
       "pagesize": double.parse(pendingCount).toInt(),
       "pageno": 1,
     };
@@ -137,7 +141,7 @@ class PendingListController extends GetxController {
     var url = Const.getFullARMUrl(ServerConnections.API_GET_FILTERED_PENDING_TASK);
     Map<String, dynamic> body = {
       "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
-      "AppName": Const.PROJECT_NAME.toString(),
+      "AppName": globalVariableController.PROJECT_NAME.value.toString(),
       "pagesize": 1000,
       "pageno": 1,
     };
@@ -238,7 +242,7 @@ class PendingListController extends GetxController {
     var url = Const.getFullARMUrl(ServerConnections.API_GET_BULK_ACTIVETASKS);
     var body = {
       'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID),
-      "AppName": Const.PROJECT_NAME.toString(),
+      "AppName": globalVariableController.PROJECT_NAME.value.toString(),
       "tasktype": "Approve",
       "processname": processname,
       "touser": appStorage.retrieveValue(AppStorage.USER_NAME)
@@ -304,7 +308,7 @@ class PendingListController extends GetxController {
         "taskType": "APPROVE",
         "action": "BULKAPPROVE",
         "statusText": bulkCommentController.text,
-        "AppName": Const.PROJECT_NAME.toString(),
+        "AppName": globalVariableController.PROJECT_NAME.value.toString(),
         "user": appStorage.retrieveValue(AppStorage.USER_NAME)
       };
       var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);

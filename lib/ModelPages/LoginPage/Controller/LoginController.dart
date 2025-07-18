@@ -16,7 +16,11 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:platform_device_id/platform_device_id.dart';
 
+import '../../../Constants/GlobalVariableController.dart';
+
 class LoginController extends GetxController {
+  GlobalVariableController globalVariableController = Get.find();
+
   ServerConnections serverConnections = ServerConnections();
   final googleLoginIn = GoogleSignIn();
   AppStorage appStorage = AppStorage();
@@ -153,7 +157,7 @@ class LoginController extends GetxController {
 
   getSignInBody() async {
     Map body = {
-      "appname": Const.PROJECT_NAME,
+      "appname": globalVariableController.PROJECT_NAME.value,
       "username": userNameController.text.toString().trim(),
       "password": userPasswordController.text.toString().trim(),
       "Language": "English"
@@ -184,7 +188,8 @@ class LoginController extends GetxController {
           await appStorage.storeValue(AppStorage.SESSIONID, json["result"]["sessionid"].toString());
           await appStorage.storeValue(AppStorage.USER_NAME, userNameController.text.trim());
           await appStorage.storeValue(AppStorage.USER_CHANGE_PASSWORD, json["result"]["ChangePassword"].toString());
-          await appStorage.storeValue(AppStorage.NICK_NAME, json["result"]["NickName"].toString() ?? userNameController.text.trim());
+          await appStorage.storeValue(
+              AppStorage.NICK_NAME, json["result"]["NickName"].toString() ?? userNameController.text.trim());
           storeLastLoginData(body);
           print("User_change_password: ${appStorage.retrieveValue(AppStorage.USER_CHANGE_PASSWORD)}");
           LogService.writeLog(
@@ -224,7 +229,7 @@ class LoginController extends GetxController {
         await FirebaseAuth.instance.signInWithCredential(credential);
 
         Map body = {
-          'appname': Const.PROJECT_NAME,
+          'appname': globalVariableController.PROJECT_NAME.value,
           'userid': googleUser.email.toString(),
           'userGroup': "power",
           // 'userGroup': ddSelectedValue.value.toString(),
@@ -256,7 +261,8 @@ class LoginController extends GetxController {
             await _processLoginAndGoToHomePage();
           }
         } else {
-          Get.snackbar("Error", "Some Error occured", backgroundColor: Colors.red, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM);
+          Get.snackbar("Error", "Some Error occured",
+              backgroundColor: Colors.red, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM);
         }
         LoadingScreen.dismiss();
         // print(resp);
@@ -267,7 +273,8 @@ class LoginController extends GetxController {
     } catch (e) {
       LogService.writeLog(message: "[ERROR] LoginController\nScope: googleSignInClicked()\nError: $e");
 
-      Get.snackbar("Error", "User is not Registered!", snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
+      Get.snackbar("Error", "User is not Registered!",
+          snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
     }
   }
 
@@ -334,16 +341,15 @@ class LoginController extends GetxController {
     try {
       count++;
       var users = appStorage.retrieveValue(AppStorage.USERID) ?? {};
-      users[Const.PROJECT_NAME] = userNameController.text.trim();
+      users[globalVariableController.PROJECT_NAME.value] = userNameController.text.trim();
       appStorage.storeValue(AppStorage.USERID, users);
 
       var passes = appStorage.retrieveValue(AppStorage.USER_PASSWORD) ?? {};
-      passes[Const.PROJECT_NAME] = userPasswordController.text;
+      passes[globalVariableController.PROJECT_NAME.value] = userPasswordController.text;
       appStorage.storeValue(AppStorage.USER_PASSWORD, passes);
 
       var groups = appStorage.retrieveValue(AppStorage.USER_GROUP) ?? {};
-      groups[Const.PROJECT_NAME] = "power";
-      // groups[Const.PROJECT_NAME] = ddSelectedValue.value;
+      groups[globalVariableController.PROJECT_NAME.value] = ddSelectedValue.value;
       appStorage.storeValue(AppStorage.USER_GROUP, groups);
     } catch (e) {
       appStorage.remove(AppStorage.USERID);
@@ -355,29 +361,29 @@ class LoginController extends GetxController {
 
   void dontRememberCredentials() {
     Map users = appStorage.retrieveValue(AppStorage.USERID) ?? {};
-    users.remove(Const.PROJECT_NAME);
+    users.remove(globalVariableController.PROJECT_NAME.value);
     appStorage.storeValue(AppStorage.USERID, users);
 
     var passes = appStorage.retrieveValue(AppStorage.USER_PASSWORD) ?? {};
-    passes.remove(Const.PROJECT_NAME);
+    passes.remove(globalVariableController.PROJECT_NAME.value);
     appStorage.storeValue(AppStorage.USER_PASSWORD, passes);
 
     var groups = appStorage.retrieveValue(AppStorage.USER_GROUP) ?? {};
-    groups.remove(Const.PROJECT_NAME);
+    groups.remove(globalVariableController.PROJECT_NAME.value);
     appStorage.storeValue(AppStorage.USER_GROUP, groups);
   }
 
-  void fetchRememberedData() {
+  Future<void> fetchRememberedData() async {
     try {
       var users = appStorage.retrieveValue(AppStorage.USERID) ?? {};
       print(users);
-      userNameController.text = users[Const.PROJECT_NAME].trim() ?? "";
+      userNameController.text = users[globalVariableController.PROJECT_NAME.value].trim() ?? "";
 
       var passes = appStorage.retrieveValue(AppStorage.USER_PASSWORD) ?? {};
-      userPasswordController.text = passes[Const.PROJECT_NAME] ?? "";
+      userPasswordController.text = passes[globalVariableController.PROJECT_NAME.value] ?? "";
 
       var groups = appStorage.retrieveValue(AppStorage.USER_GROUP) ?? {};
-      ddSelectedValue.value = "Power";
+      ddSelectedValue.value = groups[globalVariableController.PROJECT_NAME.value] ?? "Power";
     } catch (e) {
       // appStorage.remove(AppStorage.USERID);
       // appStorage.remove(AppStorage.USER_PASSWORD);
@@ -405,7 +411,7 @@ class LoginController extends GetxController {
 
   void storeLastLoginData(body) {
     AppStorage appStorage = AppStorage();
-    var projectName = Const.PROJECT_NAME;
+    var projectName = globalVariableController.PROJECT_NAME.value;
     Map lastData = appStorage.retrieveValue(AppStorage.LAST_LOGIN_DATA) ?? {};
     lastData[projectName] = body;
     appStorage.storeValue(AppStorage.LAST_LOGIN_DATA, lastData);
@@ -413,7 +419,7 @@ class LoginController extends GetxController {
 
   retrieveLastLoginData() {
     AppStorage appStorage = AppStorage();
-    var projectName = Const.PROJECT_NAME;
+    var projectName = globalVariableController.PROJECT_NAME.value;
     Map lastData = appStorage.retrieveValue(AppStorage.LAST_LOGIN_DATA) ?? {};
     return lastData[projectName] ?? '';
   }

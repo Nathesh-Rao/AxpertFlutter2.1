@@ -24,12 +24,15 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:material_icons_named/material_icons_named.dart';
 
+import '../../../../Constants/GlobalVariableController.dart';
 import '../../../../Utils/LogServices/LogService.dart';
 import '../../../LandingPage/EssHomePage/AttendanceManagement/controller/AttendanceController.dart';
 import '../UpdatedHomePage/Models/MenuIconsModel.dart';
 import '../UpdatedHomePage/Widgets/WidgetMenuFolderPanelItem.dart';
 
 class MenuHomePageController extends GetxController {
+  final globalVariableController = Get.find<GlobalVariableController>();
+
   // final AttendanceController c = Get.put(AttendanceController());
   InternetConnectivity internetConnectivity = Get.find();
   var colorList = ["#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"];
@@ -161,12 +164,11 @@ class MenuHomePageController extends GetxController {
       "HomePageCards": true,
       "RefreshData": false,
       "IsMobile": true
-     // "UserName": appStorage.retrieveValue(AppStorage.USER_NAME),
+      // "UserName": appStorage.retrieveValue(AppStorage.USER_NAME),
       //"Roles": "default",
       //"AppName": appStorage.retrieveValue(AppStorage.PROJECT_NAME),
       // "AxSessionId": "jbxqzz5tie2y3yujshe3k1x5",
       //"GlobalParams": ServerConnections.SAMPLE_GET_CARDS_WITH_DATA_GLOBAL_PARAMS
-
     };
     // LogService.writeOnConsole(message: "getcardswithdata");
     // LogService.writeOnConsole(message: url);
@@ -531,7 +533,7 @@ class MenuHomePageController extends GetxController {
     var body = {
       // "SecretKey": await getEncryptedSecretKey(ExecuteApi.API_PrivateKey_DashBoard),
       "publickey": ExecuteApi.API_PUBLICKEY_DASHBOARD,
-      "Project": Const.PROJECT_NAME,
+      "Project": globalVariableController.PROJECT_NAME.value,
       "getsqldata": {"trace": "false"}
     };
     var resp = await ExecuteApi().CallFetchData_ExecuteAPI(body: jsonEncode(body));
@@ -667,7 +669,7 @@ class MenuHomePageController extends GetxController {
     var body = {
       "SecretKey": await getEncryptedSecretKey(ExecuteApi.API_PRIVATEKEY_ATTENDANCE),
       "publickey": ExecuteApi.API_PUBLICKEY_ATTENDANCE,
-      "Project": Const.PROJECT_NAME, //"agilepost113",
+      "Project": globalVariableController.PROJECT_NAME.value, //"agilepost113",
       "getsqldata": {"trace": "false"}
     };
     var resp = await ExecuteApi().CallFetchData_ExecuteAPI(body: jsonEncode(body));
@@ -695,7 +697,7 @@ class MenuHomePageController extends GetxController {
     var body = {
       "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
       "username": appStorage.retrieveValue(AppStorage.USER_NAME),
-      "appname": Const.PROJECT_NAME, //"agilepost113",
+      "appname": globalVariableController.PROJECT_NAME.value, //"agilepost113",
       "datasource": "Company_Logo",
       "sqlParams": {"username": appStorage.retrieveValue(AppStorage.USER_NAME)}
     };
