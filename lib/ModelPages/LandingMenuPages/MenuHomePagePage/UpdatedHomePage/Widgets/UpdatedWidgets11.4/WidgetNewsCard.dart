@@ -248,8 +248,8 @@ class _NewsPanelState extends State<NewsPanel> {
               ),
               child: CachedNetworkImage(
                 fit: BoxFit.cover,
-                imageUrl: newsData.image ?? '',
-                errorWidget: (context, url, error) => Image.network(Const.getFullWebUrl('images/homepageicon/default.png')),
+                imageUrl: newsData.image == "" ? '' : Const.getFullWebUrl(newsData.image.toString().replaceAll("\$APP_NAME\$", globalVariableController.PROJECT_NAME.value)) ,
+                errorWidget: (context, url, error) => Image.network(Const.getFullWebUrl('images/NotificationIcons/Announcement.png'),height: 50,),
               ),
             )),
             Expanded(

@@ -113,6 +113,12 @@ class MenuHomePageController extends GetxController {
 
   _sortDataByPluginName({required List<UpdatedHomeCardDataModel> dataList}) {
     for (var data in dataList) {
+      if (data.carddata == null ||
+          (data.carddata is List && data.carddata.isEmpty) ||
+          (data.carddata is String && data.carddata.trim().isEmpty) ||
+          (data.carddata is Map && data.carddata.isEmpty)) {
+        continue;
+      }
       switch (data.pluginname?.toUpperCase()) {
         case "BANNER CARD":
           bannerCardData.add(data);
@@ -353,10 +359,7 @@ class MenuHomePageController extends GetxController {
       print("hit $btnType");
       print("pname: $btnOpen");
       if (btnType.toLowerCase() == "button" && btnOpen != "") {
-        webUrl = Const.getFullWebUrl("aspx/AxMain.aspx?authKey=AXPERT-") +
-            appStorage.retrieveValue(AppStorage.SESSIONID) +
-            "&pname=" +
-            btnOpen;
+        webUrl = Const.getFullWebUrl("aspx/AxMain.aspx?authKey=AXPERT-") + appStorage.retrieveValue(AppStorage.SESSIONID) + "&pname=" + btnOpen;
         print("URL : $webUrl");
 
         switchPage.toggle();
@@ -457,10 +460,7 @@ class MenuHomePageController extends GetxController {
     if (jsonResp['success'].toString() == "true") {
       // var result = jsonResp['result'].toString();
       Get.snackbar("Punch-In success", "",
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM,
-          duration: Duration(seconds: 3));
+          backgroundColor: Colors.green, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM, duration: Duration(seconds: 3));
       isShowPunchIn.value = false;
       isShowPunchOut.value = true;
       actionData.clear();
@@ -468,10 +468,7 @@ class MenuHomePageController extends GetxController {
     } else {
       // var errMessage = jsonResp['message'].toString();
       Get.snackbar("Error", jsonResp['message'].toString(),
-          backgroundColor: Colors.redAccent,
-          colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM,
-          duration: Duration(seconds: 3));
+          backgroundColor: Colors.redAccent, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM, duration: Duration(seconds: 3));
     }
   }
 
@@ -512,19 +509,13 @@ class MenuHomePageController extends GetxController {
     if (jsonResp['success'].toString() == "true") {
       // var result = jsonResp['result'].toString();
       Get.snackbar("Punch-Out success", "",
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM,
-          duration: Duration(seconds: 3));
+          backgroundColor: Colors.green, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM, duration: Duration(seconds: 3));
       actionData.clear();
       await getCardDataSources();
     } else {
       // var errMessage = jsonResp['message'].toString();
       Get.snackbar("Error", jsonResp['message'].toString(),
-          backgroundColor: Colors.redAccent,
-          colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM,
-          duration: Duration(seconds: 3));
+          backgroundColor: Colors.redAccent, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM, duration: Duration(seconds: 3));
     }
     LoadingScreen.dismiss();
   }
@@ -606,10 +597,7 @@ class MenuHomePageController extends GetxController {
         // LogService.writeLog(message: "[i] FolderPanel : Open in webview {$link_id}");
 
         if (await internetConnectivity.connectionStatus) {
-          webUrl = Const.getFullWebUrl("aspx/AxMain.aspx?authKey=AXPERT-") +
-              appStorage.retrieveValue(AppStorage.SESSIONID) +
-              "&pname=" +
-              link_id;
+          webUrl = Const.getFullWebUrl("aspx/AxMain.aspx?authKey=AXPERT-") + appStorage.retrieveValue(AppStorage.SESSIONID) + "&pname=" + link_id;
           print("Web_URL_card: $webUrl");
           LogService.writeOnConsole(message: "captionOnTapFunction: final-webUrl => $webUrl");
 
@@ -633,12 +621,15 @@ class MenuHomePageController extends GetxController {
       if (match != null) {
         String base = match.group(1) ?? '';
         String inputParams = match.group(2) ?? '';
-        String outputParams = inputParams.split('~').map((pair) {
-          var parts = pair.split('=');
-          var key = parts[0];
-          var value = parts.sublist(1).join('=');
-          return '$key~$value';
-        }).join('^');
+        String outputParams = '';
+        if (inputParams != '') {
+          outputParams = inputParams.split('~').map((pair) {
+            var parts = pair.split('=');
+            var key = parts[0];
+            var value = parts.sublist(1).join('=');
+            return '$key~$value';
+          }).join('^');
+        }
         return outputParams.isNotEmpty ? '$base&params=$outputParams' : base;
       }
     }
@@ -752,9 +743,7 @@ class MenuHomePageController extends GetxController {
     }
     list_menuFolderData.value = map_folderList;
     print("list_menuFolderData: ${list_menuFolderData.toString()}");
-    LogService.writeLog(
-        message:
-            "[i] MenuHomePageController\nScope: parseMenuFolderData()\nlist_menuFolderData: ${list_menuFolderData.toString()}");
+    LogService.writeLog(message: "[i] MenuHomePageController\nScope: parseMenuFolderData()\nlist_menuFolderData: ${list_menuFolderData.toString()}");
   }
 
   getMenuFolderPanelWidgetList() {

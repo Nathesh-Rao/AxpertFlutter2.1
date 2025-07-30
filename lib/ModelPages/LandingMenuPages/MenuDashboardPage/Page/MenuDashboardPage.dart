@@ -23,22 +23,24 @@ class MenuDashboardPage extends StatelessWidget {
       backgroundColor: MyColors.white3.withAlpha(130),
       body: Column(
         children: [
-          WidgetSlidingNotificationPanel(),
+         WidgetSlidingNotificationPanel(),
           SizedBox(height: 5),
           Obx(
-            () => Expanded(
-              child: Visibility(
-                  visible: menuDashboardController.chartList.length == 0,
-                  child: EmptyInfoWidget(
-                    image: "assets/images/empty-chart.png",
-                    title: "No Chart Data Available",
-                    subTitle: "There is chart data to show you right now",
-                    widthFactor: 2.5,
-                  )),
+            () => Visibility(
+              visible: menuDashboardController.chartList.length == 0,
+              child: Expanded(
+                child: EmptyInfoWidget(
+                  image: "assets/images/empty-chart.png",
+                  title: "No Chart Data Available",
+                  subTitle: "There is chart data to show you right now",
+                  widthFactor: 2.5,
+                ),
+              ),
             ),
           ),
           Obx(
             () => Expanded(
+
               flex: (menuDashboardController.chartList.isEmpty && menuDashboardController.dashBoardWidgetList.isEmpty) ? 0 : 1,
               child: ListView(
                 padding: EdgeInsets.symmetric(vertical: 10),
