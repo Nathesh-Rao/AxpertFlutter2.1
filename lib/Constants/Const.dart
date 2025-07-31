@@ -9,7 +9,7 @@ final globalVariableController = Get.find<GlobalVariableController>();
 
 class Const {
   static DateTime DEMO_END_DATE = DateTime(2025, 2, 8);
-  static String RELEASE_ID = ".1_testRelease180725";
+  static String RELEASE_ID = ".0_testRelease180725";
   static String DEVICE_ID = "";
 /*  static String PROJECT_URL = ""; //"https://app.buzzily.com/Run";
   static String PROJECT_NAME = "axpertqa11";
