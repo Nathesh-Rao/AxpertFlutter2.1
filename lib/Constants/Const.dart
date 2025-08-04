@@ -9,11 +9,9 @@ final globalVariableController = Get.find<GlobalVariableController>();
 
 class Const {
   static DateTime DEMO_END_DATE = DateTime(2025, 2, 8);
-  static String RELEASE_ID = ".1_testRelease180725";
+  static String APP_RELEASE_ID = "1";
+  static String APP_RELEASE_DATE = "release010825";
   static String DEVICE_ID = "";
-/*  static String PROJECT_URL = ""; //"https://app.buzzily.com/Run";
-  static String PROJECT_NAME = "axpertqa11";
-  static String ARM_URL = "";*/
   static String GUID = "";
   static String APP_VERSION = "";
   static String FIREBASE_TOKEN = "";

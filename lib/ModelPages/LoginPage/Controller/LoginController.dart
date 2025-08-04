@@ -16,7 +16,9 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:platform_device_id/platform_device_id.dart';
 
+import '../../../Constants/Enums.dart';
 import '../../../Constants/GlobalVariableController.dart';
+import '../Models/AuthUserDetailsModel.dart';
 
 class LoginController extends GetxController {
   GlobalVariableController globalVariableController = Get.find();
@@ -31,11 +33,24 @@ class LoginController extends GetxController {
   var showPassword = true.obs;
   TextEditingController userNameController = TextEditingController();
   TextEditingController userPasswordController = TextEditingController();
+  TextEditingController otpFieldController = TextEditingController();
+  final passwordFocus = FocusNode();
   var errUserName = ''.obs;
   var errPassword = ''.obs;
   var fcmId;
   var willBio_userAuthenticate = false.obs;
   var isBiometricAvailable = false.obs;
+  var currentProjectName = ''.obs;
+  var isUserDataLoading = false.obs;
+  var isOtpLoading = false.obs;
+  var isOTP_auth = false.obs;
+  var isPWD_auth = false.obs;
+  var otpChars = '4'.obs;
+  var otpExpiryTime = '2'.obs;
+  var authType = AuthType.none.obs;
+  var otpMsg = ''.obs;
+  var otpLoginKey = ''.obs;
+  var otpErrorText = ''.obs;
 
   LoginController() {
     // fetchUserTypeList();
@@ -148,8 +163,21 @@ class LoginController extends GetxController {
       errUserName.value = "Enter User Name";
       return false;
     }
-    if (userPasswordController.text.toString().trim() == "") {
-      errPassword.value = "Enter Password";
+    if (isPWD_auth.value) {
+      if (userPasswordController.text.toString().trim() == "") {
+        errPassword.value = "Enter Password";
+        return false;
+      }
+    }
+    return true;
+  }
+
+  bool validateOTPField() {
+    otpErrorText.value = "";
+    print("OTP text length: ${otpFieldController.text.length}");
+    if (otpFieldController.text.length < int.parse(otpChars.value)) {
+      otpErrorText.value = "Enter full ${int.parse(otpChars.value)}-digit OTP'";
+      print("Enter full ");
       return false;
     }
     return true;
@@ -188,8 +216,7 @@ class LoginController extends GetxController {
           await appStorage.storeValue(AppStorage.SESSIONID, json["result"]["sessionid"].toString());
           await appStorage.storeValue(AppStorage.USER_NAME, userNameController.text.trim());
           await appStorage.storeValue(AppStorage.USER_CHANGE_PASSWORD, json["result"]["ChangePassword"].toString());
-          await appStorage.storeValue(
-              AppStorage.NICK_NAME, json["result"]["NickName"].toString() ?? userNameController.text.trim());
+          await appStorage.storeValue(AppStorage.NICK_NAME, json["result"]["NickName"].toString() ?? userNameController.text.trim());
           storeLastLoginData(body);
           print("User_change_password: ${appStorage.retrieveValue(AppStorage.USER_CHANGE_PASSWORD)}");
           LogService.writeLog(
@@ -261,8 +288,7 @@ class LoginController extends GetxController {
             await _processLoginAndGoToHomePage();
           }
         } else {
-          Get.snackbar("Error", "Some Error occured",
-              backgroundColor: Colors.red, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM);
+          Get.snackbar("Error", "Some Error occured", backgroundColor: Colors.red, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM);
         }
         LoadingScreen.dismiss();
         // print(resp);
@@ -273,8 +299,7 @@ class LoginController extends GetxController {
     } catch (e) {
       LogService.writeLog(message: "[ERROR] LoginController\nScope: googleSignInClicked()\nError: $e");
 
-      Get.snackbar("Error", "User is not Registered!",
-          snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
+      Get.snackbar("Error", "User is not Registered!", snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
     }
   }
 
@@ -332,7 +357,7 @@ class LoginController extends GetxController {
     String packageName = packageInfo.packageName;
     var version = packageInfo.version;
     String buildNumber = packageInfo.buildNumber;
-    Const.APP_VERSION = version;
+    Const.APP_VERSION = version+"."+Const.APP_RELEASE_ID;
     return version;
   }
 
@@ -477,6 +502,180 @@ class LoginController extends GetxController {
       }
     } else {
       isBiometricAvailable.value = false;
+    }
+  }
+
+//// New Login Flow Methods and vars
+  onLoad() async {
+    currentProjectName.value = await appStorage.retrieveValue(AppStorage.PROJECT_NAME) ?? '';
+  }
+
+  startLoginProcess() async {
+    authType.value = await getLoginUserDetailsAndAuthType();
+
+    if (authType.value == AuthType.otpOnly) {
+      await callSignInAPI();
+    }
+
+    if (isPWD_auth.value) {
+      FocusScope.of(Get.context!).requestFocus(passwordFocus);
+    }
+
+    switch (authType.value) {
+      case AuthType.both:
+        print("✅ Both Password and OTP authentication are required.");
+        break;
+      case AuthType.passwordOnly:
+        print("🔐 Only Password authentication is required.");
+        break;
+      case AuthType.otpOnly:
+        print("📲 Only OTP authentication is required.");
+        break;
+      case AuthType.none:
+        print("❌ No authentication required.");
+        break;
+    }
+  }
+
+  getLoginUserDetailsAndAuthType() async {
+    isUserDataLoading.value = true;
+    var _url = Const.getFullARMUrl(ServerConnections.API_GET_LOGINUSER_DETAILS);
+    var body = {
+      "appname": globalVariableController.PROJECT_NAME.value,
+      "UserName": userNameController.text.toString().trim(),
+    };
+
+    var response = await serverConnections.postToServer(url: _url, body: jsonEncode(body));
+    isUserDataLoading.value = false;
+    if (response != "") {
+      var json = jsonDecode(response);
+      if (json["result"]["success"].toString().toLowerCase() == "true") {
+        FocusManager.instance.primaryFocus?.unfocus();
+        final authUserdetails = AuthUserDetailsModel.fromJson(json["result"]);
+        isPWD_auth.value = authUserdetails.pwdauth!;
+        if (authUserdetails.otpauth!) {
+          isOTP_auth.value = authUserdetails.otpauth!;
+          otpChars.value = authUserdetails.otpsettings!.otpchars!;
+          otpExpiryTime.value = authUserdetails.otpsettings!.otpexpiry!;
+        }
+
+        if (isPWD_auth.value && isOTP_auth.value) return AuthType.both;
+        if (isPWD_auth.value) return AuthType.passwordOnly;
+        if (isOTP_auth.value) return AuthType.otpOnly;
+      } else {
+        Get.snackbar("Error ", json["result"]["message"],
+            snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
+      }
+    }
+
+    return AuthType.none;
+  }
+
+  callSignInAPI() async {
+    if (validateForm()) {
+      var signInBody = {
+        "appname": globalVariableController.PROJECT_NAME.value,
+        "username": userNameController.text.toString().trim(),
+        "password": generateMd5(userPasswordController.text.toString().trim()),
+        "Language": "English",
+        "SessionId": getGUID(), //GUID
+        "Globalvars": false
+      };
+      // signInBody.addIf(isPWD_auth.value, "password", generateMd5(userPasswordController.text.toString().trim()));
+      signInBody.addIf(isOTP_auth.value, "OtpAuth", "T");
+      FocusManager.instance.primaryFocus?.unfocus();
+      LoadingScreen.show();
+      var _url = Const.getFullARMUrl(ServerConnections.API_SIGNIN);
+
+      var response = await serverConnections.postToServer(url: _url, body: jsonEncode(signInBody));
+      // LogService.writeLog(message: "[-] LoginController => loginButtonClicked() => LoginResponse : $response");
+
+      if (response != "") {
+        var json = jsonDecode(response);
+        if (json["result"]["success"].toString().toLowerCase() == "true") {
+          if (json["result"]["message"].toString() == "Login Successful.") {
+            await processSignInDataResponse(json["result"]);
+          } else if (json["result"]?.containsKey("OTPLoginKey")) {
+            // OTPPage
+            otpMsg.value = json["result"]["message"].toString();
+            otpLoginKey.value = json["result"]["OTPLoginKey"].toString();
+            print("Otpmsg: ${otpMsg.value} \nOtpkey: ${otpLoginKey.value}");
+            Get.toNamed(Routes.OtpPage);
+          }
+        } else {
+          Get.snackbar("Error ", json["result"]["message"],
+              snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
+        }
+      }
+      LoadingScreen.dismiss();
+    }
+  }
+
+  callVerifyOTP() async {
+    if (validateOTPField()) {
+      LoadingScreen.show();
+      isOtpLoading.value = true;
+      var _url = Const.getFullARMUrl(ServerConnections.API_VALIDATE_OTP);
+      var body = {
+        "OtpLoginKey": otpLoginKey.value,
+        "OTP": otpFieldController.text.toString().trim(),
+      };
+
+      var response = await serverConnections.postToServer(url: _url, body: jsonEncode(body));
+      isOtpLoading.value = false;
+      if (response != "") {
+        var json = jsonDecode(response);
+        if (json["result"]["success"].toString().toLowerCase() == "true") {
+          await processSignInDataResponse(json["result"]);
+        } else {
+          otpErrorText.value = json["result"]["message"].toString();
+          /* Get.snackbar("Error ", json["result"]["message"],
+              snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);*/
+        }
+      }
+    }
+    LoadingScreen.dismiss();
+  }
+
+  processSignInDataResponse(json) async {
+    await appStorage.storeValue(AppStorage.TOKEN, json["token"].toString());
+    await appStorage.storeValue(AppStorage.SESSIONID, json["ARMSessionId"].toString());
+    await appStorage.storeValue(AppStorage.USER_NAME, userNameController.text.trim());
+    //await appStorage.storeValue(AppStorage.USER_CHANGE_PASSWORD, json["result"]["ChangePassword"].toString());
+    await appStorage.storeValue(AppStorage.NICK_NAME, json["nickname"].toString() ?? userNameController.text.trim());
+    //storeLastLoginData(_body);
+    //print("User_change_password: ${appStorage.retrieveValue(AppStorage.USER_CHANGE_PASSWORD)}");
+    LogService.writeLog(
+        message: "[-] LoginController\nScope:SignInResponse()\nUser_change_password: ${appStorage.retrieveValue(AppStorage.USER_CHANGE_PASSWORD)}");
+
+    //Save Data
+    if (rememberMe.value) {
+      rememberCredentials();
+    } else {
+      dontRememberCredentials();
+    }
+    await _processLoginAndGoToHomePage();
+  }
+
+  callResendOTP() async {
+    otpErrorText.value = '';
+    otpFieldController.clear();
+    isOtpLoading.value = true;
+    var _url = Const.getFullARMUrl(ServerConnections.API_RESEND_OTP);
+    var body = {"OtpLoginKey": otpLoginKey.value};
+
+    var response = await serverConnections.postToServer(url: _url, body: jsonEncode(body));
+    isOtpLoading.value = false;
+    if (response != "") {
+      var json = jsonDecode(response);
+      if (json["result"]["success"].toString().toLowerCase() == "true") {
+        Get.snackbar("Success", json["result"]["message"],
+            snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.green, colorText: Colors.white);
+      } else {
+        otpErrorText.value = json["result"]["message"].toString();
+        /* Get.snackbar("Error ", json["result"]["message"],
+            snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);*/
+      }
     }
   }
 }

@@ -21,7 +21,6 @@ class ActiveTaskListModel {
   dynamic keyvalue;
   String? transid;
   double? priorindex;
-  double? indexno;
   double? subindexno;
   dynamic approvereasons;
   dynamic defapptext;
@@ -78,7 +77,6 @@ class ActiveTaskListModel {
     this.keyvalue,
     this.transid,
     this.priorindex,
-    this.indexno,
     this.subindexno,
     this.approvereasons,
     this.defapptext,
@@ -140,7 +138,6 @@ class ActiveTaskListModel {
         keyvalue: keyvalue ?? "",
         transid: transid ?? "",
         priorindex: priorindex.toString(),
-        indexno: indexno.toString(),
         subindexno: subindexno.toString(),
         approvereasons: approvereasons ?? "",
         defapptext: defapptext ?? "",
@@ -187,7 +184,6 @@ class ActiveTaskListModel {
         keyvalue: json["keyvalue"],
         transid: json["transid"],
         priorindex: json["priorindex"],
-        indexno: json["indexno"],
         subindexno: json["subindexno"],
         approvereasons: json["approvereasons"],
         defapptext: json["defapptext"],
@@ -245,7 +241,6 @@ class ActiveTaskListModel {
         "keyvalue": keyvalue,
         "transid": transid,
         "priorindex": priorindex,
-        "indexno": indexno,
         "subindexno": subindexno,
         "approvereasons": approvereasons,
         "defapptext": defapptext,

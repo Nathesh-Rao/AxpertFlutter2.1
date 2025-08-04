@@ -113,9 +113,9 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
       ];
     });
     showChangePassword_PopUp();
-    getBiometricStatus();
+    //getBiometricStatus();
     getClientInfo();
-    getBannerDetailList();
+    //getBannerDetailList();
   }
 
   getClientInfo() async {

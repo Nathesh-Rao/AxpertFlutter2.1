@@ -16,7 +16,10 @@ class ServerConnections {
   InternetConnectivity internetConnectivity = Get.find();
   static const String API_GET_USERGROUPS = "api/v1/ARMUserGroups";
   static const String API_GET_SIGNINDETAILS = "api/v1/ARMSigninDetails";
-  static const String API_SIGNIN = "api/v1/ARMSignIn";
+  static const String API_SIGNIN = "api/v1/Signin";//"api/v1/ARMSignIn";
+  static const String API_GET_LOGINUSER_DETAILS = "api/v1/GetLoginUserDetails";
+  static const String API_VALIDATE_OTP = "api/v1/ValidateOTP";
+  static const String API_RESEND_OTP = "api/v1/ResendOTP";
   static const String API_AX_START_SESSION = "api/v1/AxStartSession";
 
   static const String API_GET_APPSTATUS = "api/v1/ARMAppStatus";

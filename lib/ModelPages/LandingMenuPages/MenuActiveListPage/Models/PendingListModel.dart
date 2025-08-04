@@ -19,7 +19,6 @@ class PendingListModel {
   String keyvalue;
   String transid;
   String priorindex;
-  String indexno;
   String subindexno;
   String approvereasons;
   String defapptext;
@@ -66,7 +65,6 @@ class PendingListModel {
     required this.keyvalue,
     required this.transid,
     required this.priorindex,
-    required this.indexno,
     required this.subindexno,
     required this.approvereasons,
     required this.defapptext,
@@ -116,7 +114,6 @@ class PendingListModel {
         keyvalue = json['keyvalue'].toString() ?? "",
         transid = json['transid'].toString() ?? "",
         priorindex = json['priorindex'].toString() ?? "",
-        indexno = json['indexno'].toString() ?? "",
         subindexno = json['subindexno'].toString() ?? "",
         approvereasons = json['approvereasons'].toString() ?? "",
         defapptext = json['defapptext'].toString() ?? "",
@@ -163,7 +160,6 @@ class PendingListModel {
         'keyvalue': keyvalue,
         'transid': transid,
         'priorindex': priorindex,
-        'indexno': indexno,
         'subindexno': subindexno,
         'approvereasons': approvereasons,
         'defapptext': defapptext,
