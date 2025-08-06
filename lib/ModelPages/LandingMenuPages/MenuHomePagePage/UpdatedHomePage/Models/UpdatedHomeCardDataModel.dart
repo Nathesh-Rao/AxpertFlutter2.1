@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class UpdatedHomeCardDataModel {
-  final double? axpCardsid;
+  final dynamic axpCardsid;
   final String? cardtype;
   final String? cardname;
   final String? cardicon;
@@ -11,7 +11,7 @@ class UpdatedHomeCardDataModel {
   final String? cardDatasource;
   final String? width;
   final String? height;
-  //final double? autorefresh;
+  final dynamic autorefresh;
   final String? context;
   final dynamic orderno;
   dynamic carddata;
@@ -27,7 +27,7 @@ class UpdatedHomeCardDataModel {
     required this.cardDatasource,
     required this.width,
     required this.height,
-   // required this.autorefresh,
+   required this.autorefresh,
     required this.context,
     required this.orderno,
     required this.carddata,
@@ -48,7 +48,7 @@ class UpdatedHomeCardDataModel {
         cardDatasource: json["card_datasource"],
         width: json["width"],
         height: json["height"],
-      //  autorefresh: json["autorefresh"],
+       autorefresh: json["autorefresh"],
         context: json["context"],
         orderno: json["orderno"],
         carddata: json["carddata"] ?? [],
@@ -65,7 +65,7 @@ class UpdatedHomeCardDataModel {
         "card_datasource": cardDatasource,
         "width": width,
         "height": height,
-        //"autorefresh": autorefresh,
+        "autorefresh": autorefresh,
         "context": context,
         "orderno": orderno,
         "carddata": carddata,

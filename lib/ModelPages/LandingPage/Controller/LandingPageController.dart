@@ -815,12 +815,24 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
       color: Colors.white,
       height: 70,
       child: Center(
-          child: Text(
-        'App Version: ${Const.APP_VERSION}\n© agile-labs.com ${DateTime.now().year}',
-        textAlign: TextAlign.center,
-      )),
+          child: Column(
+            children: [
+              Text(
+                      'App Version: ${Const.APP_VERSION}',
+                      textAlign: TextAlign.center,
+                    ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [Image.asset(
+                  'assets/images/axpert_03.png',
+                  height: Get.height * 0.03,
+                  // width: MediaQuery.of(context).size.width * 0.075,
+                  fit: BoxFit.fill,
+                ),Text(" © ${DateTime.now().year} Powered by Axpert"),],
+              )
+            ],
+          )),
     ));
-
     return menuList;
   }
 

@@ -570,10 +570,15 @@ class MenuHomePageController extends GetxController {
   }
 
   captionOnTapFunctionNew(transid) async {
+    print( "captionOnTapFunction: transid befor => $transid");
+    LogService.writeOnConsole(message: "captionOnTapFunction: transid befor => $transid");
     if (transid != null) {
-      LogService.writeOnConsole(message: "captionOnTapFunction: transid => $transid");
+      // Remove any 'h' followed by a digit and '=' at the beginning
+      String cleaned_transid = transid.replaceFirst(RegExp(r'^h\d+='), '');
+      // Remove empty parentheses (with or without spaces)
+      cleaned_transid = cleaned_transid.replaceAll(RegExp(r'\(\s*\)'), '');
 
-      String link_id = getStringForWebViewParam(transid); //transid.replaceAll('(', '').replaceAll(')', '');
+      String link_id = getStringForWebViewParam(cleaned_transid.trim()); //transid.replaceAll('(', '').replaceAll(')', '');
       LogService.writeOnConsole(message: "captionOnTapFunction: link_id => $link_id");
 
       LogService.writeLog(message: "captionOnTapFunction: transid => $link_id");

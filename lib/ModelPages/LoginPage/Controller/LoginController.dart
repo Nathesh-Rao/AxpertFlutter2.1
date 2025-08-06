@@ -358,7 +358,7 @@ class LoginController extends GetxController {
     var version = packageInfo.version;
     String buildNumber = packageInfo.buildNumber;
     Const.APP_VERSION = version+"."+Const.APP_RELEASE_ID;
-    return version;
+    return Const.APP_VERSION;
   }
 
   void rememberCredentials() {

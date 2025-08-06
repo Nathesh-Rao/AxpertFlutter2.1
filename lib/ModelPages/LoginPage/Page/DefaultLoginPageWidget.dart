@@ -314,7 +314,7 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
                         textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 12, color: Colors.black, letterSpacing: 1),
                       )),
                   Image.asset(
-                    'assets/images/agilelabslogo.png',
+                    'assets/images/axpert_03.png',
                     height: MediaQuery.of(context).size.height * 0.04,
                     // width: MediaQuery.of(context).size.width * 0.075,
                     fit: BoxFit.fill,
@@ -349,7 +349,7 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           return Text(
-                            "Version:${snapshot.data}_${Const.APP_RELEASE_DATE}",
+                            "v${snapshot.data}_${Const.APP_RELEASE_DATE}",
                             style: GoogleFonts.poppins(
                                 textStyle: TextStyle(
                                     color: MyColors.buzzilyblack,

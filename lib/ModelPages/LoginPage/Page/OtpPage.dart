@@ -68,6 +68,7 @@ class _OtpPageState extends State<OtpPage> {
               ))
         ],*/
       ),
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Stack(
           children: [

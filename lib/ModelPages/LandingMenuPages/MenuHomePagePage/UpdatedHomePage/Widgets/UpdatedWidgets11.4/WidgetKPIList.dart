@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Models/KPIListCardModel.dart';
 import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -253,6 +254,8 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
 
   Widget _gridTile(cardData, Color color) {
     KpiListModel kpiListData = KpiListModel.fromJson(cardData);
+    String itemName = kpiListData.name.toString();
+    String itemValue = kpiListData.value.toString().replaceAll(RegExp(r'<[^>]*>'), '').trim(); // remove HTML tags
 
     Color darkenColor(Color color, [double amount = 0.2]) {
       assert(amount >= 0 && amount <= 1);
@@ -291,7 +294,7 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
                 children: [
                   Flexible(
                     child: Text(
-                      kpiListData.name ?? '',
+                      itemName ?? '',
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.urbanist(
                         fontSize: 14,
@@ -299,9 +302,23 @@ class _KPICardsPanelState extends State<KPICardsPanel> {
                       ),
                     ),
                   ),
+                  SizedBox(
+                    height: 2,
+                  ),
                   Flexible(
-                      child: Text(kpiListData.value?.toString() ?? '',
-                          style: GoogleFonts.urbanist(fontSize: 14, fontWeight: FontWeight.w700, color: darkenColor(color)))),
+                    child: AutoSizeText(
+                      itemValue ?? '',
+                      style: GoogleFonts.urbanist(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: darkenColor(color),
+                      ),
+                      maxLines: 2, // or whatever max lines you want
+                      minFontSize: 10, // minimum font size allowed
+                      overflow: TextOverflow.ellipsis, // optional
+                    ),
+                  ), /*Text(itemValue ?? '',
+                          style: GoogleFonts.urbanist(fontSize: 14, fontWeight: FontWeight.w700, color: darkenColor(color)))),*/
                 ],
               ),
             )
@@ -319,7 +336,7 @@ _getHeight_card(itemCount) {
   double itemHeight = 50;
   double spacing = 5 * (rowCount - 1);
 
-  return (rowCount * (itemHeight + spacing ))+ 150;
+  return (rowCount * (itemHeight + spacing)) + 150;
 }
 
 class QuickLinksBottomSheet extends StatelessWidget {

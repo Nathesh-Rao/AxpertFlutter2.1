@@ -374,13 +374,15 @@ void openWebPage(ChartData chartData) {
   try {
     if (chartData.link != "") {
       MenuHomePageController menuHPC = Get.find();
-      String url = Const.getFullWebUrl('aspx/AxMain.aspx?pname=ddashboard&authKey=AXPERT-') +
+      menuHPC.captionOnTapFunctionNew(chartData.link);
+
+      /*String url = Const.getFullWebUrl('aspx/AxMain.aspx?pname=ddashboard&authKey=AXPERT-') +
           AppStorage().retrieveValue(AppStorage.SESSIONID) +
           '&plink=' +
           chartData.link;
       print(url);
       menuHPC.webUrl = url;
-      menuHPC.switchPage.value = true;
+      menuHPC.switchPage.value = true;*/
     }
   } catch (e) {}
 }

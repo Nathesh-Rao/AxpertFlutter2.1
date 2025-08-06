@@ -116,6 +116,12 @@ class MenuDashboardController extends GetxController {
     LogService.writeLog(message: "dataList-length\n${dataList.length}");
 
     for (var data in dataList) {
+      if (data.carddata == null ||
+          (data.carddata is List && data.carddata.isEmpty) ||
+          (data.carddata is String && data.carddata.trim().isEmpty) ||
+          (data.carddata is Map && data.carddata.isEmpty)) {
+        continue;
+      }
       switch (data.pluginname?.toUpperCase()) {
         case "BANNER CARD":
           // bannerCardData.add(data);
