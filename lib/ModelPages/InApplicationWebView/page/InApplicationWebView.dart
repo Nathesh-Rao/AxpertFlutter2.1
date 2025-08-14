@@ -258,11 +258,13 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
                           print(consoleMessage.toString());
                           if (consoleMessage.toString().contains("axm_mainpageloaded")) {
                             try {
-                              if (menuHomePageController.switchPage.value == true) {
-                                menuHomePageController.switchPage.toggle();
-                              } else {
-                                Get.back();
-                              }
+                              // if (menuHomePageController.switchPage.value == true) {
+                              //   menuHomePageController.switchPage.toggle();
+                              // } else {
+                              //   Get.back();
+                              // }
+
+                              widget.webViewController.closeWebView();
                             } catch (e) {}
                           }
                         },

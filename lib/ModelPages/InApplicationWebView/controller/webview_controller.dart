@@ -25,4 +25,16 @@ class WebViewController extends GetxController {
   closeWebView() {
     currentIndex.value = 0;
   }
+
+  signOut({required String url}) async {
+    // currentUrl.value = url;
+
+    await inAppWebViewController.value!
+        .loadUrl(
+          urlRequest: URLRequest(
+            url: WebUri(url),
+          ),
+        )
+        .then((_) {});
+  }
 }

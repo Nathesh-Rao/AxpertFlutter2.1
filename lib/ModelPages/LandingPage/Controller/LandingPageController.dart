@@ -40,7 +40,6 @@ import '../EssHomePage/AttendanceManagement/controller/AttendanceController.dart
 
 class LandingPageController extends GetxController with WidgetsBindingObserver {
   final globalVariableController = Get.find<GlobalVariableController>();
-
   final MenuMorePageController menuMorePageController = Get.put(MenuMorePageController());
   final webViewController = Get.find<WebViewController>();
 
@@ -421,6 +420,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
               appStorage.storeValue(AppStorage.USER_NAME, "");
               await serverConnections.postToServer(url: url, body: jsonEncode(body));
               LoadingScreen.dismiss();
+              webViewController.signOut(url: Const.getFullWebUrl("aspx/AxMain.aspx?signout=true"));
               Get.offAllNamed(Routes.Login);
               // if (resp != "" && !resp.toString().contains("error")) {
               //   var jsonResp = jsonDecode(resp);
