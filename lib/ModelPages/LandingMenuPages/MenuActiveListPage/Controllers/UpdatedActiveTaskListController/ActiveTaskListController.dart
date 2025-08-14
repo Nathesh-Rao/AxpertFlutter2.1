@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:axpertflutter/Constants/GlobalVariableController.dart';
+import 'package:axpertflutter/ModelPages/InApplicationWebView/controller/webview_controller.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Models/UpdatedActiveTaskListModel/ActiveTaskListModel.dart';
 import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:flutter/material.dart';
@@ -325,7 +326,7 @@ class ActiveTaskListController extends GetxController {
   }
 
   //---------------------------------------
-
+  final webViewController = Get.find<WebViewController>();
   void onTaskClick(ActiveTaskListModel task) async {
     var pendingModel = task.toPendingListModel();
 
@@ -333,7 +334,8 @@ class ActiveTaskListController extends GetxController {
     switch (pendingModel.tasktype.toString().toUpperCase()) {
       case "MAKE":
         var URL = CommonMethods.activeList_CreateURL_MAKE(pendingModel);
-        if (!URL.isEmpty) Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullWebUrl(URL)]);
+        // if (!URL.isEmpty) Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullWebUrl(URL)]);
+        if (!URL.isEmpty) webViewController.openWebView(url: Const.getFullWebUrl(URL));
         break;
       // break;
       case "CHECK":
@@ -352,11 +354,13 @@ class ActiveTaskListController extends GetxController {
       case "NULL":
       case "CACHED SAVE":
         var URL = CommonMethods.activeList_CreateURL_MESSAGE(pendingModel);
-        if (!URL.isEmpty)
-          Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullWebUrl(URL)])?.then((_) {
-            pageNumber--;
-            _parseTaskMap();
-          });
+        if (!URL.isEmpty) if (!URL.isEmpty) webViewController.openWebView(url: Const.getFullWebUrl(URL));
+        pageNumber--;
+        _parseTaskMap();
+        // Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullWebUrl(URL)])?.then((_) {
+        //   pageNumber--;
+        //   _parseTaskMap();
+        // });
         break;
       default:
         break;

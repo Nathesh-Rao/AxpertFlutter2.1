@@ -206,7 +206,7 @@ class LoginController extends GetxController {
       //var url = Const.getFullARMUrl(ServerConnections.API_SIGNIN);
       var url = Const.getFullARMUrl(ServerConnections.API_AX_START_SESSION);
       var response = await serverConnections.postToServer(url: url, body: body);
-      // LogService.writeLog(message: "[-] LoginController => loginButtonClicked() => LoginResponse : $response");
+      LogService.writeLog(message: "[-] LoginController => loginButtonClicked() => LoginResponse : $response");
 
       if (response != "") {
         var json = jsonDecode(response);
@@ -216,7 +216,8 @@ class LoginController extends GetxController {
           await appStorage.storeValue(AppStorage.SESSIONID, json["result"]["sessionid"].toString());
           await appStorage.storeValue(AppStorage.USER_NAME, userNameController.text.trim());
           await appStorage.storeValue(AppStorage.USER_CHANGE_PASSWORD, json["result"]["ChangePassword"].toString());
-          await appStorage.storeValue(AppStorage.NICK_NAME, json["result"]["NickName"].toString() ?? userNameController.text.trim());
+          await appStorage.storeValue(
+              AppStorage.NICK_NAME, json["result"]["NickName"].toString() ?? userNameController.text.trim());
           storeLastLoginData(body);
           print("User_change_password: ${appStorage.retrieveValue(AppStorage.USER_CHANGE_PASSWORD)}");
           LogService.writeLog(
@@ -288,7 +289,8 @@ class LoginController extends GetxController {
             await _processLoginAndGoToHomePage();
           }
         } else {
-          Get.snackbar("Error", "Some Error occured", backgroundColor: Colors.red, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM);
+          Get.snackbar("Error", "Some Error occured",
+              backgroundColor: Colors.red, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM);
         }
         LoadingScreen.dismiss();
         // print(resp);
@@ -299,7 +301,8 @@ class LoginController extends GetxController {
     } catch (e) {
       LogService.writeLog(message: "[ERROR] LoginController\nScope: googleSignInClicked()\nError: $e");
 
-      Get.snackbar("Error", "User is not Registered!", snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
+      Get.snackbar("Error", "User is not Registered!",
+          snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
     }
   }
 
@@ -357,7 +360,7 @@ class LoginController extends GetxController {
     String packageName = packageInfo.packageName;
     var version = packageInfo.version;
     String buildNumber = packageInfo.buildNumber;
-    Const.APP_VERSION = version+"."+Const.APP_RELEASE_ID;
+    Const.APP_VERSION = version + "." + Const.APP_RELEASE_ID;
     return Const.APP_VERSION;
   }
 
@@ -646,7 +649,8 @@ class LoginController extends GetxController {
     //storeLastLoginData(_body);
     //print("User_change_password: ${appStorage.retrieveValue(AppStorage.USER_CHANGE_PASSWORD)}");
     LogService.writeLog(
-        message: "[-] LoginController\nScope:SignInResponse()\nUser_change_password: ${appStorage.retrieveValue(AppStorage.USER_CHANGE_PASSWORD)}");
+        message:
+            "[-] LoginController\nScope:SignInResponse()\nUser_change_password: ${appStorage.retrieveValue(AppStorage.USER_CHANGE_PASSWORD)}");
 
     //Save Data
     if (rememberMe.value) {

@@ -6,6 +6,7 @@ import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/Const.dart';
+import 'package:axpertflutter/ModelPages/InApplicationWebView/controller/webview_controller.dart';
 import 'package:axpertflutter/ModelPages/InApplicationWebView/page/WebViewCalendar.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Page/MenuActiveListPage.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuDashboardPage/Page/MenuDashboardPage.dart';
@@ -41,6 +42,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
   final globalVariableController = Get.find<GlobalVariableController>();
 
   final MenuMorePageController menuMorePageController = Get.put(MenuMorePageController());
+  final webViewController = Get.find<WebViewController>();
 
   TextEditingController userCtrl = TextEditingController();
   TextEditingController oPassCtrl = TextEditingController();
@@ -816,22 +818,25 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
       height: 70,
       child: Center(
           child: Column(
+        children: [
+          Text(
+            'App Version: ${Const.APP_VERSION}',
+            textAlign: TextAlign.center,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                      'App Version: ${Const.APP_VERSION}',
-                      textAlign: TextAlign.center,
-                    ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [Image.asset(
-                  'assets/images/axpert_03.png',
-                  height: Get.height * 0.03,
-                  // width: MediaQuery.of(context).size.width * 0.075,
-                  fit: BoxFit.fill,
-                ),Text(" © ${DateTime.now().year} Powered by Axpert"),],
-              )
+              Image.asset(
+                'assets/images/axpert_03.png',
+                height: Get.height * 0.03,
+                // width: MediaQuery.of(context).size.width * 0.075,
+                fit: BoxFit.fill,
+              ),
+              Text(" © ${DateTime.now().year} Powered by Axpert"),
             ],
-          )),
+          )
+        ],
+      )),
     ));
     return menuList;
   }
@@ -924,7 +929,8 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
         var msgValue = jsonMainClickData['value'].replaceAll("transid~", "").replaceAll("ivname~", "");
         url += "&pname=" + msgType + msgValue;
         print(url);
-        Get.toNamed(Routes.InApplicationWebViewer, arguments: [url]);
+        // Get.toNamed(Routes.InApplicationWebViewer, arguments: [url]);
+        webViewController.openWebView(url: url);
       }
     } catch (e) {
       print("Can not open web view: error- " + e.toString());

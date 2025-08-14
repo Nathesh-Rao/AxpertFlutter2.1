@@ -1,3 +1,4 @@
+import 'package:axpertflutter/ModelPages/InApplicationWebView/controller/webview_controller.dart';
 import 'package:axpertflutter/ModelPages/InApplicationWebView/page/InApplicationWebView.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Controllers/UpdatedActiveTaskListController/ActiveTaskListController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
@@ -13,29 +14,36 @@ class LandingPage extends StatelessWidget {
 
   final LandingPageController landingPageController = Get.find();
   final MenuHomePageController menuHomePageController = Get.put(MenuHomePageController());
+  final WebViewController webViewController = Get.find();
   final ActiveTaskListController _c = Get.put(ActiveTaskListController());
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: WidgetLandingAppBarUpdated(),
-      // appBar: WidgetLandingAppBar(),
-      drawer: WidgetDrawer(),
-      bottomNavigationBar: AppBottomNavigation(),
-      body: WillPopScope(
-        onWillPop: landingPageController.onWillPop,
-        child: Obx(
-          () => Stack(
-            children: [
-              landingPageController.getPage(),
-              Visibility(
-                  visible: menuHomePageController.switchPage.value, child: InApplicationWebViewer(menuHomePageController.webUrl))
-            ],
+    return Obx(
+      () => IndexedStack(
+        index: webViewController.currentIndex.value,
+        children: [
+          Scaffold(
+            appBar: WidgetLandingAppBarUpdated(),
+            // appBar: WidgetLandingAppBar(),
+            drawer: WidgetDrawer(),
+            bottomNavigationBar: AppBottomNavigation(),
+            body: WillPopScope(
+              onWillPop: landingPageController.onWillPop,
+              child: Obx(
+                () => Stack(
+                  children: [
+                    landingPageController.getPage(),
+                  ],
+                ),
+              ),
+              /* menuHomePageController.switchPage.value == true
+                      ? InApplicationWebViewer(menuHomePageController.webUrl)
+                      : landingPageController.getPage(),
+                  ),*/
+            ),
           ),
-        ),
-        /* menuHomePageController.switchPage.value == true
-                ? InApplicationWebViewer(menuHomePageController.webUrl)
-                : landingPageController.getPage(),
-            ),*/
+          Obx(() => InApplicationWebViewer(webViewController.currentUrl.value)),
+        ],
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/Const.dart';
+import 'package:axpertflutter/ModelPages/InApplicationWebView/controller/webview_controller.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Controllers/ListItemDetailsController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Controllers/PendingListController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Widgets/WidgetDottedSeparator.dart';
@@ -15,7 +16,6 @@ class PendingListPage extends StatelessWidget {
   PendingListPage({super.key});
 
   final PendingListController pendingListController = Get.put(PendingListController());
-
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -29,6 +29,8 @@ class PendingListPage extends StatelessWidget {
 }
 
 reBuild(PendingListController pendingListController, BuildContext context) {
+  final webViewController = Get.find<WebViewController>();
+
   return Column(
     mainAxisAlignment: MainAxisAlignment.start,
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,8 +132,8 @@ reBuild(PendingListController pendingListController, BuildContext context) {
                       switch (pendingListController.pending_activeList[index].tasktype.toString().toUpperCase()) {
                         case "MAKE":
                           var URL = CommonMethods.activeList_CreateURL_MAKE(pendingListController.pending_activeList[index]);
-                          if (!URL.isEmpty) Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullWebUrl(URL)]);
-                          break;
+                          // if (!URL.isEmpty) Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullWebUrl(URL)]);
+                          if (!URL.isEmpty) webViewController.openWebView(url: Const.getFullWebUrl(URL));
                           break;
                         case "CHECK":
                         case "APPROVE":
@@ -145,7 +147,9 @@ reBuild(PendingListController pendingListController, BuildContext context) {
                         case "NULL":
                         case "CACHED SAVE":
                           var URL = CommonMethods.activeList_CreateURL_MESSAGE(pendingListController.pending_activeList[index]);
-                          if (!URL.isEmpty) Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullWebUrl(URL)]);
+                          // if (!URL.isEmpty) Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullWebUrl(URL)]);
+                          if (!URL.isEmpty) webViewController.openWebView(url: Const.getFullWebUrl(URL));
+
                           break;
                         default:
                           break;

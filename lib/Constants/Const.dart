@@ -20,7 +20,6 @@ class Const {
   static final String SEED_V = "1983";
   static String DUMMY_USER = "admin";
   static const String DUMMYUSER_PWD = "a5ca360e803b868680e2b6f7805fcb9e";
-
   static final String URL_JSON_OBJECTGETCHOICE = "asbmenurest.dll/datasnap/rest/Tasbmenurest/getchoices";
   static final String SET_HYBRID_INFO = "/Webservice.asmx/SetHybridInfo";
   static final String SET_HYBRID_NOTIFICATION_INFO = "/Webservice.asmx/SetHybridNotifiInfo";
@@ -43,10 +42,6 @@ class Const {
           : globalVariableController.ARM_URL.value + "/" + Entrypoint;
   }
 
-  // static String getFullARMUrl_HardCoded(String Entrypoint) {
-  //   return "http://20.244.123.19/ARM113/" + Entrypoint;
-  // }
-
   static String getFullWebUrl(String Entrypoint) {
     if (globalVariableController.WEB_URL.value == "") {
       var data = AppStorage().retrieveValue(AppStorage.PROJECT_URL) ?? "";
@@ -59,10 +54,6 @@ class Const {
   }
 
   static String getAppBody() => "{\"Appname\":\"" + globalVariableController.PROJECT_NAME.value + "\"}";
-
-  // static String getSQLforClientID(String clientID) =>
-  //     "select projectname, scripts_uri,dbtype, expirydate, notify_uri,web_url,arm_url from tblclientMST   where " +
-  //         "clientid = '" + clientID + "'";
 
   static final THEMEDATA = ThemeData.light(useMaterial3: false).copyWith(
     brightness: Brightness.light,

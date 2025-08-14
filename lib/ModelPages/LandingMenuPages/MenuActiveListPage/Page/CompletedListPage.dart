@@ -1,5 +1,6 @@
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/Const.dart';
+import 'package:axpertflutter/ModelPages/InApplicationWebView/controller/webview_controller.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Controllers/CompletedListController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Controllers/ListItemDetailsController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Page/PendingListPage.dart';
@@ -16,6 +17,7 @@ class CompletedListPage extends StatelessWidget {
   CompletedListPage({super.key});
 
   final CompletedListController completedListController = Get.put(CompletedListController());
+  final webViewController = Get.find<WebViewController>();
 
   @override
   Widget build(BuildContext context) {
@@ -163,7 +165,8 @@ class CompletedListPage extends StatelessWidget {
                             var URL =
                                 CommonMethods.activeList_CreateURL_MAKE(completedListController.completed_activeList[index]);
                             if (!URL.isEmpty)
-                              Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullWebUrl(URL)]);
+                              // Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullWebUrl(URL)]);
+                              webViewController.openWebView(url: Const.getFullWebUrl(URL));
                             break;
                           case "CHECK":
                           case "APPROVE":
@@ -178,7 +181,9 @@ class CompletedListPage extends StatelessWidget {
                             var URL =
                                 CommonMethods.activeList_CreateURL_MESSAGE(completedListController.completed_activeList[index]);
                             if (!URL.isEmpty)
-                              Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullWebUrl(URL)]);
+                              // Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullWebUrl(URL)]);
+                              webViewController.openWebView(url: Const.getFullWebUrl(URL));
+
                             break;
                           default:
                             break;

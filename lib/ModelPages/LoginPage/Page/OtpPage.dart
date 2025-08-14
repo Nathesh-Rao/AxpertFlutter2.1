@@ -7,7 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../Constants/Const.dart';
 import '../../../Constants/MyColors.dart';
-import '../../../Constants/Routes.dart';
 import '../Controller/LoginController.dart';
 import '../Widgets/WidgetLoginButton.dart';
 import '../Widgets/WidgetOtpTextField.dart';
@@ -171,8 +170,8 @@ class _OtpPageState extends State<OtpPage> {
                   FittedBox(
                     child: Text(
                       "By using the software, you agree to the",
-                      style:
-                          GoogleFonts.poppins(textStyle: TextStyle(fontWeight: FontWeight.w400, fontSize: 12, letterSpacing: 1, color: Colors.black)),
+                      style: GoogleFonts.poppins(
+                          textStyle: TextStyle(fontWeight: FontWeight.w400, fontSize: 12, letterSpacing: 1, color: Colors.black)),
                     ),
                   ),
                   Row(
@@ -192,7 +191,8 @@ class _OtpPageState extends State<OtpPage> {
                       FittedBox(
                         child: Text(" and the",
                             style: GoogleFonts.poppins(
-                              textStyle: TextStyle(fontWeight: FontWeight.w400, fontSize: 12, color: Colors.black, letterSpacing: 1),
+                              textStyle:
+                                  TextStyle(fontWeight: FontWeight.w400, fontSize: 12, color: Colors.black, letterSpacing: 1),
                             )),
                       ),
                       FittedBox(
@@ -235,7 +235,9 @@ class _OtpPageState extends State<OtpPage> {
                             "Version:${snapshot.data}_${Const.APP_RELEASE_DATE}",
                             style: GoogleFonts.poppins(
                                 textStyle: TextStyle(
-                                    color: MyColors.buzzilyblack, fontWeight: FontWeight.w700, fontSize: MediaQuery.of(context).size.height * 0.012)),
+                                    color: MyColors.buzzilyblack,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: MediaQuery.of(context).size.height * 0.012)),
                           );
                         } else {
                           return Text("");

@@ -31,14 +31,6 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
   @override
   void initState() {
     super.initState();
-
-    /*SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.white,
-        statusBarIconBrightness: Brightness.dark,
-        statusBarBrightness: Brightness.light,
-      ),
-    );*/
   }
 
   @override
@@ -54,7 +46,7 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
     });
     return Scaffold(
       // resizeToAvoidBottomInset: false,
-      appBar:AppBar(
+      appBar: AppBar(
         toolbarHeight: 80,
         elevation: 0,
         backgroundColor: Colors.white,
@@ -69,16 +61,6 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
             fit: BoxFit.fill,
           ),
         ),
-        /*actions: [
-          IconButton(
-              onPressed: () {
-                Get.toNamed(Routes.ProjectListingPage);
-              },
-              icon: Icon(
-                CupertinoIcons.plus_rectangle_fill_on_rectangle_fill,
-                color: MyColors.AXMDark,
-              ))
-        ],*/
       ),
       resizeToAvoidBottomInset: false,
       body: SafeArea(
@@ -110,7 +92,7 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
                   SizedBox(height: MediaQuery.of(context).size.height * 0.025),
                   Obx(() => _projectNameWidget(projectName: loginController.currentProjectName.value)),
                   Obx(
-                        () => WidgetLoginTextField(
+                    () => WidgetLoginTextField(
                       label: "Username",
                       isLoading: loginController.isUserDataLoading.value,
                       controller: loginController.userNameController,
@@ -118,7 +100,7 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
                   ),
 
                   Obx(
-                        () => AnimatedSwitcher(
+                    () => AnimatedSwitcher(
                       duration: const Duration(milliseconds: 300),
                       switchInCurve: Curves.easeOut,
                       switchOutCurve: Curves.easeIn,
@@ -132,13 +114,13 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
                       },
                       child: loginController.isPWD_auth.value
                           ? WidgetLoginTextField(
-                        key: const ValueKey("rotating"),
-                        label: "Password",
-                        hintText: "Enter Password",
-                        focusNode: loginController.passwordFocus,
-                        obscureText: loginController.showPassword.value,
-                        controller: loginController.userPasswordController,
-                      )
+                              key: const ValueKey("rotating"),
+                              label: "Password",
+                              hintText: "Enter Password",
+                              focusNode: loginController.passwordFocus,
+                              obscureText: loginController.showPassword.value,
+                              controller: loginController.userPasswordController,
+                            )
                           : const SizedBox.shrink(key: ValueKey("empty")),
                     ),
                   ),
@@ -147,7 +129,7 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
                     height: 10,
                   ),
                   Obx(
-                        () => Padding(
+                    () => Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -198,18 +180,20 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
                   ),
 
                   Obx(
-                        () => WidgetLoginButton(
+                    () => WidgetLoginButton(
                       label: "Next",
-                      visible: loginController.authType.value == AuthType.none || loginController.authType.value == AuthType.otpOnly,
+                      visible:
+                          loginController.authType.value == AuthType.none || loginController.authType.value == AuthType.otpOnly,
                       onPressed: () {
                         loginController.startLoginProcess();
                       },
                     ),
                   ),
                   Obx(
-                        () => WidgetLoginButton(
+                    () => WidgetLoginButton(
                       label: _getLoginButtonLabel(),
-                      visible: loginController.authType.value == AuthType.both || loginController.authType.value == AuthType.passwordOnly,
+                      visible: loginController.authType.value == AuthType.both ||
+                          loginController.authType.value == AuthType.passwordOnly,
                       onPressed: () {
                         loginController.callSignInAPI();
                       },
@@ -232,40 +216,15 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
                           ),
                           icon: Icon(FontAwesomeIcons.google, color: MyColors.red),
                           label: Text('Sign In With Google',
-                              style:
-                              GoogleFonts.poppins(textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 12, color: HexColor("#3E4153")))),
+                              style: GoogleFonts.poppins(
+                                  textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 12, color: HexColor("#3E4153")))),
                           onPressed: () {
                             loginController.googleSignInClicked();
                           }),
                     ),
                   ),
                   SizedBox(height: 10),
-                  // InkWell(
-                  //   onTap: () {
-                  //     Get.toNamed(Routes.SignUp);
-                  //   },
-                  //   child: Padding(
-                  //     padding: const EdgeInsets.only(left: 70, right: 70),
-                  //     child: Row(
-                  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //       children: [
-                  //         Text("New user?  ",
-                  //             style: GoogleFonts.poppins(
-                  //                 textStyle:
-                  //                     TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: HexColor("#3E4153")))),
-                  //         Text(
-                  //           "Sign up",
-                  //           style: GoogleFonts.poppins(
-                  //               textStyle: TextStyle(
-                  //                   decoration: TextDecoration.underline,
-                  //                   fontWeight: FontWeight.w600,
-                  //                   fontSize: 12,
-                  //                   color: HexColor("#4E9AF5"))),
-                  //         )
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
+
                   SizedBox(height: 20),
                   FittedBox(
                     child: Text(
@@ -291,7 +250,8 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
                       FittedBox(
                         child: Text(" and the",
                             style: GoogleFonts.poppins(
-                              textStyle: TextStyle(fontWeight: FontWeight.w400, fontSize: 12, color: Colors.black, letterSpacing: 1),
+                              textStyle:
+                                  TextStyle(fontWeight: FontWeight.w400, fontSize: 12, color: Colors.black, letterSpacing: 1),
                             )),
                       ),
                       FittedBox(
@@ -392,6 +352,7 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
   }
 
   _getLoginButtonLabel() {
+    if (loginController.authType.value == AuthType.none) return "Continue";
     if (loginController.authType.value == AuthType.passwordOnly) return "Login";
     if (loginController.authType.value == AuthType.both) return "Get OTP";
     return "Login";

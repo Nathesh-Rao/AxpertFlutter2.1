@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/Const.dart';
+import 'package:axpertflutter/ModelPages/InApplicationWebView/controller/webview_controller.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Models/MenuItemModel.dart';
 import 'package:axpertflutter/Utils/ServerConnections/InternetConnectivity.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
@@ -15,6 +16,7 @@ import 'package:material_icons_named/material_icons_named.dart';
 
 class MenuMorePageController extends GetxController {
   InternetConnectivity internetConnectivity = Get.find();
+  final webViewController = Get.find<WebViewController>();
   var needRefresh = true.obs;
   var menu_finalList = [].obs;
   var searchList = [].obs;
@@ -144,7 +146,8 @@ class MenuMorePageController extends GetxController {
       if (itemModel.url != "") {
         // menuHomePageController.webUrl = Const.getFullProjectUrl(itemModel.url);
         // menuHomePageController.switchPage.value = true;
-        Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullWebUrl(itemModel.url)]);
+        // Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullWebUrl(itemModel.url)]);
+        webViewController.openWebView(url: Const.getFullWebUrl(itemModel.url));
       }
     }
   }

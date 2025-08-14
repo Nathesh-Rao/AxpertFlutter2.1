@@ -6,6 +6,7 @@ import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/Const.dart';
+import 'package:axpertflutter/ModelPages/InApplicationWebView/controller/webview_controller.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/BannerModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/CardModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Models/CardOptionModel.dart';
@@ -32,7 +33,7 @@ import '../UpdatedHomePage/Widgets/WidgetMenuFolderPanelItem.dart';
 
 class MenuHomePageController extends GetxController {
   final globalVariableController = Get.find<GlobalVariableController>();
-
+  final webViewController = Get.find<WebViewController>();
   // final AttendanceController c = Get.put(AttendanceController());
   InternetConnectivity internetConnectivity = Get.find();
   var colorList = ["#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"];
@@ -359,7 +360,10 @@ class MenuHomePageController extends GetxController {
       print("hit $btnType");
       print("pname: $btnOpen");
       if (btnType.toLowerCase() == "button" && btnOpen != "") {
-        webUrl = Const.getFullWebUrl("aspx/AxMain.aspx?authKey=AXPERT-") + appStorage.retrieveValue(AppStorage.SESSIONID) + "&pname=" + btnOpen;
+        webUrl = Const.getFullWebUrl("aspx/AxMain.aspx?authKey=AXPERT-") +
+            appStorage.retrieveValue(AppStorage.SESSIONID) +
+            "&pname=" +
+            btnOpen;
         print("URL : $webUrl");
 
         switchPage.toggle();
@@ -460,7 +464,10 @@ class MenuHomePageController extends GetxController {
     if (jsonResp['success'].toString() == "true") {
       // var result = jsonResp['result'].toString();
       Get.snackbar("Punch-In success", "",
-          backgroundColor: Colors.green, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM, duration: Duration(seconds: 3));
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+          duration: Duration(seconds: 3));
       isShowPunchIn.value = false;
       isShowPunchOut.value = true;
       actionData.clear();
@@ -468,7 +475,10 @@ class MenuHomePageController extends GetxController {
     } else {
       // var errMessage = jsonResp['message'].toString();
       Get.snackbar("Error", jsonResp['message'].toString(),
-          backgroundColor: Colors.redAccent, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM, duration: Duration(seconds: 3));
+          backgroundColor: Colors.redAccent,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+          duration: Duration(seconds: 3));
     }
   }
 
@@ -509,13 +519,19 @@ class MenuHomePageController extends GetxController {
     if (jsonResp['success'].toString() == "true") {
       // var result = jsonResp['result'].toString();
       Get.snackbar("Punch-Out success", "",
-          backgroundColor: Colors.green, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM, duration: Duration(seconds: 3));
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+          duration: Duration(seconds: 3));
       actionData.clear();
       await getCardDataSources();
     } else {
       // var errMessage = jsonResp['message'].toString();
       Get.snackbar("Error", jsonResp['message'].toString(),
-          backgroundColor: Colors.redAccent, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM, duration: Duration(seconds: 3));
+          backgroundColor: Colors.redAccent,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+          duration: Duration(seconds: 3));
     }
     LoadingScreen.dismiss();
   }
@@ -570,7 +586,7 @@ class MenuHomePageController extends GetxController {
   }
 
   captionOnTapFunctionNew(transid) async {
-    print( "captionOnTapFunction: transid befor => $transid");
+    print("captionOnTapFunction: transid befor => $transid");
     LogService.writeOnConsole(message: "captionOnTapFunction: transid befor => $transid");
     if (transid != null) {
       // Remove any 'h' followed by a digit and '=' at the beginning
@@ -602,12 +618,16 @@ class MenuHomePageController extends GetxController {
         // LogService.writeLog(message: "[i] FolderPanel : Open in webview {$link_id}");
 
         if (await internetConnectivity.connectionStatus) {
-          webUrl = Const.getFullWebUrl("aspx/AxMain.aspx?authKey=AXPERT-") + appStorage.retrieveValue(AppStorage.SESSIONID) + "&pname=" + link_id;
+          webUrl = Const.getFullWebUrl("aspx/AxMain.aspx?authKey=AXPERT-") +
+              appStorage.retrieveValue(AppStorage.SESSIONID) +
+              "&pname=" +
+              link_id;
           print("Web_URL_card: $webUrl");
           LogService.writeOnConsole(message: "captionOnTapFunction: final-webUrl => $webUrl");
 
           LogService.writeLog(message: "Web url => $webUrl");
-          Get.toNamed(Routes.InApplicationWebViewer, arguments: [webUrl]);
+          // Get.toNamed(Routes.InApplicationWebViewer, arguments: [webUrl]);
+          webViewController.openWebView(url: webUrl);
         }
       }
     } /*else {
@@ -748,7 +768,9 @@ class MenuHomePageController extends GetxController {
     }
     list_menuFolderData.value = map_folderList;
     print("list_menuFolderData: ${list_menuFolderData.toString()}");
-    LogService.writeLog(message: "[i] MenuHomePageController\nScope: parseMenuFolderData()\nlist_menuFolderData: ${list_menuFolderData.toString()}");
+    LogService.writeLog(
+        message:
+            "[i] MenuHomePageController\nScope: parseMenuFolderData()\nlist_menuFolderData: ${list_menuFolderData.toString()}");
   }
 
   getMenuFolderPanelWidgetList() {
