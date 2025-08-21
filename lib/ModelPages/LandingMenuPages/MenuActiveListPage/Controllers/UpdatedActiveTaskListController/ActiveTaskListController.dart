@@ -354,7 +354,7 @@ class ActiveTaskListController extends GetxController {
       case "NULL":
       case "CACHED SAVE":
         var URL = CommonMethods.activeList_CreateURL_MESSAGE(pendingModel);
-        if (!URL.isEmpty) if (!URL.isEmpty) webViewController.openWebView(url: Const.getFullWebUrl(URL));
+        if (!URL.isEmpty)  webViewController.openWebView(url: Const.getFullWebUrl(URL));
         pageNumber--;
         _parseTaskMap();
         // Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullWebUrl(URL)])?.then((_) {

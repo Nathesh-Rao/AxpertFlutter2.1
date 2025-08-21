@@ -10,7 +10,7 @@ final globalVariableController = Get.find<GlobalVariableController>();
 class Const {
   static DateTime DEMO_END_DATE = DateTime(2025, 2, 8);
   static String APP_RELEASE_ID = "1";
-  static String APP_RELEASE_DATE = "release060825";
+  static String APP_RELEASE_DATE = "release200825";
   static String DEVICE_ID = "";
   static String GUID = "";
   static String APP_VERSION = "";

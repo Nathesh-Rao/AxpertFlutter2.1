@@ -24,10 +24,16 @@ class MenuDashboardController extends GetxController {
   ServerConnections serverConnections = ServerConnections();
   RxList<ChartCardModel> chartList = <ChartCardModel>[].obs;
   var dashBoardWidgetList = [].obs;
+
+
   MenuDashboardController() {
     fetchDataFromServer();
     print('Session: ${appStorage.retrieveValue(AppStorage.SESSIONID)}');
     print('Token: ${appStorage.retrieveValue(AppStorage.TOKEN)}');
+  }
+
+  init(){
+
   }
 
   fetchDataFromServer() async {

@@ -6,6 +6,7 @@ import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/Const.dart';
+import 'package:axpertflutter/ModelPages/LoginPage/Page/LoginPage.dart';
 import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -51,6 +52,8 @@ class LoginController extends GetxController {
   var otpMsg = ''.obs;
   var otpLoginKey = ''.obs;
   var otpErrorText = ''.obs;
+  bool isDuplicate_session = false;
+  bool isAxpertConnectEstablished = false;
 
   LoginController() {
     // fetchUserTypeList();
@@ -206,7 +209,7 @@ class LoginController extends GetxController {
       //var url = Const.getFullARMUrl(ServerConnections.API_SIGNIN);
       var url = Const.getFullARMUrl(ServerConnections.API_AX_START_SESSION);
       var response = await serverConnections.postToServer(url: url, body: body);
-      LogService.writeLog(message: "[-] LoginController => loginButtonClicked() => LoginResponse : $response");
+      // LogService.writeLog(message: "[-] LoginController => loginButtonClicked() => LoginResponse : $response");
 
       if (response != "") {
         var json = jsonDecode(response);
@@ -216,8 +219,7 @@ class LoginController extends GetxController {
           await appStorage.storeValue(AppStorage.SESSIONID, json["result"]["sessionid"].toString());
           await appStorage.storeValue(AppStorage.USER_NAME, userNameController.text.trim());
           await appStorage.storeValue(AppStorage.USER_CHANGE_PASSWORD, json["result"]["ChangePassword"].toString());
-          await appStorage.storeValue(
-              AppStorage.NICK_NAME, json["result"]["NickName"].toString() ?? userNameController.text.trim());
+          await appStorage.storeValue(AppStorage.NICK_NAME, json["result"]["NickName"].toString() ?? userNameController.text.trim());
           storeLastLoginData(body);
           print("User_change_password: ${appStorage.retrieveValue(AppStorage.USER_CHANGE_PASSWORD)}");
           LogService.writeLog(
@@ -301,8 +303,7 @@ class LoginController extends GetxController {
     } catch (e) {
       LogService.writeLog(message: "[ERROR] LoginController\nScope: googleSignInClicked()\nError: $e");
 
-      Get.snackbar("Error", "User is not Registered!",
-          snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
+      Get.snackbar("Error", "User is not Registered!", snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
     }
   }
 
@@ -310,7 +311,7 @@ class LoginController extends GetxController {
     //mobile Notification
     await _callApiForMobileNotification();
     //connect to Axpert
-    await _callApiForConnectToAxpert();
+   // await _callApiForConnectToAxpert();
     // Get.offAllNamed(Routes.LandingPage);
     //
     //burnur code for navigating to ess portal - amrith--->
@@ -321,7 +322,7 @@ class LoginController extends GetxController {
     } //------------------------------------------------>
   }
 
-  Future<void> _callApiForConnectToAxpert() async {
+  Future<void> callApiForConnectToAxpert() async {
     var connectBody = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
     var cUrl = Const.getFullARMUrl(ServerConnections.API_CONNECTTOAXPERT);
     var connectResp = await serverConnections.postToServer(url: cUrl, body: jsonEncode(connectBody), isBearer: true);
@@ -331,6 +332,8 @@ class LoginController extends GetxController {
     var jsonResp = jsonDecode(connectResp);
     if (jsonResp != "") {
       if (jsonResp['result']['success'].toString() == "true") {
+        print("callApiForConnectToAxpert: ${jsonResp.toString()}");
+        isAxpertConnectEstablished = true;
         // Get.offAllNamed(Routes.LandingPage);
       } else {
         var message = jsonResp['result']['message'].toString();
@@ -584,6 +587,9 @@ class LoginController extends GetxController {
         "SessionId": getGUID(), //GUID
         "Globalvars": false
       };
+
+      signInBody.addIf(isDuplicate_session, "ClearPreviousSession", true);
+
       // signInBody.addIf(isPWD_auth.value, "password", generateMd5(userPasswordController.text.toString().trim()));
       signInBody.addIf(isOTP_auth.value, "OtpAuth", "T");
       FocusManager.instance.primaryFocus?.unfocus();
@@ -605,6 +611,9 @@ class LoginController extends GetxController {
             print("Otpmsg: ${otpMsg.value} \nOtpkey: ${otpLoginKey.value}");
             Get.toNamed(Routes.OtpPage);
           }
+        } else if (json["result"]["success"].toString().toLowerCase() == "false" && json["result"].containsKey('duplicate_session')) {
+          isDuplicate_session = true;
+          showDialog_duplicateSession(json["result"]["message"].toString());
         } else {
           Get.snackbar("Error ", json["result"]["message"],
               snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
@@ -649,8 +658,7 @@ class LoginController extends GetxController {
     //storeLastLoginData(_body);
     //print("User_change_password: ${appStorage.retrieveValue(AppStorage.USER_CHANGE_PASSWORD)}");
     LogService.writeLog(
-        message:
-            "[-] LoginController\nScope:SignInResponse()\nUser_change_password: ${appStorage.retrieveValue(AppStorage.USER_CHANGE_PASSWORD)}");
+        message: "[-] LoginController\nScope:SignInResponse()\nUser_change_password: ${appStorage.retrieveValue(AppStorage.USER_CHANGE_PASSWORD)}");
 
     //Save Data
     if (rememberMe.value) {
@@ -681,5 +689,103 @@ class LoginController extends GetxController {
             snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);*/
       }
     }
+  }
+
+  void showDialog_duplicateSession(String message) {
+    Get.dialog(
+      Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Title
+              Text(
+                "Duplicate Session",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: MyColors.blue2,
+                ),
+                textAlign: TextAlign.center,
+              ),
+
+              const SizedBox(height: 16),
+
+              // Message
+              Text(
+                message,
+                style: const TextStyle(fontSize: 16, color: Colors.black87),
+                textAlign: TextAlign.center,
+              ),
+
+              const SizedBox(height: 24),
+
+              // Buttons
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  // Cancel button
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey.shade400,
+                      //foregroundColor: Colors.black,
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: () {
+                      Get.offAll(LoginPage());
+                    },
+                    child: const Text("No"),
+                  ),
+
+                  // Confirm button
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: MyColors.blue2,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 3,
+                    ),
+                    onPressed: () async {
+                      callSignInAPI();
+                    },
+                    child: const Text("Yes"),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+      barrierDismissible: false,
+    );
+
+    /* Get.defaultDialog(
+              barrierDismissible: false,
+              titleStyle: TextStyle(color: MyColors.blue2),
+              titlePadding: EdgeInsets.only(top: 20,),
+              contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+              title: "Duplicate Session",
+              middleText: json["result"]["message"].toString(),
+              confirm: ElevatedButton(
+                  onPressed: () async {
+                    Get.back();
+                  },
+                  child: Text("Yes")),
+              cancel: ElevatedButton(
+                  style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Colors.grey)),
+                  onPressed: () {
+                    Get.offAll(LoginPage());
+                    Get.back();
+                  },
+                  child: Text("No")));*/
   }
 }

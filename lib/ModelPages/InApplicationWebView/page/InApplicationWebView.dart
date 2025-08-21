@@ -4,8 +4,10 @@ import 'dart:io';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/ModelPages/InApplicationWebView/controller/webview_controller.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
+import 'package:axpertflutter/ModelPages/LandingPage/Controller/LandingPageController.dart';
 import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -14,16 +16,19 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:open_file_plus/open_file_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:file_downloader_flutter/file_downloader_flutter.dart';
 
+import '../../../Constants/Const.dart';
 import '../../../Utils/Utility/Utility.dart';
 
 class InApplicationWebViewer extends StatefulWidget {
   InApplicationWebViewer(this.data);
+
   WebViewController webViewController = Get.find();
   String data;
 
@@ -34,6 +39,7 @@ class InApplicationWebViewer extends StatefulWidget {
 class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
   dynamic argumentData = Get.arguments;
   MenuHomePageController menuHomePageController = Get.find();
+  LandingPageController landingPageController = Get.find();
   Map<int, InAppWebViewController> windowControllers = {};
   BuildContext? context_popUpScreen;
 
@@ -46,6 +52,7 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
   late StreamSubscription subscription;
   CookieManager cookieManager = CookieManager.instance();
   final imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'ico', 'xlsx', 'xls', 'docx', 'doc', 'pdf'];
+  bool isCalendarPage = false;
 
   @override
   void initState() {
@@ -74,6 +81,7 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
     // incognito: true,
     javaScriptCanOpenWindowsAutomatically: true,
     useOnDownloadStart: true,
+    domStorageEnabled: true,
     useShouldOverrideUrlLoading: true,
     // mediaPlaybackRequiresUserGesture: false,
     useHybridComposition: false,
@@ -83,6 +91,31 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
 
     supportMultipleWindows: true,
   );
+
+  perform_backButtonClick() async {
+    if (isCalendarPage) {
+      widget.webViewController.closeWebView();
+      return true;
+    }
+
+    bool handledInWeb = await widget.webViewController.inAppWebViewController.value!.evaluateJavascript(source: """
+      (function() {
+        var btn = document.querySelector('.appBackBtn');
+        if (btn) {
+          btn.click();
+          return true;   //handled inside web
+        }
+        return false;    //button not found
+      })();
+    """) ?? false;
+
+    if (!handledInWeb) {
+      widget.webViewController.closeWebView();
+      return true;
+    }
+
+    return false;
+  }
 
   void _download(String url) async {
     try {
@@ -168,14 +201,21 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
       onWillPop: () async {
         // if (await _webViewController.canGoBack()) {
         // _webViewController.goBack();
-        if (widget.webViewController.inAppWebViewController.value == null) return Future.value(true);
+        if (widget.webViewController.currentIndex == 1) {
+          bool val = perform_backButtonClick();
+          return Future.value(val);
+          /*widget.webViewController.closeWebView();
+          if (widget.webViewController.inAppWebViewController.value == null) return Future.value(true);
 
-        if (await widget.webViewController.inAppWebViewController.value!.canGoBack()) {
-          widget.webViewController.inAppWebViewController.value!.goBack();
-          return Future.value(false);
-        } else {
-          return Future.value(true);
+          if (await widget.webViewController.inAppWebViewController.value!.canGoBack()) {
+            widget.webViewController.inAppWebViewController.value!.goBack();
+            return Future.value(false);
+          } else {
+            //return Future.value(false);
+            return Future.value(true);
+          }*/
         }
+        return Future.value(true);
       },
       child: Scaffold(
         appBar: hasAppBar == true
@@ -216,6 +256,8 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
                           widget.webViewController.inAppWebViewController.value = controller;
                         },
                         onLoadStart: (controller, url) {
+                          url.toString().toLowerCase().contains("dcalendar") ? isCalendarPage = true : isCalendarPage = false;
+
                           setState(() {
                             _progressBarActive = true;
                           });
@@ -244,8 +286,7 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
                           }
                         },
                         onDownloadStartRequest: (controller, downloadStartRequest) {
-                          LogService.writeLog(
-                              message: "onDownloadStartRequest\nwith requested url: ${downloadStartRequest.url.toString()}");
+                          LogService.writeLog(message: "onDownloadStartRequest\nwith requested url: ${downloadStartRequest.url.toString()}");
                           print("Download...");
                           print("Requested url: ${downloadStartRequest.url.toString()}");
                           _download(downloadStartRequest.url.toString());
@@ -282,6 +323,17 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
                           var uri = navigationAction.request.url!;
                           print("Override url: $uri");
                           LogService.writeLog(message: "shouldOverrideUrlLoading: url=> $uri");
+                          if (uri.toString().toLowerCase().contains("sess.aspx")) {
+                           await controller
+                                .loadUrl(
+                                  urlRequest: URLRequest(
+                                    url: WebUri(uri.toString() + "?axmain=true"),
+                                  ),
+                                )
+                                .then((_) {});
+                            //showSignOutDialog();
+                            landingPageController.showSignOutDialog_sessionExpired();
+                          }
 
                           if (imageExtensions.any((ext) => uri.toString().endsWith(ext))) {
                             _download(uri.toString());
@@ -341,7 +393,7 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
               Positioned(
                   top: 10,
                   right: 10,
-                  child: GestureDetector(onTap: widget.webViewController.closeWebView, child: Icon(Icons.cancel))),
+                  child: Visibility(visible: false, child: GestureDetector(onTap: perform_backButtonClick, child: Icon(Icons.cancel)))),
             ]);
           }),
         ),
@@ -393,21 +445,43 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
     await cookieManager.deleteAllCookies();
     print("Cookie cleared");
   }
+
+  void showSignOutDialog() {
+    widget.webViewController..signOut(url: Const.getFullWebUrl("aspx/AxMain.aspx?signout=true"));
+    Get.defaultDialog(
+      barrierDismissible: false,
+      titleStyle: TextStyle(color: MyColors.blue2),
+      titlePadding: EdgeInsets.only(
+        top: 20,
+      ),
+      contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+      title: "Session Expired",
+      middleText: "Your session has expired. Please log in again to continue.",
+      confirm: ElevatedButton(
+          onPressed: () async {
+            landingPageController.signOut_withoutDialog();
+          },
+          child: Text("Login")),
+    );
+  }
 }
 
 class NewWindowPage extends StatefulWidget {
   final int windowId;
   final Function(InAppWebViewController) onWindowCreated;
+
   const NewWindowPage({
     required this.windowId,
     required this.onWindowCreated,
   });
+
   @override
   _NewWindowPageState createState() => _NewWindowPageState();
 }
 
 class _NewWindowPageState extends State<NewWindowPage> {
   late InAppWebViewController newWebViewController;
+
   @override
   Widget build(BuildContext context) {
     print("new-Window => ${widget.windowId}");
@@ -420,7 +494,8 @@ class _NewWindowPageState extends State<NewWindowPage> {
             initialSettings: InAppWebViewSettings(
               javaScriptEnabled: true,
             ),
-            windowId: widget.windowId, // Associate this WebView with the windowId
+            windowId: widget.windowId,
+            // Associate this WebView with the windowId
             onWebViewCreated: (controller) {
               newWebViewController = controller;
               widget.onWindowCreated(controller);

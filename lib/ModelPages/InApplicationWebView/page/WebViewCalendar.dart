@@ -11,6 +11,7 @@ class WebViewFromBottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String weburl = Const.getFullWebUrl(url) + AppStorage().retrieveValue(AppStorage.SESSIONID);
+
     print(weburl);
     return InApplicationWebViewer(weburl);
   }

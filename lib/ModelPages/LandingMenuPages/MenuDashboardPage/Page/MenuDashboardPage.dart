@@ -11,12 +11,12 @@ import '../Models/ChartCardModel.dart';
 
 class MenuDashboardPage extends StatelessWidget {
   MenuDashboardPage({super.key});
-  final MenuDashboardController menuDashboardController = Get.put(MenuDashboardController());
+  final MenuDashboardController menuDashboardController = Get.find();
   final index = 2;
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // menuDashboardController.fetchDataFromServer();
+      //menuDashboardController.init();
     });
 
     return Scaffold(

@@ -9,6 +9,8 @@ import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetLandingAppBar
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../LandingMenuPages/MenuDashboardPage/Controllers/MenuDashboaardController.dart';
+
 class LandingPage extends StatelessWidget {
   LandingPage({super.key});
 
@@ -19,31 +21,49 @@ class LandingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(
-      () => IndexedStack(
-        index: webViewController.currentIndex.value,
-        children: [
-          Scaffold(
-            appBar: WidgetLandingAppBarUpdated(),
-            // appBar: WidgetLandingAppBar(),
-            drawer: WidgetDrawer(),
-            bottomNavigationBar: AppBottomNavigation(),
-            body: WillPopScope(
-              onWillPop: landingPageController.onWillPop,
-              child: Obx(
-                () => Stack(
+          () => PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) async {
+          if (didPop) return; // already popped, no action needed
+
+          if (webViewController.currentIndex.value == 1) {
+            // If WebView is visible, go back to Home instead of closing app
+            webViewController.currentIndex.value = 0;
+          } else {
+            // If already on Home, allow normal app close
+            final shouldPop = await landingPageController.onWillPop();
+            /*if (shouldPop) {
+                  // Completely close the app
+                  SystemNavigator.pop();
+                }*/
+          }
+        },
+        child: IndexedStack(
+          index: webViewController.currentIndex.value,
+          children: [
+            Scaffold(
+              appBar: WidgetLandingAppBarUpdated(),
+              // appBar: WidgetLandingAppBar(),
+              drawer: WidgetDrawer(),
+              bottomNavigationBar: AppBottomNavigation(),
+              body: /*WillPopScope(
+                onWillPop: landingPageController.onWillPop,
+                child:*/ Obx(
+                    () => Stack(
                   children: [
                     landingPageController.getPage(),
                   ],
                 ),
               ),
               /* menuHomePageController.switchPage.value == true
-                      ? InApplicationWebViewer(menuHomePageController.webUrl)
-                      : landingPageController.getPage(),
-                  ),*/
+                        ? InApplicationWebViewer(menuHomePageController.webUrl)
+                        : landingPageController.getPage(),
+                    ),*/
             ),
-          ),
-          Obx(() => InApplicationWebViewer(webViewController.currentUrl.value)),
-        ],
+            //  ),
+            Obx(() => InApplicationWebViewer(webViewController.currentUrl.value)),
+          ],
+        ),
       ),
     );
   }
