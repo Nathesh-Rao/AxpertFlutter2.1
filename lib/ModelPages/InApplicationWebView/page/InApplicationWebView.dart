@@ -18,12 +18,14 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:lottie/lottie.dart';
 import 'package:open_file_plus/open_file_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:file_downloader_flutter/file_downloader_flutter.dart';
 
 import '../../../Constants/Const.dart';
+import '../../../Constants/Routes.dart';
 import '../../../Utils/Utility/Utility.dart';
 
 class InApplicationWebViewer extends StatefulWidget {
@@ -48,11 +50,15 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
 
   // final _key = UniqueKey();
   var hasAppBar = false;
-  bool _progressBarActive = true;
   late StreamSubscription subscription;
   CookieManager cookieManager = CookieManager.instance();
   final imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'ico', 'xlsx', 'xls', 'docx', 'doc', 'pdf'];
   bool isCalendarPage = false;
+  bool _showButton = false;
+  bool _handled = false;
+  bool _longPressActive = false;
+  double _startY = 0;
+  Timer? _longPressTimer;
 
   @override
   void initState() {
@@ -69,6 +75,7 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
   @override
   void dispose() {
     super.dispose();
+    _longPressTimer?.cancel(); // kill timer safely
     WidgetsBinding.instance.addPostFrameCallback((_) {
       menuHomePageController.switchPage.value = false;
     });
@@ -122,7 +129,7 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
       print("download Url: $url");
       String fname = url.split('/').last.split('.').first;
       print("download FileName: $fname");
-      FileDownloaderFlutter().urlFileSaver(url: url, fileName: fname);
+      await FileDownloaderFlutter().urlFileSaver(url: url, fileName: fname);
     } catch (e) {
       print(e.toString());
     }
@@ -195,6 +202,21 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
     }
   }
 
+  Future<void> _onLongSwipe() async {
+    print("Longpress");
+    if (_handled) return;
+    _handled = true;
+
+    setState(() => _showButton = true);
+
+    // auto hide after 3 sec
+    await Future.delayed(const Duration(seconds: 3));
+    if (mounted) {
+      setState(() => _showButton = false);
+      _handled = false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -243,157 +265,215 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
         body: SafeArea(
           child: Builder(builder: (BuildContext context) {
             return Stack(children: <Widget>[
-              Obx(
-                () => widget.webViewController.isWebViewLoading.value
-                    ? Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    : InAppWebView(
-                        initialUrlRequest: URLRequest(url: WebUri.uri(Uri.parse(widget.data))),
-                        initialSettings: settings,
-                        onWebViewCreated: (controller) {
-                          // _webViewController = controller;
-                          widget.webViewController.inAppWebViewController.value = controller;
-                        },
-                        onLoadStart: (controller, url) {
-                          url.toString().toLowerCase().contains("dcalendar") ? isCalendarPage = true : isCalendarPage = false;
+              InAppWebView(
+                initialUrlRequest: URLRequest(url: WebUri.uri(Uri.parse(widget.data))),
+                initialSettings: settings,
+                onWebViewCreated: (controller) {
+                  // _webViewController = controller;
+                  widget.webViewController.inAppWebViewController.value = controller;
+                },
+                onLoadStart: (controller, url) {
+                  url.toString().toLowerCase().contains("dcalendar") ? isCalendarPage = true : isCalendarPage = false;
 
-                          setState(() {
-                            _progressBarActive = true;
-                          });
-                        },
-                        onLoadStop: (controller, url) {
-                          setState(() {
-                            _progressBarActive = false;
-                          });
-                        },
-                        onGeolocationPermissionsShowPrompt: (InAppWebViewController controller, String origin) async {
-                          var status = await Permission.locationWhenInUse.status;
+                  setState(() {
+                    widget.webViewController.isProgressBarActive.value = true;
+                  });
+                },
+                onLoadStop: (controller, url) {
+                  setState(() {
+                    widget.webViewController.isProgressBarActive.value = false;
+                  });
+                },
+                onGeolocationPermissionsShowPrompt: (InAppWebViewController controller, String origin) async {
+                  var status = await Permission.locationWhenInUse.status;
 
-                          if (status.isGranted) {
-                            return GeolocationPermissionShowPromptResponse(
-                              origin: origin,
-                              allow: true,
-                              retain: true,
-                            );
-                          } else {
-                            requestLocationPermission();
-                            return GeolocationPermissionShowPromptResponse(
-                              origin: origin,
-                              allow: false,
-                              retain: false,
-                            );
-                          }
-                        },
-                        onDownloadStartRequest: (controller, downloadStartRequest) {
-                          LogService.writeLog(message: "onDownloadStartRequest\nwith requested url: ${downloadStartRequest.url.toString()}");
-                          print("Download...");
-                          print("Requested url: ${downloadStartRequest.url.toString()}");
-                          _download(downloadStartRequest.url.toString());
-                          // _downloadToDevice("url");
-                        },
-                        onConsoleMessage: (controller, consoleMessage) {
-                          // LogService.writeLog(message: "onConsoleMessage: ${consoleMessage.toString()}");
+                  if (status.isGranted) {
+                    return GeolocationPermissionShowPromptResponse(
+                      origin: origin,
+                      allow: true,
+                      retain: true,
+                    );
+                  } else {
+                    requestLocationPermission();
+                    return GeolocationPermissionShowPromptResponse(
+                      origin: origin,
+                      allow: false,
+                      retain: false,
+                    );
+                  }
+                },
+                onDownloadStartRequest: (controller, downloadStartRequest) {
+                  LogService.writeLog(message: "onDownloadStartRequest\nwith requested url: ${downloadStartRequest.url.toString()}");
+                  print("Download...");
+                  print("Requested url: ${downloadStartRequest.url.toString()}");
+                  _download(downloadStartRequest.url.toString());
+                  // _downloadToDevice("url");
+                },
+                onConsoleMessage: (controller, consoleMessage) {
+                  // LogService.writeLog(message: "onConsoleMessage: ${consoleMessage.toString()}");
 
-                          print("Console Message received...");
-                          print(consoleMessage.toString());
-                          if (consoleMessage.toString().contains("axm_mainpageloaded")) {
-                            try {
-                              // if (menuHomePageController.switchPage.value == true) {
-                              //   menuHomePageController.switchPage.toggle();
-                              // } else {
-                              //   Get.back();
-                              // }
+                  print("Console Message received...");
+                  print(consoleMessage.toString());
+                  if (consoleMessage.toString().contains("axm_mainpageloaded")) {
+                    try {
+                      // if (menuHomePageController.switchPage.value == true) {
+                      //   menuHomePageController.switchPage.toggle();
+                      // } else {
+                      //   Get.back();
+                      // }
 
-                              widget.webViewController.closeWebView();
-                            } catch (e) {}
-                          }
-                        },
-                        onProgressChanged: (controller, value) {
-                          LogService.writeLog(message: "onProgressChanged: value=> $value");
+                      widget.webViewController.closeWebView();
+                    } catch (e) {}
+                  }
+                },
+                onProgressChanged: (controller, value) {
+                  LogService.writeLog(message: "onProgressChanged: value=> $value");
 
-                          print('Progress---: $value : DT ${DateTime.now()}');
-                          if (value == 100) {
-                            setState(() {
-                              _progressBarActive = false;
-                            });
-                          }
-                        },
-                        shouldOverrideUrlLoading: (controller, navigationAction) async {
-                          var uri = navigationAction.request.url!;
-                          print("Override url: $uri");
-                          LogService.writeLog(message: "shouldOverrideUrlLoading: url=> $uri");
-                          if (uri.toString().toLowerCase().contains("sess.aspx")) {
-                           await controller
-                                .loadUrl(
-                                  urlRequest: URLRequest(
-                                    url: WebUri(uri.toString() + "?axmain=true"),
-                                  ),
-                                )
-                                .then((_) {});
-                            //showSignOutDialog();
-                            landingPageController.showSignOutDialog_sessionExpired();
-                          }
+                  print('Progress---: $value : DT ${DateTime.now()}');
+                  if (value == 100) {
+                    setState(() {
+                      widget.webViewController.isProgressBarActive.value = false;
+                    });
+                  }
+                },
+                shouldOverrideUrlLoading: (controller, navigationAction) async {
+                  var uri = navigationAction.request.url!;
+                  print("Override url: $uri");
+                  LogService.writeLog(message: "shouldOverrideUrlLoading: url=> $uri");
+                  if (uri.toString().toLowerCase().contains("sess.aspx")) {
+                    await controller
+                        .loadUrl(
+                          urlRequest: URLRequest(
+                            url: WebUri(uri.toString() + "?axmain=true"),
+                          ),
+                        )
+                        .then((_) {});
+                    //showSignOutDialog();
+                    landingPageController.showSignOutDialog_sessionExpired();
+                  }
 
-                          if (imageExtensions.any((ext) => uri.toString().endsWith(ext))) {
-                            _download(uri.toString());
-                            // _downloadToDevice("url");
+                  if (imageExtensions.any((ext) => uri.toString().endsWith(ext))) {
+                    _download(uri.toString());
+                    // _downloadToDevice("url");
 
-                            return Future.value(NavigationActionPolicy.CANCEL);
-                          }
-                          return Future.value(NavigationActionPolicy.ALLOW);
-                        },
-                        onCreateWindow: (controller, createWindowRequest) async {
-                          final windowId = createWindowRequest.windowId;
-                          if (windowId != null) {
-                            // // Open a new window for the given windowId
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) => NewWindowPage(
-                            //       windowId: windowId,
-                            //       onWindowCreated: (newController) {
-                            //         windowControllers[windowId] = newController;
-                            //         context_popUpScreen = context;
-                            //       },
-                            //     ),
-                            //   ),
-                            // );
+                    return Future.value(NavigationActionPolicy.CANCEL);
+                  }
+                  return Future.value(NavigationActionPolicy.ALLOW);
+                },
+                onCreateWindow: (controller, createWindowRequest) async {
+                  final windowId = createWindowRequest.windowId;
+                  print("newWindowCreated");
+                  if (windowId != null) {
+                    // // Open a new window for the given windowId
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => NewWindowPage(
+                    //       windowId: windowId,
+                    //       onWindowCreated: (newController) {
+                    //         windowControllers[windowId] = newController;
+                    //         context_popUpScreen = context;
+                    //       },
+                    //     ),
+                    //   ),
+                    // );
 
-                            Get.to(
-                                () => NewWindowPage(
-                                      windowId: windowId,
-                                      onWindowCreated: (newController) {
-                                        windowControllers[windowId] = newController;
-                                        context_popUpScreen = context;
-                                      },
-                                    ),
-                                transition: Transition.cupertino,
-                                duration: Duration(milliseconds: 500));
-                            return true; // Allow the window creation
-                          }
-                          return false;
-                        },
-                      ),
+                    Get.to(
+                        () => NewWindowPage(
+                              windowId: windowId,
+                              onWindowCreated: (newController) {
+                                windowControllers[windowId] = newController;
+                                context_popUpScreen = context;
+                              },
+                            ),
+                        transition: Transition.cupertino,
+                        duration: Duration(milliseconds: 500));
+                    return true; // Allow the window creation
+                  }
+                  return false;
+                },
               ),
-              _progressBarActive
-                  ? Container(
-                      color: Colors.white,
-                      child: Center(
-                        child: SpinKitRotatingCircle(
-                          size: 40,
-                          itemBuilder: (context, index) {
-                            final colors = [MyColors.blue2, MyColors.blue2, MyColors.blue2];
-                            final color = colors[index % colors.length];
-                            return DecoratedBox(decoration: BoxDecoration(color: color, shape: BoxShape.circle));
-                          },
-                        ),
-                      ))
-                  : Stack(),
+              Positioned.fill(
+                child: Listener(
+                  behavior: HitTestBehavior.translucent,
+                  onPointerDown: (event) {
+                    _startY = event.position.dy;
+                    _longPressTimer = Timer(const Duration(milliseconds: 300), () {
+                      _longPressActive = true;
+                    });
+                  },
+                  onPointerMove: (event) {
+                    if (_longPressActive) {
+                      final dy = event.position.dy - _startY;
+                      if (dy > 100 && !_handled) {
+                        // _onLongSwipeTriggered();
+                        _onLongSwipe();
+                      }
+                    }
+                  },
+                  onPointerUp: (_) {
+                    _longPressTimer?.cancel();
+                    _longPressActive = false;
+                  },
+                ),
+              ),
+              Obx(
+                () => widget.webViewController.isProgressBarActive.value
+                    ? Container(
+                        color: Colors.white,
+                        child: Center(
+                          child: SpinKitRotatingCircle(
+                            size: 40,
+                            itemBuilder: (context, index) {
+                              final colors = [MyColors.blue2, MyColors.blue2, MyColors.blue2];
+                              final color = colors[index % colors.length];
+                              return DecoratedBox(decoration: BoxDecoration(color: color, shape: BoxShape.circle));
+                            },
+                          ),
+                        ))
+                    : Stack(),
+              ),
               Positioned(
                   top: 10,
                   right: 10,
                   child: Visibility(visible: false, child: GestureDetector(onTap: perform_backButtonClick, child: Icon(Icons.cancel)))),
+              AnimatedPositioned(
+                duration: const Duration(milliseconds: 300),
+                top: _showButton ? 20.0 : -100.0,
+                left: 0,
+                right: 0,
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 250),
+                  opacity: _showButton ? 1.0 : 0.0,
+                  child: Center(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                        padding: const EdgeInsets.all(16),
+                      ),
+                      onPressed: () {
+                        widget.webViewController.closeWebView();
+                      },
+                      child: const Icon(Icons.home, size: 32),
+                    ),
+                  ),
+                ),
+              ),
+              Obx(
+                () => widget.webViewController.isFileDownloading.value
+                    ? Container(
+                        color: Colors.black.withValues(alpha: 0.6), // dim background
+                        child: Center(
+                          child: Lottie.asset(
+                            "assets/lotties/download.json",
+                            width: 150,
+                            height: 150,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      )
+                    : Stack(),
+              ),
             ]);
           }),
         ),
@@ -503,17 +583,17 @@ class _NewWindowPageState extends State<NewWindowPage> {
             onConsoleMessage: (controller, consoleMessage) {
               print("Console Message_new_window $consoleMessage");
             },
-            onDownloadStartRequest: (controller, downloadStartRequest) {
-              Utility.downloadFile_inAppWebView(
+            onDownloadStartRequest: (controller, downloadStartRequest) async {
+              await Utility.downloadFile_inAppWebView(
                   controller: controller,
                   downloadStartRequest: downloadStartRequest,
                   onDownloadComplete: (path) {
+                    Get.until((route) => route.settings.name == Routes.LandingPage);
                     print("Download path => $path");
-                    Get.back();
                   },
                   onDownloadError: (e) {
+                    Get.until((route) => route.settings.name == Routes.LandingPage);
                     print("Download Error => $e");
-                    Get.back();
                   });
             }
 

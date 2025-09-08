@@ -8,7 +8,7 @@ class WidgetLoginTextField extends StatefulWidget {
     super.key,
     required this.label,
     this.controller,
-    this.errorText,
+    this.errorText = '',
     this.hintText,
     this.suffixIcon,
     this.obscureText = false,
@@ -61,6 +61,7 @@ class _WidgetLoginTextFieldState extends State<WidgetLoginTextField> {
             style: GoogleFonts.manrope(
               fontWeight: FontWeight.w700,
               fontSize: 14,
+              color: !widget.errorText!.isEmpty ? Theme.of(context).colorScheme.error : Colors.black,
             ),
           ),
           SizedBox(height: 10),
@@ -70,7 +71,8 @@ class _WidgetLoginTextFieldState extends State<WidgetLoginTextField> {
                 focusNode: widget.focusNode,
                 controller: widget.controller,
                 readOnly: !widget.isLoading ? widget.readOnly : widget.isLoading,
-                obscureText: _isObscured,//widget.obscureText,
+                obscureText: _isObscured,
+                //widget.obscureText,
                 style: GoogleFonts.manrope(
                   fontWeight: FontWeight.w500,
                   fontSize: 16,
@@ -86,6 +88,7 @@ class _WidgetLoginTextFieldState extends State<WidgetLoginTextField> {
                   //
 
                   //
+                  errorText: widget.errorText!.isEmpty ? null : widget.errorText,
                   hintText: widget.hintText,
                   hintStyle: GoogleFonts.manrope(
                     fontWeight: FontWeight.w500,

@@ -191,15 +191,13 @@ class ServerConnections {
               snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
           showErrorSnack(title: "Error!", message: response.statusCode.toString(), show_errorSnackbar: show_errorSnackbar);
         } else {
-          if (response.statusCode == 400) {
+          if (response.statusCode == 400 || response.statusCode == 401) {
             LogService.writeLog(
                 message:
                     "[ERROR] API_ERROR\nURL:$url\nAPI_NAME: $API_NAME\nBody: $body\nStatusCode: ${response.statusCode}\nResponse: ${response.body}");
             if (response.body.toString().toLowerCase().contains("sessionid is not valid")) {
-
               LandingPageController landingPageController = Get.find();
               landingPageController.showSignOutDialog_sessionExpired();
-
             } else
               return response.body;
           } else {

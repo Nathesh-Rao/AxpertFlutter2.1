@@ -37,7 +37,7 @@ import '../../LandingMenuPages/MenuActiveListPage/Page/UpdatedMenuListPage/Activ
 import '../../LandingMenuPages/MenuHomePagePage/Models/BannerModel.dart';
 import '../../LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Page/UpdatedHomePage.dart';
 import '../EssHomePage/AttendanceManagement/controller/AttendanceController.dart';
-import '../Widgets/EmtyWidget.dart';
+import '../Widgets/EmptyWidget.dart';
 
 class LandingPageController extends GetxController with WidgetsBindingObserver {
   final globalVariableController = Get.find<GlobalVariableController>();

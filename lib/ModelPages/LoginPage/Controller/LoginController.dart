@@ -168,7 +168,7 @@ class LoginController extends GetxController {
     }
     if (isPWD_auth.value) {
       if (userPasswordController.text.toString().trim() == "") {
-        errPassword.value = "Enter Password";
+        errPassword.value = "Password is required";
         return false;
       }
     }
@@ -615,6 +615,9 @@ class LoginController extends GetxController {
           isDuplicate_session = true;
           showDialog_duplicateSession(json["result"]["message"].toString());
         } else {
+          if (Get.isDialogOpen ?? false) {
+            Get.back(); // closes the dialog
+          }
           Get.snackbar("Error ", json["result"]["message"],
               snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
         }

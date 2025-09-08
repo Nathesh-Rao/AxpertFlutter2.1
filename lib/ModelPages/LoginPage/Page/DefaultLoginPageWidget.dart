@@ -119,6 +119,7 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
                               hintText: "Enter Password",
                               focusNode: loginController.passwordFocus,
                               obscureText: loginController.showPassword.value,
+                              errorText: loginController.errPassword.value,
                               controller: loginController.userPasswordController,
                             )
                           : const SizedBox.shrink(key: ValueKey("empty")),

@@ -56,8 +56,7 @@ class Utility {
     }
   }
 
-  static void _download(
-      String url, void Function(String? path)? onComplete, void Function(String? error)? onDownloadError) async {
+  static void _download(String url, void Function(String? path)? onComplete, void Function(String? error)? onDownloadError) async {
     try {
       print("download Url: $url");
       String fname = url.split('/').last.split('.').first;
@@ -71,7 +70,7 @@ class Utility {
       if (onComplete != null) {
         onComplete(path);
       }
-      _showDownloadSnackBar(message: "File downloaded to $path");
+      if (path != null) _showDownloadSnackBar(message: "File downloaded to $path");
     } catch (e) {
       if (onDownloadError != null) {
         onDownloadError(e.toString());

@@ -8,11 +8,10 @@ class WebViewController extends GetxController {
   var currentIndex = 0.obs;
   var currentUrl = ''.obs;
   var previousUrl = '';
+  var isFileDownloading = false.obs;
   var isWebViewLoading = false.obs;
+  var isProgressBarActive = true.obs;
   var inAppWebViewController = Rxn<InAppWebViewController>();
-
-  // LandingPageController landingPageController = Get.find();
-  LoginController loginController = Get.find();
 
   openWebView({required String url}) async {
     LandingPageController landingPageController = Get.find();
@@ -36,6 +35,7 @@ class WebViewController extends GetxController {
 
   closeWebView() {
     currentIndex.value = 0;
+    isProgressBarActive.value = true;
   }
 
   signOut({required String url}) async {
