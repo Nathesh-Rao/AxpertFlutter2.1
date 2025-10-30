@@ -27,7 +27,8 @@ class ListItemDetailsController extends GetxController {
   PendingTaskModel? pendingTaskModel;
   ServerConnections serverConnections = ServerConnections();
   var processFlowList = [].obs;
-  ScrollController scrollController = ScrollController(initialScrollOffset: 100 * 3.0);
+  ScrollController scrollController =
+      ScrollController(initialScrollOffset: 100 * 3.0);
   TextEditingController comments = TextEditingController();
   var errCom = ''.obs;
   var selected_processFlow_taskType = ''.obs;
@@ -60,27 +61,32 @@ class ListItemDetailsController extends GetxController {
     }
   }*/
 
-  fetchDetails({hasArgument = false, PendingProcessFlowModel? pendingProcessFlowModel = null}) async {
+  fetchDetails(
+      {hasArgument = false,
+      PendingProcessFlowModel? pendingProcessFlowModel = null}) async {
     LoadingScreen.show();
     var url = Const.getFullARMUrl(ServerConnections.API_GET_ACTIVETASK_DETAILS);
     var body;
     var shouldCall = true;
     if (hasArgument) {
-      if (pendingProcessFlowModel!.taskid.toString() == "" || pendingProcessFlowModel!.taskid.toString().toLowerCase() == "null")
+      if (pendingProcessFlowModel!.taskid.toString() == "" ||
+          pendingProcessFlowModel.taskid.toString().toLowerCase() == "null")
         shouldCall = false;
 
       body = {
         'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID),
         "AppName": globalVariableController.PROJECT_NAME.value.toString(),
-        "processname": pendingProcessFlowModel!.processname,
-        "tasktype": pendingProcessFlowModel!.tasktype,
-        "taskid": pendingProcessFlowModel!.taskid,
-        "keyvalue": pendingProcessFlowModel!.keyvalue,
+        "processname": pendingProcessFlowModel.processname,
+        "tasktype": pendingProcessFlowModel.tasktype,
+        "taskid": pendingProcessFlowModel.taskid,
+        "keyvalue": pendingProcessFlowModel.keyvalue,
       };
-      selectedTaskID = pendingProcessFlowModel!.taskid;
-      selected_processFlow_taskType.value = pendingProcessFlowModel!.tasktype;
+      selectedTaskID = pendingProcessFlowModel.taskid;
+      selected_processFlow_taskType.value = pendingProcessFlowModel.tasktype;
     } else {
-      if (openModel!.taskid.toString() == "" || openModel!.taskid.toString().toLowerCase() == "null") shouldCall = false;
+      if (openModel!.taskid.toString() == "" ||
+          openModel!.taskid.toString().toLowerCase() == "null")
+        shouldCall = false;
       body = {
         'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID),
         "AppName": globalVariableController.PROJECT_NAME.value.toString(),
@@ -99,7 +105,8 @@ class ListItemDetailsController extends GetxController {
       return;
     }
 
-    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
+    var resp = await serverConnections.postToServer(
+        url: url, body: jsonEncode(body), isBearer: true);
     log("Fetch details => ${resp.toString()}");
     if (resp != "") {
       var jsonResp = jsonDecode(resp);
@@ -109,7 +116,8 @@ class ListItemDetailsController extends GetxController {
           var dataList = jsonResp['result']['processflow'];
           processFlowList.clear();
           for (var item in dataList) {
-            PendingProcessFlowModel processFlowModel = PendingProcessFlowModel.fromJson(item);
+            PendingProcessFlowModel processFlowModel =
+                PendingProcessFlowModel.fromJson(item);
             processFlowList.add(processFlowModel);
           }
         }
@@ -173,7 +181,8 @@ class ListItemDetailsController extends GetxController {
 
     LoadingScreen.show();
     var url = Const.getFullARMUrl(ServerConnections.API_DO_TASK_ACTIONS);
-    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
+    var resp = await serverConnections.postToServer(
+        url: url, body: jsonEncode(body), isBearer: true);
     print(resp.toString());
     LoadingScreen.dismiss();
     if (!resp.toString().contains("error")) {
@@ -198,7 +207,8 @@ class ListItemDetailsController extends GetxController {
   void actionReturn(bool hasComments) async {
     errCom.value = "";
     if (hasComments) {
-      if (comments.text.toString().trim() == "") errCom.value = "Please enter comments";
+      if (comments.text.toString().trim() == "")
+        errCom.value = "Please enter comments";
       return;
     }
 
@@ -213,7 +223,8 @@ class ListItemDetailsController extends GetxController {
     };
     LoadingScreen.show();
     var url = Const.getFullARMUrl(ServerConnections.API_DO_TASK_ACTIONS);
-    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
+    var resp = await serverConnections.postToServer(
+        url: url, body: jsonEncode(body), isBearer: true);
     LoadingScreen.dismiss();
     if (!resp.toString().contains("error")) {
       var jsonResp = jsonDecode(resp);
@@ -237,7 +248,8 @@ class ListItemDetailsController extends GetxController {
   void actionSend(bool hasComments) async {
     errCom.value = "";
     if (hasComments) {
-      if (comments.text.toString().trim() == "") errCom.value = "Please enter comments";
+      if (comments.text.toString().trim() == "")
+        errCom.value = "Please enter comments";
       return;
     }
 
@@ -252,7 +264,8 @@ class ListItemDetailsController extends GetxController {
     };
     LoadingScreen.show();
     var url = Const.getFullARMUrl(ServerConnections.API_DO_TASK_ACTIONS);
-    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
+    var resp = await serverConnections.postToServer(
+        url: url, body: jsonEncode(body), isBearer: true);
     LoadingScreen.dismiss();
     if (!resp.toString().contains("error")) {
       var jsonResp = jsonDecode(resp);
@@ -274,7 +287,8 @@ class ListItemDetailsController extends GetxController {
   }
 
   void onProcessFlowItemTap(int index) {
-    selected_processFlow_taskType.value = processFlowList[index].tasktype.toString();
+    selected_processFlow_taskType.value =
+        processFlowList[index].tasktype.toString();
   }
 
   showSuccessSnack(title, Message) {
@@ -339,7 +353,8 @@ class ListItemDetailsController extends GetxController {
       "TaskName": pendingTaskModel!.taskname ?? "",
       "KeyValue": pendingTaskModel!.keyvalue ?? ""
     };
-    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
+    var resp = await serverConnections.postToServer(
+        url: url, body: jsonEncode(body), isBearer: true);
     LoadingScreen.dismiss();
     if (!resp.toString().contains("error")) {
       var jsonResp = jsonDecode(resp);
@@ -365,12 +380,12 @@ class ListItemDetailsController extends GetxController {
   }
 
   void historyBtnClicked() {
-    var url = "aspx/AxMain.aspx?authKey=AXPERT-" +
-        appStorage.retrieveValue(AppStorage.SESSIONID) +
-        "&pname=ipegtaskh&params=~pkeyvalue=" +
-        pendingTaskModel!.keyvalue +
-        "~pprocess=" +
-        pendingTaskModel!.processname;
+    // var url = "aspx/AxMain.aspx?authKey=AXPERT-" +
+    //     appStorage.retrieveValue(AppStorage.SESSIONID) +
+    //     "&pname=ipegtaskh&params=~pkeyvalue=" +
+    //     pendingTaskModel!.keyvalue +
+    //     "~pprocess=" +
+    //     pendingTaskModel!.processname;
 
     var urlNew = "aspx/AxMain.aspx?authKey=AXPERT-" +
         appStorage.retrieveValue(AppStorage.SESSIONID) +

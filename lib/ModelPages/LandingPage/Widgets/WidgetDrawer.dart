@@ -3,9 +3,6 @@ import 'package:axpertflutter/ModelPages/LandingPage/Controller/LandingPageContr
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
-import '../../LandingMenuPages/MenuMorePage/Controllers/MenuMorePageController.dart';
-
 class WidgetDrawer extends StatelessWidget {
   WidgetDrawer({super.key});
 
@@ -19,10 +16,7 @@ class WidgetDrawer extends StatelessWidget {
             backgroundColor: Colors.white,
             child: SafeArea(
               child: ListView(
-                children: ListTile.divideTiles(
-                        context: context,
-                        tiles: landingPageController.getDrawerTileList())
-                    .toList(),
+                children: ListTile.divideTiles(context: context, tiles: landingPageController.getDrawerTileList()).toList(),
               ),
             ),
           ),
@@ -33,8 +27,7 @@ class WidgetDrawer extends StatelessWidget {
 class getClipped extends CustomClipper<RRect> {
   @override
   getClip(Size size) {
-    return RRect.fromLTRBAndCorners(0, 0, size.width, size.height,
-        bottomRight: Radius.circular(40));
+    return RRect.fromLTRBAndCorners(0, 0, size.width, size.height, bottomRight: Radius.circular(40));
   }
 
   @override

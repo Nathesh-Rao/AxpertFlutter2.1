@@ -144,9 +144,6 @@ class MenuMorePageController extends GetxController {
   void openItemClick(itemModel) async {
     if (await internetConnectivity.connectionStatus) {
       if (itemModel.url != "") {
-        // menuHomePageController.webUrl = Const.getFullProjectUrl(itemModel.url);
-        // menuHomePageController.switchPage.value = true;
-        // Get.toNamed(Routes.InApplicationWebViewer, arguments: [Const.getFullWebUrl(itemModel.url)]);
         webViewController.openWebView(url: Const.getFullWebUrl(itemModel.url));
       }
     }

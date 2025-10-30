@@ -49,7 +49,8 @@ class WidgetPendingStatusScrollBar extends StatelessWidget {
             status.taskname,
             style: GoogleFonts.roboto(
                 textStyle: TextStyle(
-                    color: (listItemDetailsController.selectedTaskID == status.taskid)
+                    color: (listItemDetailsController.selectedTaskID ==
+                            status.taskid)
                         ? HexColor("333333")
                         : HexColor("495057").withOpacity(0.6),
                     fontWeight: FontWeight.bold)),

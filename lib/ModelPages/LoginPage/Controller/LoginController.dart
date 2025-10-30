@@ -60,7 +60,8 @@ class LoginController extends GetxController {
 
     fetchRememberedData();
     dropDownItemChanged(ddSelectedValue);
-    if (userNameController.text.toString().trim() != "") rememberMe.value = true;
+    if (userNameController.text.toString().trim() != "")
+      rememberMe.value = true;
 
     setWillAuthenticate();
 
@@ -70,9 +71,12 @@ class LoginController extends GetxController {
 
   setWillAuthenticate() async {
     await checkBiometricFlag();
-    var willAuth = await getWillBiometricAuthenticateForThisUser(userNameController.text.toString().trim());
+    var willAuth = await getWillBiometricAuthenticateForThisUser(
+        userNameController.text.toString().trim());
     print(("Login willAuth: $willAuth"));
-    LogService.writeLog(message: "[i] LoginController\nScope: setWillAuthenticate()\nLogin willAuth: $willAuth");
+    LogService.writeLog(
+        message:
+            "[i] LoginController\nScope: setWillAuthenticate()\nLogin willAuth: $willAuth");
 
     if (willAuth != null) {
       willBio_userAuthenticate.value = willAuth;
@@ -102,7 +106,9 @@ class LoginController extends GetxController {
         val = CommonMethods.capitalize(val);
         if (!userTypeList.contains(val)) userTypeList.add(val);
       }
-      userTypeList..sort((a, b) => a.toString().toLowerCase().compareTo(b.toString().toLowerCase()));
+      userTypeList
+        ..sort((a, b) =>
+            a.toString().toLowerCase().compareTo(b.toString().toLowerCase()));
       if (ddSelectedValue.value == "") {
         ddSelectedValue.value = userTypeList[0];
         dropDownItemChanged(ddSelectedValue);
@@ -144,7 +150,8 @@ class LoginController extends GetxController {
 
   dropDownItemChanged(Object? value) {
     ddSelectedValue.value = value.toString();
-    if (ddSelectedValue.value.toLowerCase() == "power" || ddSelectedValue.value.isEmpty) {
+    if (ddSelectedValue.value.toLowerCase() == "power" ||
+        ddSelectedValue.value.isEmpty) {
       newUserSigninVisible.value = false;
     } else {
       newUserSigninVisible.value = true;
@@ -201,7 +208,8 @@ class LoginController extends GetxController {
   }
 
   void loginButtonClicked({bodyArgs = ''}) async {
-    LogService.writeLog(message: "[i] LoginController\nSelected UserGroup : power");
+    LogService.writeLog(
+        message: "[i] LoginController\nSelected UserGroup : power");
     if (validateForm()) {
       FocusManager.instance.primaryFocus?.unfocus();
       LoadingScreen.show();
@@ -215,13 +223,21 @@ class LoginController extends GetxController {
         var json = jsonDecode(response);
         // print(json["result"]["sessionid"].toString());
         if (json["result"]["success"].toString().toLowerCase() == "true") {
-          await appStorage.storeValue(AppStorage.TOKEN, json["result"]["token"].toString());
-          await appStorage.storeValue(AppStorage.SESSIONID, json["result"]["sessionid"].toString());
-          await appStorage.storeValue(AppStorage.USER_NAME, userNameController.text.trim());
-          await appStorage.storeValue(AppStorage.USER_CHANGE_PASSWORD, json["result"]["ChangePassword"].toString());
-          await appStorage.storeValue(AppStorage.NICK_NAME, json["result"]["NickName"].toString() ?? userNameController.text.trim());
+          await appStorage.storeValue(
+              AppStorage.TOKEN, json["result"]["token"].toString());
+          await appStorage.storeValue(
+              AppStorage.SESSIONID, json["result"]["sessionid"].toString());
+          await appStorage.storeValue(
+              AppStorage.USER_NAME, userNameController.text.trim());
+          await appStorage.storeValue(AppStorage.USER_CHANGE_PASSWORD,
+              json["result"]["ChangePassword"].toString());
+          await appStorage.storeValue(
+              AppStorage.NICK_NAME,
+              json["result"]["NickName"].toString() ??
+                  userNameController.text.trim());
           storeLastLoginData(body);
-          print("User_change_password: ${appStorage.retrieveValue(AppStorage.USER_CHANGE_PASSWORD)}");
+          print(
+              "User_change_password: ${appStorage.retrieveValue(AppStorage.USER_CHANGE_PASSWORD)}");
           LogService.writeLog(
               message:
                   "[-] LoginController\nScope: loginButtonClicked()\nUser_change_password: ${appStorage.retrieveValue(AppStorage.USER_CHANGE_PASSWORD)}");
@@ -236,7 +252,9 @@ class LoginController extends GetxController {
           await _processLoginAndGoToHomePage();
         } else {
           Get.snackbar("Error ", json["result"]["message"],
-              snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: Colors.redAccent,
+              colorText: Colors.white);
         }
       }
       LoadingScreen.dismiss();
@@ -244,7 +262,9 @@ class LoginController extends GetxController {
   }
 
   void googleSignInClicked() async {
-    LogService.writeLog(message: "[-] LoginController\nScope: googleSignInClicked() : GoogleLogin Started");
+    LogService.writeLog(
+        message:
+            "[-] LoginController\nScope: googleSignInClicked() : GoogleLogin Started");
 
     try {
       final googleUser = await googleLoginIn.signIn();
@@ -271,18 +291,24 @@ class LoginController extends GetxController {
         };
 
         var url = Const.getFullARMUrl(ServerConnections.API_GOOGLESIGNIN_SSO);
-        var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body));
+        var resp = await serverConnections.postToServer(
+            url: url, body: jsonEncode(body));
 
         if (resp != "") {
           var jsonResp = jsonDecode(resp);
           // print(jsonResp);
           if (jsonResp['result']['success'].toString() == "false") {
             Get.snackbar("Alert!", jsonResp['result']['message'].toString(),
-                snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
+                snackPosition: SnackPosition.BOTTOM,
+                colorText: Colors.white,
+                backgroundColor: Colors.red);
           } else {
-            await appStorage.storeValue(AppStorage.TOKEN, jsonResp["result"]["token"].toString());
-            await appStorage.storeValue(AppStorage.SESSIONID, jsonResp["result"]["sessionid"].toString());
-            await appStorage.storeValue(AppStorage.USER_NAME, googleUser.email.toString());
+            await appStorage.storeValue(
+                AppStorage.TOKEN, jsonResp["result"]["token"].toString());
+            await appStorage.storeValue(AppStorage.SESSIONID,
+                jsonResp["result"]["sessionid"].toString());
+            await appStorage.storeValue(
+                AppStorage.USER_NAME, googleUser.email.toString());
             //remove rememberer data
             // appStorage.remove(AppStorage.USERID);
             // appStorage.remove(AppStorage.USER_PASSWORD);
@@ -292,18 +318,27 @@ class LoginController extends GetxController {
           }
         } else {
           Get.snackbar("Error", "Some Error occured",
-              backgroundColor: Colors.red, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM);
+              backgroundColor: Colors.red,
+              colorText: Colors.white,
+              snackPosition: SnackPosition.BOTTOM);
         }
         LoadingScreen.dismiss();
         // print(resp);
         // print(googleUser);
       } else {
-        LogService.writeLog(message: "[ERROR] LoginController\nScope: googleSignInClicked() : googleUser is null");
+        LogService.writeLog(
+            message:
+                "[ERROR] LoginController\nScope: googleSignInClicked() : googleUser is null");
       }
     } catch (e) {
-      LogService.writeLog(message: "[ERROR] LoginController\nScope: googleSignInClicked()\nError: $e");
+      LogService.writeLog(
+          message:
+              "[ERROR] LoginController\nScope: googleSignInClicked()\nError: $e");
 
-      Get.snackbar("Error", "User is not Registered!", snackPosition: SnackPosition.BOTTOM, colorText: Colors.white, backgroundColor: Colors.red);
+      Get.snackbar("Error", "User is not Registered!",
+          snackPosition: SnackPosition.BOTTOM,
+          colorText: Colors.white,
+          backgroundColor: Colors.red);
     }
   }
 
@@ -311,7 +346,7 @@ class LoginController extends GetxController {
     //mobile Notification
     await _callApiForMobileNotification();
     //connect to Axpert
-   // await _callApiForConnectToAxpert();
+    // await _callApiForConnectToAxpert();
     // Get.offAllNamed(Routes.LandingPage);
     //
     //burnur code for navigating to ess portal - amrith--->
@@ -323,9 +358,12 @@ class LoginController extends GetxController {
   }
 
   Future<void> callApiForConnectToAxpert() async {
-    var connectBody = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
+    var connectBody = {
+      'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)
+    };
     var cUrl = Const.getFullARMUrl(ServerConnections.API_CONNECTTOAXPERT);
-    var connectResp = await serverConnections.postToServer(url: cUrl, body: jsonEncode(connectBody), isBearer: true);
+    var connectResp = await serverConnections.postToServer(
+        url: cUrl, body: jsonEncode(connectBody), isBearer: true);
     print(connectResp);
     // getArmMenu
 
@@ -344,6 +382,7 @@ class LoginController extends GetxController {
     }
   }
 
+//
   _callApiForMobileNotification() async {
     var imei = await PlatformDeviceId.getDeviceId ?? '0';
     LogService.writeLog(message: "[i] IMEI : $imei");
@@ -353,7 +392,8 @@ class LoginController extends GetxController {
       'ImeiNo': imei,
     };
     var cUrl = Const.getFullARMUrl(ServerConnections.API_MOBILE_NOTIFICATION);
-    var connectResp = await serverConnections.postToServer(url: cUrl, body: jsonEncode(connectBody), isBearer: true);
+    var connectResp = await serverConnections.postToServer(
+        url: cUrl, body: jsonEncode(connectBody), isBearer: true);
     print("Mobile: " + connectResp);
   }
 
@@ -372,15 +412,18 @@ class LoginController extends GetxController {
     try {
       count++;
       var users = appStorage.retrieveValue(AppStorage.USERID) ?? {};
-      users[globalVariableController.PROJECT_NAME.value] = userNameController.text.trim();
+      users[globalVariableController.PROJECT_NAME.value] =
+          userNameController.text.trim();
       appStorage.storeValue(AppStorage.USERID, users);
 
       var passes = appStorage.retrieveValue(AppStorage.USER_PASSWORD) ?? {};
-      passes[globalVariableController.PROJECT_NAME.value] = userPasswordController.text;
+      passes[globalVariableController.PROJECT_NAME.value] =
+          userPasswordController.text;
       appStorage.storeValue(AppStorage.USER_PASSWORD, passes);
 
       var groups = appStorage.retrieveValue(AppStorage.USER_GROUP) ?? {};
-      groups[globalVariableController.PROJECT_NAME.value] = ddSelectedValue.value;
+      groups[globalVariableController.PROJECT_NAME.value] =
+          ddSelectedValue.value;
       appStorage.storeValue(AppStorage.USER_GROUP, groups);
     } catch (e) {
       appStorage.remove(AppStorage.USERID);
@@ -408,13 +451,16 @@ class LoginController extends GetxController {
     try {
       var users = appStorage.retrieveValue(AppStorage.USERID) ?? {};
       print(users);
-      userNameController.text = users[globalVariableController.PROJECT_NAME.value].trim() ?? "";
+      userNameController.text =
+          users[globalVariableController.PROJECT_NAME.value].trim() ?? "";
 
       var passes = appStorage.retrieveValue(AppStorage.USER_PASSWORD) ?? {};
-      userPasswordController.text = passes[globalVariableController.PROJECT_NAME.value] ?? "";
+      userPasswordController.text =
+          passes[globalVariableController.PROJECT_NAME.value] ?? "";
 
       var groups = appStorage.retrieveValue(AppStorage.USER_GROUP) ?? {};
-      ddSelectedValue.value = groups[globalVariableController.PROJECT_NAME.value] ?? "Power";
+      ddSelectedValue.value =
+          groups[globalVariableController.PROJECT_NAME.value] ?? "Power";
     } catch (e) {
       // appStorage.remove(AppStorage.USERID);
       // appStorage.remove(AppStorage.USER_PASSWORD);
@@ -423,7 +469,9 @@ class LoginController extends GetxController {
   }
 
   void displayAuthenticationDialog() async {
-    LogService.writeLog(message: "[^] LoginController\nScope: displayAuthenticationDialog()\n Fingerprint Clicked");
+    LogService.writeLog(
+        message:
+            "[^] LoginController\nScope: displayAuthenticationDialog()\n Fingerprint Clicked");
 
     if (willBio_userAuthenticate == true) {
       try {
@@ -432,7 +480,8 @@ class LoginController extends GetxController {
         }
       } catch (e) {
         print(e.toString());
-        if (e.toString().contains('NotAvailable') && e.toString().contains('Authentication failure'))
+        if (e.toString().contains('NotAvailable') &&
+            e.toString().contains('Authentication failure'))
           showErrorSnack(title: "Oops!", message: "Only Biometric is allowed.");
       }
     } else {
@@ -494,12 +543,17 @@ class LoginController extends GetxController {
     var baseUrl = globalVariableController.ARM_URL.trim();
     baseUrl += baseUrl.endsWith("/") ? "" : "/";
     var url = baseUrl + ServerConnections.API_GET_SIGNINDETAILS;
-    var body = "{\"appname\":\"" + globalVariableController.PROJECT_NAME.value.trim() + "\"}";
+    var body = "{\"appname\":\"" +
+        globalVariableController.PROJECT_NAME.value.trim() +
+        "\"}";
     final response = await serverConnections.postToServer(url: url, body: body);
 
     if (response != "") {
       var json = jsonDecode(response);
-      var isBMValue = json["result"]["data"]["Value"]["result"]["data"]["enablefingerprint"].toString().toLowerCase();
+      var isBMValue = json["result"]["data"]["Value"]["result"]["data"]
+              ["enablefingerprint"]
+          .toString()
+          .toLowerCase();
       print("checkBiometricFlag() => isBMValue: $isBMValue");
       if (isBMValue == "true") {
         isBiometricAvailable.value = true;
@@ -513,7 +567,8 @@ class LoginController extends GetxController {
 
 //// New Login Flow Methods and vars
   onLoad() async {
-    currentProjectName.value = await appStorage.retrieveValue(AppStorage.PROJECT_NAME) ?? '';
+    currentProjectName.value =
+        await appStorage.retrieveValue(AppStorage.PROJECT_NAME) ?? '';
   }
 
   startLoginProcess() async {
@@ -551,7 +606,8 @@ class LoginController extends GetxController {
       "UserName": userNameController.text.toString().trim(),
     };
 
-    var response = await serverConnections.postToServer(url: _url, body: jsonEncode(body));
+    var response =
+        await serverConnections.postToServer(url: _url, body: jsonEncode(body));
     isUserDataLoading.value = false;
     if (response != "") {
       var json = jsonDecode(response);
@@ -570,7 +626,9 @@ class LoginController extends GetxController {
         if (isOTP_auth.value) return AuthType.otpOnly;
       } else {
         Get.snackbar("Error ", json["result"]["message"],
-            snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.redAccent,
+            colorText: Colors.white);
       }
     }
 
@@ -596,7 +654,8 @@ class LoginController extends GetxController {
       LoadingScreen.show();
       var _url = Const.getFullARMUrl(ServerConnections.API_SIGNIN);
 
-      var response = await serverConnections.postToServer(url: _url, body: jsonEncode(signInBody));
+      var response = await serverConnections.postToServer(
+          url: _url, body: jsonEncode(signInBody));
       // LogService.writeLog(message: "[-] LoginController => loginButtonClicked() => LoginResponse : $response");
 
       if (response != "") {
@@ -611,7 +670,9 @@ class LoginController extends GetxController {
             print("Otpmsg: ${otpMsg.value} \nOtpkey: ${otpLoginKey.value}");
             Get.toNamed(Routes.OtpPage);
           }
-        } else if (json["result"]["success"].toString().toLowerCase() == "false" && json["result"].containsKey('duplicate_session')) {
+        } else if (json["result"]["success"].toString().toLowerCase() ==
+                "false" &&
+            json["result"].containsKey('duplicate_session')) {
           isDuplicate_session = true;
           showDialog_duplicateSession(json["result"]["message"].toString());
         } else {
@@ -619,7 +680,9 @@ class LoginController extends GetxController {
             Get.back(); // closes the dialog
           }
           Get.snackbar("Error ", json["result"]["message"],
-              snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.redAccent, colorText: Colors.white);
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: Colors.redAccent,
+              colorText: Colors.white);
         }
       }
       LoadingScreen.dismiss();
@@ -636,7 +699,8 @@ class LoginController extends GetxController {
         "OTP": otpFieldController.text.toString().trim(),
       };
 
-      var response = await serverConnections.postToServer(url: _url, body: jsonEncode(body));
+      var response = await serverConnections.postToServer(
+          url: _url, body: jsonEncode(body));
       isOtpLoading.value = false;
       if (response != "") {
         var json = jsonDecode(response);
@@ -654,14 +718,18 @@ class LoginController extends GetxController {
 
   processSignInDataResponse(json) async {
     await appStorage.storeValue(AppStorage.TOKEN, json["token"].toString());
-    await appStorage.storeValue(AppStorage.SESSIONID, json["ARMSessionId"].toString());
-    await appStorage.storeValue(AppStorage.USER_NAME, userNameController.text.trim());
+    await appStorage.storeValue(
+        AppStorage.SESSIONID, json["ARMSessionId"].toString());
+    await appStorage.storeValue(
+        AppStorage.USER_NAME, userNameController.text.trim());
     //await appStorage.storeValue(AppStorage.USER_CHANGE_PASSWORD, json["result"]["ChangePassword"].toString());
-    await appStorage.storeValue(AppStorage.NICK_NAME, json["nickname"].toString() ?? userNameController.text.trim());
+    await appStorage.storeValue(AppStorage.NICK_NAME,
+        json["nickname"].toString() ?? userNameController.text.trim());
     //storeLastLoginData(_body);
     //print("User_change_password: ${appStorage.retrieveValue(AppStorage.USER_CHANGE_PASSWORD)}");
     LogService.writeLog(
-        message: "[-] LoginController\nScope:SignInResponse()\nUser_change_password: ${appStorage.retrieveValue(AppStorage.USER_CHANGE_PASSWORD)}");
+        message:
+            "[-] LoginController\nScope:SignInResponse()\nUser_change_password: ${appStorage.retrieveValue(AppStorage.USER_CHANGE_PASSWORD)}");
 
     //Save Data
     if (rememberMe.value) {
@@ -679,13 +747,16 @@ class LoginController extends GetxController {
     var _url = Const.getFullARMUrl(ServerConnections.API_RESEND_OTP);
     var body = {"OtpLoginKey": otpLoginKey.value};
 
-    var response = await serverConnections.postToServer(url: _url, body: jsonEncode(body));
+    var response =
+        await serverConnections.postToServer(url: _url, body: jsonEncode(body));
     isOtpLoading.value = false;
     if (response != "") {
       var json = jsonDecode(response);
       if (json["result"]["success"].toString().toLowerCase() == "true") {
         Get.snackbar("Success", json["result"]["message"],
-            snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.green, colorText: Colors.white);
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.green,
+            colorText: Colors.white);
       } else {
         otpErrorText.value = json["result"]["message"].toString();
         /* Get.snackbar("Error ", json["result"]["message"],
@@ -735,7 +806,8 @@ class LoginController extends GetxController {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.grey.shade400,
                       //foregroundColor: Colors.black,
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -751,7 +823,8 @@ class LoginController extends GetxController {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: MyColors.blue2,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),

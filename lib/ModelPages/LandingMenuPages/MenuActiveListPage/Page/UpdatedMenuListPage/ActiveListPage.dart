@@ -18,8 +18,10 @@ import 'Widgets/WidgetActiveListTile.dart';
 class ActiveListPage extends StatelessWidget {
   ActiveListPage({super.key});
   ActiveTaskListController activeTaskListController = Get.find();
-  final PendingListController pendingListController = Get.put(PendingListController());
-  final CompletedListController completedListController = Get.put(CompletedListController());
+  final PendingListController pendingListController =
+      Get.put(PendingListController());
+  final CompletedListController completedListController =
+      Get.put(CompletedListController());
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -31,12 +33,14 @@ class ActiveListPage extends StatelessWidget {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 20.0, bottom: 10, left: 10.0, right: 10),
+            padding: const EdgeInsets.only(
+                top: 20.0, bottom: 10, left: 10.0, right: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 WidgetActiveListSearchField(),
-                Obx(() => _iconButtons(Icons.filter_alt, activeTaskListController.openFilterPrompt,
+                Obx(() => _iconButtons(
+                    Icons.filter_alt, activeTaskListController.openFilterPrompt,
                     isActive: activeTaskListController.isFilterOn.value)),
                 // _iconButtons(Icons.select_all_rounded, () {}),
                 _iconButtons(Icons.done_all, () async {
@@ -66,8 +70,10 @@ class ActiveListPage extends StatelessWidget {
                 children: List.generate(
                   activeTaskListController.activeTaskMap.keys.length,
                   (index) {
-                    var _key = activeTaskListController.activeTaskMap.keys.toList()[index];
-                    var _currentList = activeTaskListController.activeTaskMap[_key];
+                    var _key = activeTaskListController.activeTaskMap.keys
+                        .toList()[index];
+                    var _currentList =
+                        activeTaskListController.activeTaskMap[_key];
 
                     return ExpandedTile(
                       contentseparator: 0,
@@ -85,7 +91,8 @@ class ActiveListPage extends StatelessWidget {
                         style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
                       ),
                       content: Column(
-                        children: List.generate(_currentList!.length, (i) => WidgetActiveLisTile(model: _currentList[i])),
+                        children: List.generate(_currentList!.length,
+                            (i) => WidgetActiveLisTile(model: _currentList[i])),
                       ),
                       onTap: () {
                         // debugPrint("tapped!!");
@@ -105,7 +112,8 @@ class ActiveListPage extends StatelessWidget {
     );
   }
 
-  Widget _iconButtons(IconData icon, Function() onTap, {bool isActive = false}) {
+  Widget _iconButtons(IconData icon, Function() onTap,
+      {bool isActive = false}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -148,7 +156,9 @@ class ActiveListPage extends StatelessWidget {
                             strokeCap: StrokeCap.round,
                           )),
                     )
-                  : Icon(activeTaskListController.isRefreshable.value ? Icons.refresh_rounded : Icons.arrow_upward_rounded),
+                  : Icon(activeTaskListController.isRefreshable.value
+                      ? Icons.refresh_rounded
+                      : Icons.arrow_upward_rounded),
               onPressed: activeTaskListController.refreshList,
             ),
     );

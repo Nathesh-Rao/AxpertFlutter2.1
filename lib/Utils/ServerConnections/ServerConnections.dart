@@ -155,7 +155,12 @@ class ServerConnections {
   String _baseUrl = "http://demo.agile-labs.com/axmclientidscripts/asbmenurest.dll/datasnap/rest/Tasbmenurest/getchoices";
 
   postToServer(
-      {String url = '', var header = '', String body = '', String ClientID = '', bool isBearer = false, var show_errorSnackbar = true}) async {
+      {String url = '',
+      var header = '',
+      String body = '',
+      String ClientID = '',
+      bool isBearer = false,
+      var show_errorSnackbar = true}) async {
     var API_NAME = url.substring(url.lastIndexOf("/") + 1, url.length);
     if (await internetConnectivity.connectionStatus)
       try {
@@ -177,7 +182,8 @@ class ServerConnections {
         // print("");
         if (response.statusCode == 200) {
           LogService.writeLog(
-              message: "[^] [POST] URL:$url\nAPI_NAME: $API_NAME\nBody: $body\nStatusCode: ${response.statusCode}\nResponse: ${response.body}");
+              message:
+                  "[^] [POST] URL:$url\nAPI_NAME: $API_NAME\nBody: $body\nStatusCode: ${response.statusCode}\nResponse: ${response.body}");
           return response.body;
         }
         ;
@@ -218,7 +224,10 @@ class ServerConnections {
                 print(e);
               }
             }
-            showErrorSnack(title: "Error! ${response.statusCode.toString()}", message: API_NAME + ": " + msg, show_errorSnackbar: show_errorSnackbar);
+            showErrorSnack(
+                title: "Error! ${response.statusCode.toString()}",
+                message: API_NAME + ": " + msg,
+                show_errorSnackbar: show_errorSnackbar);
           }
         }
       } catch (e) {
@@ -274,11 +283,15 @@ class ServerConnections {
         if (API_NAME.toString().toLowerCase() == "ARMAppStatus".toLowerCase()) {
           showErrorSnack(title: "Error!", message: "Invalid ARM URL", show_errorSnackbar: show_errorSnackbar);
         } else {
-          showErrorSnack(title: "Error " + response.statusCode.toString(), message: "Invalid Url", show_errorSnackbar: show_errorSnackbar);
+          showErrorSnack(
+              title: "Error " + response.statusCode.toString(), message: "Invalid Url", show_errorSnackbar: show_errorSnackbar);
         }
       } else {
         // LogService.writeLog(message: "[ERROR] API_ERROR\nURL:$url\nAPI_NAME: $API_NAME\nError: ${e.toString()}");
-        showErrorSnack(title: "Error! " + response.statusCode.toString(), message: "Internal server error", show_errorSnackbar: show_errorSnackbar);
+        showErrorSnack(
+            title: "Error! " + response.statusCode.toString(),
+            message: "Internal server error",
+            show_errorSnackbar: show_errorSnackbar);
       }
     } catch (e) {
       LogService.writeLog(message: "[ERROR] API_ERROR\nURL:$url\nAPI_NAME: $API_NAME\nError: ${e.toString()}");
@@ -298,12 +311,17 @@ class ServerConnections {
             if (API_NAME.toString().toLowerCase() == "ARMAppStatus".toLowerCase()) {
               showErrorSnack(title: "Error!", message: "Invalid ARM URL", show_errorSnackbar: show_errorSnackbar);
             } else {
-              showErrorSnack(title: "Error " + reResponse.statusCode.toString(), message: "Invalid Url", show_errorSnackbar: show_errorSnackbar);
+              showErrorSnack(
+                  title: "Error " + reResponse.statusCode.toString(),
+                  message: "Invalid Url",
+                  show_errorSnackbar: show_errorSnackbar);
             }
           } else {
             // LogService.writeLog(message: "[ERROR] API_ERROR\nURL:$url\nAPI_NAME: $API_NAME\nError: ${e.toString()}");
             showErrorSnack(
-                title: "Error! " + reResponse.statusCode.toString(), message: "Internal server error", show_errorSnackbar: show_errorSnackbar);
+                title: "Error! " + reResponse.statusCode.toString(),
+                message: "Internal server error",
+                show_errorSnackbar: show_errorSnackbar);
           }
         } catch (err) {
           showErrorSnack(title: "Error!", message: err.toString(), show_errorSnackbar: show_errorSnackbar);
