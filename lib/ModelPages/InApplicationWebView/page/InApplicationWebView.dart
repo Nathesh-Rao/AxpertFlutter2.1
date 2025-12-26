@@ -6,7 +6,6 @@ import 'package:axpertflutter/ModelPages/InApplicationWebView/controller/webview
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Controllers/MenuHomePageController.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Controller/LandingPageController.dart';
 import 'package:axpertflutter/Utils/LogServices/LogService.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +18,7 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:lottie/lottie.dart';
-import 'package:open_file_plus/open_file_plus.dart';
+// import 'package:open_file_plus/open_file_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:file_downloader_flutter/file_downloader_flutter.dart';
@@ -52,7 +51,19 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
   var hasAppBar = false;
   late StreamSubscription subscription;
   CookieManager cookieManager = CookieManager.instance();
-  final imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'ico', 'xlsx', 'xls', 'docx', 'doc', 'pdf'];
+  final imageExtensions = [
+    'jpg',
+    'jpeg',
+    'png',
+    'gif',
+    'bmp',
+    'ico',
+    'xlsx',
+    'xls',
+    'docx',
+    'doc',
+    'pdf'
+  ];
   bool isCalendarPage = false;
   bool _showButton = false;
   bool _handled = false;
@@ -105,7 +116,9 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
       return true;
     }
 
-    bool handledInWeb = await widget.webViewController.inAppWebViewController.value!.evaluateJavascript(source: """
+    bool handledInWeb = await widget
+            .webViewController.inAppWebViewController.value!
+            .evaluateJavascript(source: """
       (function() {
         var btn = document.querySelector('.appBackBtn');
         if (btn) {
@@ -114,7 +127,8 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
         }
         return false;    //button not found
       })();
-    """) ?? false;
+    """) ??
+        false;
 
     if (!handledInWeb) {
       widget.webViewController.closeWebView();
@@ -266,14 +280,18 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
           child: Builder(builder: (BuildContext context) {
             return Stack(children: <Widget>[
               InAppWebView(
-                initialUrlRequest: URLRequest(url: WebUri.uri(Uri.parse(widget.data))),
+                initialUrlRequest:
+                    URLRequest(url: WebUri.uri(Uri.parse(widget.data))),
                 initialSettings: settings,
                 onWebViewCreated: (controller) {
                   // _webViewController = controller;
-                  widget.webViewController.inAppWebViewController.value = controller;
+                  widget.webViewController.inAppWebViewController.value =
+                      controller;
                 },
                 onLoadStart: (controller, url) {
-                  url.toString().toLowerCase().contains("dcalendar") ? isCalendarPage = true : isCalendarPage = false;
+                  url.toString().toLowerCase().contains("dcalendar")
+                      ? isCalendarPage = true
+                      : isCalendarPage = false;
 
                   setState(() {
                     widget.webViewController.isProgressBarActive.value = true;
@@ -284,7 +302,8 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
                     widget.webViewController.isProgressBarActive.value = false;
                   });
                 },
-                onGeolocationPermissionsShowPrompt: (InAppWebViewController controller, String origin) async {
+                onGeolocationPermissionsShowPrompt:
+                    (InAppWebViewController controller, String origin) async {
                   var status = await Permission.locationWhenInUse.status;
 
                   if (status.isGranted) {
@@ -303,9 +322,12 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
                   }
                 },
                 onDownloadStartRequest: (controller, downloadStartRequest) {
-                  LogService.writeLog(message: "onDownloadStartRequest\nwith requested url: ${downloadStartRequest.url.toString()}");
+                  LogService.writeLog(
+                      message:
+                          "onDownloadStartRequest\nwith requested url: ${downloadStartRequest.url.toString()}");
                   print("Download...");
-                  print("Requested url: ${downloadStartRequest.url.toString()}");
+                  print(
+                      "Requested url: ${downloadStartRequest.url.toString()}");
                   _download(downloadStartRequest.url.toString());
                   // _downloadToDevice("url");
                 },
@@ -314,7 +336,9 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
 
                   print("Console Message received...");
                   print(consoleMessage.toString());
-                  if (consoleMessage.toString().contains("axm_mainpageloaded")) {
+                  if (consoleMessage
+                      .toString()
+                      .contains("axm_mainpageloaded")) {
                     try {
                       // if (menuHomePageController.switchPage.value == true) {
                       //   menuHomePageController.switchPage.toggle();
@@ -327,19 +351,22 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
                   }
                 },
                 onProgressChanged: (controller, value) {
-                  LogService.writeLog(message: "onProgressChanged: value=> $value");
+                  LogService.writeLog(
+                      message: "onProgressChanged: value=> $value");
 
                   print('Progress---: $value : DT ${DateTime.now()}');
                   if (value == 100) {
                     setState(() {
-                      widget.webViewController.isProgressBarActive.value = false;
+                      widget.webViewController.isProgressBarActive.value =
+                          false;
                     });
                   }
                 },
                 shouldOverrideUrlLoading: (controller, navigationAction) async {
                   var uri = navigationAction.request.url!;
                   print("Override url: $uri");
-                  LogService.writeLog(message: "shouldOverrideUrlLoading: url=> $uri");
+                  LogService.writeLog(
+                      message: "shouldOverrideUrlLoading: url=> $uri");
                   if (uri.toString().toLowerCase().contains("sess.aspx")) {
                     await controller
                         .loadUrl(
@@ -352,7 +379,8 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
                     landingPageController.showSignOutDialog_sessionExpired();
                   }
 
-                  if (imageExtensions.any((ext) => uri.toString().endsWith(ext))) {
+                  if (imageExtensions
+                      .any((ext) => uri.toString().endsWith(ext))) {
                     _download(uri.toString());
                     // _downloadToDevice("url");
 
@@ -363,33 +391,31 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
                 onCreateWindow: (controller, createWindowRequest) async {
                   final windowId = createWindowRequest.windowId;
                   print("newWindowCreated");
-                  if (windowId != null) {
-                    // // Open a new window for the given windowId
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => NewWindowPage(
-                    //       windowId: windowId,
-                    //       onWindowCreated: (newController) {
-                    //         windowControllers[windowId] = newController;
-                    //         context_popUpScreen = context;
-                    //       },
-                    //     ),
-                    //   ),
-                    // );
+                  // // Open a new window for the given windowId
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => NewWindowPage(
+                  //       windowId: windowId,
+                  //       onWindowCreated: (newController) {
+                  //         windowControllers[windowId] = newController;
+                  //         context_popUpScreen = context;
+                  //       },
+                  //     ),
+                  //   ),
+                  // );
 
-                    Get.to(
-                        () => NewWindowPage(
-                              windowId: windowId,
-                              onWindowCreated: (newController) {
-                                windowControllers[windowId] = newController;
-                                context_popUpScreen = context;
-                              },
-                            ),
-                        transition: Transition.cupertino,
-                        duration: Duration(milliseconds: 500));
-                    return true; // Allow the window creation
-                  }
+                  Get.to(
+                      () => NewWindowPage(
+                            windowId: windowId,
+                            onWindowCreated: (newController) {
+                              windowControllers[windowId] = newController;
+                              context_popUpScreen = context;
+                            },
+                          ),
+                      transition: Transition.cupertino,
+                      duration: Duration(milliseconds: 500));
+                  return true; // Allow the window creation
                   return false;
                 },
               ),
@@ -398,7 +424,8 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
                   behavior: HitTestBehavior.translucent,
                   onPointerDown: (event) {
                     _startY = event.position.dy;
-                    _longPressTimer = Timer(const Duration(milliseconds: 300), () {
+                    _longPressTimer =
+                        Timer(const Duration(milliseconds: 300), () {
                       _longPressActive = true;
                     });
                   },
@@ -425,9 +452,15 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
                           child: SpinKitRotatingCircle(
                             size: 40,
                             itemBuilder: (context, index) {
-                              final colors = [MyColors.blue2, MyColors.blue2, MyColors.blue2];
+                              final colors = [
+                                MyColors.blue2,
+                                MyColors.blue2,
+                                MyColors.blue2
+                              ];
                               final color = colors[index % colors.length];
-                              return DecoratedBox(decoration: BoxDecoration(color: color, shape: BoxShape.circle));
+                              return DecoratedBox(
+                                  decoration: BoxDecoration(
+                                      color: color, shape: BoxShape.circle));
                             },
                           ),
                         ))
@@ -436,7 +469,11 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
               Positioned(
                   top: 10,
                   right: 10,
-                  child: Visibility(visible: false, child: GestureDetector(onTap: perform_backButtonClick, child: Icon(Icons.cancel)))),
+                  child: Visibility(
+                      visible: false,
+                      child: GestureDetector(
+                          onTap: perform_backButtonClick,
+                          child: Icon(Icons.cancel)))),
               AnimatedPositioned(
                 duration: const Duration(milliseconds: 300),
                 top: _showButton ? 20.0 : -100.0,
@@ -462,7 +499,8 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
               Obx(
                 () => widget.webViewController.isFileDownloading.value
                     ? Container(
-                        color: Colors.black.withValues(alpha: 0.6), // dim background
+                        color: Colors.black
+                            .withValues(alpha: 0.6), // dim background
                         child: Center(
                           child: Lottie.asset(
                             "assets/lotties/download.json",
@@ -502,7 +540,8 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
       builder: (context) {
         return AlertDialog(
           title: Text("Location Permission Required"),
-          content: Text("This feature requires location access. Please enable location permissions in settings."),
+          content: Text(
+              "This feature requires location access. Please enable location permissions in settings."),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -527,7 +566,8 @@ class _InApplicationWebViewerState extends State<InApplicationWebViewer> {
   }
 
   void showSignOutDialog() {
-    widget.webViewController..signOut(url: Const.getFullWebUrl("aspx/AxMain.aspx?signout=true"));
+    widget.webViewController
+      ..signOut(url: Const.getFullWebUrl("aspx/AxMain.aspx?signout=true"));
     Get.defaultDialog(
       barrierDismissible: false,
       titleStyle: TextStyle(color: MyColors.blue2),
@@ -588,11 +628,13 @@ class _NewWindowPageState extends State<NewWindowPage> {
                   controller: controller,
                   downloadStartRequest: downloadStartRequest,
                   onDownloadComplete: (path) {
-                    Get.until((route) => route.settings.name == Routes.LandingPage);
+                    Get.until(
+                        (route) => route.settings.name == Routes.LandingPage);
                     print("Download path => $path");
                   },
                   onDownloadError: (e) {
-                    Get.until((route) => route.settings.name == Routes.LandingPage);
+                    Get.until(
+                        (route) => route.settings.name == Routes.LandingPage);
                     print("Download Error => $e");
                   });
             }

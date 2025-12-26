@@ -1,5 +1,8 @@
 ### ------------------------- Flutter.gitignore ------------------------ ###
+###------------------------- Axpert -------------------------
 
+# Ignore offline form pages
+lib/ModelPages/LandingMenuPages/offline_form_pages/
 # Miscellaneous
 *.class
 #*.lock

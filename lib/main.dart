@@ -12,6 +12,7 @@ import 'package:axpertflutter/Utils/ServerConnections/InternetConnectivity.dart'
 import 'package:axpertflutter/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -21,10 +22,13 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:platform_device_id/platform_device_id.dart';
 import 'package:http/http.dart' as http;
+// import 'package:platform_device_id_plus/platform_device_id.dart';
+// import 'package:platform_device_id/platform_device_id.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
-FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 NotificationDetails notificationDetails = NotificationDetails(
     android: AndroidNotificationDetails('Default', 'Default',
@@ -63,9 +67,22 @@ Future<void> main() async {
     await InAppWebViewController.setWebContentsDebuggingEnabled(true);
   }
   runApp(MyApp());
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.black38));
+  SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(statusBarColor: Colors.black38));
   try {
-    Const.DEVICE_ID = await PlatformDeviceId.getDeviceId ?? "00";
+    final deviceInfoPlugin = DeviceInfoPlugin();
+    final deviceInfo = defaultTargetPlatform == TargetPlatform.android
+        ? await deviceInfoPlugin.androidInfo
+        : defaultTargetPlatform == TargetPlatform.iOS
+            ? await deviceInfoPlugin.iosInfo
+            : null;
+    if (deviceInfo == null) {
+      Const.DEVICE_ID = '';
+    } else {
+      final allInfo = deviceInfo.data;
+      Const.DEVICE_ID = allInfo['id'];
+    }
+    // Const.DEVICE_ID = await PlatformDeviceId.getDeviceId ?? "00";
   } on PlatformException {}
 }
 
@@ -93,11 +110,14 @@ Future<void> triggerLocalNetworkPrompt() async {
     var url = "192.168.1.1";
     // var url = "google.com";
     var addrss = await InternetAddress.lookup(url);
-    LogService.writeLog(message: "triggerLocalNetworkPrompt()=> addrss => $addrss");
+    LogService.writeLog(
+        message: "triggerLocalNetworkPrompt()=> addrss => $addrss");
     // print("triggerLocalNetworkPrompt()=> addrss => $addrss");
     await Future.delayed(Duration(seconds: 3));
   } catch (e) {
-    LogService.writeLog(message: "triggerLocalNetworkPrompt()=> Local network prompt triggered err => : $e");
+    LogService.writeLog(
+        message:
+            "triggerLocalNetworkPrompt()=> Local network prompt triggered err => : $e");
     // print("triggerLocalNetworkPrompt()=> Local network prompt triggered err => : $e");
   }
 }
@@ -106,7 +126,8 @@ Future<void> fetchData() async {
   try {
     var url = "192.168.1.1";
     final response = await http.get(Uri.parse(url));
-    LogService.writeLog(message: "fetchData()=> url=> $url\n response => ${response.body}");
+    LogService.writeLog(
+        message: "fetchData()=> url=> $url\n response => ${response.body}");
 
     // handle response
   } catch (e) {
@@ -123,7 +144,8 @@ Future<void> fetchData() async {
 class MyApp extends StatelessWidget {
   MyApp({super.key});
 
-  final InternetConnectivity internetConnectivity = Get.put(InternetConnectivity());
+  final InternetConnectivity internetConnectivity =
+      Get.put(InternetConnectivity());
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +171,8 @@ class MyApp extends StatelessWidget {
                 body: Center(
                   child: InkWell(
                       onTap: () => Get.toNamed(Routes.ProjectListingPage),
-                      child: Text("Some Error occurred. \n ${errorDetails.exception.toString()}")),
+                      child: Text(
+                          "Some Error occurred. \n ${errorDetails.exception.toString()}")),
                 ),
               );
           if (child != null) return child;

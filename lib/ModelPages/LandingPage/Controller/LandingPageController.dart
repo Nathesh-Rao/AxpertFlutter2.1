@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:axpertflutter/Constants/AppStorage.dart';
@@ -14,6 +15,7 @@ import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Contr
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Controllers/MenuMorePageController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Models/MenuItemModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Page/MenuMorePage.dart';
+// import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/pages/offline_listing_page.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Models/FirebaseMessageModel.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetBanner.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetNotification.dart';
@@ -105,7 +107,8 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
         ActiveListPage(),
         MenuDashboardPage(),
         EmptyWidget(), //NOTE to open the WebViewCalendar page handled in indexchange() method
-        EmptyWidget(), //NOTE to open the WebViewAnalytics page handled in indexchange() method
+        EmptyWidget(),
+        // OfflineListingPage() //NOTE to open the WebViewAnalytics page handled in indexchange() method
       ];
     });
     showChangePassword_PopUp();
@@ -451,7 +454,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
               LoadingScreen.show();
               try {
                 await FirebaseAuth.instance.signOut();
-                await GoogleSignIn().signOut();
+                await GoogleSignIn.instance.signOut();
                 clearCacheData();
               } catch (e) {}
               appStorage.storeValue(AppStorage.USER_NAME, "");
@@ -489,7 +492,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
     var url = Const.getFullARMUrl(ServerConnections.API_SIGNOUT);
     try {
       await FirebaseAuth.instance.signOut();
-      await GoogleSignIn().signOut();
+      await GoogleSignIn.instance.signOut();
       clearCacheData();
     } catch (e) {}
     appStorage.storeValue(AppStorage.USER_NAME, "");

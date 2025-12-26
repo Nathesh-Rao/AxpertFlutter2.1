@@ -50,10 +50,10 @@
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Need permission for access gallery for QR Code</string>
 <key>NSLocationWhenInUseUsageDescription</key>
-<string>This app may require your location while in use to support certain features or SDKs.</string>
+<string>This app may require your location while in use to support certain features or SDKs. We wont fetch the location unless you enable that in web portal</string>
 
 <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-<string>This app may need your location even in the background for enhanced functionality or due to SDK requirements.</string>
+<string>This app may need your location even in the background for enhanced functionality or due to SDK requirements. We wont fetch the location unless you enable that in web portal</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>

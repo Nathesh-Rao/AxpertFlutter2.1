@@ -9,13 +9,16 @@ import 'package:axpertflutter/Constants/Const.dart';
 import 'package:axpertflutter/ModelPages/LoginPage/Page/LoginPage.dart';
 import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:platform_device_id/platform_device_id.dart';
+// import 'package:platform_device_id/platform_device_id.dart';
+// import 'package:platform_device_id_plus/platform_device_id.dart';
 
 import '../../../Constants/Enums.dart';
 import '../../../Constants/GlobalVariableController.dart';
@@ -25,7 +28,7 @@ class LoginController extends GetxController {
   GlobalVariableController globalVariableController = Get.find();
 
   ServerConnections serverConnections = ServerConnections();
-  final googleLoginIn = GoogleSignIn();
+  // final googleLoginIn = GoogleSignIn();
   AppStorage appStorage = AppStorage();
   var rememberMe = false.obs;
   var googleSignInVisible = false.obs;
@@ -67,6 +70,9 @@ class LoginController extends GetxController {
 
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     messaging.getToken().then((value) => fcmId = value);
+
+    // 16_KB_AMR
+    _initializeGoogleSignIn();
   }
 
   setWillAuthenticate() async {
@@ -261,19 +267,51 @@ class LoginController extends GetxController {
     }
   }
 
+  _initializeGoogleSignIn() async {
+    await GoogleSignIn.instance.initialize();
+    // GoogleSignIn.instance.authenticationEvents.listen((event) async {
+    //   if (event is GoogleSignInAuthenticationEventSignIn) {
+    //     // googleUser = event.user;
+
+    //     // LoadingScreen.show();
+
+    //     // LoadingScreen.dismiss();
+    //   }
+
+    //   if (event is GoogleSignInAuthenticationEventSignOut) {
+    //     await FirebaseAuth.instance.signOut();
+    //     update(['google_signin']);
+    //   }
+    // });
+  }
+
   void googleSignInClicked() async {
     LogService.writeLog(
         message:
             "[-] LoginController\nScope: googleSignInClicked() : GoogleLogin Started");
 
     try {
-      final googleUser = await googleLoginIn.signIn();
-      if (googleUser != null) {
+      //16_KB_AMR
+
+      if (GoogleSignIn.instance.supportsAuthenticate()) {
+        final googleUser =
+            await GoogleSignIn.instance.authenticate(scopeHint: ['email']);
         LoadingScreen.show();
+        // final credential = GoogleAuthProvider.credential(
+        //   accessToken: googleAuth.accessToken,
+        //   idToken: googleAuth.idToken,
+        // );
+
+        // await FirebaseAuth.instance.signInWithCredential(credential);
         final googleAuth = await googleUser.authentication;
+        final googleAuthorization = await googleUser.authorizationClient
+            .authorizationForScopes(["email"]);
+        final accessToken = await googleAuthorization?.accessToken;
+        final idToken = googleAuth.idToken;
+
         final credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken,
-          idToken: googleAuth.idToken,
+          accessToken: accessToken,
+          idToken: idToken,
         );
 
         await FirebaseAuth.instance.signInWithCredential(credential);
@@ -286,7 +324,7 @@ class LoginController extends GetxController {
           'ssoType': 'Google',
           'ssodetails': {
             'id': googleUser.id,
-            'token': googleAuth.accessToken.toString(),
+            'token': googleAuthorization?.accessToken.toString(),
           },
         };
 
@@ -323,12 +361,13 @@ class LoginController extends GetxController {
               snackPosition: SnackPosition.BOTTOM);
         }
         LoadingScreen.dismiss();
+
         // print(resp);
         // print(googleUser);
       } else {
         LogService.writeLog(
             message:
-                "[ERROR] LoginController\nScope: googleSignInClicked() : googleUser is null");
+                "[ERROR] LoginController\nScope: googleSignInClicked() : Does not support Authenticate");
       }
     } catch (e) {
       LogService.writeLog(
@@ -384,7 +423,21 @@ class LoginController extends GetxController {
 
 //
   _callApiForMobileNotification() async {
-    var imei = await PlatformDeviceId.getDeviceId ?? '0';
+    var imei = '';
+    // var imei = await PlatformDeviceId.getDeviceId ?? '0';
+
+    final deviceInfoPlugin = DeviceInfoPlugin();
+    final deviceInfo = defaultTargetPlatform == TargetPlatform.android
+        ? await deviceInfoPlugin.androidInfo
+        : defaultTargetPlatform == TargetPlatform.iOS
+            ? await deviceInfoPlugin.iosInfo
+            : null;
+    if (deviceInfo == null) {
+      Const.DEVICE_ID = '';
+    } else {
+      final allInfo = deviceInfo.data;
+      imei = allInfo['id'];
+    }
     LogService.writeLog(message: "[i] IMEI : $imei");
     var connectBody = {
       'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID),

@@ -4,6 +4,8 @@ import 'package:axpertflutter/ModelPages/LandingPage/Controller/LandingPageContr
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/controller/EssController.dart';
 import 'package:get/get.dart';
 
+import '../../LandingMenuPages/offline_form_pages/controller/offline_form_controller.dart';
+
 class LandingPageBinding extends Bindings {
   @override
   void dependencies() {
@@ -11,6 +13,6 @@ class LandingPageBinding extends Bindings {
     Get.lazyPut(() => LandingPageController());
     Get.lazyPut(() => WebViewController());
     Get.lazyPut(() => MenuDashboardController());
-
+    Get.lazyPut(() => OfflineFormController());
   }
 }

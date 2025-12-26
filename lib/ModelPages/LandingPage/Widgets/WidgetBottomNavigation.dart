@@ -33,11 +33,19 @@ class AppBottomNavigation extends StatelessWidget {
             elevation: 10,
             onTap: (value) => landingPageController.indexChange(value),
             items: [
-              BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: "Home"),
-              BottomNavigationBarItem(icon: Icon(Icons.view_list_outlined), label: "Active List"),
-              BottomNavigationBarItem(icon: Icon(Icons.speed_outlined), label: "Dashboard"),
-              BottomNavigationBarItem(icon: Icon(Icons.calendar_month_outlined), label: "Calendar"),
-              BottomNavigationBarItem(icon: Icon(Icons.analytics_outlined), label: "Analytics"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.home_outlined), label: "Home"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.view_list_outlined), label: "Active List"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.speed_outlined), label: "Dashboard"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.calendar_month_outlined), label: "Calendar"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.analytics_outlined), label: "Analytics"),
+              // BottomNavigationBarItem(
+              //     icon: Icon(Icons.insert_page_break_outlined),
+              //     label: "Offline Pages"),
               // BottomNavigationBarItem(icon: Icon(Icons.dashboard_customize_outlined), label: "More"),
             ],
           ),

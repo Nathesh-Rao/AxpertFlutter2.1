@@ -72,13 +72,18 @@ class MyColors {
       // LinearGradient(colors: [Color.fromRGBO(6,2,68,1), Color.fromRGBO(44,44,149,1)]);
       // LinearGradient(colors: [Color.fromRGBO(10,4,112,1), Color.fromRGBO(58,58,217,1)]);
       // LinearGradient(colors: [Color.fromRGBO(15,8,148,1), Color.fromRGBO(104,104,233,1)]);
-      LinearGradient(colors: [Color.fromRGBO(43, 40, 115, 1), Color.fromRGBO(142, 142, 255, 1)]);
-
-  static const LinearGradient subBGGradientVertical =
-      LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [
-    Color(0xff3764FC),
-    Color(0xff9764DA),
+      LinearGradient(colors: [
+    Color.fromRGBO(43, 40, 115, 1),
+    Color.fromRGBO(142, 142, 255, 1)
   ]);
+
+  static const LinearGradient subBGGradientVertical = LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Color(0xff3764FC),
+        Color(0xff9764DA),
+      ]);
 
   static const LinearGradient subBGGradientHorizontal = LinearGradient(colors: [
     Color(0xff3764FC),
@@ -104,5 +109,25 @@ class MyColors {
       Colors.deepPurple,
     ];
     return colors[Random().nextInt(colors.length)];
+  }
+
+  static Color getOfflineColorByIndex(int index) {
+    const List<Color> colors = [
+      Colors.deepPurple,
+      Colors.green,
+      Colors.orange,
+      Colors.pink,
+      Colors.indigo,
+      Colors.red,
+      Colors.blue,
+      Colors.orange,
+      Colors.teal,
+      Colors.brown,
+      Colors.pink,
+      Colors.deepOrange,
+      Colors.deepPurple,
+    ];
+
+    return colors[index % colors.length];
   }
 }
