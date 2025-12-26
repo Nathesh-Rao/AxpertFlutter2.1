@@ -15,7 +15,7 @@ import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Contr
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Controllers/MenuMorePageController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Models/MenuItemModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Page/MenuMorePage.dart';
-// import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/pages/offline_listing_page.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/pages/offline_listing_page.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Models/FirebaseMessageModel.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetBanner.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetNotification.dart';
@@ -108,7 +108,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
         MenuDashboardPage(),
         EmptyWidget(), //NOTE to open the WebViewCalendar page handled in indexchange() method
         EmptyWidget(),
-        // OfflineListingPage() //NOTE to open the WebViewAnalytics page handled in indexchange() method
+        OfflineListingPage() //NOTE to open the WebViewAnalytics page handled in indexchange() method
       ];
     });
     showChangePassword_PopUp();

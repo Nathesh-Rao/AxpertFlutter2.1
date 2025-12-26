@@ -43,9 +43,9 @@ class AppBottomNavigation extends StatelessWidget {
                   icon: Icon(Icons.calendar_month_outlined), label: "Calendar"),
               BottomNavigationBarItem(
                   icon: Icon(Icons.analytics_outlined), label: "Analytics"),
-              // BottomNavigationBarItem(
-              //     icon: Icon(Icons.insert_page_break_outlined),
-              //     label: "Offline Pages"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.insert_page_break_outlined),
+                  label: "Offline Pages"),
               // BottomNavigationBarItem(icon: Icon(Icons.dashboard_customize_outlined), label: "More"),
             ],
           ),

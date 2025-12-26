@@ -1,7 +1,7 @@
 import 'package:axpertflutter/ModelPages/AddConnection/page/AddNewConnections.dart';
 import 'package:axpertflutter/ModelPages/InApplicationWebView/page/InApplicationWebView.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuActiveListPage/Page/PendingListItemDetails.dart';
-// import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/pages/offline_form_page.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/pages/offline_form_page.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Controller/Binding.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/AttendanceManagement/page/AttendanceManagementHomePage.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/EssHomePage/page/EssHomePage.dart';
@@ -115,10 +115,10 @@ class RoutePages {
       page: () => AttendanceManagementHomePage(),
       transition: Transition.rightToLeft,
     ),
-    // GetPage(
-    //   name: Routes.OfflineFormPage,
-    //   page: () => OfflineFormPage(),
-    //   transition: Transition.rightToLeft,
-    // ),
+    GetPage(
+      name: Routes.OfflineFormPage,
+      page: () => OfflineFormPage(),
+      transition: Transition.rightToLeft,
+    ),
   ];
 }
