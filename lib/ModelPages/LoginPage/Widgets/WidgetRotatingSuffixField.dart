@@ -32,9 +32,12 @@ class _WidgetRotatingSuffixFieldState extends State<WidgetRotatingSuffixField> w
   Widget build(BuildContext context) {
     return RotationTransition(
       turns: _controller,
-      child: Image.asset(
-        "assets/images/loading_circle.png",
-        width: widget.width,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Image.asset(
+          "assets/images/loading_circle.png",
+          width: widget.width,
+        ),
       ), // or Image.network
     );
   }

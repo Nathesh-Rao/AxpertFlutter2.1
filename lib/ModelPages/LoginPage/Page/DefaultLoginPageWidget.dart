@@ -310,7 +310,7 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           return Text(
-                            "v${snapshot.data}_${Const.APP_RELEASE_DATE}",
+                            "v${snapshot.data}${Const.APP_RELEASE_DATE}",
                             style: GoogleFonts.poppins(
                                 textStyle: TextStyle(
                                     color: MyColors.buzzilyblack,

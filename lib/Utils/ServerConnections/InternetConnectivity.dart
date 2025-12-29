@@ -30,6 +30,9 @@ class InternetConnectivity extends GetxController {
   get connectionStatus => check();
 
   void showError() {
+    if (Get.isDialogOpen == true) {
+      return; // Do nothing if dialog exists
+    }
     Get.defaultDialog(
       contentPadding: EdgeInsets.all(10),
       titlePadding: EdgeInsets.only(top: 20),
