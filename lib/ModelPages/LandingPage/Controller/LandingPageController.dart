@@ -107,6 +107,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
         ActiveListPage(),
         MenuDashboardPage(),
         EmptyWidget(), //NOTE to open the WebViewCalendar page handled in indexchange() method
+
         EmptyWidget(),
         OfflineListingPage() //NOTE to open the WebViewAnalytics page handled in indexchange() method
       ];

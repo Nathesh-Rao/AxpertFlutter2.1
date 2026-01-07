@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
@@ -94,26 +95,37 @@ class SettingsPage extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            SizedBox(width: 30),
-                            Obx(() => Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      CommonMethods.capitalize(menuHomePageController.user_nickName.value),
-                                      maxLines: 2,
-                                      style: GoogleFonts.poppins(
-                                          textStyle: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.w600)),
-                                    ),
-                                    Visibility(
-                                      visible: menuHomePageController.client_info_companyTitle.value != "",
-                                      child: Text(
-                                        menuHomePageController.client_info_companyTitle.value,
-                                        style: GoogleFonts.poppins(textStyle: TextStyle(color: Colors.white, fontSize: 15)),
+                            SizedBox(width: 20),
+                            Expanded(
+                              child: Obx(() => Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      AutoSizeText(
+                                       CommonMethods.capitalize(menuHomePageController.user_nickName.value),
+                                        maxLines: 1,
+                                        style: GoogleFonts.poppins(
+                                          textStyle: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 25, // this is the *base* font size
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        maxFontSize: 25,
+                                        minFontSize: 15,
+                                        stepGranularity: 0.5, // shrink smoothly instead of big jumps
+                                        //overflow: TextOverflow.ellipsis,
                                       ),
-                                    ),
-                                  ],
-                                )),
+                                      Visibility(
+                                        visible: menuHomePageController.client_info_companyTitle.value != "",
+                                        child: Text(
+                                          menuHomePageController.client_info_companyTitle.value,
+                                          style: GoogleFonts.poppins(textStyle: TextStyle(color: Colors.white, fontSize: 15)),
+                                        ),
+                                      ),
+                                    ],
+                                  )),
+                            ),
                           ],
                         ),
                       ),

@@ -23,8 +23,8 @@ class _WidgetTaskListState extends State<WidgetTaskList> {
       () => Visibility(
         visible: menuHomePageController.taskListData.isNotEmpty,
         child: Column(
-          children: List.generate(menuHomePageController.taskListData.length,
-              (index) => TaskListPanel(taskListData: menuHomePageController.taskListData[index])),
+          children: List.generate(
+              menuHomePageController.taskListData.length, (index) => TaskListPanel(taskListData: menuHomePageController.taskListData[index])),
         ),
       ),
     );
@@ -33,7 +33,9 @@ class _WidgetTaskListState extends State<WidgetTaskList> {
 
 class TaskListPanel extends StatefulWidget {
   const TaskListPanel({super.key, required this.taskListData});
+
   final UpdatedHomeCardDataModel taskListData;
+
   @override
   State<TaskListPanel> createState() => _TaskListPanelState();
 }
@@ -57,8 +59,7 @@ class _TaskListPanelState extends State<TaskListPanel> {
         // bHeight = bHeight2;
         bHeight = (widget.taskListData.carddata.length > 10 ? bHeight2 : _getHeight_card(widget.taskListData.carddata.length));
       } else {
-        scrollController.animateTo(scrollController.position.minScrollExtent,
-            duration: Duration(milliseconds: 300), curve: Curves.decelerate);
+        scrollController.animateTo(scrollController.position.minScrollExtent, duration: Duration(milliseconds: 300), curve: Curves.decelerate);
         bHeight = bHeight1;
       }
     });
@@ -73,6 +74,7 @@ class _TaskListPanelState extends State<TaskListPanel> {
 
     return rowCount * itemHeight + spacing + 200;
   }
+
   // @override
   // void initState() {
   //   scrollController.addListener(() {
@@ -104,9 +106,8 @@ class _TaskListPanelState extends State<TaskListPanel> {
           height: bHeight,
           child: Container(
               height: bHeight,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(topRight: Radius.circular(25), topLeft: Radius.circular(25))),
+              decoration:
+                  BoxDecoration(color: Colors.white, borderRadius: BorderRadius.only(topRight: Radius.circular(25), topLeft: Radius.circular(25))),
               child: Column(children: [
                 InkWell(
                   onTap: () {
@@ -136,19 +137,29 @@ class _TaskListPanelState extends State<TaskListPanel> {
                   height: 1,
                   thickness: 1,
                 ),
-                Expanded(
-                    child: ListView.separated(
-                  padding: EdgeInsets.only(top: 15),
-                  controller: scrollController,
-                  itemCount: widget.taskListData.carddata.length,
-                  physics: isSeeMore
-                      ? BouncingScrollPhysics(
-                          decelerationRate: ScrollDecelerationRate.fast,
-                        )
-                      : NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) => _tileWidget(widget.taskListData.carddata[index]),
-                  separatorBuilder: (context, index) => Divider(),
-                )),
+                (widget.taskListData.carddata is String)
+                    ? Expanded(
+                        child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                            child: Text(
+                          "Error: ${widget.taskListData.carddata}" ?? "",
+                          textAlign: TextAlign.center,
+                        )),
+                      ))
+                    : Expanded(
+                        child: ListView.separated(
+                        padding: EdgeInsets.only(top: 15),
+                        controller: scrollController,
+                        itemCount: widget.taskListData.carddata.length,
+                        physics: isSeeMore
+                            ? BouncingScrollPhysics(
+                                decelerationRate: ScrollDecelerationRate.fast,
+                              )
+                            : NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) => _tileWidget(widget.taskListData.carddata[index]),
+                        separatorBuilder: (context, index) => Divider(),
+                      )),
                 isSeeMoreVisible
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

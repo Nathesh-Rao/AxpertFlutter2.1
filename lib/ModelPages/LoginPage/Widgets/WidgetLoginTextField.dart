@@ -86,7 +86,20 @@ class _WidgetLoginTextFieldState extends State<WidgetLoginTextField> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   //
-
+                  suffixIcon: Padding(
+                    padding: EdgeInsets.only(right: 10),
+                    child: widget.isLoading
+                        ? const WidgetRotatingSuffixField()
+                        : isPasswordField
+                            ? IconButton(
+                                onPressed: _toggleObscure,
+                                icon: Icon(
+                                  _isObscured ? Icons.visibility_off : Icons.visibility,
+                                  color: Colors.grey,
+                                ),
+                              )
+                            : widget.suffixIcon ?? const SizedBox.shrink(),
+                  ),
                   //
                   errorText: widget.errorText!.isEmpty ? null : widget.errorText,
                   hintText: widget.hintText,
@@ -100,22 +113,24 @@ class _WidgetLoginTextFieldState extends State<WidgetLoginTextField> {
                 ),
               ),
               //Positioned(right: 20, top: 0, bottom: 0, child: widget.isLoading ? WidgetRotatingSuffixField() : widget.suffixIcon ?? SizedBox.shrink())
-              Positioned(
+             /* Positioned(
                 right: 20,
                 top: 0,
                 bottom: 0,
                 child: widget.isLoading
                     ? const WidgetRotatingSuffixField()
                     : isPasswordField
-                        ? IconButton(
-                            onPressed: _toggleObscure,
-                            icon: Icon(
-                              _isObscured ? Icons.visibility_off : Icons.visibility,
-                              color: Colors.grey,
+                        ? Center(
+                            child: IconButton(
+                              onPressed: _toggleObscure,
+                              icon: Icon(
+                                _isObscured ? Icons.visibility_off : Icons.visibility,
+                                color: Colors.grey,
+                              ),
                             ),
                           )
                         : widget.suffixIcon ?? const SizedBox.shrink(),
-              ),
+              ),*/
             ],
           ),
         ],

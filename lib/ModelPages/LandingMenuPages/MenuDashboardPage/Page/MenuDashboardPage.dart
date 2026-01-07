@@ -32,7 +32,7 @@ class MenuDashboardPage extends StatelessWidget {
                 child: EmptyInfoWidget(
                   image: "assets/images/empty-chart.png",
                   title: "No Chart Data Available",
-                  subTitle: "There is chart data to show you right now",
+                  subTitle: "There is no chart data to show you right now",
                   widthFactor: 2.5,
                 ),
               ),
