@@ -11,6 +11,8 @@ class OfflineStaticFormPageV2Compact
 
   @override
   Widget build(BuildContext context) {
+    final ScrollController _scrollCtrl = ScrollController();
+
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -21,6 +23,19 @@ class OfflineStaticFormPageV2Compact
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.resetForm();
+      _scrollCtrl.addListener(() {
+        if (!_scrollCtrl.hasClients) return;
+
+        final max = _scrollCtrl.position.maxScrollExtent;
+        final offset = _scrollCtrl.offset;
+
+        // consider near bottom if within 80px
+        if (offset > max - 80) {
+          controller.isAtTop.value = false;
+        } else if (offset < 80) {
+          controller.isAtTop.value = true;
+        }
+      });
     });
 
     return Scaffold(
@@ -50,6 +65,7 @@ class OfflineStaticFormPageV2Compact
         iconTheme: const IconThemeData(color: Colors.black87),
       ),
       body: ListView(
+        controller: _scrollCtrl,
         padding: const EdgeInsets.all(16),
         children: [
           _Section(
@@ -117,6 +133,131 @@ class OfflineStaticFormPageV2Compact
           const SizedBox(height: 24),
         ],
       ),
+      // floatingActionButton: Obx(() {
+      //   if (!controller.showMiniFab.value) return const SizedBox.shrink();
+
+      //   return FloatingActionButton(
+      //     backgroundColor: MyColors.blue10,
+      //     onPressed: () {
+      //       // you decide what this does
+      //       // Get.dialog(const SampleDetailsDialog());
+      //       controller.openSampleDetailsDialog();
+      //     },
+      //     child: const Icon(Icons.table_rows_outlined),
+      //   );
+      // }),
+
+      floatingActionButton: Row(
+        children: [
+          SizedBox(
+            width: 40,
+          ),
+
+          Obx(() {
+            return FloatingActionButton(
+              heroTag: "scrollFab",
+              backgroundColor: Colors.white,
+              // elevation: 3,
+              onPressed: () {
+                if (!_scrollCtrl.hasClients) return;
+
+                if (controller.isAtTop.value) {
+                  _scrollCtrl.animateTo(
+                    _scrollCtrl.position.maxScrollExtent,
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.easeInOut,
+                  );
+                } else {
+                  _scrollCtrl.animateTo(
+                    0,
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.easeInOut,
+                  );
+                }
+              },
+              child: Icon(
+                controller.isAtTop.value
+                    ? Icons.keyboard_arrow_down
+                    : Icons.keyboard_arrow_up,
+                color: MyColors.baseBlue,
+              ),
+            );
+          }),
+          Spacer(),
+          // ---------- RIGHT SAMPLE FAB ----------
+          Obx(() {
+            if (!controller.showMiniFab.value) return const SizedBox.shrink();
+
+            return FloatingActionButton(
+              heroTag: "sampleFab",
+              backgroundColor: MyColors.blue10,
+              onPressed: () {
+                controller.openSampleDetailsDialog();
+              },
+              child: const Icon(Icons.table_rows_outlined),
+            );
+          }),
+        ],
+      ),
+
+      // floatingActionButton: Stack(
+      //   children: [
+      //     // ---------- LEFT SCROLL TOGGLE FAB ----------
+      //     Positioned(
+      //       left: 26,
+      //       bottom: 16,
+      //       child: Obx(() {
+      //         return FloatingActionButton(
+      //           heroTag: "scrollFab",
+      //           backgroundColor: Colors.white,
+      //           // elevation: 3,
+      //           onPressed: () {
+      //             if (!_scrollCtrl.hasClients) return;
+
+      //             if (controller.isAtTop.value) {
+      //               _scrollCtrl.animateTo(
+      //                 _scrollCtrl.position.maxScrollExtent,
+      //                 duration: const Duration(milliseconds: 500),
+      //                 curve: Curves.easeInOut,
+      //               );
+      //             } else {
+      //               _scrollCtrl.animateTo(
+      //                 0,
+      //                 duration: const Duration(milliseconds: 500),
+      //                 curve: Curves.easeInOut,
+      //               );
+      //             }
+      //           },
+      //           child: Icon(
+      //             controller.isAtTop.value
+      //                 ? Icons.keyboard_arrow_down
+      //                 : Icons.keyboard_arrow_up,
+      //             color: MyColors.baseBlue,
+      //           ),
+      //         );
+      //       }),
+      //     ),
+
+      //     // ---------- RIGHT SAMPLE FAB ----------
+      //     Positioned(
+      //       right: 16,
+      //       bottom: 16,
+      //       child: Obx(() {
+      //         if (!controller.showMiniFab.value) return const SizedBox.shrink();
+
+      //         return FloatingActionButton(
+      //           heroTag: "sampleFab",
+      //           backgroundColor: MyColors.blue10,
+      //           onPressed: () {
+      //             controller.openSampleDetailsDialog();
+      //           },
+      //           child: const Icon(Icons.table_rows_outlined),
+      //         );
+      //       }),
+      //     ),
+      //   ],
+      // ),
+
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(8.0),
         child: SizedBox(
@@ -168,6 +309,11 @@ class OfflineStaticFormPageV2Compact
           controller: ctrl,
           keyboardType: TextInputType.number,
           decoration: _inputDecoration(label, hasError),
+          onChanged: (v) {
+            if (key == "bagsToSample") {
+              controller.onBagsToSampleChanged(v);
+            }
+          },
         );
       }),
     );
