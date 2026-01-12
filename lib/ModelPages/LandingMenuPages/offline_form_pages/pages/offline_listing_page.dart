@@ -2,6 +2,8 @@ import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/controller/offline_form_controller.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/controller/offline_static_form_controller.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/inward_entry/inward_entry_dynamic_controller.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/inward_entry/inward_entry_dynamic_page_v1.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/models/form_page_model.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/pages/offline_static_page.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/widgets/offline_page_card.dart';
@@ -16,6 +18,7 @@ class OfflineListingPage extends GetView<OfflineFormController> {
   @override
   Widget build(BuildContext context) {
     Get.put(OfflineStaticFormController());
+    var inwardEntryDynamicController = Get.put(InwardEntryDynamicController());
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.getAllPages();
     });
@@ -33,7 +36,7 @@ class OfflineListingPage extends GetView<OfflineFormController> {
                 padding: EdgeInsets.symmetric(
                   horizontal: 10,
                 ),
-                itemCount: controller.allPages.length,
+                itemCount: controller.allPages.length + 1,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   childAspectRatio: 1,
@@ -45,24 +48,122 @@ class OfflineListingPage extends GetView<OfflineFormController> {
                 //   index,
                 // ),
                 itemBuilder: (_, index) {
-                  final page = controller.allPages[index];
-                  return OfflinePageCardCupertino(
-                    page: page,
-                    index: index,
-                    onTap: () => controller.loadPage(page),
-                    useColoredTile: true,
-                  );
+                  if (index < controller.allPages.length) {
+                    final page = controller.allPages[index];
+                    return OfflinePageCardCupertino(
+                      page: page,
+                      index: index,
+                      onTap: () => controller.loadPage(page),
+                      useColoredTile: true,
+                    );
+                  } else {
+                    return SquareActionTile(
+                      icon: Icons.pages,
+                      title: "Inward Entry",
+                      onTap: () {
+                        inwardEntryDynamicController.prepareForm();
+                        Get.to(() => const InwardEntryDynamicPageV1(),
+                            transition: Transition.rightToLeft);
+                      },
+                    );
+                  }
                 },
               ),
             ),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Get.to(OfflineStaticFormPageV2Compact());
-        },
-        child: Icon(Icons.pages),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     // Get.to(OfflineStaticFormPageV2Compact());
+
+      //   },
+      //   child: Icon(Icons.pages),
+      // ),
+    );
+  }
+}
+
+class SquareActionTile extends StatelessWidget {
+  final String title;
+  final String? subtitle;
+  final IconData icon;
+  final VoidCallback onTap;
+  final Color? color;
+
+  const SquareActionTile({
+    super.key,
+    required this.title,
+    required this.icon,
+    required this.onTap,
+    this.subtitle,
+    this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final Color bg = color ?? const Color(0xFF2563EB);
+
+    return AspectRatio(
+      aspectRatio: 1,
+      child: Material(
+        color: bg,
+        borderRadius: BorderRadius.circular(18),
+        elevation: 0,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(18),
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Icon bubble
+                Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.18),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    icon,
+                    size: 22,
+                    color: Colors.white,
+                  ),
+                ),
+
+                const Spacer(),
+
+                Text(
+                  title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                    height: 1.2,
+                  ),
+                ),
+
+                if (subtitle != null) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle!,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.poppins(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white.withValues(alpha: 0.85),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

@@ -14,4 +14,26 @@ class SampleBagModel {
   final TextEditingController mafYearCtrl = TextEditingController();
 
   SampleBagModel({required this.sno});
+
+
+
+
+
+
+
+  static final tempData = {
+    "ID1": {
+      "Broken": "",
+      "Neck Chip": "",
+      "Extra Dirty": "",
+      "short": "",
+      "Other Brand": "",
+      "Other KF": "",
+      "Torn Bags": "",
+      "Maf date": "",
+      "Maf Year": ""
+    },
+  };
+
+
 }
