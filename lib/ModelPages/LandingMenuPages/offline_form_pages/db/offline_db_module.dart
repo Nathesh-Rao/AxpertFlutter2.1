@@ -1,9 +1,10 @@
 import 'dart:convert';
 
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/models/form_page_model.dart';
+import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-
+import 'package:http/http.dart' as http;
 import 'offline_datasources.dart';
 import 'offline_db_constants.dart';
 
@@ -37,6 +38,7 @@ class OfflineDbModule {
     await db.execute(OfflineDBConstants.CREATE_DATASOURCES_TABLE);
     await db.execute(OfflineDBConstants.CREATE_DATASOURCE_DATA_TABLE);
     await db.execute(OfflineDBConstants.CREATE_PENDING_REQUESTS_TABLE);
+    await db.execute(OfflineDBConstants.CREATE_OFFLINE_USER_TABLE);
   }
 
   // LOGIN FLOW
@@ -51,35 +53,75 @@ class OfflineDbModule {
     await fetchAndStoreAllDatasources();
   }
 
-  // OFFLINE PAGES
   static Future<List<Map<String, dynamic>>> fetchAndStoreOfflinePages() async {
-    final res = await OfflineDatasources.get(
-      endpoint: OfflineDatasources.API_FETCH_OFFLINE_PAGES,
-    );
+    const String tag = "[OFFLINE_PAGES_FETCH_001]";
 
-    if (res == null || res.isEmpty) return [];
+    try {
+      LogService.writeLog(
+          message: "$tag[START] Fetching offline pages from JSON file");
 
-    final decoded = jsonDecode(res) as List<dynamic>;
-    final pages = decoded.map((e) => e as Map<String, dynamic>).toList();
-
-    final batch = _database.batch();
-    for (final page in pages) {
-      batch.insert(
-        OfflineDBConstants.TABLE_OFFLINE_PAGES,
-        {
-          OfflineDBConstants.COL_TRANS_ID: page['transid'],
-          OfflineDBConstants.COL_PAGE_JSON: jsonEncode(page),
-          OfflineDBConstants.COL_FETCHED_AT: DateTime.now().toIso8601String(),
-        },
-        conflictAlgorithm: ConflictAlgorithm.replace,
+      final res = await http.get(
+        Uri.parse(OfflineDBConstants.OFFLINE_PAGES_URL),
       );
+
+      if (res.statusCode != 200) {
+        LogService.writeLog(
+          message: "$tag[FAILED] HTTP ${res.statusCode} while fetching JSON",
+        );
+        return [];
+      }
+
+      final decoded = jsonDecode(utf8.decode(res.bodyBytes)) as List<dynamic>;
+      final pages = decoded.map((e) => e as Map<String, dynamic>).toList();
+
+      if (pages.isEmpty) {
+        LogService.writeLog(message: "$tag[INFO] JSON has 0 pages");
+        return [];
+      }
+
+      // ✅ IMPORTANT: Clear old pages first
+      await _database.delete(OfflineDBConstants.TABLE_OFFLINE_PAGES);
+
+      final batch = _database.batch();
+
+      for (final page in pages) {
+        batch.insert(
+          OfflineDBConstants.TABLE_OFFLINE_PAGES,
+          {
+            OfflineDBConstants.COL_TRANS_ID: page['transid'],
+            OfflineDBConstants.COL_PAGE_JSON: jsonEncode(page),
+            OfflineDBConstants.COL_FETCHED_AT: DateTime.now().toIso8601String(),
+          },
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
+
+      await batch.commit(noResult: true);
+
+      final dsString = _extractDatasourceString(pages);
+      await _saveDatasourceString(dsString);
+
+      LogService.writeLog(
+        message: "$tag[SUCCESS] Replaced pages with ${pages.length} records",
+      );
+
+      return pages;
+    } catch (e, st) {
+      LogService.writeLog(
+        message: "$tag[FAILED] Exception while fetching pages => $e",
+      );
+      LogService.writeLog(
+        message: "$tag[STACK] $st",
+      );
+      return [];
     }
-    await batch.commit(noResult: true);
+  }
 
-    final dsString = _extractDatasourceString(pages);
-    await _saveDatasourceString(dsString);
-
-    return pages;
+  static Future<int> getOfflinePagesCount() async {
+    final res = await _database.rawQuery(
+      "SELECT COUNT(*) as cnt FROM ${OfflineDBConstants.TABLE_OFFLINE_PAGES}",
+    );
+    return Sqflite.firstIntValue(res) ?? 0;
   }
 
   static Future<List<Map<String, dynamic>>> getOfflinePages() async {
@@ -309,5 +351,141 @@ class OfflineDbModule {
   static Future<void> clearAllData() async {
     await clearOfflineCache();
     await clearPendingRequests();
+  }
+
+  static Future<void> saveLastUser(Map<String, dynamic> loginResult) async {
+    const String tag = "[OFFLINE_USER_SAVE_001]";
+    try {
+      final result = loginResult['result'] ?? loginResult;
+
+      // final data = {
+      //   OfflineDBConstants.COL_ID: 1, // ALWAYS SINGLE ROW
+      //   OfflineDBConstants.COL_USER_ID: result['username']?.toString() ?? '',
+      //   OfflineDBConstants.COL_USERNAME: result['username']?.toString() ?? '',
+      //   OfflineDBConstants.COL_DISPLAY_NAME: result['nickname']?.toString() ??
+      //       result['username']?.toString() ??
+      //       '',
+      //   OfflineDBConstants.COL_SESSION_ID:
+      //       result['ARMSessionId']?.toString() ?? '',
+      //   OfflineDBConstants.COL_RAW_JSON: jsonEncode(result),
+      //   OfflineDBConstants.COL_LAST_LOGIN_AT: DateTime.now().toIso8601String(),
+      // };
+      final data = {
+        OfflineDBConstants.COL_ID: 1,
+        OfflineDBConstants.COL_USER_ID: result['username']?.toString() ?? '',
+        OfflineDBConstants.COL_USERNAME: result['username']?.toString() ?? '',
+        OfflineDBConstants.COL_DISPLAY_NAME: result['nickname']?.toString() ??
+            result['username']?.toString() ??
+            '',
+        OfflineDBConstants.COL_SESSION_ID:
+            result['ARMSessionId']?.toString() ?? '',
+        OfflineDBConstants.COL_PROJECT_NAME:
+            result['appname']?.toString() ?? '',
+        OfflineDBConstants.COL_RAW_JSON: jsonEncode(result),
+        OfflineDBConstants.COL_LAST_LOGIN_AT: DateTime.now().toIso8601String(),
+      };
+
+      await _database.insert(
+        OfflineDBConstants.TABLE_OFFLINE_USER,
+        data,
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+
+      LogService.writeLog(message: "$tag[SUCCESS] Offline user saved");
+    } catch (e, st) {
+      LogService.writeLog(
+          message: "$tag[FAILED] Failed to save offline user => $e");
+      LogService.writeLog(message: "$tag[STACK] $st");
+    }
+  }
+
+  static Future<Map<String, dynamic>?> getLastUser() async {
+    const String tag = "[OFFLINE_USER_GET_001]";
+    try {
+      final result = await _database.query(
+        OfflineDBConstants.TABLE_OFFLINE_USER,
+        where: '${OfflineDBConstants.COL_ID} = ?',
+        whereArgs: [1],
+        limit: 1,
+      );
+
+      if (result.isEmpty) {
+        LogService.writeLog(message: "$tag[INFO] No offline user found");
+        return null;
+      }
+
+      final row = result.first;
+      final rawJson = row[OfflineDBConstants.COL_RAW_JSON] as String;
+
+      return jsonDecode(rawJson) as Map<String, dynamic>;
+    } catch (e, st) {
+      LogService.writeLog(
+          message: "$tag[FAILED] Failed to load offline user => $e");
+      LogService.writeLog(message: "$tag[STACK] $st");
+      return null;
+    }
+  }
+
+  static Future<int> getPendingCount() async {
+    final result = await _database.rawQuery(
+      'SELECT COUNT(*) as cnt FROM ${OfflineDBConstants.TABLE_PENDING_REQUESTS} WHERE ${OfflineDBConstants.COL_STATUS} IN (${OfflineDBConstants.STATUS_PENDING}, ${OfflineDBConstants.STATUS_ERROR})',
+    );
+    return Sqflite.firstIntValue(result) ?? 0;
+  }
+
+  static Future<void> refetchAll({required bool isOnline}) async {
+    await syncAllData(isInternetAvailable: isOnline);
+  }
+
+  static Future<void> refetchOnlyForms() async {
+    await _database.delete(OfflineDBConstants.TABLE_OFFLINE_PAGES);
+    await fetchAndStoreOfflinePages();
+  }
+
+  static Future<void> refetchOnlyDatasources() async {
+    await _database.delete(OfflineDBConstants.TABLE_DATASOURCE_DATA);
+    await fetchAndStoreAllDatasources();
+  }
+
+  static Future<void> deleteTable(String table) async {
+    await _database.delete(table);
+  }
+
+  static Future<void> clearOfflinePages() async {
+    await _database.delete(OfflineDBConstants.TABLE_OFFLINE_PAGES);
+  }
+
+  static Future<void> clearDatasources() async {
+    await _database.delete(OfflineDBConstants.TABLE_DATASOURCES);
+    await _database.delete(OfflineDBConstants.TABLE_DATASOURCE_DATA);
+  }
+
+  static Future<void> clearPendingQueue() async {
+    await clearPendingRequests();
+  }
+
+  static Future<void> clearAllExceptUser() async {
+    await clearOfflineCache();
+    await clearPendingRequests();
+  }
+
+  static Future<void> syncAll({
+    required bool isInternetAvailable,
+  }) async {
+    await syncAllData(isInternetAvailable: isInternetAvailable);
+  }
+
+  static Future<void> refetchAllData({
+    required bool isOnline,
+  }) async {
+    await refetchAll(isOnline: isOnline);
+  }
+
+  static Future<void> clearOnlyForms() async {
+    await clearOfflinePages();
+  }
+
+  static Future<void> clearOnlyDatasources() async {
+    await clearDatasources();
   }
 }

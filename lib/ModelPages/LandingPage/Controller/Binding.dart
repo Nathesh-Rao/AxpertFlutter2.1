@@ -13,7 +13,7 @@ class LandingPageBinding extends Bindings {
     Get.lazyPut(() => LandingPageController());
     Get.lazyPut(() => WebViewController());
     Get.lazyPut(() => MenuDashboardController());
-    Get.lazyPut(() => OfflineFormController());
+
     // Get.lazyPut(() => OfflineFormController());
   }
 }

@@ -7,6 +7,7 @@ import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/inw
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/models/form_page_model.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/pages/offline_static_page.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/widgets/offline_page_card.dart';
+import 'package:axpertflutter/Utils/ServerConnections/InternetConnectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,11 +20,19 @@ class OfflineListingPage extends GetView<OfflineFormController> {
   Widget build(BuildContext context) {
     Get.put(OfflineStaticFormController());
     var inwardEntryDynamicController = Get.put(InwardEntryDynamicController());
+    InternetConnectivity connectionController = Get.find();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.getAllPages();
     });
 
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Color(0xFFF8F7F4),
+        foregroundColor: MyColors.AXMDark,
+        automaticallyImplyLeading: false,
+        title: Text("Offline Forms"),
+      ),
       backgroundColor: Color(0xFFF8F7F4),
       body: Column(
         children: [

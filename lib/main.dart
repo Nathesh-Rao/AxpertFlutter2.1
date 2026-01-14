@@ -5,10 +5,12 @@ import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Constants/Const.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/db/offline_db_module.dart';
 import 'package:axpertflutter/Services/LocationServiceManager/LocationServiceManager.dart';
 import 'package:axpertflutter/Utils/FirebaseHandler/FirebaseMessagesHandler.dart';
 import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:axpertflutter/Utils/ServerConnections/InternetConnectivity.dart';
+import 'package:axpertflutter/Utils/Utility/initial_bindings.dart';
 import 'package:axpertflutter/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -66,6 +68,18 @@ Future<void> main() async {
   if (Platform.isAndroid) {
     await InAppWebViewController.setWebContentsDebuggingEnabled(true);
   }
+  try {
+    await OfflineDbModule.init();
+    LogService.writeLog(
+      message: "[OFFLINE_DB_INIT_001][SUCCESS] Offline DB initialized",
+    );
+  } catch (e, st) {
+    LogService.writeLog(
+      message: "[OFFLINE_DB_INIT_001][FAILED] Offline DB init failed => $e",
+    );
+    LogService.writeLog(message: "[OFFLINE_DB_INIT_001][STACK] $st");
+  }
+
   runApp(MyApp());
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: Colors.black38));
@@ -161,7 +175,7 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.light,
       theme: Const.THEMEDATA,
       initialRoute: Routes.SplashScreen,
-
+      initialBinding: InitialBindings(),
       // initialRoute: Routes.SettingsPage,
       getPages: RoutePages.pages,
       // builder: EasyLoading.init(),

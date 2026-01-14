@@ -15,10 +15,12 @@ import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuHomePagePage/Contr
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Controllers/MenuMorePageController.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Models/MenuItemModel.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Page/MenuMorePage.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/db/offline_db_module.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/pages/offline_listing_page.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Models/FirebaseMessageModel.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetBanner.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetNotification.dart';
+import 'package:axpertflutter/Utils/ServerConnections/InternetConnectivity.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -85,6 +87,45 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
   var list = [WidgetNotification(FirebaseMessageModel("Title 1", "Body 1"))];
   var list_bannerItem = [].obs;
   bool isAxpertConnectEstablished = false;
+
+//////////////////////////////////////////////
+
+  @override
+  void onReady() {
+    super.onReady();
+
+    _startPostLoginSync();
+  }
+
+  void _startPostLoginSync() async {
+    const String tag = "[OFFLINE_POSTLOGIN_001]";
+
+    try {
+      final isOnline = Get.find<InternetConnectivity>().isConnected.value;
+
+      LogService.writeLog(
+        message:
+            "$tag[START] Post-login offline sync started. isOnline=$isOnline",
+      );
+
+      await OfflineDbModule.handlePostLogin(
+        isInternetAvailable: isOnline,
+      );
+
+      LogService.writeLog(
+        message: "$tag[SUCCESS] Post-login offline sync finished",
+      );
+    } catch (e, st) {
+      LogService.writeLog(
+        message: "$tag[FAILED] Post-login sync failed => $e",
+      );
+      LogService.writeLog(
+        message: "$tag[STACK] $st",
+      );
+    }
+  }
+
+//////////////////////////////////////////////
 
   getPage() {
     if (bottomIndex.value == 0) {
