@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:axpertflutter/Constants/MyColors.dart';
-import 'package:axpertflutter/Constants/Routes.dart';
 import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -11,66 +10,84 @@ import 'package:google_fonts/google_fonts.dart';
 class InternetConnectivity extends GetxController {
   var isConnected = false.obs;
 
+  bool _lastConnectionState = true; // assume online initially
+
   InternetConnectivity() {
     connectivity_listen();
+    check(); // initial check
   }
 
+  // =================================================
+  // CHECK CURRENT STATE
+  // =================================================
   Future<bool> check() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult.contains(ConnectivityResult.mobile)) {
-      isConnected.value = true;
-      return true;
-    } else if (connectivityResult.contains(ConnectivityResult.wifi)) {
-      isConnected.value = true;
-      return true;
-    }
-    isConnected.value = false;
-    showError();
-    return false;
+    var result = await Connectivity().checkConnectivity();
+
+    final nowOnline = result.contains(ConnectivityResult.mobile) ||
+        result.contains(ConnectivityResult.wifi);
+
+    _handleStateChange(nowOnline);
+
+    return nowOnline;
   }
 
   get connectionStatus => check();
 
-  // void showError() {
-  //   if (Get.isDialogOpen == true) {
-  //     return; // Do nothing if dialog exists
-  //   }
-  //   Get.defaultDialog(
-  //     contentPadding: EdgeInsets.all(10),
-  //     titlePadding: EdgeInsets.only(top: 20),
-  //     title: "No Connection!",
-  //     middleText: "Please check your internet connectivity",
-  //     barrierDismissible: false,
-  //     //"No Internet Connections are available.\nPlease try again later",
-  //     confirm: ElevatedButton(
-  //         onPressed: () async {
-  //           Get.back();
-  //           Timer(Duration(milliseconds: 400), () async {
-  //             check().then((value) {
-  //               if (value == true) {
-  //                 doRefresh(Get.currentRoute);
-  //               }
-  //             });
-  //           });
-  //         },
-  //         child: Text("Ok")),
-  //     // cancel: TextButton(
-  //     //     onPressed: () {
-  //     //       Get.back();
-  //     //     },
-  //     //     child: Text("Ok"))
-  //   );
-  // }
-  void showError() {
-    if (Get.isDialogOpen == true) {
+  // =================================================
+  // LISTEN TO CHANGES
+  // =================================================
+  void connectivity_listen() {
+    Connectivity().onConnectivityChanged.listen(
+      (List<ConnectivityResult> result) {
+        LogService.writeLog(message: "connectivity listen $result");
+
+        final nowOnline = result.contains(ConnectivityResult.mobile) ||
+            result.contains(ConnectivityResult.wifi);
+
+        _handleStateChange(nowOnline);
+      },
+    );
+  }
+
+  // =================================================
+  // CORE STATE MACHINE
+  // =================================================
+  void _handleStateChange(bool nowOnline) {
+    if (_lastConnectionState == nowOnline) {
+      // No actual state change, ignore noisy events
       return;
     }
 
-    const String tag = "[OFFLINE_DIALOG_001]";
+    _lastConnectionState = nowOnline;
+    isConnected.value = nowOnline;
+
+    // Close any existing dialog before showing new one
+    if (Get.isDialogOpen == true) {
+      Get.back();
+    }
+
+    if (nowOnline) {
+      LogService.writeLog(message: "[NET] Back online");
+      Future.delayed(const Duration(milliseconds: 200), () {
+        showBackOnlineDialog();
+      });
+    } else {
+      LogService.writeLog(message: "[NET] Went offline");
+      Future.delayed(const Duration(milliseconds: 200), () {
+        showNoInternetDialog();
+      });
+    }
+  }
+
+  // =================================================
+  // NO INTERNET DIALOG
+  // =================================================
+  void showNoInternetDialog() {
+    if (Get.isDialogOpen == true) return;
 
     Get.dialog(
       WillPopScope(
-        onWillPop: () async => false, // block back button
+        onWillPop: () async => false,
         child: Dialog(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
@@ -79,7 +96,6 @@ class InternetConnectivity extends GetxController {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // ===== ICON =====
                 Container(
                   width: 64,
                   height: 64,
@@ -93,9 +109,7 @@ class InternetConnectivity extends GetxController {
                     color: Colors.redAccent,
                   ),
                 ),
-
                 const SizedBox(height: 16),
-
                 Text(
                   "No Connection",
                   style: GoogleFonts.poppins(
@@ -104,12 +118,9 @@ class InternetConnectivity extends GetxController {
                     color: MyColors.AXMDark,
                   ),
                 ),
-
                 const SizedBox(height: 8),
-
-                // ===== MESSAGE =====
                 Text(
-                  "You are currently offline.\nYou can retry or continue in offline mode.",
+                  "Please check your internet connectivity.",
                   textAlign: TextAlign.center,
                   style: GoogleFonts.poppins(
                     fontSize: 13,
@@ -117,68 +128,30 @@ class InternetConnectivity extends GetxController {
                     color: MyColors.AXMGray,
                   ),
                 ),
-
                 const SizedBox(height: 20),
-
                 Row(
                   children: [
                     Expanded(
                       child: OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          side: BorderSide(color: MyColors.blue2),
-                        ),
-                        onPressed: () async {
+                        onPressed: () {
                           Get.back();
-
-                          LogService.writeLog(
-                              message: "$tag[INFO] Retry connection clicked");
-
-                          Timer(const Duration(milliseconds: 400), () async {
-                            final ok = await check();
-                            if (ok == true) {
-                              doRefresh(Get.currentRoute);
-                            }
-                          });
                         },
-                        child: Text(
-                          "Retry",
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w600,
-                            color: MyColors.blue2,
-                          ),
-                        ),
+                        child: const Text("OK"),
                       ),
                     ),
-
                     const SizedBox(width: 12),
-
-                    // ---- OFFLINE ----
                     Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: MyColors.blue2,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
                         ),
                         onPressed: () async {
                           Get.back();
-
-                          LogService.writeLog(
-                              message: "$tag[INFO] Enter offline mode clicked");
-
-                          Get.offAllNamed(Routes.SplashScreen);
+                          await Future.delayed(
+                              const Duration(milliseconds: 300));
+                          await check();
                         },
-                        child: Text(
-                          "Axpert Offline",
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
+                        child: const Text("Retry"),
                       ),
                     ),
                   ],
@@ -192,38 +165,87 @@ class InternetConnectivity extends GetxController {
     );
   }
 
-  connectivity_listen() async {
-    await Connectivity().onConnectivityChanged.listen(
-      (List<ConnectivityResult> result) async {
-        LogService.writeLog(message: "connectivity listen $result");
-        if (result.contains(ConnectivityResult.mobile) ||
-            result.contains(ConnectivityResult.wifi)) {
-          isConnected.value = true;
-        } else {
-          isConnected.value = false;
-          showError();
-        }
-      },
-      // (result){
-      //     if (result == ConnectivityResult.mobile || result == ConnectivityResult.wifi) {
-      //       isConnected.value = true;
-      //     } else {
-      //       isConnected.value = false;
-      //       showError();
-      //     }
-      // }
-    );
-  }
-}
+  // =================================================
+  // BACK ONLINE DIALOG
+  // =================================================
+  void showBackOnlineDialog() {
+    if (Get.isDialogOpen == true) return;
 
-doRefresh(String currentRoute) {
-  print(currentRoute);
-  switch (currentRoute) {
-    case Routes.Login:
-      // LoginController loginController = Get.find();
-      // loginController.fetchUserTypeList();
-      break;
-    default:
-      break;
+    Get.dialog(
+      WillPopScope(
+        onWillPop: () async => false,
+        child: Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.green.withOpacity(0.1),
+                  ),
+                  child: const Icon(
+                    Icons.wifi,
+                    size: 34,
+                    color: Colors.green,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  "Connection Restored",
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: MyColors.AXMDark,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "Internet is available now. How do you want to continue?",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: MyColors.AXMGray,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        child: const Text("Continue Offline"),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: MyColors.blue2,
+                        ),
+                        onPressed: () {
+                          Get.back();
+                          // App flow will decide what to do next
+                        },
+                        child: const Text("Continue Online"),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      barrierDismissible: false,
+    );
   }
 }

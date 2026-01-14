@@ -30,7 +30,7 @@ class OfflineFormController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    loadOfflineDashboard(); // 👈 THIS WAS MISSING
+    // loadOfflineDashboard(); // 👈 THIS WAS MISSING
   }
 
   Map<String, dynamic>? offlineUser;
@@ -364,24 +364,24 @@ class OfflineFormController extends GetxController {
     return parts.join(', ');
   }
 
-  Future<void> loadOfflineDashboard() async {
-    const String tag = "[OFFLINE_DASHBOARD_001]";
+  // Future<void> loadOfflineDashboard() async {
+  //   const String tag = "[OFFLINE_DASHBOARD_001]";
 
-    try {
-      LogService.writeLog(message: "$tag[START] Loading offline dashboard");
+  //   try {
+  //     LogService.writeLog(message: "$tag[START] Loading offline dashboard");
 
-      offlineUser = await OfflineDbModule.getLastUser();
-      offlineFormsCount.value = await OfflineDbModule.getOfflinePagesCount();
-      pendingCount = await OfflineDbModule.getPendingCount();
+  //     offlineUser = await OfflineDbModule.getLastUser();
+  //     offlineFormsCount.value = await OfflineDbModule.getOfflinePagesCount();
+  //     pendingCount = await OfflineDbModule.getPendingCount();
 
-      update();
+  //     update();
 
-      LogService.writeLog(message: "$tag[SUCCESS] Dashboard loaded");
-    } catch (e, st) {
-      LogService.writeLog(message: "$tag[FAILED] $e");
-      LogService.writeLog(message: "$tag[STACK] $st");
-    }
-  }
+  //     LogService.writeLog(message: "$tag[SUCCESS] Dashboard loaded");
+  //   } catch (e, st) {
+  //     LogService.writeLog(message: "$tag[FAILED] $e");
+  //     LogService.writeLog(message: "$tag[STACK] $st");
+  //   }
+  // }
 
   Future<bool> guardOnlineOrShowDialog() async {
     final connectivity = Get.find<InternetConnectivity>();
@@ -435,7 +435,7 @@ class OfflineFormController extends GetxController {
 
     try {
       await action();
-      await loadOfflineDashboard();
+      // await loadOfflineDashboard();
     } finally {
       isDashboardBusy = false;
       update();
@@ -558,7 +558,7 @@ class OfflineFormController extends GetxController {
       await OfflineDbModule.fetchAndStoreAllDatasources();
 
       await getAllPages();
-      await loadOfflineDashboard();
+      // await loadOfflineDashboard();
 
       Get.snackbar("Success", "Offline data synced successfully");
       LogService.writeLog(message: "$tag[SUCCESS]");
@@ -590,7 +590,7 @@ class OfflineFormController extends GetxController {
 
       await OfflineDbModule.fetchAndStoreOfflinePages();
       await getAllPages();
-      await loadOfflineDashboard();
+      // await loadOfflineDashboard();
 
       Get.snackbar("Success", "Forms refreshed");
       LogService.writeLog(message: "$tag[SUCCESS]");
@@ -648,7 +648,7 @@ class OfflineFormController extends GetxController {
 
       await OfflineDbModule.clearOfflinePages();
       await getAllPages();
-      await loadOfflineDashboard();
+      // await loadOfflineDashboard();
 
       Get.snackbar("Done", "Offline forms cleared");
       LogService.writeLog(message: "$tag[SUCCESS]");
@@ -726,7 +726,7 @@ class OfflineFormController extends GetxController {
 
       await OfflineDbModule.clearAllExceptUser();
       await getAllPages();
-      await loadOfflineDashboard();
+      // await loadOfflineDashboard();
 
       Get.snackbar("Done", "All offline data cleared");
       LogService.writeLog(message: "$tag[SUCCESS]");

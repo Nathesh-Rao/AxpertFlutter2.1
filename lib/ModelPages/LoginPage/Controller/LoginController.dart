@@ -10,6 +10,7 @@ import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/db/
 import 'package:axpertflutter/ModelPages/LoginPage/Models/SigninDetailsModel.dart';
 import 'package:axpertflutter/ModelPages/LoginPage/Page/LoginPage.dart';
 import 'package:axpertflutter/Utils/LogServices/LogService.dart';
+import 'package:axpertflutter/Utils/ServerConnections/InternetConnectivity.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -28,7 +29,8 @@ import '../Models/AuthUserDetailsModel.dart';
 
 class LoginController extends GetxController {
   GlobalVariableController globalVariableController = Get.find();
-
+  // InternetConnectivity internetConnectivity = Get.find();
+  var isOfflineLogin = false.obs;
   ServerConnections serverConnections = ServerConnections();
   // final googleLoginIn = GoogleSignIn();
   AppStorage appStorage = AppStorage();
@@ -75,6 +77,23 @@ class LoginController extends GetxController {
 
     // 16_KB_AMR
     _initializeGoogleSignIn();
+  }
+  @override
+  void onInit() {
+    super.onInit();
+    listenInternetState();
+  }
+
+  void listenInternetState() async {
+    final InternetConnectivity net = Get.find<InternetConnectivity>();
+
+    // Set initial value
+    isOfflineLogin.value = !await net.check();
+
+    // Listen to future changes
+    ever<bool>(net.isConnected, (connected) {
+      isOfflineLogin.value = !connected;
+    });
   }
 
   setWillAuthenticate() async {
@@ -618,32 +637,137 @@ class LoginController extends GetxController {
   onLoad() async {
     currentProjectName.value =
         await appStorage.retrieveValue(AppStorage.PROJECT_NAME) ?? '';
+
+    // initializeLoginPage();
   }
 
   startLoginProcess() async {
-    authType.value = await getLoginUserDetailsAndAuthType();
+    if (isOfflineLogin.value) {
+      startLoginProcessOffline();
+    } else {
+      authType.value = await getLoginUserDetailsAndAuthType();
 
-    if (authType.value == AuthType.otpOnly) {
-      await callSignInAPI();
+      if (authType.value == AuthType.otpOnly) {
+        await callSignInAPI();
+      }
+
+      if (isPWD_auth.value) {
+        FocusScope.of(Get.context!).requestFocus(passwordFocus);
+      }
+
+      switch (authType.value) {
+        case AuthType.both:
+          print("✅ Both Password and OTP authentication are required.");
+          break;
+        case AuthType.passwordOnly:
+          print("🔐 Only Password authentication is required.");
+          break;
+        case AuthType.otpOnly:
+          print("📲 Only OTP authentication is required.");
+          break;
+        case AuthType.none:
+          print("❌ No authentication required.");
+          break;
+      }
     }
+  }
 
-    if (isPWD_auth.value) {
+  startLoginProcessOffline() async {
+    if (!validateForm()) return;
+    isUserDataLoading.value = true;
+    var isUserAvailable = await OfflineDbModule.hasOfflineUser(
+        projectName: globalVariableController.PROJECT_NAME.value,
+        username: userNameController.text.toString().trim());
+    isUserDataLoading.value = false;
+
+    if (isUserAvailable) {
+      userPasswordController.text = '';
+      authType.value = AuthType.passwordOnly;
+      isPWD_auth.value = true;
       FocusScope.of(Get.context!).requestFocus(passwordFocus);
+    } else {
+      errUserName.value = "This account isn’t available offline.";
     }
+    debugPrint("User Exist in offline => $isUserAvailable");
+  }
 
-    switch (authType.value) {
-      case AuthType.both:
-        print("✅ Both Password and OTP authentication are required.");
-        break;
-      case AuthType.passwordOnly:
-        print("🔐 Only Password authentication is required.");
-        break;
-      case AuthType.otpOnly:
-        print("📲 Only OTP authentication is required.");
-        break;
-      case AuthType.none:
-        print("❌ No authentication required.");
-        break;
+  callSignInOffline() async {
+    if (!validateForm()) return;
+    isUserDataLoading.value = true;
+
+    var isUserAuthenticated = await OfflineDbModule.validateOfflineLogin(
+        projectName: globalVariableController.PROJECT_NAME.value,
+        username: userNameController.text.toString().trim(),
+        passwordHash: userPasswordController.text.toString().trim());
+
+    isUserDataLoading.value = false;
+    debugPrint("User Offline Authenticated? => $isUserAuthenticated");
+
+    if (isUserAuthenticated) {
+      Get.offAllNamed(Routes.LandingPage);
+    } else {
+      errPassword.value = "Incorrect Password";
+    }
+  }
+
+  callSignInAPI() async {
+    if (isOfflineLogin.value) {
+      await callSignInOffline();
+    } else if (validateForm()) {
+      var signInBody = {
+        "appname": globalVariableController.PROJECT_NAME.value,
+        "username": userNameController.text.toString().trim(),
+        "password": generateMd5(userPasswordController.text.toString().trim()),
+        "Language": "English",
+        "SessionId": getGUID(), //GUID
+        "Globalvars": false
+      };
+
+      signInBody.addIf(isDuplicate_session, "ClearPreviousSession", true);
+
+      // signInBody.addIf(isPWD_auth.value, "password", generateMd5(userPasswordController.text.toString().trim()));
+      signInBody.addIf(isOTP_auth.value, "OtpAuth", "T");
+      FocusManager.instance.primaryFocus?.unfocus();
+      LoadingScreen.show();
+      var _url = Const.getFullARMUrl(ServerConnections.API_SIGNIN);
+
+      var response = await serverConnections.postToServer(
+          url: _url, body: jsonEncode(signInBody));
+      // LogService.writeLog(message: "[-] LoginController => loginButtonClicked() => LoginResponse : $response");
+
+      if (response != "") {
+        var json = jsonDecode(response);
+        if (json["result"]["success"].toString().toLowerCase() == "true") {
+          if (json["result"]["message"].toString() == "Login Successful.") {
+            await OfflineDbModule.saveUser(
+                projectName: globalVariableController.PROJECT_NAME.value,
+                username: userNameController.text.toString().trim(),
+                passwordHash: userPasswordController.text.toString().trim(),
+                loginResult: json);
+            await processSignInDataResponse(json["result"]);
+          } else if (json["result"]?.containsKey("OTPLoginKey")) {
+            // OTPPage
+            otpMsg.value = json["result"]["message"].toString();
+            otpLoginKey.value = json["result"]["OTPLoginKey"].toString();
+            print("Otpmsg: ${otpMsg.value} \nOtpkey: ${otpLoginKey.value}");
+            Get.toNamed(Routes.OtpPage);
+          }
+        } else if (json["result"]["success"].toString().toLowerCase() ==
+                "false" &&
+            json["result"].containsKey('duplicate_session')) {
+          isDuplicate_session = true;
+          showDialog_duplicateSession(json["result"]["message"].toString());
+        } else {
+          if (Get.isDialogOpen ?? false) {
+            Get.back(); // closes the dialog
+          }
+          Get.snackbar("Error ", json["result"]["message"],
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: Colors.redAccent,
+              colorText: Colors.white);
+        }
+      }
+      LoadingScreen.dismiss();
     }
   }
 
@@ -682,61 +806,6 @@ class LoginController extends GetxController {
     }
 
     return AuthType.none;
-  }
-
-  callSignInAPI() async {
-    if (validateForm()) {
-      var signInBody = {
-        "appname": globalVariableController.PROJECT_NAME.value,
-        "username": userNameController.text.toString().trim(),
-        "password": generateMd5(userPasswordController.text.toString().trim()),
-        "Language": "English",
-        "SessionId": getGUID(), //GUID
-        "Globalvars": false
-      };
-
-      signInBody.addIf(isDuplicate_session, "ClearPreviousSession", true);
-
-      // signInBody.addIf(isPWD_auth.value, "password", generateMd5(userPasswordController.text.toString().trim()));
-      signInBody.addIf(isOTP_auth.value, "OtpAuth", "T");
-      FocusManager.instance.primaryFocus?.unfocus();
-      LoadingScreen.show();
-      var _url = Const.getFullARMUrl(ServerConnections.API_SIGNIN);
-
-      var response = await serverConnections.postToServer(
-          url: _url, body: jsonEncode(signInBody));
-      // LogService.writeLog(message: "[-] LoginController => loginButtonClicked() => LoginResponse : $response");
-
-      if (response != "") {
-        var json = jsonDecode(response);
-        if (json["result"]["success"].toString().toLowerCase() == "true") {
-          if (json["result"]["message"].toString() == "Login Successful.") {
-            await OfflineDbModule.saveLastUser(json);
-            await processSignInDataResponse(json["result"]);
-          } else if (json["result"]?.containsKey("OTPLoginKey")) {
-            // OTPPage
-            otpMsg.value = json["result"]["message"].toString();
-            otpLoginKey.value = json["result"]["OTPLoginKey"].toString();
-            print("Otpmsg: ${otpMsg.value} \nOtpkey: ${otpLoginKey.value}");
-            Get.toNamed(Routes.OtpPage);
-          }
-        } else if (json["result"]["success"].toString().toLowerCase() ==
-                "false" &&
-            json["result"].containsKey('duplicate_session')) {
-          isDuplicate_session = true;
-          showDialog_duplicateSession(json["result"]["message"].toString());
-        } else {
-          if (Get.isDialogOpen ?? false) {
-            Get.back(); // closes the dialog
-          }
-          Get.snackbar("Error ", json["result"]["message"],
-              snackPosition: SnackPosition.BOTTOM,
-              backgroundColor: Colors.redAccent,
-              colorText: Colors.white);
-        }
-      }
-      LoadingScreen.dismiss();
-    }
   }
 
   callVerifyOTP() async {

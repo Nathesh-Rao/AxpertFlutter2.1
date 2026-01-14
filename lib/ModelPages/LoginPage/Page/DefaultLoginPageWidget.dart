@@ -6,7 +6,6 @@ import 'package:axpertflutter/Constants/const.dart';
 import 'package:axpertflutter/ModelPages/LoginPage/Controller/LoginController.dart';
 import 'package:axpertflutter/ModelPages/LoginPage/Widgets/WidgetLoginTextField.dart';
 import 'package:axpertflutter/Utils/LogServices/LogService.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -90,12 +89,14 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
                     ),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.025),
-                  Obx(() => _projectNameWidget(projectName: loginController.currentProjectName.value)),
+                  Obx(() => _projectNameWidget(
+                      projectName: loginController.currentProjectName.value)),
                   Obx(
                     () => WidgetLoginTextField(
                       label: "Username",
                       isLoading: loginController.isUserDataLoading.value,
                       controller: loginController.userNameController,
+                      errorText: loginController.errUserName.value,
                     ),
                   ),
 
@@ -105,7 +106,8 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
                       switchInCurve: Curves.easeOut,
                       switchOutCurve: Curves.easeIn,
                       transitionBuilder: (child, animation) {
-                        final fade = FadeTransition(opacity: animation, child: child);
+                        final fade =
+                            FadeTransition(opacity: animation, child: child);
                         return SizeTransition(
                           sizeFactor: animation,
                           axis: Axis.vertical,
@@ -120,7 +122,8 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
                               focusNode: loginController.passwordFocus,
                               obscureText: loginController.showPassword.value,
                               errorText: loginController.errPassword.value,
-                              controller: loginController.userPasswordController,
+                              controller:
+                                  loginController.userPasswordController,
                             )
                           : const SizedBox.shrink(key: ValueKey("empty")),
                     ),
@@ -143,13 +146,15 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
                               children: [
                                 Checkbox(
                                   value: loginController.rememberMe.value,
-                                  onChanged: (value) => {loginController.rememberMe.toggle()},
+                                  onChanged: (value) =>
+                                      {loginController.rememberMe.toggle()},
                                   checkColor: Colors.white,
                                   side: BorderSide(
                                     color: MyColors.blue2,
                                     width: 2,
                                   ),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5)),
                                   activeColor: MyColors.blue2,
                                 ),
                                 Text("Remember Me",
@@ -183,8 +188,9 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
                   Obx(
                     () => WidgetLoginButton(
                       label: "Next",
-                      visible:
-                          loginController.authType.value == AuthType.none || loginController.authType.value == AuthType.otpOnly,
+                      visible: loginController.authType.value ==
+                              AuthType.none ||
+                          loginController.authType.value == AuthType.otpOnly,
                       onPressed: () {
                         loginController.startLoginProcess();
                       },
@@ -193,8 +199,10 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
                   Obx(
                     () => WidgetLoginButton(
                       label: _getLoginButtonLabel(),
-                      visible: loginController.authType.value == AuthType.both ||
-                          loginController.authType.value == AuthType.passwordOnly,
+                      visible:
+                          loginController.authType.value == AuthType.both ||
+                              loginController.authType.value ==
+                                  AuthType.passwordOnly,
                       onPressed: () {
                         loginController.callSignInAPI();
                       },
@@ -210,15 +218,20 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
                       padding: EdgeInsets.only(left: 30, right: 30),
                       child: ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
                             foregroundColor: MyColors.buzzilyblack,
                             backgroundColor: MyColors.white1,
                             minimumSize: Size(double.infinity, 60),
                           ),
-                          icon: Icon(FontAwesomeIcons.google, color: MyColors.red),
+                          icon: Icon(FontAwesomeIcons.google,
+                              color: MyColors.red),
                           label: Text('Sign In With Google',
                               style: GoogleFonts.poppins(
-                                  textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 12, color: HexColor("#3E4153")))),
+                                  textStyle: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 12,
+                                      color: HexColor("#3E4153")))),
                           onPressed: () {
                             loginController.googleSignInClicked();
                           }),
@@ -231,7 +244,11 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
                     child: Text(
                       "By using the software, you agree to the",
                       style: GoogleFonts.poppins(
-                          textStyle: TextStyle(fontWeight: FontWeight.w400, fontSize: 12, letterSpacing: 1, color: Colors.black)),
+                          textStyle: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 12,
+                              letterSpacing: 1,
+                              color: Colors.black)),
                     ),
                   ),
                   Row(
@@ -251,8 +268,11 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
                       FittedBox(
                         child: Text(" and the",
                             style: GoogleFonts.poppins(
-                              textStyle:
-                                  TextStyle(fontWeight: FontWeight.w400, fontSize: 12, color: Colors.black, letterSpacing: 1),
+                              textStyle: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 12,
+                                  color: Colors.black,
+                                  letterSpacing: 1),
                             )),
                       ),
                       FittedBox(
@@ -272,7 +292,11 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
                   Text("Powered By",
                       textAlign: TextAlign.center,
                       style: GoogleFonts.poppins(
-                        textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 12, color: Colors.black, letterSpacing: 1),
+                        textStyle: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12,
+                            color: Colors.black,
+                            letterSpacing: 1),
                       )),
                   Image.asset(
                     'assets/images/axpert_03.png',
@@ -282,7 +306,8 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
                   ),
 
                   Visibility(
-                    visible: loginController.isBiometricAvailable.value && loginController.willBio_userAuthenticate.value,
+                    visible: loginController.isBiometricAvailable.value &&
+                        loginController.willBio_userAuthenticate.value,
                     child: GestureDetector(
                       onTap: () {
                         loginController.displayAuthenticationDialog();
@@ -315,7 +340,9 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
                                 textStyle: TextStyle(
                                     color: MyColors.buzzilyblack,
                                     fontWeight: FontWeight.w700,
-                                    fontSize: MediaQuery.of(context).size.height * 0.012)),
+                                    fontSize:
+                                        MediaQuery.of(context).size.height *
+                                            0.012)),
                           );
                         } else {
                           return Text("");
@@ -355,7 +382,9 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
   _getLoginButtonLabel() {
     if (loginController.authType.value == AuthType.none) return "Continue";
     if (loginController.authType.value == AuthType.passwordOnly) return "Login";
+    // return loginController.isOfflineLogin.value ? "Offline Login" : "Login";
     if (loginController.authType.value == AuthType.both) return "Get OTP";
+
     return "Login";
   }
 }

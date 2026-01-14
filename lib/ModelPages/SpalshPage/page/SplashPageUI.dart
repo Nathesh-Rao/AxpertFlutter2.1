@@ -80,35 +80,35 @@ class _SplashPageState extends State<SplashPage>
       const String tag = "[SPLASH_STARTUP_001]";
 
       try {
-        final connectivity = Get.find<InternetConnectivity>();
-        final isOnline = await connectivity.check();
+        // final connectivity = Get.find<InternetConnectivity>();
+        // final isOnline = await connectivity.check();
 
-        LogService.writeLog(
-            message: "$tag[INFO] App start. isOnline=$isOnline");
+        // LogService.writeLog(
+        //     message: "$tag[INFO] App start. isOnline=$isOnline");
 
         //  OFFLINE FLOW
-        if (!isOnline) {
-          LogService.writeLog(
-              message: "$tag[INFO] App is offline. Checking saved user");
+        // if (!isOnline) {
+        //   LogService.writeLog(
+        //       message: "$tag[INFO] App is offline. Checking saved user");
 
-          final user = await OfflineDbModule.getLastUser();
+        //   final user = await OfflineDbModule.getLastUser();
 
-          if (user == null) {
-            LogService.writeLog(
-                message:
-                    "$tag[INFO] No offline user found. Showing offline no-user page");
+        //   if (user == null) {
+        //     LogService.writeLog(
+        //         message:
+        //             "$tag[INFO] No offline user found. Showing offline no-user page");
 
-            Get.offAll(() => const OfflineNoUserPage());
-            return;
-          }
+        //     Get.offAll(() => const OfflineNoUserPage());
+        //     return;
+        //   }
 
-          LogService.writeLog(
-              message:
-                  "$tag[SUCCESS] Offline user found. Entering offline mode");
+        //   LogService.writeLog(
+        //       message:
+        //           "$tag[SUCCESS] Offline user found. Entering offline mode");
 
-          Get.offAll(() => const OfflineLandingPage());
-          return;
-        }
+        //   Get.offAll(() => const OfflineLandingPage());
+        //   return;
+        // }
 
         // =========================
         // 🟢 ONLINE FLOW (YOUR EXISTING LOGIC)

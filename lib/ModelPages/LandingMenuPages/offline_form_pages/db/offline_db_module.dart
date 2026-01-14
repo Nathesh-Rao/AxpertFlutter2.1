@@ -19,9 +19,30 @@ class OfflineDbModule {
 
     _db = await openDatabase(
       dbPath,
-      version: 1,
+      version: 2, // 🔥 bumped
       onCreate: (db, _) async {
         await _createTables(db);
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        const tag = "[OFFLINE_DB_UPGRADE_002]";
+        LogService.writeLog(
+            message: "$tag[START] Upgrading DB $oldVersion → $newVersion");
+
+        // ⚠️ DEV PHASE: FULL RESET
+        await db.execute(
+            "DROP TABLE IF EXISTS ${OfflineDBConstants.TABLE_OFFLINE_PAGES}");
+        await db.execute(
+            "DROP TABLE IF EXISTS ${OfflineDBConstants.TABLE_DATASOURCES}");
+        await db.execute(
+            "DROP TABLE IF EXISTS ${OfflineDBConstants.TABLE_DATASOURCE_DATA}");
+        await db.execute(
+            "DROP TABLE IF EXISTS ${OfflineDBConstants.TABLE_PENDING_REQUESTS}");
+        await db.execute(
+            "DROP TABLE IF EXISTS ${OfflineDBConstants.TABLE_OFFLINE_USER}");
+
+        await _createTables(db);
+
+        LogService.writeLog(message: "$tag[SUCCESS] DB recreated");
       },
     );
   }
@@ -52,6 +73,83 @@ class OfflineDbModule {
 
     await fetchAndStoreAllDatasources();
   }
+
+  // static Future<List<Map<String, dynamic>>> fetchAndStoreOfflinePages({
+  //   required bool isInternetAvailable,
+  // }) async {
+  //   const String tag = "[OFFLINE_PAGES_FETCH_001]";
+
+  //   // 🛑 If no internet, do NOT try anything
+  //   if (!isInternetAvailable) {
+  //     LogService.writeLog(
+  //       message:
+  //           "$tag[SKIPPED] No internet. Skipping fetch. Keeping existing data.",
+  //     );
+
+  //     return [];
+  //   }
+
+  //   try {
+  //     LogService.writeLog(
+  //       message: "$tag[START] Fetching offline pages from JSON file",
+  //     );
+
+  //     final res = await http.get(
+  //       Uri.parse(OfflineDBConstants.OFFLINE_PAGES_URL),
+  //     );
+
+  //     if (res.statusCode != 200) {
+  //       LogService.writeLog(
+  //         message: "$tag[FAILED] HTTP ${res.statusCode} while fetching JSON",
+  //       );
+  //       return [];
+  //     }
+
+  //     final decoded = jsonDecode(utf8.decode(res.bodyBytes)) as List<dynamic>;
+  //     final pages = decoded.map((e) => e as Map<String, dynamic>).toList();
+
+  //     if (pages.isEmpty) {
+  //       LogService.writeLog(message: "$tag[INFO] JSON has 0 pages");
+  //       return [];
+  //     }
+
+  //     await _database.delete(OfflineDBConstants.TABLE_OFFLINE_PAGES);
+
+  //     final batch = _database.batch();
+
+  //     for (final page in pages) {
+  //       batch.insert(
+  //         OfflineDBConstants.TABLE_OFFLINE_PAGES,
+  //         {
+  //           OfflineDBConstants.COL_TRANS_ID: page['transid'],
+  //           OfflineDBConstants.COL_PAGE_JSON: jsonEncode(page),
+  //           OfflineDBConstants.COL_FETCHED_AT: DateTime.now().toIso8601String(),
+  //         },
+  //         conflictAlgorithm: ConflictAlgorithm.replace,
+  //       );
+  //     }
+
+  //     await batch.commit(noResult: true);
+
+  //     final dsString = _extractDatasourceString(pages);
+  //     await _saveDatasourceString(dsString);
+
+  //     LogService.writeLog(
+  //       message: "$tag[SUCCESS] Replaced pages with ${pages.length} records",
+  //     );
+
+  //     return pages;
+  //   } catch (e, st) {
+  //     LogService.writeLog(
+  //       message: "$tag[FAILED] Exception while fetching pages => $e",
+  //     );
+  //     LogService.writeLog(
+  //       message: "$tag[STACK] $st",
+  //     );
+
+  //     return [];
+  //   }
+  // }
 
   static Future<List<Map<String, dynamic>>> fetchAndStoreOfflinePages() async {
     const String tag = "[OFFLINE_PAGES_FETCH_001]";
@@ -353,79 +451,6 @@ class OfflineDbModule {
     await clearPendingRequests();
   }
 
-  static Future<void> saveLastUser(Map<String, dynamic> loginResult) async {
-    const String tag = "[OFFLINE_USER_SAVE_001]";
-    try {
-      final result = loginResult['result'] ?? loginResult;
-
-      // final data = {
-      //   OfflineDBConstants.COL_ID: 1, // ALWAYS SINGLE ROW
-      //   OfflineDBConstants.COL_USER_ID: result['username']?.toString() ?? '',
-      //   OfflineDBConstants.COL_USERNAME: result['username']?.toString() ?? '',
-      //   OfflineDBConstants.COL_DISPLAY_NAME: result['nickname']?.toString() ??
-      //       result['username']?.toString() ??
-      //       '',
-      //   OfflineDBConstants.COL_SESSION_ID:
-      //       result['ARMSessionId']?.toString() ?? '',
-      //   OfflineDBConstants.COL_RAW_JSON: jsonEncode(result),
-      //   OfflineDBConstants.COL_LAST_LOGIN_AT: DateTime.now().toIso8601String(),
-      // };
-      final data = {
-        OfflineDBConstants.COL_ID: 1,
-        OfflineDBConstants.COL_USER_ID: result['username']?.toString() ?? '',
-        OfflineDBConstants.COL_USERNAME: result['username']?.toString() ?? '',
-        OfflineDBConstants.COL_DISPLAY_NAME: result['nickname']?.toString() ??
-            result['username']?.toString() ??
-            '',
-        OfflineDBConstants.COL_SESSION_ID:
-            result['ARMSessionId']?.toString() ?? '',
-        OfflineDBConstants.COL_PROJECT_NAME:
-            result['appname']?.toString() ?? '',
-        OfflineDBConstants.COL_RAW_JSON: jsonEncode(result),
-        OfflineDBConstants.COL_LAST_LOGIN_AT: DateTime.now().toIso8601String(),
-      };
-
-      await _database.insert(
-        OfflineDBConstants.TABLE_OFFLINE_USER,
-        data,
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-
-      LogService.writeLog(message: "$tag[SUCCESS] Offline user saved");
-    } catch (e, st) {
-      LogService.writeLog(
-          message: "$tag[FAILED] Failed to save offline user => $e");
-      LogService.writeLog(message: "$tag[STACK] $st");
-    }
-  }
-
-  static Future<Map<String, dynamic>?> getLastUser() async {
-    const String tag = "[OFFLINE_USER_GET_001]";
-    try {
-      final result = await _database.query(
-        OfflineDBConstants.TABLE_OFFLINE_USER,
-        where: '${OfflineDBConstants.COL_ID} = ?',
-        whereArgs: [1],
-        limit: 1,
-      );
-
-      if (result.isEmpty) {
-        LogService.writeLog(message: "$tag[INFO] No offline user found");
-        return null;
-      }
-
-      final row = result.first;
-      final rawJson = row[OfflineDBConstants.COL_RAW_JSON] as String;
-
-      return jsonDecode(rawJson) as Map<String, dynamic>;
-    } catch (e, st) {
-      LogService.writeLog(
-          message: "$tag[FAILED] Failed to load offline user => $e");
-      LogService.writeLog(message: "$tag[STACK] $st");
-      return null;
-    }
-  }
-
   static Future<int> getPendingCount() async {
     final result = await _database.rawQuery(
       'SELECT COUNT(*) as cnt FROM ${OfflineDBConstants.TABLE_PENDING_REQUESTS} WHERE ${OfflineDBConstants.COL_STATUS} IN (${OfflineDBConstants.STATUS_PENDING}, ${OfflineDBConstants.STATUS_ERROR})',
@@ -487,5 +512,75 @@ class OfflineDbModule {
 
   static Future<void> clearOnlyDatasources() async {
     await clearDatasources();
+  }
+
+  static Future<bool> hasOfflineUser({
+    required String projectName,
+    required String username,
+  }) async {
+    final res = await _database.query(
+      OfflineDBConstants.TABLE_OFFLINE_USER,
+      where:
+          '${OfflineDBConstants.COL_PROJECT_NAME} = ? AND ${OfflineDBConstants.COL_USERNAME} = ?',
+      whereArgs: [projectName, username],
+      limit: 1,
+    );
+    return res.isNotEmpty;
+  }
+
+  static Future<bool> validateOfflineLogin({
+    required String projectName,
+    required String username,
+    required String passwordHash,
+  }) async {
+    final res = await _database.query(
+      OfflineDBConstants.TABLE_OFFLINE_USER,
+      where: '''
+      ${OfflineDBConstants.COL_PROJECT_NAME} = ? AND
+      ${OfflineDBConstants.COL_USERNAME} = ? AND
+      ${OfflineDBConstants.COL_PASSWORD_HASH} = ?
+    ''',
+      whereArgs: [projectName, username, passwordHash],
+      limit: 1,
+    );
+
+    return res.isNotEmpty;
+  }
+
+  static Future<void> saveUser({
+    required String projectName,
+    required String username,
+    required String passwordHash,
+    required Map<String, dynamic> loginResult,
+  }) async {
+    const tag = "[OFFLINE_USER_SAVE_002]";
+
+    try {
+      final result = loginResult['result'] ?? loginResult;
+
+      final data = {
+        OfflineDBConstants.COL_PROJECT_NAME: projectName,
+        OfflineDBConstants.COL_USERNAME: username,
+        OfflineDBConstants.COL_PASSWORD_HASH: passwordHash,
+        OfflineDBConstants.COL_DISPLAY_NAME:
+            result['nickname']?.toString() ?? username,
+        OfflineDBConstants.COL_SESSION_ID:
+            result['ARMSessionId']?.toString() ?? '',
+        OfflineDBConstants.COL_RAW_JSON: jsonEncode(result),
+        OfflineDBConstants.COL_LAST_LOGIN_AT: DateTime.now().toIso8601String(),
+      };
+
+      await _database.insert(
+        OfflineDBConstants.TABLE_OFFLINE_USER,
+        data,
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+
+      LogService.writeLog(
+          message: "$tag[SUCCESS] User saved for offline login");
+    } catch (e, st) {
+      LogService.writeLog(message: "$tag[FAILED] $e");
+      LogService.writeLog(message: "$tag[STACK] $st");
+    }
   }
 }

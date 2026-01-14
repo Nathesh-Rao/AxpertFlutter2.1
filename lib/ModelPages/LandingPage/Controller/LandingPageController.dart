@@ -18,6 +18,7 @@ import 'package:axpertflutter/ModelPages/LandingMenuPages/MenuMorePage/Page/Menu
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/db/offline_db_module.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/pages/offline_listing_page.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Models/FirebaseMessageModel.dart';
+import 'package:axpertflutter/ModelPages/LandingPage/Widgets/NoInternetWidget.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetBanner.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetNotification.dart';
 import 'package:axpertflutter/Utils/ServerConnections/InternetConnectivity.dart';
@@ -87,8 +88,30 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
   var list = [WidgetNotification(FirebaseMessageModel("Title 1", "Body 1"))];
   var list_bannerItem = [].obs;
   bool isAxpertConnectEstablished = false;
-
+  var isOffline = false.obs;
 //////////////////////////////////////////////
+  @override
+  void onInit() {
+    super.onInit();
+    WidgetsBinding.instance.addObserver(this);
+    initController();
+    listenInternetState();
+  }
+
+  void listenInternetState() async {
+    final InternetConnectivity net = Get.find<InternetConnectivity>();
+
+    // Set initial value
+    isOffline.value = !await net.check();
+
+    // Listen to future changes
+    ever<bool>(net.isConnected, (connected) {
+      isOffline.value = !connected;
+      if (!isOffline.value) {
+        initController();
+      }
+    });
+  }
 
   @override
   void onReady() {
@@ -128,6 +151,18 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
 //////////////////////////////////////////////
 
   getPage() {
+    if (isOffline.value) {
+      if (bottomIndex.value < 5) {
+        return NoInternetWidget(
+          onGoOffline: () {
+            indexChange(5);
+          },
+        );
+      } else {
+        return pageList[bottomIndex.value];
+      }
+    }
+
     if (bottomIndex.value == 0) {
       return UpdatedHomePage();
       // return MenuHomePage();
@@ -136,6 +171,9 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
   }
 
   LandingPageController() {
+    //getBannerDetailList();
+  }
+  initController() {
     var dt = DateTime.now();
     toDay = DateFormat('dd-MMM-yyyy, EEEE').format(dt);
     userName.value =
@@ -156,7 +194,6 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
     showChangePassword_PopUp();
     //getBiometricStatus();
     getClientInfo();
-    //getBannerDetailList();
   }
 
   getClientInfo() async {
@@ -310,20 +347,19 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
     bottomIndex.value = index;
 
     if (pageList[index] is EmptyWidget) {
-      if (index == 3) {
+      if (index == 3 && !isOffline.value) {
         //NOTE to open the WebViewCalendar page
         await webViewController.openWebView(
           url: Const.getFullWebUrl(Const.BOTTOMBAR_CALENDAR) +
               AppStorage().retrieveValue(AppStorage.SESSIONID),
         );
-      } else if (index == 4) {
+      } else if (index == 4 && !isOffline.value) {
         //NOTE to open the WebViewAnalytics page
         await webViewController.openWebView(
           url: Const.getFullWebUrl(Const.BOTTOMBAR_ANALYTICS) +
               AppStorage().retrieveValue(AppStorage.SESSIONID),
         );
       }
-      bottomIndex.value = 0;
     }
   }
 
@@ -1092,12 +1128,6 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
   @override
   void onClose() {
     WidgetsBinding.instance.removeObserver(this);
-  }
-
-  @override
-  void onInit() {
-    super.onInit();
-    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
