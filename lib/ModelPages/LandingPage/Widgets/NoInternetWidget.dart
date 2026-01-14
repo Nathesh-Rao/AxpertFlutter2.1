@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -25,10 +26,14 @@ class NoInternetWidget extends StatelessWidget {
                 // 🐱 LOTTIE
                 Expanded(
                   flex: 5,
-                  child: Lottie.asset(
-                    'assets/lotties/download.json',
-                    // width: 220,
-                    repeat: true,
+                  child: ZoomIn(
+                    // from: 1.5,
+                    child: Lottie.asset(
+                      'assets/lotties/download.json',
+                      // width: 220,
+                      // fit: BoxFit.contain,
+                      repeat: true,
+                    ),
                   ),
                 ),
 
