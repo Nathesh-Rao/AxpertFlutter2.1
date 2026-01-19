@@ -33,7 +33,7 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
     // group by section
     final Map<String, List<Map<String, dynamic>>> sections = {};
     for (final f in fields) {
-      final String section = f["section"] ?? "General";
+      final String section = f["fld_category"] ?? "General";
       sections.putIfAbsent(section, () => []);
       sections[section]!.add(Map<String, dynamic>.from(f));
     }
