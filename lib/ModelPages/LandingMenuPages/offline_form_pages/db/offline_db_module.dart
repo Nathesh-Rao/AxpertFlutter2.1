@@ -19,7 +19,7 @@ class OfflineDbModule {
 
     _db = await openDatabase(
       dbPath,
-      version: 2, // 🔥 bumped
+      version: 3,
       onCreate: (db, _) async {
         await _createTables(db);
       },
@@ -28,7 +28,6 @@ class OfflineDbModule {
         LogService.writeLog(
             message: "$tag[START] Upgrading DB $oldVersion → $newVersion");
 
-        // ⚠️ DEV PHASE: FULL RESET
         await db.execute(
             "DROP TABLE IF EXISTS ${OfflineDBConstants.TABLE_OFFLINE_PAGES}");
         await db.execute(
@@ -63,95 +62,59 @@ class OfflineDbModule {
   }
 
   // LOGIN FLOW
-  static Future<void> handlePostLogin({
-    required bool isInternetAvailable,
-  }) async {
-    await _syncPendingBeforeLogin(isInternetAvailable: isInternetAvailable);
-
-    final pages = await fetchAndStoreOfflinePages();
-    if (pages.isEmpty) return;
-
-    await fetchAndStoreAllDatasources();
-  }
-
-  // static Future<List<Map<String, dynamic>>> fetchAndStoreOfflinePages({
+  // static Future<void> handlePostLogin({
   //   required bool isInternetAvailable,
   // }) async {
-  //   const String tag = "[OFFLINE_PAGES_FETCH_001]";
+  //   await _syncPendingBeforeLogin(isInternetAvailable: isInternetAvailable);
 
-  //   // 🛑 If no internet, do NOT try anything
-  //   if (!isInternetAvailable) {
-  //     LogService.writeLog(
-  //       message:
-  //           "$tag[SKIPPED] No internet. Skipping fetch. Keeping existing data.",
-  //     );
+  //   final pages = await fetchAndStoreOfflinePages();
+  //   if (pages.isEmpty) return;
 
-  //     return [];
-  //   }
-
-  //   try {
-  //     LogService.writeLog(
-  //       message: "$tag[START] Fetching offline pages from JSON file",
-  //     );
-
-  //     final res = await http.get(
-  //       Uri.parse(OfflineDBConstants.OFFLINE_PAGES_URL),
-  //     );
-
-  //     if (res.statusCode != 200) {
-  //       LogService.writeLog(
-  //         message: "$tag[FAILED] HTTP ${res.statusCode} while fetching JSON",
-  //       );
-  //       return [];
-  //     }
-
-  //     final decoded = jsonDecode(utf8.decode(res.bodyBytes)) as List<dynamic>;
-  //     final pages = decoded.map((e) => e as Map<String, dynamic>).toList();
-
-  //     if (pages.isEmpty) {
-  //       LogService.writeLog(message: "$tag[INFO] JSON has 0 pages");
-  //       return [];
-  //     }
-
-  //     await _database.delete(OfflineDBConstants.TABLE_OFFLINE_PAGES);
-
-  //     final batch = _database.batch();
-
-  //     for (final page in pages) {
-  //       batch.insert(
-  //         OfflineDBConstants.TABLE_OFFLINE_PAGES,
-  //         {
-  //           OfflineDBConstants.COL_TRANS_ID: page['transid'],
-  //           OfflineDBConstants.COL_PAGE_JSON: jsonEncode(page),
-  //           OfflineDBConstants.COL_FETCHED_AT: DateTime.now().toIso8601String(),
-  //         },
-  //         conflictAlgorithm: ConflictAlgorithm.replace,
-  //       );
-  //     }
-
-  //     await batch.commit(noResult: true);
-
-  //     final dsString = _extractDatasourceString(pages);
-  //     await _saveDatasourceString(dsString);
-
-  //     LogService.writeLog(
-  //       message: "$tag[SUCCESS] Replaced pages with ${pages.length} records",
-  //     );
-
-  //     return pages;
-  //   } catch (e, st) {
-  //     LogService.writeLog(
-  //       message: "$tag[FAILED] Exception while fetching pages => $e",
-  //     );
-  //     LogService.writeLog(
-  //       message: "$tag[STACK] $st",
-  //     );
-
-  //     return [];
-  //   }
+  //   await fetchAndStoreAllDatasources();
   // }
 
-  static Future<List<Map<String, dynamic>>> fetchAndStoreOfflinePages() async {
+  static Future<void> handlePostLogin({
+    required bool isInternetAvailable,
+    required String username,
+    required String projectName,
+  }) async {
+    const tag = "[OFFLINE_HANDLE_POST_LOGIN_001]";
+
+    LogService.writeLog(
+      message:
+          "$tag[START] user=$username project=$projectName internet=$isInternetAvailable",
+    );
+
+    // 1. Sync THIS user's pending queue
+    await _syncPendingBeforeLogin(
+      username: username,
+      projectName: projectName,
+      isInternetAvailable: isInternetAvailable,
+    );
+
+    // 2. Fetch offline pages ONLY for this user+project
+    final pages = await fetchAndStoreOfflinePages(
+      username: username,
+      projectName: projectName,
+    );
+
+    if (pages.isEmpty) {
+      LogService.writeLog(message: "$tag[INFO] No offline pages received");
+      return;
+    }
+
+    // 3. Do NOT prefetch datasources globally.
+    // Datasources are now fetched lazily per form via mapDatasourceOptionsIntoPages()
+
+    LogService.writeLog(
+      message: "$tag[SUCCESS] Offline bootstrap done. pages=${pages.length}",
+    );
+  }
+
+  static Future<List<Map<String, dynamic>>> fetchAndStoreOfflinePages({
+    required String username,
+    required String projectName,
+  }) async {
     const String tag = "[OFFLINE_PAGES_FETCH_001]";
 
     try {
@@ -177,8 +140,12 @@ class OfflineDbModule {
         return [];
       }
 
-      // ✅ IMPORTANT: Clear old pages first
-      await _database.delete(OfflineDBConstants.TABLE_OFFLINE_PAGES);
+      await _database.delete(
+        OfflineDBConstants.TABLE_OFFLINE_PAGES,
+        where:
+            '${OfflineDBConstants.COL_USERNAME} = ? AND ${OfflineDBConstants.COL_PROJECT_NAME} = ?',
+        whereArgs: [username, projectName],
+      );
 
       final batch = _database.batch();
 
@@ -186,6 +153,8 @@ class OfflineDbModule {
         batch.insert(
           OfflineDBConstants.TABLE_OFFLINE_PAGES,
           {
+            OfflineDBConstants.COL_USERNAME: username,
+            OfflineDBConstants.COL_PROJECT_NAME: projectName,
             OfflineDBConstants.COL_TRANS_ID: page['transid'],
             OfflineDBConstants.COL_PAGE_JSON: jsonEncode(page),
             OfflineDBConstants.COL_FETCHED_AT: DateTime.now().toIso8601String(),
@@ -197,10 +166,16 @@ class OfflineDbModule {
       await batch.commit(noResult: true);
 
       final dsString = _extractDatasourceString(pages);
-      await _saveDatasourceString(dsString);
+
+      await _saveDatasourceString(
+        username: username,
+        projectName: projectName,
+        value: dsString,
+      );
 
       LogService.writeLog(
-        message: "$tag[SUCCESS] Replaced pages with ${pages.length} records",
+        message:
+            "$tag[SUCCESS] Replaced pages with ${pages.length} records for $username / $projectName",
       );
 
       return pages;
@@ -215,20 +190,42 @@ class OfflineDbModule {
     }
   }
 
-  static Future<int> getOfflinePagesCount() async {
+  static Future<int> getOfflinePagesCount({
+    required String username,
+    required String projectName,
+  }) async {
     final res = await _database.rawQuery(
-      "SELECT COUNT(*) as cnt FROM ${OfflineDBConstants.TABLE_OFFLINE_PAGES}",
+      '''
+    SELECT COUNT(*) as cnt 
+    FROM ${OfflineDBConstants.TABLE_OFFLINE_PAGES}
+    WHERE ${OfflineDBConstants.COL_USERNAME} = ?
+      AND ${OfflineDBConstants.COL_PROJECT_NAME} = ?
+    ''',
+      [username, projectName],
     );
+
     return Sqflite.firstIntValue(res) ?? 0;
   }
 
-  static Future<List<Map<String, dynamic>>> getOfflinePages() async {
-    final result =
-        await _database.query(OfflineDBConstants.TABLE_OFFLINE_PAGES);
+  static Future<List<Map<String, dynamic>>> getOfflinePages({
+    required String username,
+    required String projectName,
+  }) async {
+    final result = await _database.query(
+      OfflineDBConstants.TABLE_OFFLINE_PAGES,
+      where: '''
+      ${OfflineDBConstants.COL_USERNAME} = ? AND
+      ${OfflineDBConstants.COL_PROJECT_NAME} = ?
+    ''',
+      whereArgs: [username, projectName],
+      orderBy: OfflineDBConstants.COL_FETCHED_AT + ' DESC',
+    );
 
     return result
-        .map((e) => jsonDecode(e[OfflineDBConstants.COL_PAGE_JSON] as String)
-            as Map<String, dynamic>)
+        .map(
+          (e) => jsonDecode(e[OfflineDBConstants.COL_PAGE_JSON] as String)
+              as Map<String, dynamic>,
+        )
         .toList();
   }
 
@@ -249,22 +246,33 @@ class OfflineDbModule {
     return set.join(',');
   }
 
-  static Future<void> _saveDatasourceString(String value) async {
+  static Future<void> _saveDatasourceString({
+    required String username,
+    required String projectName,
+    required String value,
+  }) async {
     await _database.insert(
       OfflineDBConstants.TABLE_DATASOURCES,
       {
-        OfflineDBConstants.COL_ID: 1,
+        OfflineDBConstants.COL_USERNAME: username,
+        OfflineDBConstants.COL_PROJECT_NAME: projectName,
         OfflineDBConstants.COL_DATASOURCE_NAMES: value,
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
-  static Future<List<String>> _getDatasourceList() async {
+  static Future<List<String>> _getDatasourceList({
+    required String username,
+    required String projectName,
+  }) async {
     final result = await _database.query(
       OfflineDBConstants.TABLE_DATASOURCES,
-      where: '${OfflineDBConstants.COL_ID} = ?',
-      whereArgs: [1],
+      where: '''
+      ${OfflineDBConstants.COL_USERNAME} = ? AND
+      ${OfflineDBConstants.COL_PROJECT_NAME} = ?
+    ''',
+      whereArgs: [username, projectName],
       limit: 1,
     );
 
@@ -280,15 +288,27 @@ class OfflineDbModule {
         .toList();
   }
 
-  // DATASOURCE DATA (CACHE FIRST)
-  static Future<void> fetchAndStoreAllDatasources() async {
-    final datasources = await _getDatasourceList();
+  static Future<void> fetchAndStoreAllDatasources({
+    required String username,
+    required String projectName,
+    required String transId,
+  }) async {
+    final datasources = await _getDatasourceList(
+      username: username,
+      projectName: projectName,
+    );
 
     for (final ds in datasources) {
+      // Check if already cached for this user+project+form+ds
       final exists = await _database.query(
         OfflineDBConstants.TABLE_DATASOURCE_DATA,
-        where: '${OfflineDBConstants.COL_DATASOURCE_NAME} = ?',
-        whereArgs: [ds],
+        where: '''
+        ${OfflineDBConstants.COL_USERNAME} = ? AND
+        ${OfflineDBConstants.COL_PROJECT_NAME} = ? AND
+        ${OfflineDBConstants.COL_TRANS_ID} = ? AND
+        ${OfflineDBConstants.COL_DATASOURCE_NAME} = ?
+      ''',
+        whereArgs: [username, projectName, transId, ds],
         limit: 1,
       );
 
@@ -303,6 +323,9 @@ class OfflineDbModule {
       await _database.insert(
         OfflineDBConstants.TABLE_DATASOURCE_DATA,
         {
+          OfflineDBConstants.COL_USERNAME: username,
+          OfflineDBConstants.COL_PROJECT_NAME: projectName,
+          OfflineDBConstants.COL_TRANS_ID: transId,
           OfflineDBConstants.COL_DATASOURCE_NAME: ds,
           OfflineDBConstants.COL_RESPONSE_JSON: res,
         },
@@ -311,11 +334,21 @@ class OfflineDbModule {
     }
   }
 
-  static Future<List<dynamic>> getDatasourceOptions(String datasource) async {
+  static Future<List<dynamic>> getDatasourceOptions({
+    required String username,
+    required String projectName,
+    required String transId,
+    required String datasource,
+  }) async {
     final result = await _database.query(
       OfflineDBConstants.TABLE_DATASOURCE_DATA,
-      where: '${OfflineDBConstants.COL_DATASOURCE_NAME} = ?',
-      whereArgs: [datasource],
+      where: '''
+      ${OfflineDBConstants.COL_USERNAME} = ? AND
+      ${OfflineDBConstants.COL_PROJECT_NAME} = ? AND
+      ${OfflineDBConstants.COL_TRANS_ID} = ? AND
+      ${OfflineDBConstants.COL_DATASOURCE_NAME} = ?
+    ''',
+      whereArgs: [username, projectName, transId, datasource],
       limit: 1,
     );
 
@@ -328,26 +361,41 @@ class OfflineDbModule {
   }
 
   // MAP OPTIONS INTO FIELD MODELS
-  static Future<List<OfflineFormPageModel>> mapDatasourceOptionsIntoPages(
-      List<OfflineFormPageModel> pages) async {
+  static Future<List<OfflineFormPageModel>> mapDatasourceOptionsIntoPages({
+    required String username,
+    required String projectName,
+    required List<OfflineFormPageModel> pages,
+  }) async {
     for (final page in pages) {
+      await fetchAndStoreAllDatasources(
+        username: username,
+        projectName: projectName,
+        transId: page.transId,
+      );
+
       for (final field in page.fields) {
         if (field.datasource == null || field.datasource!.isEmpty) continue;
 
-        await fetchAndStoreAllDatasources();
-        final options = await getDatasourceOptions(field.datasource!);
+        final options = await getDatasourceOptions(
+          username: username,
+          projectName: projectName,
+          transId: page.transId,
+          datasource: field.datasource!,
+        );
 
         field.options = options.map((e) => e.toString()).toList();
       }
     }
+
     return pages;
   }
 
   // =================================================
   // SMART SUBMIT
   // =================================================
-
   static Future<bool> submitFormSmart({
+    required String username,
+    required String projectName,
     required Map<String, dynamic> submitBody,
     required bool isInternetAvailable,
   }) async {
@@ -363,6 +411,8 @@ class OfflineDbModule {
     await _database.insert(
       OfflineDBConstants.TABLE_PENDING_REQUESTS,
       {
+        OfflineDBConstants.COL_USERNAME: username,
+        OfflineDBConstants.COL_PROJECT_NAME: projectName,
         OfflineDBConstants.COL_REQUEST_JSON: jsonEncode(submitBody),
         OfflineDBConstants.COL_STATUS: OfflineDBConstants.STATUS_PENDING,
         OfflineDBConstants.COL_CREATED_AT: DateTime.now().toIso8601String(),
@@ -375,16 +425,21 @@ class OfflineDbModule {
   // =================================================
   // PENDING SYNC (STATUS BASED)
   // =================================================
-
   static Future<void> _syncPendingBeforeLogin({
+    required String username,
+    required String projectName,
     required bool isInternetAvailable,
   }) async {
     if (!isInternetAvailable) return;
 
     final rows = await _database.query(
       OfflineDBConstants.TABLE_PENDING_REQUESTS,
-      where:
-          '${OfflineDBConstants.COL_STATUS} IN (${OfflineDBConstants.STATUS_PENDING}, ${OfflineDBConstants.STATUS_ERROR})',
+      where: '''
+      ${OfflineDBConstants.COL_STATUS} IN (${OfflineDBConstants.STATUS_PENDING}, ${OfflineDBConstants.STATUS_ERROR})
+      AND ${OfflineDBConstants.COL_USERNAME} = ?
+      AND ${OfflineDBConstants.COL_PROJECT_NAME} = ?
+    ''',
+      whereArgs: [username, projectName],
       orderBy: OfflineDBConstants.COL_CREATED_AT,
     );
 
@@ -414,105 +469,256 @@ class OfflineDbModule {
   // =================================================
   // SYNC ALL DATA (BUTTON)
   // =================================================
-
   static Future<void> syncAllData({
+    required String username,
+    required String projectName,
     required bool isInternetAvailable,
   }) async {
     if (!isInternetAvailable) return;
 
-    await _syncPendingBeforeLogin(isInternetAvailable: true);
+    await _syncPendingBeforeLogin(
+      username: username,
+      projectName: projectName,
+      isInternetAvailable: true,
+    );
 
-    await _database.delete(OfflineDBConstants.TABLE_OFFLINE_PAGES);
-    await _database.delete(OfflineDBConstants.TABLE_DATASOURCES);
-    await _database.delete(OfflineDBConstants.TABLE_DATASOURCE_DATA);
+    await _database.delete(
+      OfflineDBConstants.TABLE_OFFLINE_PAGES,
+      where: 'username = ? AND project_name = ?',
+      whereArgs: [username, projectName],
+    );
 
-    final pages = await fetchAndStoreOfflinePages();
+    await _database.delete(
+      OfflineDBConstants.TABLE_DATASOURCES,
+      where: 'username = ? AND project_name = ?',
+      whereArgs: [username, projectName],
+    );
+
+    await _database.delete(
+      OfflineDBConstants.TABLE_DATASOURCE_DATA,
+      where: 'username = ? AND project_name = ?',
+      whereArgs: [username, projectName],
+    );
+
+    final pages = await fetchAndStoreOfflinePages(
+      username: username,
+      projectName: projectName,
+    );
+
     if (pages.isNotEmpty) {
-      await fetchAndStoreAllDatasources();
+      // datasources will be fetched lazily per form
     }
   }
 
   // =================================================
   // CLEAR METHODS
   // =================================================
-
-  static Future<void> clearPendingRequests() async {
-    await _database.delete(OfflineDBConstants.TABLE_PENDING_REQUESTS);
-  }
-
-  static Future<void> clearOfflineCache() async {
-    await _database.delete(OfflineDBConstants.TABLE_OFFLINE_PAGES);
-    await _database.delete(OfflineDBConstants.TABLE_DATASOURCES);
-    await _database.delete(OfflineDBConstants.TABLE_DATASOURCE_DATA);
-  }
-
-  static Future<void> clearAllData() async {
-    await clearOfflineCache();
-    await clearPendingRequests();
-  }
-
-  static Future<int> getPendingCount() async {
-    final result = await _database.rawQuery(
-      'SELECT COUNT(*) as cnt FROM ${OfflineDBConstants.TABLE_PENDING_REQUESTS} WHERE ${OfflineDBConstants.COL_STATUS} IN (${OfflineDBConstants.STATUS_PENDING}, ${OfflineDBConstants.STATUS_ERROR})',
+  static Future<void> clearPendingRequests({
+    required String username,
+    required String projectName,
+  }) async {
+    await _database.delete(
+      OfflineDBConstants.TABLE_PENDING_REQUESTS,
+      where: 'username = ? AND project_name = ?',
+      whereArgs: [username, projectName],
     );
+  }
+
+  static Future<void> clearOfflineCache({
+    required String username,
+    required String projectName,
+  }) async {
+    await _database.delete(
+      OfflineDBConstants.TABLE_OFFLINE_PAGES,
+      where: 'username = ? AND project_name = ?',
+      whereArgs: [username, projectName],
+    );
+
+    await _database.delete(
+      OfflineDBConstants.TABLE_DATASOURCES,
+      where: 'username = ? AND project_name = ?',
+      whereArgs: [username, projectName],
+    );
+
+    await _database.delete(
+      OfflineDBConstants.TABLE_DATASOURCE_DATA,
+      where: 'username = ? AND project_name = ?',
+      whereArgs: [username, projectName],
+    );
+  }
+
+  static Future<void> clearAllData({
+    required String username,
+    required String projectName,
+  }) async {
+    await clearOfflineCache(username: username, projectName: projectName);
+    await clearPendingRequests(username: username, projectName: projectName);
+  }
+
+  static Future<int> getPendingCount({
+    required String username,
+    required String projectName,
+  }) async {
+    final result = await _database.rawQuery(
+      '''
+    SELECT COUNT(*) as cnt 
+    FROM ${OfflineDBConstants.TABLE_PENDING_REQUESTS} 
+    WHERE ${OfflineDBConstants.COL_STATUS} IN (${OfflineDBConstants.STATUS_PENDING}, ${OfflineDBConstants.STATUS_ERROR})
+    AND ${OfflineDBConstants.COL_USERNAME} = ?
+    AND ${OfflineDBConstants.COL_PROJECT_NAME} = ?
+    ''',
+      [username, projectName],
+    );
+
     return Sqflite.firstIntValue(result) ?? 0;
   }
 
-  static Future<void> refetchAll({required bool isOnline}) async {
-    await syncAllData(isInternetAvailable: isOnline);
-  }
-
-  static Future<void> refetchOnlyForms() async {
-    await _database.delete(OfflineDBConstants.TABLE_OFFLINE_PAGES);
-    await fetchAndStoreOfflinePages();
-  }
-
-  static Future<void> refetchOnlyDatasources() async {
-    await _database.delete(OfflineDBConstants.TABLE_DATASOURCE_DATA);
-    await fetchAndStoreAllDatasources();
-  }
-
-  static Future<void> deleteTable(String table) async {
-    await _database.delete(table);
-  }
-
-  static Future<void> clearOfflinePages() async {
-    await _database.delete(OfflineDBConstants.TABLE_OFFLINE_PAGES);
-  }
-
-  static Future<void> clearDatasources() async {
-    await _database.delete(OfflineDBConstants.TABLE_DATASOURCES);
-    await _database.delete(OfflineDBConstants.TABLE_DATASOURCE_DATA);
-  }
-
-  static Future<void> clearPendingQueue() async {
-    await clearPendingRequests();
-  }
-
-  static Future<void> clearAllExceptUser() async {
-    await clearOfflineCache();
-    await clearPendingRequests();
-  }
-
-  static Future<void> syncAll({
-    required bool isInternetAvailable,
-  }) async {
-    await syncAllData(isInternetAvailable: isInternetAvailable);
-  }
-
-  static Future<void> refetchAllData({
+  static Future<void> refetchAll({
+    required String username,
+    required String projectName,
     required bool isOnline,
   }) async {
-    await refetchAll(isOnline: isOnline);
+    await syncAllData(
+      username: username,
+      projectName: projectName,
+      isInternetAvailable: isOnline,
+    );
   }
 
-  static Future<void> clearOnlyForms() async {
-    await clearOfflinePages();
+  static Future<void> refetchOnlyForms({
+    required String username,
+    required String projectName,
+  }) async {
+    await _database.delete(
+      OfflineDBConstants.TABLE_OFFLINE_PAGES,
+      where: 'username = ? AND project_name = ?',
+      whereArgs: [username, projectName],
+    );
+
+    await fetchAndStoreOfflinePages(
+      username: username,
+      projectName: projectName,
+    );
   }
 
-  static Future<void> clearOnlyDatasources() async {
-    await clearDatasources();
+  static Future<void> refetchOnlyDatasources({
+    required String username,
+    required String projectName,
+  }) async {
+    await _database.delete(
+      OfflineDBConstants.TABLE_DATASOURCE_DATA,
+      where: 'username = ? AND project_name = ?',
+      whereArgs: [username, projectName],
+    );
   }
+
+  // static Future<void> _deleteTable(String table) async {
+  //   await _database.delete(table);
+  // }
+
+static Future<void> clearOfflinePages() async {
+  final scope = await _getLastOfflineUserScope();
+  if (scope == null) return;
+
+  await _database.delete(
+    OfflineDBConstants.TABLE_OFFLINE_PAGES,
+    where: 'username = ? AND project_name = ?',
+    whereArgs: [scope['username'], scope['projectName']],
+  );
+}
+
+
+static Future<void> clearDatasources() async {
+  final scope = await _getLastOfflineUserScope();
+  if (scope == null) return;
+
+  await _database.delete(
+    OfflineDBConstants.TABLE_DATASOURCES,
+    where: 'username = ? AND project_name = ?',
+    whereArgs: [scope['username'], scope['projectName']],
+  );
+
+  await _database.delete(
+    OfflineDBConstants.TABLE_DATASOURCE_DATA,
+    where: 'username = ? AND project_name = ?',
+    whereArgs: [scope['username'], scope['projectName']],
+  );
+}
+
+static Future<void> clearPendingQueue() async {
+  final scope = await _getLastOfflineUserScope();
+  if (scope == null) return;
+
+  await clearPendingRequests(
+    username: scope['username']!,
+    projectName: scope['projectName']!,
+  );
+}
+
+static Future<void> clearAllExceptUser() async {
+  final scope = await _getLastOfflineUserScope();
+  if (scope == null) return;
+
+  await clearOfflineCache(
+    username: scope['username']!,
+    projectName: scope['projectName']!,
+  );
+
+  await clearPendingRequests(
+    username: scope['username']!,
+    projectName: scope['projectName']!,
+  );
+}
+
+
+  static Future<void> syncAll({
+  required bool isInternetAvailable,
+}) async {
+  final scope = await _getLastOfflineUserScope();
+  if (scope == null) return;
+
+  await syncAllData(
+    username: scope['username']!,
+    projectName: scope['projectName']!,
+    isInternetAvailable: isInternetAvailable,
+  );
+}
+
+static Future<void> refetchAllData({
+  required bool isOnline,
+}) async {
+  final scope = await _getLastOfflineUserScope();
+  if (scope == null) return;
+
+  await refetchAll(
+    username: scope['username']!,
+    projectName: scope['projectName']!,
+    isOnline: isOnline,
+  );
+}
+
+static Future<void> clearOnlyForms() async {
+  final scope = await _getLastOfflineUserScope();
+  if (scope == null) return;
+
+  await _database.delete(
+    OfflineDBConstants.TABLE_OFFLINE_PAGES,
+    where: 'username = ? AND project_name = ?',
+    whereArgs: [scope['username'], scope['projectName']],
+  );
+}
+
+static Future<void> clearOnlyDatasources() async {
+  final scope = await _getLastOfflineUserScope();
+  if (scope == null) return;
+
+  await _database.delete(
+    OfflineDBConstants.TABLE_DATASOURCE_DATA,
+    where: 'username = ? AND project_name = ?',
+    whereArgs: [scope['username'], scope['projectName']],
+  );
+}
+
 
   static Future<bool> hasOfflineUser({
     required String projectName,
@@ -583,4 +789,20 @@ class OfflineDbModule {
       LogService.writeLog(message: "$tag[STACK] $st");
     }
   }
+
+  static Future<Map<String, String>?> _getLastOfflineUserScope() async {
+  final res = await _database.query(
+    OfflineDBConstants.TABLE_OFFLINE_USER,
+    orderBy: OfflineDBConstants.COL_LAST_LOGIN_AT + ' DESC',
+    limit: 1,
+  );
+
+  if (res.isEmpty) return null;
+
+  return {
+    'username': res.first[OfflineDBConstants.COL_USERNAME] as String,
+    'projectName': res.first[OfflineDBConstants.COL_PROJECT_NAME] as String,
+  };
+}
+
 }

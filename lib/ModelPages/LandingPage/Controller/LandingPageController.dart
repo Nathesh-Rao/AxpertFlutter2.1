@@ -132,6 +132,8 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
       );
 
       await OfflineDbModule.handlePostLogin(
+        // username: await appStorage.retrieveValue(AppStorage.USER_NAME) ?? "",
+        // projectName: globalVariableController.PROJECT_NAME.value,
         isInternetAvailable: isOnline,
       );
 
