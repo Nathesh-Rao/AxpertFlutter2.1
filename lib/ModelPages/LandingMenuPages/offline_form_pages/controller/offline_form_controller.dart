@@ -17,7 +17,7 @@ class OfflineFormController extends GetxController {
   late OfflineFormPageModel page;
 
   final Map<String, OfflineFormFieldModel> fieldMap = {};
-
+  List<Map<String, dynamic>> allRawPages = [];
   var isLoading = false.obs;
 
   RxList<OfflineFormPageModel> allPages = <OfflineFormPageModel>[].obs;
@@ -48,7 +48,7 @@ class OfflineFormController extends GetxController {
     try {
       isLoading.value = true;
 
-      final rawPages = await OfflineDbModule.getOfflinePages();
+      final rawPages = allRawPages = await OfflineDbModule.getOfflinePages();
 
       if (rawPages.isEmpty) {
         LogService.writeLog(
@@ -82,8 +82,37 @@ class OfflineFormController extends GetxController {
 
   // ---------------- LOAD PAGE ----------------
 
-  void loadPage(OfflineFormPageModel pageModel) {
-    page = pageModel;
+  // Future<void> loadPage(OfflineFormPageModel pageModel) async {
+  //   page = pageModel;
+  //   fieldMap.clear();
+  //   attachments.clear();
+
+  //   final sortedFields = [...page.fields]
+  //     ..sort((a, b) => a.order.compareTo(b.order));
+
+  //   for (final field in sortedFields) {
+  //     field.value = field.defValue;
+  //     field.errorText = null;
+  //     fieldMap[field.fldName] = field;
+  //   }
+
+  //   await OfflineDbModule.fetchAndStoreAllDatasources(
+  //           transId: pageModel.transId)
+  //       .then((_) async {
+  //     await OfflineDbModule.mapDatasourceOptionsIntoPages(
+  //       pages: [pageModel],
+  //     );
+  //     update();
+  //   });
+
+  //   Get.toNamed(Routes.OfflineFormPage);
+  // }
+
+  Future<void> loadPage(OfflineFormPageModel pageModel) async {
+    // await OfflineDbModule.fetchAndStoreAllDatasources(transId: page.transId);
+    var tempPage =
+        await OfflineDbModule.mapDatasourceOptionsIntoPages(pages: [pageModel]);
+    page = tempPage.first;
     fieldMap.clear();
     attachments.clear();
 
@@ -95,11 +124,48 @@ class OfflineFormController extends GetxController {
       field.errorText = null;
       fieldMap[field.fldName] = field;
     }
-
     Get.toNamed(Routes.OfflineFormPage);
   }
 
+  // void updateFieldValue(OfflineFormFieldModel field, dynamic newValue) {
+  //   switch (field.fldType) {
+  //     case 'cb':
+  //       field.value =
+  //           (newValue == true || newValue.toString().toLowerCase() == 'true')
+  //               .toString();
+  //       break;
+
+  //     case 'cl':
+  //       if (newValue is List<String>) {
+  //         field.value = newValue.join(',');
+  //       }
+  //       break;
+
+  //     case 'rb':
+  //     case 'rl':
+  //     case 'dd':
+  //     case 'c':
+  //     case 'n':
+  //     case 'm':
+  //     case 'd':
+  //       field.value = newValue.toString();
+  //       break;
+  //     case 'image':
+  //       field.value = newValue.toString();
+  //       break;
+
+  //     default:
+  //       field.value = newValue.toString();
+  //       break;
+  //   }
+
+  //   field.errorText = null;
+  //   fieldMap[field.fldName] = field;
+  //   update([field.fldName]);
+  // }
   void updateFieldValue(OfflineFormFieldModel field, dynamic newValue) {
+    final bool isDs = field.datasource != null && field.datasource!.isNotEmpty;
+
     switch (field.fldType) {
       case 'cb':
         field.value =
@@ -108,26 +174,42 @@ class OfflineFormController extends GetxController {
         break;
 
       case 'cl':
-        if (newValue is List<String>) {
-          field.value = newValue.join(',');
+        if (isDs) {
+          // datasource checklist → store list of IDs
+          if (newValue is List) {
+            field.value = newValue;
+          }
+        } else {
+          // normal checklist → old behavior
+          if (newValue is List<String>) {
+            field.value = newValue.join(',');
+          }
         }
         break;
 
       case 'rb':
       case 'rl':
       case 'dd':
+        if (isDs) {
+          field.value = newValue;
+        } else {
+          field.value = newValue.toString();
+        }
+        break;
+
       case 'c':
       case 'n':
       case 'm':
       case 'd':
         field.value = newValue.toString();
         break;
+
       case 'image':
         field.value = newValue.toString();
         break;
 
       default:
-        field.value = newValue.toString();
+        field.value = newValue;
         break;
     }
 
@@ -468,7 +550,7 @@ class OfflineFormController extends GetxController {
       title: "Refetch Forms",
       message: "This will re-download all forms. Continue?",
       action: () async {
-        await OfflineDbModule.refetchOnlyForms();
+        // await OfflineDbModule.refetchOnlyForms();
       },
     );
   }
@@ -480,7 +562,7 @@ class OfflineFormController extends GetxController {
       title: "Refetch Datasources",
       message: "This will re-download all datasources. Continue?",
       action: () async {
-        await OfflineDbModule.refetchOnlyDatasources();
+        // await OfflineDbModule.refetchOnlyDatasources();
       },
     );
   }
@@ -492,7 +574,7 @@ class OfflineFormController extends GetxController {
       title: "Clear All Cache",
       message: "This will delete all offline data except user. Continue?",
       action: () async {
-        await OfflineDbModule.clearOfflineCache();
+        // await OfflineDbModule.clearOfflineCache();
       },
     );
   }
@@ -502,9 +584,9 @@ class OfflineFormController extends GetxController {
       title: "Clear Forms",
       message: "This will delete all offline forms. Continue?",
       action: () async {
-        await OfflineDbModule.deleteTable(
-          OfflineDBConstants.TABLE_OFFLINE_PAGES,
-        );
+        // await OfflineDbModule.deleteTable(
+        //   OfflineDBConstants.TABLE_OFFLINE_PAGES,
+        // );
       },
     );
   }
@@ -514,9 +596,9 @@ class OfflineFormController extends GetxController {
       title: "Clear Datasources",
       message: "This will delete all cached datasources. Continue?",
       action: () async {
-        await OfflineDbModule.deleteTable(
-          OfflineDBConstants.TABLE_DATASOURCE_DATA,
-        );
+        // await OfflineDbModule.deleteTable(
+        //   OfflineDBConstants.TABLE_DATASOURCE_DATA,
+        // );
       },
     );
   }
@@ -526,55 +608,55 @@ class OfflineFormController extends GetxController {
       title: "Clear Pending Uploads",
       message: "This will delete all pending uploads. Continue?",
       action: () async {
-        await OfflineDbModule.clearPendingRequests();
+        // await OfflineDbModule.clearPendingRequests();
       },
     );
   }
 
-  Future<void> actionSyncAll() async {
-    const tag = "[OFFLINE_ACTION_SYNCALL_001]";
-    LogService.writeLog(message: "$tag[START]");
+  // Future<void> actionSyncAll() async {
+  //   const tag = "[OFFLINE_ACTION_SYNCALL_001]";
+  //   LogService.writeLog(message: "$tag[START]");
 
-    if (!_isInternetAvailable()) {
-      _showNeedInternetDialog();
-      return;
-    }
+  //   if (!await _isInternetAvailable()) {
+  //     _showNeedInternetDialog();
+  //     return;
+  //   }
 
-    final ok = await _confirm(
-      title: "Sync All Data",
-      message:
-          "This will upload pending data and refetch all offline data. Continue?",
-    );
-    if (!ok) return;
+  //   final ok = await _confirm(
+  //     title: "Sync All Data",
+  //     message:
+  //         "This will upload pending data and refetch all offline data. Continue?",
+  //   );
+  //   if (!ok) return;
 
-    try {
-      isLoading.value = true;
+  //   try {
+  //     isLoading.value = true;
 
-      // TODO: push pending queue
-      // await OfflineDbModule.pushPending();
+  //     // TODO: push pending queue
+  //     // await OfflineDbModule.pushPending();
 
-      // Refetch everything
-      await OfflineDbModule.fetchAndStoreOfflinePages();
-      await OfflineDbModule.fetchAndStoreAllDatasources();
+  //     // Refetch everything
+  //     await OfflineDbModule.fetchAndStoreOfflinePages();
+  //     // await OfflineDbModule.fetchAndStoreAllDatasources();
 
-      await getAllPages();
-      // await loadOfflineDashboard();
+  //     await getAllPages();
+  //     // await loadOfflineDashboard();
 
-      Get.snackbar("Success", "Offline data synced successfully");
-      LogService.writeLog(message: "$tag[SUCCESS]");
-    } catch (e, st) {
-      LogService.writeLog(message: "$tag[FAILED] $e");
-      LogService.writeLog(message: "$tag[STACK] $st");
-      Get.snackbar("Error", "Failed to sync offline data");
-    } finally {
-      isLoading.value = false;
-    }
-  }
+  //     Get.snackbar("Success", "Offline data synced successfully");
+  //     LogService.writeLog(message: "$tag[SUCCESS]");
+  //   } catch (e, st) {
+  //     LogService.writeLog(message: "$tag[FAILED] $e");
+  //     LogService.writeLog(message: "$tag[STACK] $st");
+  //     Get.snackbar("Error", "Failed to sync offline data");
+  //   } finally {
+  //     isLoading.value = false;
+  //   }
+  // }
 
   Future<void> actionRefetchForms() async {
     const tag = "[OFFLINE_ACTION_REFETCH_FORMS_001]";
 
-    if (!_isInternetAvailable()) {
+    if (!await _isInternetAvailable()) {
       _showNeedInternetDialog();
       return;
     }
@@ -603,35 +685,35 @@ class OfflineFormController extends GetxController {
     }
   }
 
-  Future<void> actionRefetchDatasources() async {
-    const tag = "[OFFLINE_ACTION_REFETCH_DS_001]";
+  // Future<void> actionRefetchDatasources() async {
+  //   const tag = "[OFFLINE_ACTION_REFETCH_DS_001]";
 
-    if (!_isInternetAvailable()) {
-      _showNeedInternetDialog();
-      return;
-    }
+  //   if (!await _isInternetAvailable()) {
+  //     _showNeedInternetDialog();
+  //     return;
+  //   }
 
-    final ok = await _confirm(
-      title: "Refetch Datasources",
-      message: "This will replace all cached datasources. Continue?",
-    );
-    if (!ok) return;
+  //   final ok = await _confirm(
+  //     title: "Refetch Datasources",
+  //     message: "This will replace all cached datasources. Continue?",
+  //   );
+  //   if (!ok) return;
 
-    try {
-      isLoading.value = true;
+  //   try {
+  //     isLoading.value = true;
 
-      await OfflineDbModule.fetchAndStoreAllDatasources();
+  //     // await OfflineDbModule.fetchAndStoreAllDatasources();
 
-      Get.snackbar("Success", "Datasources refreshed");
-      LogService.writeLog(message: "$tag[SUCCESS]");
-    } catch (e, st) {
-      LogService.writeLog(message: "$tag[FAILED] $e");
-      LogService.writeLog(message: "$tag[STACK] $st");
-      Get.snackbar("Error", "Failed to refetch datasources");
-    } finally {
-      isLoading.value = false;
-    }
-  }
+  //     Get.snackbar("Success", "Datasources refreshed");
+  //     LogService.writeLog(message: "$tag[SUCCESS]");
+  //   } catch (e, st) {
+  //     LogService.writeLog(message: "$tag[FAILED] $e");
+  //     LogService.writeLog(message: "$tag[STACK] $st");
+  //     Get.snackbar("Error", "Failed to refetch datasources");
+  //   } finally {
+  //     isLoading.value = false;
+  //   }
+  // }
 
   void actionShowPending() {}
   Future<void> actionClearForms() async {
@@ -774,10 +856,10 @@ class OfflineFormController extends GetxController {
     return result;
   }
 
-  bool _isInternetAvailable() {
+  Future<bool> _isInternetAvailable() async {
     try {
       final conn = Get.find<InternetConnectivity>();
-      return conn.isConnected.value;
+      return await conn.check();
     } catch (_) {
       return false;
     }
@@ -790,5 +872,137 @@ class OfflineFormController extends GetxController {
       textConfirm: "OK",
       onConfirm: Get.back,
     );
+  }
+
+  // ... inside OfflineFormController class ...
+
+  // =================================================
+  // ACTION: PUSH PENDING UPLOADS
+  // =================================================
+  Future<void> actionPushPending() async {
+    const tag = "[OFFLINE_ACTION_PUSH_PENDING]";
+
+    if (!await _isInternetAvailable()) {
+      _showNeedInternetDialog();
+      return;
+    }
+
+    final ok = await _confirm(
+      title: "Upload Pending Data",
+      message: "This will attempt to upload all queued submissions. Continue?",
+      okText: "Upload",
+    );
+    if (!ok) return;
+
+    try {
+      isLoading.value = true;
+      Get.snackbar("Syncing", "Uploading pending records...",
+          showProgressIndicator: true);
+
+      final resultMsg =
+          await OfflineDbModule.processPendingQueue(isInternetAvailable: true);
+
+      Get.back();
+      Get.snackbar("Sync Complete", resultMsg,
+          duration: const Duration(seconds: 4));
+      LogService.writeLog(message: "$tag[DONE] $resultMsg");
+    } catch (e, st) {
+      LogService.writeLog(message: "$tag[FAILED] $e");
+      Get.snackbar("Error", "Failed during upload process");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> actionSyncAll() async {
+    const tag = "[OFFLINE_ACTION_SYNC_ALL]";
+
+    if (!await _isInternetAvailable()) {
+      _showNeedInternetDialog();
+      return;
+    }
+
+    final ok = await _confirm(
+      title: "Full Sync",
+      message:
+          "This will:\n1. Upload pending data\n2. Download latest Forms\n3. Download latest Datasources\n\nThis may take a moment. Continue?",
+      okText: "Start Sync",
+    );
+    if (!ok) return;
+
+    try {
+      isLoading.value = true;
+
+      // STEP 1: Push Pending
+      Get.snackbar("Step 1/3", "Uploading pending data...",
+          showProgressIndicator: true);
+      final pushResult =
+          await OfflineDbModule.processPendingQueue(isInternetAvailable: true);
+      LogService.writeLog(message: "$tag[STEP_1] $pushResult");
+
+      // STEP 2: Refetch Forms
+      Get.snackbar("Step 2/3", "Downloading latest forms...",
+          showProgressIndicator: true);
+      final pages = await OfflineDbModule.fetchAndStoreOfflinePages();
+      await getAllPages(); // Refresh controller list
+      LogService.writeLog(
+          message: "$tag[STEP_2] Fetched ${pages.length} forms");
+
+      // STEP 3: Refetch Datasources
+      Get.snackbar("Step 3/3", "Downloading datasources...",
+          showProgressIndicator: true);
+      await OfflineDbModule.refreshAllDatasourcesFromDownloadedPages();
+      LogService.writeLog(message: "$tag[STEP_3] Datasources updated");
+
+      // DONE
+      // await loadOfflineDashboard();
+      Get.back(); // close progress snackbar
+
+      Get.dialog(
+        AlertDialog(
+          title: const Text("Sync Complete"),
+          content: Text(
+              "Uploads: $pushResult\nForms Updated: ${pages.length}\nDatasources: Updated"),
+          actions: [
+            TextButton(onPressed: () => Get.back(), child: const Text("OK"))
+          ],
+        ),
+      );
+    } catch (e, st) {
+      LogService.writeLog(message: "$tag[FAILED] $e");
+      LogService.writeLog(message: "$tag[STACK] $st");
+      Get.snackbar("Error", "Sync failed. Check logs.");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> actionRefetchDatasources() async {
+    if (!await _isInternetAvailable()) {
+      _showNeedInternetDialog();
+      return;
+    }
+
+    final ok = await _confirm(
+      title: "Refetch Datasources",
+      message:
+          "This will re-download lookup data for all downloaded forms. Continue?",
+    );
+    if (!ok) return;
+
+    try {
+      isLoading.value = true;
+      Get.snackbar("Downloading", "Fetching datasources...",
+          showProgressIndicator: true);
+
+      await OfflineDbModule.refreshAllDatasourcesFromDownloadedPages();
+
+      Get.back();
+      Get.snackbar("Success", "Datasources updated successfully");
+    } catch (e) {
+      Get.snackbar("Error", "Failed to update datasources");
+    } finally {
+      isLoading.value = false;
+    }
   }
 }

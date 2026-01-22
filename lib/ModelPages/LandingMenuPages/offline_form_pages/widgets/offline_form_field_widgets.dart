@@ -188,9 +188,13 @@ class OfflineFormField extends GetView<OfflineFormController> {
   }
 
   // ---------------- CHECKLIST ----------------
-
   Widget _checkList() {
-    final selected = field.value.isEmpty ? <String>[] : field.value.split(',');
+    final List<dynamic> selected =
+        field.value == null || field.value.toString().isEmpty
+            ? []
+            : (field.value is List
+                ? field.value
+                : field.value.toString().split(','));
 
     if (field.options.isEmpty) {
       return _emptyHint();
@@ -204,15 +208,17 @@ class OfflineFormField extends GetView<OfflineFormController> {
         Wrap(
           spacing: 6,
           children: field.options.map((o) {
-            final isSel = selected.contains(o);
+            final key = _isDataSourceField ? o.id : o.value;
+            final isSel = selected.contains(key);
+
             return FilterChip(
-              label: Text(o, style: GoogleFonts.poppins(fontSize: 12)),
+              label: Text(o.value, style: GoogleFonts.poppins(fontSize: 12)),
               selected: isSel,
               onSelected: field.readOnly
                   ? null
                   : (_) {
                       final next = [...selected];
-                      isSel ? next.remove(o) : next.add(o);
+                      isSel ? next.remove(key) : next.add(key);
                       controller.updateFieldValue(field, next);
                     },
             );
@@ -224,6 +230,38 @@ class OfflineFormField extends GetView<OfflineFormController> {
 
   // ---------------- RADIO ----------------
 
+  // Widget _radioList() {
+  //   if (field.options.isEmpty) {
+  //     return _emptyHint();
+  //   }
+
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       _label(),
+  //       const SizedBox(height: 4),
+  //       RadioGroup<String>(
+  //         groupValue: field.value.isEmpty ? null : field.value,
+  //         onChanged: (val) {
+  //           if (field.readOnly) return;
+  //           if (val != null) {
+  //             controller.updateFieldValue(field, val);
+  //           }
+  //         },
+  //         child: Column(
+  //           children: field.options.map((o) {
+  //             return RadioListTile<String>(
+  //               dense: true,
+  //               contentPadding: EdgeInsets.zero,
+  //               value: o,
+  //               title: Text(o, style: GoogleFonts.poppins(fontSize: 12)),
+  //             );
+  //           }).toList(),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
   Widget _radioList() {
     if (field.options.isEmpty) {
       return _emptyHint();
@@ -234,30 +272,53 @@ class OfflineFormField extends GetView<OfflineFormController> {
       children: [
         _label(),
         const SizedBox(height: 4),
-        RadioGroup<String>(
-          groupValue: field.value.isEmpty ? null : field.value,
-          onChanged: (val) {
-            if (field.readOnly) return;
-            if (val != null) {
-              controller.updateFieldValue(field, val);
-            }
-          },
-          child: Column(
-            children: field.options.map((o) {
-              return RadioListTile<String>(
-                dense: true,
-                contentPadding: EdgeInsets.zero,
-                value: o,
-                title: Text(o, style: GoogleFonts.poppins(fontSize: 12)),
-              );
-            }).toList(),
-          ),
+        Column(
+          children: field.options.map((o) {
+            final isSelected =
+                field.value == (_isDataSourceField ? o.id : o.value);
+
+            return RadioListTile<dynamic>(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              value: _isDataSourceField ? o.id : o.value,
+              groupValue: field.value,
+              title: Text(o.value, style: GoogleFonts.poppins(fontSize: 12)),
+              onChanged: field.readOnly
+                  ? null
+                  : (val) {
+                      if (val != null) {
+                        controller.updateFieldValue(field, val);
+                      }
+                    },
+            );
+          }).toList(),
         ),
       ],
     );
   }
 
   // ---------------- DROPDOWN ----------------
+  // Widget _dropdown(BuildContext context) {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       _label(),
+  //       const SizedBox(height: 4),
+  //       InkWell(
+  //         onTap: field.readOnly ? null : () => _openDropdownSheet(context),
+  //         child: IgnorePointer(
+  //           child: TextFormField(
+  //             initialValue: field.value.isEmpty ? 'Select' : field.value,
+  //             decoration: _decoration(
+  //               suffix: const Icon(Icons.arrow_drop_down),
+  //             ),
+  //             style: GoogleFonts.poppins(fontSize: 13),
+  //           ),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
   Widget _dropdown(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -268,7 +329,7 @@ class OfflineFormField extends GetView<OfflineFormController> {
           onTap: field.readOnly ? null : () => _openDropdownSheet(context),
           child: IgnorePointer(
             child: TextFormField(
-              initialValue: field.value.isEmpty ? 'Select' : field.value,
+              initialValue: _getDisplayText(),
               decoration: _decoration(
                 suffix: const Icon(Icons.arrow_drop_down),
               ),
@@ -296,6 +357,41 @@ class OfflineFormField extends GetView<OfflineFormController> {
     );
   }
 
+  // void _openDropdownSheet(BuildContext context) {
+  //   showModalBottomSheet(
+  //     context: context,
+  //     builder: (_) {
+  //       if (field.options.isEmpty) {
+  //         return Padding(
+  //           padding: const EdgeInsets.all(16),
+  //           child: Center(
+  //             child: Text(
+  //               'No options available',
+  //               style: GoogleFonts.poppins(
+  //                 fontSize: 13,
+  //                 color: Colors.grey,
+  //               ),
+  //             ),
+  //           ),
+  //         );
+  //       }
+
+  //       return ListView(
+  //         children: field.options
+  //             .map(
+  //               (o) => ListTile(
+  //                 title: Text(o),
+  //                 onTap: () {
+  //                   Get.back();
+  //                   controller.updateFieldValue(field, o);
+  //                 },
+  //               ),
+  //             )
+  //             .toList(),
+  //       );
+  //     },
+  //   );
+  // }
   void _openDropdownSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -316,17 +412,22 @@ class OfflineFormField extends GetView<OfflineFormController> {
         }
 
         return ListView(
-          children: field.options
-              .map(
-                (o) => ListTile(
-                  title: Text(o),
-                  onTap: () {
-                    Get.back();
-                    controller.updateFieldValue(field, o);
-                  },
-                ),
-              )
-              .toList(),
+          children: field.options.map((o) {
+            return ListTile(
+              title: Text(o.value),
+              onTap: () {
+                Get.back();
+
+                if (_isDataSourceField) {
+                  // 👇 store ID
+                  controller.updateFieldValue(field, o.id);
+                } else {
+                  // 👇 static dropdown, store value
+                  controller.updateFieldValue(field, o.value);
+                }
+              },
+            );
+          }).toList(),
         );
       },
     );
@@ -468,121 +569,140 @@ class OfflineFormField extends GetView<OfflineFormController> {
       },
     );
   }
+
+  bool get _isDataSourceField =>
+      field.datasource != null && field.datasource!.isNotEmpty;
+
+  String _getDisplayText() {
+    if (!_isDataSourceField) {
+      return field.value?.toString() ?? '';
+    }
+
+    if (field.value == null || field.value.toString().isEmpty) {
+      return 'Select';
+    }
+
+    final match = field.options.firstWhereOrNull(
+      (e) => e.id == field.value,
+    );
+
+    return match?.value ?? 'Select';
+  }
 }
 
-class InwardEntryStaticFields {
-  static List<OfflineFormFieldModel> fields = [
-    OfflineFormFieldModel(
-      order: 1,
-      fldName: 'unit',
-      fldCaption: 'Unit',
-      fldType: 'c',
-      dataType: 's',
-      hidden: false,
-      readOnly: true,
-      allowEmpty: false,
-      defValue: 'AUTO',
-      value: '',
-    ),
-    OfflineFormFieldModel(
-      order: 2,
-      fldName: 'ub_ge_no',
-      fldCaption: 'UB G.E. No',
-      fldType: 'c',
-      dataType: 's',
-      hidden: false,
-      readOnly: false,
-      allowEmpty: false,
-      defValue: '',
-      value: '',
-    ),
-    OfflineFormFieldModel(
-      order: 3,
-      fldName: 'receipt_date',
-      fldCaption: 'Receipt Date',
-      fldType: 'd',
-      dataType: 'd',
-      hidden: false,
-      readOnly: false,
-      allowEmpty: false,
-      defValue: '',
-      value: '',
-    ),
-    OfflineFormFieldModel(
-      order: 4,
-      fldName: 'vehicle_no',
-      fldCaption: 'Vehicle No',
-      fldType: 'c',
-      dataType: 's',
-      hidden: false,
-      readOnly: false,
-      allowEmpty: false,
-      defValue: '',
-      value: '',
-    ),
-    OfflineFormFieldModel(
-      order: 5,
-      fldName: 'bottle_type',
-      fldCaption: 'Bottle Type',
-      fldType: 'dd',
-      dataType: 's',
-      hidden: false,
-      readOnly: false,
-      allowEmpty: false,
-      options: ['KF', 'Other Brand', 'Unknown'],
-      defValue: '',
-      value: '',
-    ),
-    OfflineFormFieldModel(
-      order: 6,
-      fldName: 'bottle_capacity',
-      fldCaption: 'Bottle Capacity',
-      fldType: 'dd',
-      dataType: 's',
-      hidden: false,
-      readOnly: false,
-      allowEmpty: false,
-      options: ['180ml', '375ml', '650ml', '750ml'],
-      defValue: '',
-      value: '',
-    ),
-    OfflineFormFieldModel(
-      order: 7,
-      fldName: 'loaded_weight',
-      fldCaption: 'Loaded Truck Weight',
-      fldType: 'n',
-      dataType: 'n',
-      hidden: false,
-      readOnly: false,
-      allowEmpty: false,
-      defValue: '',
-      value: '',
-    ),
-    OfflineFormFieldModel(
-      order: 8,
-      fldName: 'empty_weight',
-      fldCaption: 'Empty Truck Weight',
-      fldType: 'n',
-      dataType: 'n',
-      hidden: false,
-      readOnly: false,
-      allowEmpty: false,
-      defValue: '',
-      value: '',
-    ),
-    OfflineFormFieldModel(
-      order: 9,
-      fldName: 'bottle_image',
-      fldCaption: 'Bottle Image',
-      fldType: 'image',
-      dataType: 'b',
-      hidden: false,
-      readOnly: false,
-      allowEmpty: false,
-      isCamera: true,
-      isGallery: true,
-      defValue: '',
-      value: '',
-    ),
-  ];
-}
+// class InwardEntryStaticFields {
+//   static List<OfflineFormFieldModel> fields = [
+//     OfflineFormFieldModel(
+//       order: 1,
+//       fldName: 'unit',
+//       fldCaption: 'Unit',
+//       fldType: 'c',
+//       dataType: 's',
+//       hidden: false,
+//       readOnly: true,
+//       allowEmpty: false,
+//       defValue: 'AUTO',
+//       value: '',
+//     ),
+//     OfflineFormFieldModel(
+//       order: 2,
+//       fldName: 'ub_ge_no',
+//       fldCaption: 'UB G.E. No',
+//       fldType: 'c',
+//       dataType: 's',
+//       hidden: false,
+//       readOnly: false,
+//       allowEmpty: false,
+//       defValue: '',
+//       value: '',
+//     ),
+//     OfflineFormFieldModel(
+//       order: 3,
+//       fldName: 'receipt_date',
+//       fldCaption: 'Receipt Date',
+//       fldType: 'd',
+//       dataType: 'd',
+//       hidden: false,
+//       readOnly: false,
+//       allowEmpty: false,
+//       defValue: '',
+//       value: '',
+//     ),
+//     OfflineFormFieldModel(
+//       order: 4,
+//       fldName: 'vehicle_no',
+//       fldCaption: 'Vehicle No',
+//       fldType: 'c',
+//       dataType: 's',
+//       hidden: false,
+//       readOnly: false,
+//       allowEmpty: false,
+//       defValue: '',
+//       value: '',
+//     ),
+//     OfflineFormFieldModel(
+//       order: 5,
+//       fldName: 'bottle_type',
+//       fldCaption: 'Bottle Type',
+//       fldType: 'dd',
+//       dataType: 's',
+//       hidden: false,
+//       readOnly: false,
+//       allowEmpty: false,
+//       options: [],
+//       defValue: '',
+//       value: '',
+//     ),
+//     OfflineFormFieldModel(
+//       order: 6,
+//       fldName: 'bottle_capacity',
+//       fldCaption: 'Bottle Capacity',
+//       fldType: 'dd',
+//       dataType: 's',
+//       hidden: false,
+//       readOnly: false,
+//       allowEmpty: false,
+//       options: [],
+//       defValue: '',
+//       value: '',
+//     ),
+//     OfflineFormFieldModel(
+//       order: 7,
+//       fldName: 'loaded_weight',
+//       fldCaption: 'Loaded Truck Weight',
+//       fldType: 'n',
+//       dataType: 'n',
+//       hidden: false,
+//       readOnly: false,
+//       allowEmpty: false,
+//       defValue: '',
+//       value: '',
+//     ),
+//     OfflineFormFieldModel(
+//       order: 8,
+//       fldName: 'empty_weight',
+//       fldCaption: 'Empty Truck Weight',
+//       fldType: 'n',
+//       dataType: 'n',
+//       hidden: false,
+//       readOnly: false,
+//       allowEmpty: false,
+//       defValue: '',
+//       value: '',
+//     ),
+//     OfflineFormFieldModel(
+//       order: 9,
+//       fldName: 'bottle_image',
+//       fldCaption: 'Bottle Image',
+//       fldType: 'image',
+//       dataType: 'b',
+//       hidden: false,
+//       readOnly: false,
+//       allowEmpty: false,
+//       isCamera: true,
+//       isGallery: true,
+//       defValue: '',
+//       value: '',
+//     ),
+//   ];
+// }

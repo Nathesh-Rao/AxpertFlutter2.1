@@ -1,3 +1,5 @@
+import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/models/data_source_model.dart';
+
 class OfflineFormFieldModel {
   final int order;
   final String fldName;
@@ -17,10 +19,10 @@ class OfflineFormFieldModel {
   final bool isGallery;
 
   /// runtime
-  String value;
+  dynamic value;
   String? errorText;
 
-  List<String> options;
+  List<DataSourceItem> options;
 
   OfflineFormFieldModel({
     required this.order,
@@ -57,7 +59,12 @@ class OfflineFormFieldModel {
       datasource: json['datasource'],
       isCamera: (json['is_camera'] ?? 'F') == 'T',
       isGallery: (json['is_gallery'] ?? 'F') == 'T',
-      options: List<String>.from(json['options'] ?? []),
+      options: (json['options'] as List<dynamic>?)
+              ?.map((e) => DataSourceItem.fromJson(e))
+              .toList() ??
+          [],
     );
   }
+
+  
 }

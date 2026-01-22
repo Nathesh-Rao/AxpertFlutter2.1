@@ -1,5 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/db/offline_db_module.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/inward_entry/inward_entry_consolidated_page.dart';
+import 'package:axpertflutter/Utils/LogServices/LogService.dart';
+import 'package:axpertflutter/Utils/ServerConnections/InternetConnectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,7 +14,7 @@ import 'inward_entry_schema.dart';
 
 class InwardEntryDynamicController extends GetxController {
   // ================== SCHEMA ==================
-  final Map<String, dynamic> schema = InwardEntrySchema.schema;
+  Map<String, dynamic> schema = {};
 
   // ================== FIELD CONTROLLERS ==================
   final Map<String, TextEditingController> textCtrls = {};
@@ -17,6 +22,8 @@ class InwardEntryDynamicController extends GetxController {
   final ScrollController scrollCtrl = ScrollController();
   final PageController pageController = PageController();
   Map<String, dynamic> mainFormJson = {};
+  Map<String, dynamic> dc1SubmitFormJson = {};
+
   List<Map<String, dynamic>> sampleGridJson = [];
   Map<String, dynamic> sampleSummaryJson = {};
   RxMap<String, List<String>> imageAttachmentJson =
@@ -29,6 +36,7 @@ class InwardEntryDynamicController extends GetxController {
   final showMiniFab = false.obs;
   var isAtTop = true.obs;
   var currentCardIndex = 0.obs;
+  final Map<String, List<Map<String, dynamic>>> datasourceMap = {};
 
   // ================== SAMPLE GRID ==================
   final RxList<Map<String, TextEditingController>> sampleGridRows =
@@ -38,7 +46,7 @@ class InwardEntryDynamicController extends GetxController {
 
   // ================== ERRORS (for later UI) ==================
   final errors = <String, String>{}.obs;
-
+  var isLoading = false.obs;
   @override
   void onInit() {
     super.onInit();
@@ -54,18 +62,70 @@ class InwardEntryDynamicController extends GetxController {
         isAtTop.value = true;
       }
     });
-    _buildControllersFromSchema();
-    _attachBusinessListeners();
+    // _buildControllersFromSchema();
+    // _attachBusinessListeners();
     resetForm();
   }
 
-  prepareForm() {
+  // prepareForm() {
+  //   resetForm();
+  //   scrollCtrl.animateTo(
+  //     0,
+  //     duration: const Duration(milliseconds: 500),
+  //     curve: Curves.easeInOut,
+  //   );
+  // }
+
+  Future<void> prepareForm(Map<String, dynamic> newSchema) async {
+    schema = newSchema;
+    // 1. clear old stuff
     resetForm();
-    scrollCtrl.animateTo(
-      0,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOut,
-    );
+    // scrollCtrl.animateTo(
+    //   0,
+    //   duration: const Duration(milliseconds: 500),
+    //   curve: Curves.easeInOut,
+    // );
+    // 2. destroy old controllers
+    for (final c in textCtrls.values) {
+      c.dispose();
+    }
+    textCtrls.clear();
+    dropdownCtrls.clear();
+
+    // 3. rebuild from schema
+    _buildControllersFromSchema();
+
+    // 4. load datasources
+    await loadDatasources();
+
+    // 5. attach business rules
+    _attachBusinessListeners();
+
+    // 6. scroll to top
+    if (scrollCtrl.hasClients) {
+      scrollCtrl.jumpTo(0);
+    }
+  }
+
+  Future<void> loadDatasources() async {
+    datasourceMap.clear();
+
+    final List fields = schema["fields"];
+    final Set<String> needed = {};
+
+    for (final f in fields) {
+      if (f["datasource"] != null && f["datasource"].toString().isNotEmpty) {
+        needed.add(f["datasource"]);
+      }
+    }
+
+    for (final ds in needed) {
+      final list = await OfflineDbModule.getDatasourceOptions(
+          transId: schema["transid"], datasource: ds);
+      datasourceMap[ds] = List<Map<String, dynamic>>.from(list);
+    }
+
+    update();
   }
 
   // ================== BUILD CONTROLLERS FROM JSON ==================
@@ -86,14 +146,10 @@ class InwardEntryDynamicController extends GetxController {
   }
 
   void _attachBusinessListeners() {
-    // receivedBags logic
-    getTextCtrl("receivedBags").addListener(_onReceivedChanged);
-    // bagsToSample logic
+    getTextCtrl("received").addListener(_onReceivedChanged);
     getTextCtrl("bagsToSample").addListener(_recheckMiniFab);
     getTextCtrl("loadedWeight").addListener(_calculateNetWeight);
-    getTextCtrl("loadedWeight").addListener(_calculateNetWeight);
     getTextCtrl("emptyWeight").addListener(_calculateNetWeight);
-    // getTextCtrl("netWeight").addListener(_calculateNetWeight);
   }
 
   _calculateNetWeight() {
@@ -109,7 +165,7 @@ class InwardEntryDynamicController extends GetxController {
   }
 
   void _onReceivedChanged() {
-    final received = int.tryParse(getTextCtrl("receivedBags").text.trim()) ?? 0;
+    final received = int.tryParse(getTextCtrl("received").text.trim()) ?? 0;
 
     if (received < 20) {
       getTextCtrl("bagsToSample").text = '';
@@ -144,8 +200,18 @@ class InwardEntryDynamicController extends GetxController {
     });
   }
 
+  // void _recheckMiniFab() {
+  //   final received = int.tryParse(getTextCtrl("receivedBags").text.trim()) ?? 0;
+  //   final sample = int.tryParse(getTextCtrl("bagsToSample").text.trim()) ?? 0;
+
+  //   if (received >= 1 && sample >= 1) {
+  //     showMiniFab.value = true;
+  //   } else {
+  //     showMiniFab.value = false;
+  //   }
+  // }
   void _recheckMiniFab() {
-    final received = int.tryParse(getTextCtrl("receivedBags").text.trim()) ?? 0;
+    final received = int.tryParse(getTextCtrl("received").text.trim()) ?? 0;
     final sample = int.tryParse(getTextCtrl("bagsToSample").text.trim()) ?? 0;
 
     if (received >= 1 && sample >= 1) {
@@ -459,7 +525,7 @@ class InwardEntryDynamicController extends GetxController {
     return errors.isEmpty;
   }
 
-  void submit() {
+  void next() {
     final ok = validateForm();
 
     if (!ok) {
@@ -470,7 +536,7 @@ class InwardEntryDynamicController extends GetxController {
       );
       return;
     }
-
+    dc1SubmitFormJson = buildDc1SubmitFormJson();
     mainFormJson = buildMainFormJson();
     sampleGridJson = buildSampleGridJson();
     sampleSummaryJson = buildSampleSummaryJson();
@@ -495,6 +561,46 @@ class InwardEntryDynamicController extends GetxController {
 
     for (final f in fields) {
       final String name = f["fld_name"];
+      final String type = f["fld_type"];
+
+      // final String key = _toSnakeCase(name);
+      final String key = name;
+
+      dynamic value;
+
+      if (type == "dd") {
+        final String ds = f["datasource"];
+        // 1. Get the list safely
+        var dsList = datasourceMap[ds] ?? [];
+
+        // 2. Get the ID we are looking for
+        final selectedId = dropdownCtrls[name]?.value ?? "";
+
+        // 3. Find the item safely (handle Type mismatch and Missing item)
+        final selectedItem = dsList.firstWhere(
+          (item) => item["id"].toString() == selectedId.toString(),
+          orElse: () => {}, // Prevents crash if not found
+        );
+
+        // 4. Extract just the text value (or fallback to empty)
+        value = selectedItem[
+            "value"]; // <--- Make sure you extract the specific key!
+      } else {
+        value = textCtrls[name]?.text.trim() ?? "";
+      }
+
+      result[key] = value;
+    }
+
+    return result;
+  }
+
+  Map<String, dynamic> buildDc1SubmitFormJson() {
+    final Map<String, dynamic> result = {};
+    final List fields = schema["fields"];
+
+    for (final f in fields) {
+      final String name = f["api_key"];
       final String type = f["fld_type"];
 
       // final String key = _toSnakeCase(name);
@@ -533,6 +639,18 @@ class InwardEntryDynamicController extends GetxController {
     }
 
     return rows;
+  }
+
+  List<Map<String, dynamic>> getOptionsForField(String fieldName) {
+    final List fields = schema["fields"];
+
+    final field = fields.firstWhere((e) => e["fld_name"] == fieldName);
+
+    final String? ds = field["datasource"];
+
+    if (ds == null) return [];
+
+    return datasourceMap[ds] ?? [];
   }
 
   Map<String, dynamic> buildSampleSummaryJson() {
@@ -574,6 +692,429 @@ class InwardEntryDynamicController extends GetxController {
       if (val > 0 && key != "maf_date" && key != "maf_year") {
         imageAttachmentJson[key] = [];
       }
+    }
+  }
+
+  submit() {
+    // var sbJson = generateRestSubmitPayLoad();
+
+    // // 1. Pretty Print (Add indentation)
+    // const encoder = JsonEncoder.withIndent('  ');
+    // final String prettyJson = encoder.convert(sbJson);
+
+    // // 2. Use log() to avoid truncation
+    // log(prettyJson, name: 'FULL_JSON_OUTPUT');
+
+    submitPage();
+  }
+
+  Map<String, dynamic> generateSubmitPayload() {
+    final Map<String, dynamic> dc1Data = {};
+    final List fields = schema["fields"];
+
+    for (final f in fields) {
+      final String key = f["api_key"] ?? f["fld_name"];
+      final String name = f["fld_name"];
+      final String type = f["fld_type"];
+
+      dynamic value;
+
+      if (type == "dd") {
+        value = dropdownCtrls[name]?.value ?? "";
+      } else {
+        value = textCtrls[name]?.text.trim() ?? "";
+      }
+
+      dc1Data[key] = value;
+    }
+
+    final Map<String, dynamic> dc2Data = {};
+    final List gridFields = schema["fillgrids"]["fields"];
+
+    int rowIndex = 1;
+    for (final row in sampleGridRows) {
+      final Map<String, dynamic> rowData = {};
+
+      for (final f in gridFields) {
+        final String name = f["fld_name"];
+        final String key = f["api_key"] ?? name;
+
+        final ctrl = row[name];
+        rowData[key] = ctrl?.text.trim() ?? "";
+      }
+
+      rowData["fillrows"] = "T";
+
+      dc2Data["row$rowIndex"] = rowData;
+      rowIndex++;
+    }
+
+    final Map<String, int> summary = {};
+
+    for (final f in gridFields) {
+      if (f["data_type"] == "n") {
+        summary[f["fld_name"]] = 0;
+      }
+    }
+
+    for (final row in sampleGridRows) {
+      for (final f in gridFields) {
+        if (f["data_type"] == "n") {
+          final String name = f["fld_name"];
+          final String v = row[name]?.text.trim() ?? "0";
+          final int n = int.tryParse(v) ?? 0;
+          summary[name] = (summary[name] ?? 0) + n;
+        }
+      }
+    }
+
+    final Map<String, dynamic> dc3Data = {
+      "row1": {
+        "tot_broken": summary["broken"]?.toString() ?? "0",
+        "tot_neckchip": summary["neck_chip"]?.toString() ?? "0",
+        "tot_extradirty": summary["extra_dirty"]?.toString() ?? "0",
+        "tot_short": summary["short"]?.toString() ?? "0",
+        "tot_otherbrand": summary["other_brand"]?.toString() ?? "0",
+        "tot_otherkf": summary["other_kf"]?.toString() ?? "0",
+        "tot_tornbags": summary["torn_bags"]?.toString() ?? "0",
+      }
+    };
+
+    final Map<String, dynamic> finalJson = {
+      "submitdata": {
+        "project": "bottleapp",
+        "token": "642656c07b8a4ea176afddfc3a231d1e",
+        "userauthkey": "00050148015001580159016132163450607080013",
+        "seed": "100045",
+        "username": "admin",
+        "trace": "false",
+        "keyfield": "",
+        "dataarray": {
+          "data": {
+            "mode": "new",
+            "keyvalue": "",
+            "recordid": "0",
+            "dc1": {"row1": dc1Data},
+            "dc2": dc2Data,
+            "dc3": dc3Data
+          }
+        }
+      }
+    };
+
+    return finalJson;
+  }
+
+  Map<String, dynamic> generateRestSubmitPayLoad() {
+    // =========================================================================
+    // 1. GENERATE axp_recid1 (Header Data)
+    // =========================================================================
+    final Map<String, dynamic> col1 = {};
+    final List fields = schema["fields"];
+
+    // --- STEP A: Manually Build the Combined Fields first ---
+
+    // 1. Entry Date Time
+    String entryDate =
+        _formatDateToSubmit(textCtrls["entryDate"]?.text.trim() ?? "");
+    String entryTime =
+        _formatTimeToSubmit(textCtrls["entryTime"]?.text.trim() ?? "");
+    col1["entry_date_time"] = "$entryDate $entryTime".trim();
+
+    // 2. Exit Date Time
+    String exitDate =
+        _formatDateToSubmit(textCtrls["exitDate"]?.text.trim() ?? "");
+    String exitTime =
+        _formatTimeToSubmit(textCtrls["exitTime"]?.text.trim() ?? "");
+    col1["exit_date_time"] = "$exitDate $exitTime".trim();
+
+    // 3. Add other missing required keys
+    col1["mfg_dt_btl"] = "";
+    col1["testdt"] = "";
+
+    // --- STEP B: Loop through remaining fields ---
+
+    // keys we already handled manually
+    final ignoredKeys = {"entry_date_time", "exit_date_time"};
+
+    for (final f in fields) {
+      final String name = f["fld_name"];
+      final String key = f["api_key"] ?? name;
+      final String type = f["fld_type"];
+
+      // CRITICAL: If this key is one we already built manually, SKIP IT.
+      if (ignoredKeys.contains(key)) continue;
+
+      String valueToSave = "";
+
+      if (type == "dd") {
+        // Dropdown Logic (Name lookup)
+        final String selectedId = dropdownCtrls[name]?.value ?? "";
+        if (selectedId.isNotEmpty) {
+          final String dsKey = f["datasource"] ?? "";
+          final List<Map<String, dynamic>> options = datasourceMap[dsKey] ?? [];
+          final Map<String, dynamic> selectedOption = options.firstWhere(
+            (opt) => opt["id"].toString() == selectedId,
+            orElse: () => {},
+          );
+          valueToSave = selectedOption.isNotEmpty
+              ? selectedOption["value"].toString()
+              : "";
+        }
+      } else {
+        // Standard Text Logic
+        String rawValue = textCtrls[name]?.text.trim() ?? "";
+        if (type == "date" || type == "d") {
+          valueToSave = _formatDateToSubmit(rawValue);
+        } else if (type == "time" || type == "t") {
+          valueToSave = _formatTimeToSubmit(rawValue);
+        } else {
+          valueToSave = rawValue;
+        }
+      }
+
+      col1[key] = valueToSave;
+    }
+
+    final Map<String, dynamic> recid1Data = {
+      "rowno": "001",
+      "text": "0",
+      "columns": col1
+    };
+
+    // =========================================================================
+    // 2. GENERATE axp_recid2 (Grid Rows)
+    // =========================================================================
+    final List<Map<String, dynamic>> recid2List = [];
+    final List gridFields = schema["fillgrids"]["fields"];
+
+    int rowIndex = 1;
+    for (final row in sampleGridRows) {
+      final Map<String, dynamic> col2 = {};
+
+      for (final f in gridFields) {
+        final String name = f["fld_name"];
+        final String key = f["api_key"] ?? name;
+        final String type = f["fld_type"];
+
+        final ctrl = row[name];
+        String rawValue = ctrl?.text.trim() ?? "";
+
+        if (type == "date" || type == "d") {
+          col2[key] = _formatDateToSubmit(rawValue);
+        } else {
+          col2[key] = rawValue;
+        }
+      }
+      col2["fillrows"] = rowIndex.toString();
+      recid2List.add({
+        "rowno": rowIndex.toString().padLeft(3, '0'),
+        "text": "0",
+        "columns": col2
+      });
+      rowIndex++;
+    }
+
+    // =========================================================================
+    // 3. GENERATE axp_recid3 (Totals)
+    // =========================================================================
+    final Map<String, int> summary = {};
+    for (final f in gridFields) {
+      if (f["data_type"] == "n") summary[f["fld_name"]] = 0;
+    }
+    for (final row in sampleGridRows) {
+      for (final f in gridFields) {
+        if (f["data_type"] == "n") {
+          final String name = f["fld_name"];
+          final int n = int.tryParse(row[name]?.text.trim() ?? "0") ?? 0;
+          summary[name] = (summary[name] ?? 0) + n;
+        }
+      }
+    }
+    final Map<String, dynamic> col3 = {
+      "tot_broken": summary["broken"]?.toString() ?? "0",
+      "tot_neckchip": summary["neck_chip"]?.toString() ?? "0",
+      "tot_extradirty": summary["extra_dirty"]?.toString() ?? "0",
+      "tot_short": summary["short"]?.toString() ?? "0",
+      "tot_otherbrand": summary["other_brand"]?.toString() ?? "0",
+      "tot_otherkf": summary["other_kf"]?.toString() ?? "0",
+      "tot_tornbags": summary["torn_bags"]?.toString() ?? "0",
+    };
+    final Map<String, dynamic> recid3Data = {
+      "rowno": "001",
+      "text": "0",
+      "columns": col3
+    };
+
+    // =========================================================================
+    // 4. RETURN FINAL JSON
+    // =========================================================================
+    return {
+      "_parameters": [
+        {
+          "savedata": {
+            "axpapp": "bottleapp",
+            "seed": "1983",
+            "username": "admin",
+            "password": "a5ca360e803b868680e2b6f7805fcb9e",
+            "transid": "inwae",
+            "xmltext": "",
+            "trace": "true",
+            "changedrows": {},
+            "recordid": "0",
+            "recdata": [
+              {
+                "axp_recid1": [recid1Data]
+              },
+              {"axp_recid2": recid2List},
+              {
+                "axp_recid3": [recid3Data]
+              }
+            ]
+          }
+        }
+      ]
+    };
+  }
+
+  String _formatDateToSubmit(String isoDate) {
+    if (isoDate.isEmpty) return "";
+    try {
+      final parts = isoDate.split('-'); // 2026-01-20
+      if (parts.length == 3) {
+        return "${parts[2]}/${parts[1]}/${parts[0]}"; // 20/01/2026
+      }
+    } catch (_) {}
+    return isoDate;
+  }
+
+  String _formatTimeToSubmit(String isoTime) {
+    if (isoTime.isEmpty) return "";
+    try {
+      final parts = isoTime.split(':'); // 18:44
+      if (parts.length >= 2) {
+        int h = int.parse(parts[0]);
+        int m = int.parse(parts[1]);
+        String ampm = "AM";
+
+        if (h >= 12) {
+          ampm = "PM";
+          if (h > 12) h -= 12;
+        }
+        if (h == 0) h = 12;
+
+        // Output: 6:44:00 PM
+        return "$h:${m.toString().padLeft(2, '0')}:00 $ampm";
+      }
+    } catch (_) {}
+    return isoTime;
+  }
+
+  String _formatValue(String value, String type) {
+    if (value.isEmpty) return "";
+
+    // FORMAT DATE: 2026-01-20  -->  20/01/2026
+    if (type == "date" || type == "d") {
+      try {
+        final parts = value.split('-');
+        if (parts.length == 3) {
+          return "${parts[2]}/${parts[1]}/${parts[0]}";
+        }
+      } catch (e) {
+        return value;
+      }
+    }
+
+    if (type == "time" || type == "t") {
+      try {
+        final parts = value.split(':');
+        if (parts.length == 2) {
+          int hour = int.parse(parts[0]);
+          int minute = int.parse(parts[1]);
+          String period = "AM";
+
+          if (hour >= 12) {
+            period = "PM";
+            if (hour > 12) hour -= 12;
+          }
+          if (hour == 0) hour = 12;
+
+          return "$hour:${minute.toString().padLeft(2, '0')}:00 $period";
+        }
+      } catch (e) {
+        return value;
+      }
+    }
+
+    return value;
+  }
+
+// =========================================================
+  //                 MAIN SUBMIT FUNCTION
+  // =========================================================
+
+  Future<void> submitPage() async {
+    if (!validateForm()) {
+      Get.snackbar("Required", "Please fill mandatory fields");
+      return;
+    }
+
+    try {
+      isLoading.value = true;
+      final Map<String, dynamic> formData = generateRestSubmitPayLoad();
+
+      final isOnline = await Get.find<InternetConnectivity>().check();
+
+      // CALL UPDATED METHOD
+      final SubmitStatus status = await OfflineDbModule.submitFormSmart(
+        submitBody: formData,
+        isInternetAvailable: isOnline,
+      );
+
+      // HANDLE 3 STATES
+      switch (status) {
+        case SubmitStatus.success:
+          resetForm();
+          Get.back();
+
+          Get.snackbar(
+            "Success",
+            "Form submitted successfully!",
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+            duration: const Duration(seconds: 3),
+          );
+          break;
+
+        case SubmitStatus.savedOffline:
+          resetForm();
+          Get.back();
+
+          Get.snackbar(
+            "Saved Offline",
+            "No Internet. Form saved to pending queue.",
+            backgroundColor: Colors.blueAccent,
+            colorText: Colors.white,
+            duration: const Duration(seconds: 3),
+          );
+          break;
+
+        case SubmitStatus.apiFailure:
+          // SHOW THE ERROR! Do not close the form.
+          // Let user correct data or try again.
+          Get.snackbar(
+            "Submission Failed",
+            "Server rejected the request. Please check your data.",
+            backgroundColor: Colors.redAccent,
+            colorText: Colors.white,
+            duration: const Duration(seconds: 4),
+          );
+          break;
+      }
+    } catch (e) {
+      Get.snackbar("Error", "Unexpected error: $e");
+    } finally {
+      isLoading.value = false;
     }
   }
 

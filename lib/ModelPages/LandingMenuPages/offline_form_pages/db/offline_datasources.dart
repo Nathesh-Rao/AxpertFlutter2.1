@@ -1,13 +1,16 @@
 import 'dart:convert';
+import 'package:axpertflutter/Constants/const.dart';
+import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class OfflineDatasources {
-  // HTTP CLIENT
   static final http.Client _client = http.Client();
 
-  // API ENDPOINTS 
+  // API ENDPOINTS
   static const String API_FETCH_OFFLINE_PAGES = '/api/offline/pages';
-  static const String API_SUBMIT_OFFLINE_FORM = '/api/offline/submit';
+  static const String API_SUBMIT_OFFLINE_FORM =
+      'https://agileqa.agilecloud.biz/qaaxpert11.4basescripts/ASBTStructRest.dll/datasnap/rest/TASBTstruct/savedata';
 
   static String API_FETCH_DATASOURCE(String name) {
     return '/api/datasource/$name';
@@ -72,5 +75,31 @@ class OfflineDatasources {
     } catch (_) {
       return null;
     }
+  }
+
+  static Future<String?> fetchDatasource({
+    required String datasourceName,
+    required String sessionId,
+    required String username,
+    required String appName,
+    Map<String, dynamic>? sqlParams,
+  }) async {
+    final url =
+        Const.getFullARMUrl(ServerConnections.API_GET_HOMEPAGE_CARDSDATASOURCE);
+
+    final body = {
+      "ARMSessionId": sessionId,
+      "username": username,
+      "appname": appName,
+      "datasource": datasourceName,
+      "sqlParams": sqlParams ?? {},
+    };
+    debugPrint("DATA_SOURCE body=> $body");
+
+    return await ServerConnections().postToServer(
+      url: url,
+      isBearer: true,
+      body: jsonEncode(body),
+    );
   }
 }

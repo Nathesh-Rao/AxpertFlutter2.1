@@ -45,7 +45,7 @@ class OfflineListingPage extends GetView<OfflineFormController> {
                 padding: EdgeInsets.symmetric(
                   horizontal: 10,
                 ),
-                itemCount: controller.allPages.length + 1,
+                itemCount: controller.allPages.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   childAspectRatio: 1,
@@ -57,8 +57,8 @@ class OfflineListingPage extends GetView<OfflineFormController> {
                 //   index,
                 // ),
                 itemBuilder: (_, index) {
-                  if (index < controller.allPages.length) {
-                    final page = controller.allPages[index];
+                  final page = controller.allPages[index];
+                  if (page.transId != "inward_entry") {
                     return OfflinePageCardCupertino(
                       page: page,
                       index: index,
@@ -66,13 +66,16 @@ class OfflineListingPage extends GetView<OfflineFormController> {
                       useColoredTile: true,
                     );
                   } else {
+                    final rawpage = controller.allRawPages[index];
                     return SquareActionTile(
                       icon: Icons.pages,
-                      title: "Inward Entry",
-                      onTap: () {
-                        inwardEntryDynamicController.prepareForm();
-                        Get.to(() => const InwardEntryDynamicPageV1(),
-                            transition: Transition.rightToLeft);
+                      title: rawpage["caption"],
+                      onTap: () async {
+                        await inwardEntryDynamicController.prepareForm(rawpage);
+                        Get.to(
+                          () => InwardEntryDynamicPageV1(schema: rawpage),
+                          transition: Transition.rightToLeft,
+                        );
                       },
                     );
                   }

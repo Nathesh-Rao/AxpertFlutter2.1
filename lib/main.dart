@@ -24,6 +24,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 // import 'package:platform_device_id_plus/platform_device_id.dart';
 // import 'package:platform_device_id/platform_device_id.dart';
@@ -79,7 +80,7 @@ Future<void> main() async {
     );
     LogService.writeLog(message: "[OFFLINE_DB_INIT_001][STACK] $st");
   }
-
+  GoogleFonts.config.allowRuntimeFetching = false;
   runApp(MyApp());
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: Colors.black38));

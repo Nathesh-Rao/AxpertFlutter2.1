@@ -134,11 +134,11 @@ class LandingPage extends StatelessWidget {
                   const Divider(),
                   _sectionHeader("Queue"),
                   _simpleRow(
-                    icon: Icons.upload,
+                    icon: Icons.upload_file,
                     color: Colors.deepOrange,
-                    title: "Pending Uploads",
-                    subtitle: "View waiting submissions",
-                    onTap: offlineFormController.actionShowPending,
+                    title: "Push Pending Uploads",
+                    subtitle: "Upload queued data to server",
+                    onTap: offlineFormController.actionPushPending,
                   ),
                   _simpleRow(
                     icon: Icons.clear_all,

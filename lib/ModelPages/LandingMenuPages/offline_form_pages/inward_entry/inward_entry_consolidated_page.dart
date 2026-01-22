@@ -134,17 +134,22 @@ class InwardEntryConsolidatedPage
         padding: const EdgeInsets.all(8.0),
         child: SizedBox(
           height: 52,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF2563EB),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
+          child: Obx(
+            () => ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF2563EB),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
               ),
+              onPressed: () {
+                // controller.uploadForm();
+                controller.submit();
+              },
+              child: controller.isLoading.value
+                  ? CupertinoActivityIndicator()
+                  : const Text("Submit"),
             ),
-            onPressed: () {
-              // controller.uploadForm();
-            },
-            child: const Text("Submit"),
           ),
         ),
       ),

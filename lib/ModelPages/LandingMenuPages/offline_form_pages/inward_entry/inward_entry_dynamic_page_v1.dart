@@ -9,8 +9,8 @@ import 'inward_entry_dynamic_controller.dart';
 import 'inward_entry_schema.dart';
 
 class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
-  const InwardEntryDynamicPageV1({super.key});
-
+  const InwardEntryDynamicPageV1({super.key, required this.schema});
+  final Map<String, dynamic> schema;
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
@@ -21,9 +21,9 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
       ),
     );
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {});
+    // WidgetsBinding.instance.addPostFrameCallback((_) {});
 
-    final Map<String, dynamic> schema = InwardEntrySchema.schema;
+    // final Map<String, dynamic> schema = controller.schema;
     final List fields = List.from(schema["fields"]);
 
     // sort by order
@@ -138,7 +138,7 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
               ),
             ),
             onPressed: () {
-              controller.submit();
+              controller.next();
             },
             child: const Text("Next"),
           ),
@@ -194,6 +194,16 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
           name,
           mandatory: mandatory,
         );
+
+      case "time":
+        return _timePicker(
+          context,
+          label,
+          controller.getTextCtrl(name),
+          name,
+          mandatory: mandatory,
+        );
+
       default:
         return const SizedBox.shrink();
     }
@@ -248,24 +258,59 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
       label: label,
       mandatory: mandatory,
       errorKey: key,
-      trailing: const Icon(Icons.expand_more, size: 18, color: Colors.grey),
       child: Obx(() {
         final hasError = controller.errors.containsKey(key);
 
-        final List<String> options =
-            InwardEntryDatasource.options[datasourceKey] ?? [];
+        // 1. Get raw options from controller
+        final rawOptions = controller.getOptionsForField(key);
+
+        // 2. SAFETY: Remove duplicates based on ID to prevent crash
+        // "There should be exactly one item with value..."
+        final seenIds = <String>{};
+        final options = rawOptions.where((opt) {
+          final id = opt["id"].toString();
+          if (seenIds.contains(id)) return false;
+          seenIds.add(id);
+          return true;
+        }).toList();
+
+        // 3. SAFETY: Check if current selected Value exists in the cleaned list
+        String? selectedValue = value.value;
+
+        // If empty, it's null (no selection)
+        if (selectedValue.isEmpty) {
+          selectedValue = null;
+        }
+        // If not empty, check if it actually exists in the list
+        else {
+          final bool exists =
+              options.any((opt) => opt["id"].toString() == selectedValue);
+          if (!exists) {
+            // Value is not in the list? Force reset to null to avoid crash
+            selectedValue = null;
+            // Optional: Update controller in background to stay in sync
+            // Future.microtask(() => value.value = "");
+          }
+        }
 
         return DropdownButtonFormField<String>(
-          initialValue: value.value.isEmpty ? null : value.value,
-          items: options
-              .map(
-                (opt) => DropdownMenuItem<String>(
-                  value: opt,
-                  child: Text(opt),
-                ),
-              )
-              .toList(),
-          onChanged: (v) => value.value = v ?? '',
+          initialValue: selectedValue, // Safe value (either valid ID or null)
+          isExpanded: true,
+          hint: Text("Select $label"),
+          icon: const Icon(Icons.expand_more, size: 18, color: Colors.grey),
+          items: options.map((opt) {
+            return DropdownMenuItem<String>(
+              value: opt["id"].toString(),
+              child: Text(
+                opt["value"].toString(),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            );
+          }).toList(),
+          onChanged: (v) {
+            value.value = v ?? '';
+          },
           decoration: _inputDecoration(label, hasError),
         );
       }),
@@ -335,6 +380,82 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
     );
   }
 
+  // Widget _timePicker(
+  //   BuildContext context,
+  //   String label,
+  //   TextEditingController ctrl,
+  //   String key, {
+  //   bool mandatory = false,
+  // }) {
+  //   return _RowWithField(
+  //     label: label,
+  //     mandatory: mandatory,
+  //     errorKey: key,
+  //     trailing: const Icon(Icons.access_time, size: 18, color: Colors.grey),
+  //     child: Obx(() {
+  //       final hasError = controller.errors.containsKey(key);
+
+  //       return TextFormField(
+  //         controller: ctrl,
+  //         readOnly: true,
+  //         decoration: _inputDecoration(label, hasError),
+  //         onTap: () async {
+  //           final now = TimeOfDay.now();
+
+  //           final t = await showTimePicker(
+  //             context: context,
+  //             initialTime: now,
+  //           );
+
+  //           if (t != null) {
+  //             final hh = t.hour.toString().padLeft(2, '0');
+  //             final mm = t.minute.toString().padLeft(2, '0');
+  //             ctrl.text = "$hh:$mm";
+  //           }
+  //         },
+  //       );
+  //     }),
+  //   );
+  // }
+
+  Widget _timePicker(
+    BuildContext context,
+    String label,
+    TextEditingController ctrl,
+    String key, {
+    bool mandatory = false,
+  }) {
+    return _RowWithField(
+      label: label,
+      mandatory: mandatory,
+      errorKey: key,
+      trailing: const Icon(Icons.access_time, size: 18, color: Colors.grey),
+      child: Obx(() {
+        final hasError = controller.errors.containsKey(key);
+
+        return TextFormField(
+          controller: ctrl,
+          readOnly: true,
+          decoration: _inputDecoration(label, hasError),
+          onTap: () async {
+            final now = TimeOfDay.now();
+
+            final t = await showTimePicker(
+              context: context,
+              initialTime: now,
+            );
+
+            if (t != null) {
+              final hh = t.hour.toString().padLeft(2, '0');
+              final mm = t.minute.toString().padLeft(2, '0');
+              ctrl.text = "$hh:$mm";
+            }
+          },
+        );
+      }),
+    );
+  }
+
   static InputDecoration _inputDecoration(String label, bool hasError) {
     return InputDecoration(
       hintText: "Enter $label",
@@ -389,6 +510,7 @@ class _RowWithField extends GetView<InwardEntryDynamicController> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: double.infinity, // <--- Constrain width
       padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
       decoration: const BoxDecoration(
         border: Border(
@@ -397,6 +519,8 @@ class _RowWithField extends GetView<InwardEntryDynamicController> {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize:
+            MainAxisSize.min, // <--- Prevent infinite height expansion
         children: [
           Row(
             children: [
@@ -411,6 +535,7 @@ class _RowWithField extends GetView<InwardEntryDynamicController> {
                   ),
                 ),
               Expanded(
+                // <--- This Expanded is OK because it is inside a Row
                 child: Text(
                   label,
                   style: GoogleFonts.poppins(
@@ -423,7 +548,7 @@ class _RowWithField extends GetView<InwardEntryDynamicController> {
             ],
           ),
           const SizedBox(height: 8),
-          child,
+          child, // <--- Ensure this child (TextFormField) is NOT wrapped in Expanded
           Obx(() {
             final err = controller.errors[errorKey];
             if (err == null) return const SizedBox.shrink();
@@ -456,6 +581,7 @@ class _Section extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min, // <--- ADD THIS
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 4, bottom: 8),
@@ -469,11 +595,17 @@ class _Section extends StatelessWidget {
             ),
           ),
           Container(
+            width: double
+                .infinity, // <--- Ensure it takes width but not infinite height
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(14),
             ),
-            child: Column(children: children),
+            // Use ListView.shrinkWrap or just Column. Column is better here.
+            child: Column(
+              mainAxisSize: MainAxisSize.min, // <--- ADD THIS
+              children: children,
+            ),
           ),
         ],
       ),
