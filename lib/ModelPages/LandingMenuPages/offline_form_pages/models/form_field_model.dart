@@ -22,7 +22,8 @@ class OfflineFormFieldModel {
   dynamic value;
   String? errorText;
 
-  List<DataSourceItem> options;
+  List<Map<String, dynamic>> options;
+  List<String> dependencies;
 
   OfflineFormFieldModel({
     required this.order,
@@ -39,6 +40,7 @@ class OfflineFormFieldModel {
     this.isCamera = false,
     this.isGallery = false,
     this.options = const [],
+    this.dependencies = const [],
     this.errorText,
   });
 
@@ -60,11 +62,13 @@ class OfflineFormFieldModel {
       isCamera: (json['is_camera'] ?? 'F') == 'T',
       isGallery: (json['is_gallery'] ?? 'F') == 'T',
       options: (json['options'] as List<dynamic>?)
-              ?.map((e) => DataSourceItem.fromJson(e))
+              ?.map((e) => Map<String, dynamic>.from(e))
+              .toList() ??
+          [],
+      dependencies: (json["dep_field"] as List<dynamic>?)
+              ?.map((e) => e.toString())
               .toList() ??
           [],
     );
   }
-
-  
 }

@@ -460,7 +460,7 @@ class OfflineDbModule {
     }
   }
 
-  static Future<List<dynamic>> getDatasourceOptions({
+  static Future<List<Map<String, dynamic>>> getDatasourceOptions({
     required String transId,
     required String datasource,
   }) async {
@@ -475,7 +475,33 @@ class OfflineDbModule {
     );
   }
 
-  static Future<List<dynamic>> _getDatasourceOptionsInternal({
+  // static Future<List<Map<String, dynamic>>> _getDatasourceOptionsInternal({
+  //   required String username,
+  //   required String projectName,
+  //   required String transId,
+  //   required String datasource,
+  // }) async {
+  //   final result = await _database.query(
+  //     OfflineDBConstants.TABLE_DATASOURCE_DATA,
+  //     where: '''
+  //     ${OfflineDBConstants.COL_USERNAME} = ? AND
+  //     ${OfflineDBConstants.COL_PROJECT_NAME} = ? AND
+  //     ${OfflineDBConstants.COL_TRANS_ID} = ? AND
+  //     ${OfflineDBConstants.COL_DATASOURCE_NAME} = ?
+  //   ''',
+  //     whereArgs: [username, projectName, transId, datasource],
+  //     limit: 1,
+  //   );
+
+  //   if (result.isEmpty) return [];
+
+  //   final decoded = jsonDecode(
+  //       result.first[OfflineDBConstants.COL_RESPONSE_JSON] as String);
+  //   debugPrint("fetchDatasource : getDatasourceOptions => $decoded");
+  //   return decoded["result"]['data'] ?? [];
+  // }
+
+  static Future<List<Map<String, dynamic>>> _getDatasourceOptionsInternal({
     required String username,
     required String projectName,
     required String transId,
@@ -495,10 +521,27 @@ class OfflineDbModule {
 
     if (result.isEmpty) return [];
 
-    final decoded = jsonDecode(
-        result.first[OfflineDBConstants.COL_RESPONSE_JSON] as String);
-    debugPrint("fetchDatasource : getDatasourceOptions => $decoded");
-    return decoded["result"]['data'] ?? [];
+    try {
+      final jsonStr =
+          result.first[OfflineDBConstants.COL_RESPONSE_JSON] as String;
+      final decoded = jsonDecode(jsonStr);
+
+      debugPrint("fetchDatasource : getDatasourceOptions => $decoded");
+
+      // 1. Extract the List
+      List<dynamic> rawList = [];
+      if (decoded is Map<String, dynamic> && decoded.containsKey('result')) {
+        rawList = decoded['result']['data'] ?? [];
+      } else if (decoded is List) {
+        rawList = decoded;
+      }
+
+      // 2. CONVERT List<dynamic> -> List<Map<String, dynamic>> (THE FIX)
+      return rawList.map((e) => Map<String, dynamic>.from(e)).toList();
+    } catch (e) {
+      LogService.writeLog(message: "[DS_PARSE_ERROR] $datasource: $e");
+      return [];
+    }
   }
 
   // MAP OPTIONS INTO FIELD MODELS
@@ -521,9 +564,11 @@ class OfflineDbModule {
         debugPrint(
             "fetchDatasource: mapDatasourceOptionsIntoPages : options => ${options.toString()}");
         // 👇 KEEP RAW OBJECTS
-        field.options = options
-            .map((e) => DataSourceItem.fromJson(e as Map<String, dynamic>))
-            .toList();
+        // field.options = options
+        //     .map((e) => DataSourceItem.fromJson(e as Map<String, dynamic>))
+        //     .toList();
+
+        field.options = options;
       }
     }
 
@@ -561,7 +606,8 @@ class OfflineDbModule {
         body: submitBody,
       );
 
-      // --- NEW VALIDATION LOGIC START ---
+      log(submitBody.toString(), name: "submitBody OFFLINE");
+      log(res.toString(), name: "submit res OFFLINE");
       if (res != null && res.isNotEmpty) {
         try {
           final decoded = jsonDecode(res);

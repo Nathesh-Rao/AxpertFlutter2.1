@@ -208,11 +208,12 @@ class OfflineFormField extends GetView<OfflineFormController> {
         Wrap(
           spacing: 6,
           children: field.options.map((o) {
-            final key = _isDataSourceField ? o.id : o.value;
+            final key = o[field.fldName];
             final isSel = selected.contains(key);
 
             return FilterChip(
-              label: Text(o.value, style: GoogleFonts.poppins(fontSize: 12)),
+              label: Text(o[field.fldName],
+                  style: GoogleFonts.poppins(fontSize: 12)),
               selected: isSel,
               onSelected: field.readOnly
                   ? null
@@ -274,15 +275,15 @@ class OfflineFormField extends GetView<OfflineFormController> {
         const SizedBox(height: 4),
         Column(
           children: field.options.map((o) {
-            final isSelected =
-                field.value == (_isDataSourceField ? o.id : o.value);
+            final isSelected = field.value == o[field.fldName];
 
             return RadioListTile<dynamic>(
               dense: true,
               contentPadding: EdgeInsets.zero,
-              value: _isDataSourceField ? o.id : o.value,
+              value: o[field.fldName],
               groupValue: field.value,
-              title: Text(o.value, style: GoogleFonts.poppins(fontSize: 12)),
+              title: Text(o[field.fldName],
+                  style: GoogleFonts.poppins(fontSize: 12)),
               onChanged: field.readOnly
                   ? null
                   : (val) {
@@ -414,17 +415,19 @@ class OfflineFormField extends GetView<OfflineFormController> {
         return ListView(
           children: field.options.map((o) {
             return ListTile(
-              title: Text(o.value),
+              title: Text(o[field.fldName] ?? ""),
               onTap: () {
                 Get.back();
 
-                if (_isDataSourceField) {
-                  // 👇 store ID
-                  controller.updateFieldValue(field, o.id);
-                } else {
-                  // 👇 static dropdown, store value
-                  controller.updateFieldValue(field, o.value);
-                }
+                // if (_isDataSourceField) {
+                //   // 👇 store ID
+                //   controller.updateFieldValue(field, o.id);
+                // } else {
+                //   // 👇 static dropdown, store value
+                //   controller.updateFieldValue(field, o.value);
+                // }
+
+                controller.updateFieldValue(field, o[field.fldName]);
               },
             );
           }).toList(),
@@ -583,10 +586,10 @@ class OfflineFormField extends GetView<OfflineFormController> {
     }
 
     final match = field.options.firstWhereOrNull(
-      (e) => e.id == field.value,
+      (e) => e[field.fldName] == field.value,
     );
 
-    return match?.value ?? 'Select';
+    return match?[field.fldName] ?? 'Select';
   }
 }
 

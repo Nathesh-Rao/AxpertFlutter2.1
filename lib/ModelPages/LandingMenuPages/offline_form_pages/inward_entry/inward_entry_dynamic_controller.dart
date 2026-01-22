@@ -146,29 +146,30 @@ class InwardEntryDynamicController extends GetxController {
   }
 
   void _attachBusinessListeners() {
-    getTextCtrl("received").addListener(_onReceivedChanged);
-    getTextCtrl("bagsToSample").addListener(_recheckMiniFab);
-    getTextCtrl("loadedWeight").addListener(_calculateNetWeight);
-    getTextCtrl("emptyWeight").addListener(_calculateNetWeight);
+    getTextCtrl("received_bags_crates").addListener(_onReceivedChanged);
+    getTextCtrl("bags_sample").addListener(_recheckMiniFab);
+    getTextCtrl("loaded_truck").addListener(_calculateNetWeight);
+    getTextCtrl("empty_truck").addListener(_calculateNetWeight);
   }
 
   _calculateNetWeight() {
     final loadedWeight =
-        int.tryParse(getTextCtrl("loadedWeight").text.trim()) ?? 0;
+        int.tryParse(getTextCtrl("loaded_truck").text.trim()) ?? 0;
     final emptyWeight =
-        int.tryParse(getTextCtrl("emptyWeight").text.trim()) ?? 0;
+        int.tryParse(getTextCtrl("empty_truck").text.trim()) ?? 0;
     //  final netWeight = int.tryParse(getTextCtrl("netWeight").text.trim()) ?? 0;
 
     var netweight = loadedWeight - emptyWeight;
 
-    getTextCtrl("netWeight").text = netweight.toString();
+    getTextCtrl("netweight").text = netweight.toString();
   }
 
   void _onReceivedChanged() {
-    final received = int.tryParse(getTextCtrl("received").text.trim()) ?? 0;
+    final received =
+        int.tryParse(getTextCtrl("received_bags_crates").text.trim()) ?? 0;
 
     if (received < 20) {
-      getTextCtrl("bagsToSample").text = '';
+      getTextCtrl("bags_sample").text = '';
       clearSampleGrid();
       _recheckMiniFab();
       return;
@@ -177,7 +178,7 @@ class InwardEntryDynamicController extends GetxController {
     int sample = (received * 5) ~/ 100;
     if (sample < 1) sample = 1;
 
-    getTextCtrl("bagsToSample").text = sample.toString();
+    getTextCtrl("bags_sample").text = sample.toString();
 
     _generateSampleGrid(sample);
     _recheckMiniFab();
@@ -200,19 +201,10 @@ class InwardEntryDynamicController extends GetxController {
     });
   }
 
-  // void _recheckMiniFab() {
-  //   final received = int.tryParse(getTextCtrl("receivedBags").text.trim()) ?? 0;
-  //   final sample = int.tryParse(getTextCtrl("bagsToSample").text.trim()) ?? 0;
-
-  //   if (received >= 1 && sample >= 1) {
-  //     showMiniFab.value = true;
-  //   } else {
-  //     showMiniFab.value = false;
-  //   }
-  // }
   void _recheckMiniFab() {
-    final received = int.tryParse(getTextCtrl("received").text.trim()) ?? 0;
-    final sample = int.tryParse(getTextCtrl("bagsToSample").text.trim()) ?? 0;
+    final received =
+        int.tryParse(getTextCtrl("received_bags_crates").text.trim()) ?? 0;
+    final sample = int.tryParse(getTextCtrl("bags_sample").text.trim()) ?? 0;
 
     if (received >= 1 && sample >= 1) {
       showMiniFab.value = true;
@@ -537,7 +529,7 @@ class InwardEntryDynamicController extends GetxController {
       return;
     }
     dc1SubmitFormJson = buildDc1SubmitFormJson();
-    mainFormJson = buildMainFormJson();
+    // mainFormJson = buildMainFormJson();
     sampleGridJson = buildSampleGridJson();
     sampleSummaryJson = buildSampleSummaryJson();
 
@@ -600,10 +592,9 @@ class InwardEntryDynamicController extends GetxController {
     final List fields = schema["fields"];
 
     for (final f in fields) {
-      final String name = f["api_key"];
+      final String name = f["fld_name"];
       final String type = f["fld_type"];
 
-      // final String key = _toSnakeCase(name);
       final String key = name;
 
       dynamic value;
@@ -629,8 +620,7 @@ class InwardEntryDynamicController extends GetxController {
 
       for (final f in gridFields) {
         final String name = f["fld_name"];
-        final String key = name; // already snake_case in schema
-
+        final String key = name;
         final ctrl = row[name];
         obj[key] = ctrl?.text.trim() ?? "";
       }
@@ -651,6 +641,71 @@ class InwardEntryDynamicController extends GetxController {
     if (ds == null) return [];
 
     return datasourceMap[ds] ?? [];
+  }
+
+  List<String> getDropdownOptions(String fieldName) {
+    if (!isFieldEnabled(fieldName)) return [];
+
+    final fieldDef = (schema['fields'] as List).firstWhere(
+      (e) => e['fld_name'] == fieldName,
+      orElse: () => null,
+    );
+    if (fieldDef == null) return [];
+
+    final String? dsName = fieldDef['datasource'];
+    if (dsName == null || !datasourceMap.containsKey(dsName)) return [];
+
+    List<Map<String, dynamic>> filteredList = datasourceMap[dsName]!;
+
+    final List deps = fieldDef['dep_field'] ?? [];
+    if (deps.isNotEmpty) {
+      filteredList = filteredList.where((row) {
+        for (final parentKey in deps) {
+          final parentSelected = dropdownCtrls[parentKey]?.value ?? "";
+
+          // Data Match Logic
+          String rowVal = row[parentKey]?.toString() ?? "";
+          if (rowVal.endsWith(".0")) rowVal = rowVal.replaceAll(".0", "");
+
+          String parentVal = parentSelected;
+          if (parentVal.endsWith(".0"))
+            parentVal = parentVal.replaceAll(".0", "");
+
+          if (rowVal.toLowerCase() != parentVal.toLowerCase()) return false;
+        }
+        return true;
+      }).toList();
+    }
+
+    final Set<String> uniqueValues = {};
+    for (final row in filteredList) {
+      final val = row[fieldName]?.toString();
+      if (val != null && val.isNotEmpty) uniqueValues.add(val);
+    }
+
+    return uniqueValues.toList()..sort();
+  }
+
+  bool isFieldEnabled(String fieldName) {
+    final fieldDef = (schema['fields'] as List).firstWhere(
+      (e) => e['fld_name'] == fieldName,
+      orElse: () => null,
+    );
+
+    if (fieldDef == null) return true;
+
+    final List deps = fieldDef['dep_field'] ?? [];
+
+    if (deps.isEmpty) return true;
+
+    for (final parentKey in deps) {
+      final parentValue = dropdownCtrls[parentKey]?.value ?? "";
+      if (parentValue.isEmpty) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   Map<String, dynamic> buildSampleSummaryJson() {
@@ -696,15 +751,6 @@ class InwardEntryDynamicController extends GetxController {
   }
 
   submit() {
-    // var sbJson = generateRestSubmitPayLoad();
-
-    // // 1. Pretty Print (Add indentation)
-    // const encoder = JsonEncoder.withIndent('  ');
-    // final String prettyJson = encoder.convert(sbJson);
-
-    // // 2. Use log() to avoid truncation
-    // log(prettyJson, name: 'FULL_JSON_OUTPUT');
-
     submitPage();
   }
 
@@ -832,9 +878,6 @@ class InwardEntryDynamicController extends GetxController {
     col1["mfg_dt_btl"] = "";
     col1["testdt"] = "";
 
-    // --- STEP B: Loop through remaining fields ---
-
-    // keys we already handled manually
     final ignoredKeys = {"entry_date_time", "exit_date_time"};
 
     for (final f in fields) {
@@ -842,27 +885,26 @@ class InwardEntryDynamicController extends GetxController {
       final String key = f["api_key"] ?? name;
       final String type = f["fld_type"];
 
-      // CRITICAL: If this key is one we already built manually, SKIP IT.
       if (ignoredKeys.contains(key)) continue;
 
       String valueToSave = "";
 
       if (type == "dd") {
-        // Dropdown Logic (Name lookup)
-        final String selectedId = dropdownCtrls[name]?.value ?? "";
-        if (selectedId.isNotEmpty) {
-          final String dsKey = f["datasource"] ?? "";
-          final List<Map<String, dynamic>> options = datasourceMap[dsKey] ?? [];
-          final Map<String, dynamic> selectedOption = options.firstWhere(
-            (opt) => opt["id"].toString() == selectedId,
-            orElse: () => {},
-          );
-          valueToSave = selectedOption.isNotEmpty
-              ? selectedOption["value"].toString()
-              : "";
-        }
+        // final String selectedId = dropdownCtrls[name]?.value ?? "";
+        // if (selectedId.isNotEmpty) {
+        //   final String dsKey = f["datasource"] ?? "";
+        //   final List<Map<String, dynamic>> options = datasourceMap[dsKey] ?? [];
+        //   final Map<String, dynamic> selectedOption = options.firstWhere(
+        //     (opt) => opt["id"].toString() == selectedId,
+        //     orElse: () => {},
+        //   );
+        //   valueToSave = selectedOption.isNotEmpty
+        //       ? selectedOption["value"].toString()
+        //       : "";
+        // }
+
+        valueToSave = dropdownCtrls[name]?.value ?? "";
       } else {
-        // Standard Text Logic
         String rawValue = textCtrls[name]?.text.trim() ?? "";
         if (type == "date" || type == "d") {
           valueToSave = _formatDateToSubmit(rawValue);
@@ -980,9 +1022,9 @@ class InwardEntryDynamicController extends GetxController {
   String _formatDateToSubmit(String isoDate) {
     if (isoDate.isEmpty) return "";
     try {
-      final parts = isoDate.split('-'); // 2026-01-20
+      final parts = isoDate.split('-');
       if (parts.length == 3) {
-        return "${parts[2]}/${parts[1]}/${parts[0]}"; // 20/01/2026
+        return "${parts[2]}/${parts[1]}/${parts[0]}";
       }
     } catch (_) {}
     return isoDate;
@@ -991,7 +1033,7 @@ class InwardEntryDynamicController extends GetxController {
   String _formatTimeToSubmit(String isoTime) {
     if (isoTime.isEmpty) return "";
     try {
-      final parts = isoTime.split(':'); // 18:44
+      final parts = isoTime.split(':');
       if (parts.length >= 2) {
         int h = int.parse(parts[0]);
         int m = int.parse(parts[1]);
@@ -1013,7 +1055,6 @@ class InwardEntryDynamicController extends GetxController {
   String _formatValue(String value, String type) {
     if (value.isEmpty) return "";
 
-    // FORMAT DATE: 2026-01-20  -->  20/01/2026
     if (type == "date" || type == "d") {
       try {
         final parts = value.split('-');
