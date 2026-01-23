@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 import 'inward_entry_dynamic_controller.dart';
 import 'inward_entry_schema.dart';
@@ -27,8 +28,7 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
     final List fields = List.from(schema["fields"]);
 
     // sort by order
-    fields.sort((a, b) => int.parse(a["order"].toString())
-        .compareTo(int.parse(b["order"].toString())));
+    fields.sort((a, b) => int.parse(a["order"].toString()).compareTo(int.parse(b["order"].toString())));
 
     // group by section
     final Map<String, List<Map<String, dynamic>>> sections = {};
@@ -106,9 +106,7 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
                   }
                 },
                 child: Icon(
-                  controller.isAtTop.value
-                      ? Icons.keyboard_arrow_down
-                      : Icons.keyboard_arrow_up,
+                  controller.isAtTop.value ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up,
                   color: MyColors.baseBlue,
                 ),
               );
@@ -152,6 +150,8 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
     final String name = f["fld_name"];
     final String label = f["fld_caption"];
     final bool mandatory = (f["allowempty"] == "F");
+    final bool readonly = (f["readonly"] == "T");
+    final String datetime_format = f["datetime_format"] = "";
 
     switch (type) {
       case "c":
@@ -185,6 +185,7 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
           controller.getTextCtrl(name),
           name,
           mandatory: mandatory,
+          datetime_formate: datetime_format,
         );
       case "year":
         return _yearPicker(
@@ -193,6 +194,7 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
           controller.getTextCtrl(name),
           name,
           mandatory: mandatory,
+          datetime_formate: datetime_format,
         );
 
       case "time":
@@ -202,6 +204,17 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
           controller.getTextCtrl(name),
           name,
           mandatory: mandatory,
+          datetime_formate: datetime_format,
+        );
+      case "datetime":
+        return _dateTime(
+          context,
+          label,
+          controller.getTextCtrl(name),
+          name,
+          mandatory: mandatory,
+          readOnly: readonly,
+          datetime_formate: datetime_format,
         );
 
       default:
@@ -209,8 +222,7 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
     }
   }
 
-  Widget _text(String label, TextEditingController ctrl, String key,
-      {bool mandatory = false}) {
+  Widget _text(String label, TextEditingController ctrl, String key, {bool mandatory = false}) {
     return _RowWithField(
       label: label,
       mandatory: mandatory,
@@ -225,8 +237,7 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
     );
   }
 
-  Widget _number(String label, TextEditingController ctrl, String key,
-      {bool mandatory = false}) {
+  Widget _number(String label, TextEditingController ctrl, String key, {bool mandatory = false}) {
     return _RowWithField(
       label: label,
       mandatory: mandatory,
@@ -265,8 +276,7 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
         final bool isEnabled = controller.isFieldEnabled(key);
 
         // 2. Get Options (Empty if disabled)
-        final List<String> options =
-            isEnabled ? controller.getDropdownOptions(key) : [];
+        final List<String> options = isEnabled ? controller.getDropdownOptions(key) : [];
 
         // 3. Value Validation
         String? selectedValue = value.value;
@@ -280,14 +290,10 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
           initialValue: selectedValue,
           isExpanded: true,
           hint: Text(
-            isEnabled
-                ? "Select $label"
-                : "Select ${dependencyLabel(key)} first",
-            style: TextStyle(
-                color: isEnabled ? Colors.grey : Colors.grey.shade400),
+            isEnabled ? "Select $label" : "Select ${dependencyLabel(key)} first",
+            style: TextStyle(color: isEnabled ? Colors.grey : Colors.grey.shade400),
           ),
-          icon: Icon(Icons.expand_more,
-              size: 18, color: isEnabled ? Colors.grey : Colors.grey.shade300),
+          icon: Icon(Icons.expand_more, size: 18, color: isEnabled ? Colors.grey : Colors.grey.shade300),
           items: options.map((String opt) {
             return DropdownMenuItem<String>(
               value: opt,
@@ -306,20 +312,15 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
   }
 
   String dependencyLabel(String key) {
-    final field = (controller.schema['fields'] as List)
-        .firstWhere((e) => e['fld_name'] == key, orElse: () => null);
-    if (field != null &&
-        field['dep_field'] != null &&
-        (field['dep_field'] as List).isNotEmpty) {
+    final field = (controller.schema['fields'] as List).firstWhere((e) => e['fld_name'] == key, orElse: () => null);
+    if (field != null && field['dep_field'] != null && (field['dep_field'] as List).isNotEmpty) {
       String parentKey = field['dep_field'][0];
       return parentKey.replaceAll("_", " ").capitalize ?? "Parent";
     }
     return "Parent";
   }
 
-  Widget _date(BuildContext context, String label, TextEditingController ctrl,
-      String key,
-      {bool mandatory = false}) {
+  Widget _date(BuildContext context, String label, TextEditingController ctrl, String key, {bool mandatory = false, String datetime_formate = ""}) {
     return _RowWithField(
       label: label,
       mandatory: mandatory,
@@ -338,9 +339,13 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
               lastDate: DateTime(2100),
               initialDate: DateTime.now(),
             );
+            /*if (d != null) {
+              ctrl.text = "${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}";
+            }*/
+
             if (d != null) {
-              ctrl.text =
-                  "${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}";
+              final String format = (datetime_formate.isNotEmpty) ? datetime_formate : 'dd/MM/yyyy'; // default
+              ctrl.text = DateFormat(format).format(d);
             }
           },
         );
@@ -348,9 +353,8 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
     );
   }
 
-  Widget _yearPicker(BuildContext context, String label,
-      TextEditingController ctrl, String key,
-      {bool mandatory = false}) {
+  Widget _yearPicker(BuildContext context, String label, TextEditingController ctrl, String key,
+      {bool mandatory = false, String datetime_formate = ""}) {
     return _RowWithField(
       label: label,
       mandatory: mandatory,
@@ -380,13 +384,8 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
     );
   }
 
-  Widget _timePicker(
-    BuildContext context,
-    String label,
-    TextEditingController ctrl,
-    String key, {
-    bool mandatory = false,
-  }) {
+  Widget _timePicker(BuildContext context, String label, TextEditingController ctrl, String key,
+      {bool mandatory = false, String datetime_formate = ""}) {
     return _RowWithField(
       label: label,
       mandatory: mandatory,
@@ -407,12 +406,94 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
               initialTime: now,
             );
 
-            if (t != null) {
+            /*if (t != null) {
               final hh = t.hour.toString().padLeft(2, '0');
               final mm = t.minute.toString().padLeft(2, '0');
               ctrl.text = "$hh:$mm";
+            }*/
+
+            if (t != null) {
+              // Convert TimeOfDay → DateTime
+              final DateTime dateTime = DateTime(
+                0,
+                1,
+                1,
+                t.hour,
+                t.minute,
+              );
+
+              // Use provided format or default
+              final String format = (datetime_formate.isNotEmpty) ? datetime_formate : 'hh:mm a';
+
+              ctrl.text = DateFormat(format).format(dateTime);
             }
           },
+        );
+      }),
+    );
+  }
+
+  Widget _dateTime(
+    BuildContext context,
+    String label,
+    TextEditingController ctrl,
+    String key, {
+    bool mandatory = false,
+    bool readOnly = false,
+    String datetime_formate = "",
+  }) {
+    // Set default value once
+    String default_dtFormat = 'dd/MM/yyyy h:mm:ss a';
+    if (ctrl.text.isEmpty) {
+      ctrl.text = DateFormat(datetime_formate.isNotEmpty ? datetime_formate : default_dtFormat).format(DateTime.now());
+    }
+    return _RowWithField(
+      label: label,
+      mandatory: mandatory,
+      errorKey: key,
+      trailing: const Icon(Icons.calendar_month, size: 18, color: Colors.grey),
+      child: Obx(() {
+        final hasError = controller.errors.containsKey(key);
+
+        return TextFormField(
+          controller: ctrl,
+          readOnly: true,
+          decoration: _inputDecoration(label, hasError),
+          onTap: readOnly
+              ? null // No picker when read-only
+              : () async {
+                  // Pick date
+                  final DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2100),
+                  );
+
+                  if (pickedDate == null) return;
+
+                  //  Pick time
+                  final TimeOfDay? pickedTime = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay.now(),
+                  );
+
+                  if (pickedTime == null) return;
+
+                  //  Combine date & time
+                  final DateTime dateTime = DateTime(
+                    pickedDate.year,
+                    pickedDate.month,
+                    pickedDate.day,
+                    pickedTime.hour,
+                    pickedTime.minute,
+                  );
+
+                  //  Format: 22/01/2026 6:44:24 PM
+                  final formatted = DateFormat(datetime_formate.isNotEmpty ? datetime_formate : default_dtFormat).format(dateTime);
+
+                  ctrl.text = formatted;
+                },
         );
       }),
     );
