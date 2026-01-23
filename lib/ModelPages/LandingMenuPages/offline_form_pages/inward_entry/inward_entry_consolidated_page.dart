@@ -255,350 +255,391 @@ class InwardEntryConsolidatedPage
       margin: const EdgeInsets.only(right: 12),
       padding: const EdgeInsets.all(12),
       decoration: _cardDecoration(),
-      child: Obx(() {
-        final images = controller.imageAttachmentJson[key] ?? [];
-        final bool hasImages = images.isNotEmpty;
+      child: Stack(
+        children: [
+          Obx(() {
+            final images = controller.imageAttachmentJson[key] ?? [];
+            final bool hasImages = images.isNotEmpty;
 
-        if (!hasImages) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+            if (!hasImages) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(
-                    Icons.label,
-                    size: 12,
-                    color: Color(0xFF2563EB),
-                  ),
-                  const SizedBox(width: 10),
-                  Text(
-                    key.replaceAll("_", " ").toUpperCase(),
-                    style: GoogleFonts.poppins(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 6),
-              Row(
-                children: [
-                  Container(
-                    width: 22,
-                    height: 22,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Color(0xFFEFF6FF),
-                    ),
-                    child: const Icon(
-                      Icons.circle,
-                      size: 8,
-                      color: Color(0xFF2563EB),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Text(
-                    value.toString(),
-                    style: GoogleFonts.poppins(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                      color: const Color(0xFF2563EB),
-                    ),
-                  ),
-                ],
-              ),
-              const Spacer(),
-
-              // Full width add button
-              SizedBox(
-                width: double.infinity,
-                height: 42,
-                child: OutlinedButton.icon(
-                  onPressed: () => _pickImages(key),
-                  icon: const Icon(CupertinoIcons.add_circled_solid),
-                  label: const Text("Add Images"),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF2563EB),
-                    side: const BorderSide(color: Color(0xFFE2E8F0)),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          );
-        }
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // header row
-            Row(
-              children: [
-                Container(
-                  width: 22,
-                  height: 22,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color(0xFFEFF6FF),
-                  ),
-                  child: const Icon(
-                    Icons.circle,
-                    size: 8,
-                    color: Color(0xFF2563EB),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    key.replaceAll("_", " ").toUpperCase(),
-                    style: GoogleFonts.poppins(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ),
-                Text(
-                  value.toString(),
-                  style: GoogleFonts.poppins(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: const Color(0xFF2563EB),
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 10),
-
-            // image strip
-            SizedBox(
-              height: 70,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  ...images.asMap().entries.map((entry) {
-                    final index = entry.key;
-                    final b64 = entry.value;
-                    return _imageThumb(key, index, b64);
-                  }).toList(),
-
-                  // add button
-                  GestureDetector(
-                    onTap: () => _pickImages(key),
-                    child: Container(
-                      width: 70,
-                      height: 70,
-                      margin: const EdgeInsets.only(right: 8),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: const Color(0xFFE2E8F0)),
-                        color: const Color(0xFFF8FAFC),
-                      ),
-                      child: const Icon(
-                        Icons.add,
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.label,
+                        size: 12,
                         color: Color(0xFF2563EB),
                       ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        );
-      }),
-    );
-  }
-
-  Widget _gridStatTile(String key, dynamic value) {
-    return Container(
-      // NOTE: Removed external margin. Let the GridView's crossAxisSpacing handle gaps.
-      padding: const EdgeInsets.all(12),
-      decoration: _cardDecoration(),
-      child: Obx(() {
-        final images = controller.imageAttachmentJson[key] ?? [];
-        final bool hasImages = images.isNotEmpty;
-
-        // ---------------- STATE 1: NO IMAGES (Large Add Button) ----------------
-        if (!hasImages) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Label Row
-              Row(
-                children: [
-                  const Icon(
-                    Icons.label,
-                    size: 12,
-                    color: Color(0xFF2563EB),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      key.replaceAll("_", " ").toUpperCase(),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.poppins(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              const Spacer(), // Pushes value to center/bottom or distributes space
-
-              // Value Row
-              Row(
-                children: [
-                  Container(
-                    width: 20,
-                    height: 20,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Color(0xFFEFF6FF),
-                    ),
-                    child: const Icon(
-                      Icons.circle,
-                      size: 6,
-                      color: Color(0xFF2563EB),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    value.toString(),
-                    style: GoogleFonts.poppins(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                      color: const Color(0xFF2563EB),
-                    ),
-                  ),
-                ],
-              ),
-
-              const Spacer(), // Ensures button stays at bottom
-
-              // Add Button
-              SizedBox(
-                width: double.infinity,
-                height: 36, // Slightly compact for grid
-                child: OutlinedButton.icon(
-                  onPressed: () => _pickImages(key),
-                  icon: const Icon(CupertinoIcons.add_circled_solid, size: 16),
-                  label: Text(
-                    "Add Images",
-                    style: GoogleFonts.poppins(fontSize: 11),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF2563EB),
-                    side: const BorderSide(color: Color(0xFFE2E8F0)),
-                    padding: EdgeInsets.zero,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          );
-        }
-
-        // ---------------- STATE 2: HAS IMAGES (Thumbnail Strip) ----------------
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Compact Header Row (Label + Value combined)
-            Row(
-              children: [
-                Container(
-                  width: 20,
-                  height: 20,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color(0xFFEFF6FF),
-                  ),
-                  child: const Icon(
-                    Icons.circle,
-                    size: 6,
-                    color: Color(0xFF2563EB),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                      const SizedBox(width: 10),
                       Text(
                         key.replaceAll("_", " ").toUpperCase(),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.poppins(
-                          fontSize: 10,
+                          fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: Colors.black54,
+                          color: Colors.black87,
                         ),
                       ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Container(
+                        width: 22,
+                        height: 22,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color(0xFFEFF6FF),
+                        ),
+                        child: const Icon(
+                          Icons.circle,
+                          size: 8,
+                          color: Color(0xFF2563EB),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
                       Text(
                         value.toString(),
                         style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          height: 1.1,
+                          fontSize: 22,
                           fontWeight: FontWeight.w700,
                           color: const Color(0xFF2563EB),
                         ),
                       ),
                     ],
                   ),
-                ),
-              ],
-            ),
+                  const Spacer(),
 
-            const Spacer(),
-
-            // Image Strip
-            SizedBox(
-              height: 60, // Fixed height for thumbnails in grid
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                children: [
-                  ...images.asMap().entries.map((entry) {
-                    final index = entry.key;
-                    final b64 = entry.value;
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: _imageThumb(key, index, b64),
-                    );
-                  }).toList(),
-
-                  // Mini Add Button
-                  GestureDetector(
-                    onTap: () => _pickImages(key),
-                    child: Container(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: const Color(0xFFE2E8F0)),
-                        color: const Color(0xFFF8FAFC),
-                      ),
-                      child: const Icon(
-                        Icons.add,
-                        color: Color(0xFF2563EB),
+                  // Full width add button
+                  SizedBox(
+                    width: double.infinity,
+                    height: 42,
+                    child: OutlinedButton.icon(
+                      onPressed: () => _pickImages(key),
+                      icon: const Icon(CupertinoIcons.add_circled_solid),
+                      label: const Text("Add Images"),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: const Color(0xFF2563EB),
+                        side: const BorderSide(color: Color(0xFFE2E8F0)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
                     ),
                   ),
                 ],
-              ),
+              );
+            }
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // header row
+                Row(
+                  children: [
+                    Container(
+                      width: 22,
+                      height: 22,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color(0xFFEFF6FF),
+                      ),
+                      child: const Icon(
+                        Icons.circle,
+                        size: 8,
+                        color: Color(0xFF2563EB),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        key.replaceAll("_", " ").toUpperCase(),
+                        style: GoogleFonts.poppins(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      value.toString(),
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF2563EB),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 10),
+
+                // image strip
+                SizedBox(
+                  height: 70,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      ...images.asMap().entries.map((entry) {
+                        final index = entry.key;
+                        final b64 = entry.value;
+                        return _imageThumb(key, index, b64);
+                      }).toList(),
+
+                      // add button
+                      GestureDetector(
+                        onTap: () => _pickImages(key),
+                        child: Container(
+                          width: 70,
+                          height: 70,
+                          margin: const EdgeInsets.only(right: 8),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: const Color(0xFFE2E8F0)),
+                            color: const Color(0xFFF8FAFC),
+                          ),
+                          child: const Icon(
+                            Icons.add,
+                            color: Color(0xFF2563EB),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
+  Widget _gridStatTile(String key, dynamic value) {
+    final imageMap = {
+      'broken': "assets/images/broken-bottle.png",
+      'neck chip': "assets/images/broken-bottle-neck.png",
+      'extra dirty': "assets/images/dirty-bottle.png",
+      'other brand': "assets/images/message-in-a-bottle.png",
+      'other kf': "assets/images/kf.png",
+      'torn bags': "assets/images/torned-bag.png",
+    };
+    var isTablet = Get.width > 600;
+
+    return Container(
+      // NOTE: Removed external margin. Let the GridView's crossAxisSpacing handle gaps.
+      padding: const EdgeInsets.all(12),
+      decoration: _cardDecoration(),
+      child: Stack(
+        children: [
+          Positioned(
+            right: 0,
+            bottom: 0,
+            child: Image.asset(
+              imageMap[key.replaceAll("_", " ").toLowerCase()] ?? '',
+              width: isTablet ? 120 : 80,
             ),
-          ],
-        );
-      }),
+          ),
+          Obx(() {
+            final images = controller.imageAttachmentJson[key] ?? [];
+            final bool hasImages = images.isNotEmpty;
+
+            // ---------------- STATE 1: NO IMAGES (Large Add Button) ----------------
+            if (!hasImages) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Label Row
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.label,
+                        size: isTablet ? 24 : 12,
+                        color: Color(0xFF2563EB),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          key.replaceAll("_", " ").toUpperCase(),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.poppins(
+                            fontSize: isTablet ? 24 : 12,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const Spacer(), // Pushes value to center/bottom or distributes space
+
+                  // Value Row
+                  Row(
+                    children: [
+                      Container(
+                        width: isTablet ? 40 : 20,
+                        height: isTablet ? 40 : 20,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color(0xFFEFF6FF),
+                        ),
+                        child: Icon(
+                          Icons.circle,
+                          size: isTablet ? 12 : 6,
+                          color: Color(0xFF2563EB),
+                        ),
+                      ),
+                      SizedBox(width: isTablet ? 16 : 8),
+                      Text(
+                        value.toString(),
+                        style: GoogleFonts.poppins(
+                          fontSize: isTablet ? 32 : 20,
+                          fontWeight: FontWeight.w700,
+                          color: const Color(0xFF2563EB),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const Spacer(), // Ensures button stays at bottom
+
+                  // Add Button
+                  // SizedBox(
+                  //   width: double.infinity,
+                  //   height: 36, // Slightly compact for grid
+                  //   child: OutlinedButton.icon(
+                  //     onPressed: () => _pickImages(key),
+                  //     icon: const Icon(CupertinoIcons.add_circled_solid,
+                  //         size: 16),
+                  //     label: Text(
+                  //       "Add Images",
+                  //       style: GoogleFonts.poppins(fontSize: 11),
+                  //     ),
+                  //     style: OutlinedButton.styleFrom(
+                  //       foregroundColor: const Color(0xFF2563EB),
+                  //       side: const BorderSide(color: Color(0xFFE2E8F0)),
+                  //       padding: EdgeInsets.zero,
+                  //       shape: RoundedRectangleBorder(
+                  //         borderRadius: BorderRadius.circular(8),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+
+                  Container(
+                    // height: 20,
+                    // width: 20,
+                    padding: EdgeInsets.all(1),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: MyColors.baseBlue.withAlpha(50),
+                    ),
+                    child: IconButton(
+                        onPressed: () => _pickImages(key),
+                        icon: const Icon(CupertinoIcons.add_circled_solid,
+                            color: MyColors.baseBlue, size: 16)),
+                  )
+                ],
+              );
+            }
+
+            // ---------------- STATE 2: HAS IMAGES (Thumbnail Strip) ----------------
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Compact Header Row (Label + Value combined)
+                Row(
+                  children: [
+                    Container(
+                      width: isTablet ? 40 : 20,
+                      height: isTablet ? 40 : 20,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color(0xFFEFF6FF),
+                      ),
+                      child: Icon(
+                        Icons.circle,
+                        size: isTablet ? 12 : 6,
+                        color: Color(0xFF2563EB),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            key.replaceAll("_", " ").toUpperCase(),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.poppins(
+                              fontSize: isTablet ? 20 : 10,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black54,
+                            ),
+                          ),
+                          Text(
+                            value.toString(),
+                            style: GoogleFonts.poppins(
+                              fontSize: isTablet ? 24 : 14,
+                              height: 1.1,
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFF2563EB),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+
+                const Spacer(),
+
+                // Image Strip
+                SizedBox(
+                  height: 60, // Fixed height for thumbnails in grid
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    children: [
+                      ...images.asMap().entries.map((entry) {
+                        final index = entry.key;
+                        final b64 = entry.value;
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: _imageThumb(key, index, b64),
+                        );
+                      }).toList(),
+
+                      // Mini Add Button
+                      GestureDetector(
+                        onTap: () => _pickImages(key),
+                        child: Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: const Color(0xFFE2E8F0)),
+                            color: const Color(0xFFF8FAFC),
+                          ),
+                          child: const Icon(
+                            Icons.add,
+                            color: Color(0xFF2563EB),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          }),
+        ],
+      ),
     );
   }
   // ================= IMAGE THUMB =================
@@ -662,15 +703,15 @@ class InwardEntryConsolidatedPage
 
   Future<void> _pickImages(String key) async {
     final picker = ImagePicker();
-    final List<XFile> images = await picker.pickMultiImage();
+    final XFile? image = await picker.pickImage(source: ImageSource.camera);
 
-    for (final img in images) {
-      final bytes = await File(img.path).readAsBytes();
+    if (image != null) {
+      final bytes = await File(image.path).readAsBytes();
       final b64 = base64Encode(bytes);
 
       controller.imageAttachmentJson[key]!.add(b64);
-    }
 
-    controller.imageAttachmentJson.refresh();
+      controller.imageAttachmentJson.refresh();
+    }
   }
 }

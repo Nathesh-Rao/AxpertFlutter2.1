@@ -181,7 +181,8 @@ class _SplashPageState extends State<SplashPage>
                 height: 80,
                 width: 80,
                 child: Image.asset(
-                  'assets/images/agilelabs-app-icon.png',
+                  'assets/images/ub_logo.png',
+                  height: 80,
                   fit: BoxFit.cover,
                 ),
               ),

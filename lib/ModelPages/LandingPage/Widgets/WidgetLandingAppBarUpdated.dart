@@ -22,14 +22,16 @@ class WidgetLandingAppBarUpdated extends StatelessWidget
       foregroundColor: Colors.white,
       flexibleSpace: Container(
         decoration: BoxDecoration(
-            gradient: MyColors.updatedUIBackgroundGradient/*LinearGradient(
+            gradient: MyColors
+                .updatedUIBackgroundGradient /*LinearGradient(
           colors: [
-            *//*Color.fromRGBO(55, 100, 252, 1),
-            Color.fromRGBO(151, 100, 218, 1),*//*
+            */ /*Color.fromRGBO(55, 100, 252, 1),
+            Color.fromRGBO(151, 100, 218, 1),*/ /*
             Color.fromRGBO(9, 9, 121, 1),
             Color.fromRGBO(7,176,210,1),
           ],
-        )*/),
+        )*/
+            ),
       ),
       titleSpacing: 5,
       title: Container(
@@ -37,18 +39,19 @@ class WidgetLandingAppBarUpdated extends StatelessWidget
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Image.asset(
-              "assets/images/axpert_03.png",
+              "assets/images/ub_logo.png",
               height: 35,
+              color: Colors.white,
               // width: 25,
             ),
-            Text(
-              "xpert",
-              style: TextStyle(
-                fontFamily: 'Gellix-Black',
-                // color: HexColor("#133884"),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            // Text(
+            //   "xpert",
+            //   style: TextStyle(
+            //     fontFamily: 'Gellix-Black',
+            //     // color: HexColor("#133884"),
+            //     fontWeight: FontWeight.bold,
+            //   ),
+            // ),
             SizedBox(width: 5),
             Obx(() => Visibility(
                   visible: menuHomePageController

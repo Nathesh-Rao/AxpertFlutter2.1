@@ -55,10 +55,10 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
         title: Hero(
           tag: 'axpertImage',
           child: Image.asset(
-            'assets/images/axpert_04.png',
+            'assets/images/ub_logo.png',
             // 'assets/images/buzzily-logo.png',
             // height: MediaQuery.of(context).size.height * 0.048,
-            width: MediaQuery.of(context).size.width * 0.24,
+            height: istablet ? 150 : 80,
             fit: BoxFit.fill,
           ),
         ),

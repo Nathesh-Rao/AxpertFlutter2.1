@@ -116,64 +116,72 @@ class SquareActionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final Color bg = color ?? const Color(0xFF2563EB);
 
+    final isTablet = Get.width > 600;
+
     return AspectRatio(
       aspectRatio: 1,
-      child: Material(
-        color: bg,
+      child: InkWell(
         borderRadius: BorderRadius.circular(18),
-        elevation: 0,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(18),
-          onTap: onTap,
-          child: Container(
-            padding: const EdgeInsets.all(14),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Icon bubble
-                Container(
-                  width: 42,
-                  height: 42,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.18),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(
-                    icon,
-                    size: 22,
-                    color: Colors.white,
-                  ),
+        onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+              image: DecorationImage(
+                  image: AssetImage("assets/images/card_bg.png"),
+                  fit: BoxFit.cover)),
+          padding: const EdgeInsets.all(14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Icon bubble
+              Container(
+                width: isTablet ? 84 : 42,
+                height: isTablet ? 84 : 42,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.18),
+                  borderRadius: BorderRadius.circular(12),
                 ),
+                child: Icon(
+                  icon,
+                  size: isTablet ? 44 : 22,
+                  color: Colors.white,
+                ),
+              ),
 
-                const Spacer(),
+              const Spacer(),
 
-                Text(
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                decoration: BoxDecoration(
+                    color: Colors.white.withAlpha(50),
+                    borderRadius: BorderRadius.circular(50)),
+                child: Text(
                   title,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.poppins(
-                    fontSize: 14,
+                    fontSize: isTablet ? 24 : 14,
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
                     height: 1.2,
                   ),
                 ),
+              ),
 
-                if (subtitle != null) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    subtitle!,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.poppins(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.white.withValues(alpha: 0.85),
-                    ),
+              if (subtitle != null) ...[
+                const SizedBox(height: 4),
+                Text(
+                  subtitle!,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.poppins(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.white.withValues(alpha: 0.85),
                   ),
-                ],
+                ),
               ],
-            ),
+            ],
           ),
         ),
       ),
