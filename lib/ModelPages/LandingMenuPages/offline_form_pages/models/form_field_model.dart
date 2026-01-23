@@ -7,6 +7,8 @@ class OfflineFormFieldModel {
   final String fldType;
   final String dataType;
 
+  final String datetime_format;
+
   final bool hidden;
   final bool readOnly;
   final bool allowEmpty;
@@ -36,6 +38,7 @@ class OfflineFormFieldModel {
     required this.allowEmpty,
     required this.defValue,
     required this.value,
+    this.datetime_format = "",
     this.datasource,
     this.isCamera = false,
     this.isGallery = false,
@@ -53,6 +56,7 @@ class OfflineFormFieldModel {
       fldCaption: json['fld_caption'],
       fldType: json['fld_type'],
       dataType: json['data_type'],
+      datetime_format: (json['datetime_format'] ?? ""),
       hidden: (json['hidden'] ?? 'F') == 'T',
       readOnly: (json['readonly'] ?? 'F') == 'T',
       allowEmpty: (json['allowempty'] ?? 'F') == 'T',
@@ -61,14 +65,8 @@ class OfflineFormFieldModel {
       datasource: json['datasource'],
       isCamera: (json['is_camera'] ?? 'F') == 'T',
       isGallery: (json['is_gallery'] ?? 'F') == 'T',
-      options: (json['options'] as List<dynamic>?)
-              ?.map((e) => Map<String, dynamic>.from(e))
-              .toList() ??
-          [],
-      dependencies: (json["dep_field"] as List<dynamic>?)
-              ?.map((e) => e.toString())
-              .toList() ??
-          [],
+      options: (json['options'] as List<dynamic>?)?.map((e) => Map<String, dynamic>.from(e)).toList() ?? [],
+      dependencies: (json["dep_field"] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
     );
   }
 }

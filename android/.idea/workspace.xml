@@ -10,14 +10,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="eded81a6-62f4-4a61-aeee-2720235b11e0" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../.flutter-plugins" beforeDir="false" afterPath="$PROJECT_DIR$/../.flutter-plugins" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/../.flutter-plugins-dependencies" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/ModelPages/LandingMenuPages/MenuMorePage/Controllers/MenuMorePageController.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/ModelPages/LandingMenuPages/MenuMorePage/Controllers/MenuMorePageController.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/ModelPages/LandingPage/Controller/LandingPageController.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/ModelPages/LandingPage/Controller/LandingPageController.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/ModelPages/LandingPage/Widgets/WidgetDrawer.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/ModelPages/LandingPage/Widgets/WidgetDrawer.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/ModelPages/LoginPage/Controller/LoginController.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/ModelPages/LoginPage/Controller/LoginController.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../pubspec.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Page/UpdatedHomePage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/ModelPages/LandingMenuPages/MenuHomePagePage/UpdatedHomePage/Page/UpdatedHomePage.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,12 +51,12 @@
     &quot;assignee&quot;: &quot;amrith4agile&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Nathesh-Rao/AxpertFlutter2.1.git&quot;,
-    &quot;accountId&quot;: &quot;e5826925-c350-4f92-a4a8-c2ee54319ed7&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Nathesh-Rao/AxpertFlutter2.1.git",
+    "accountId": "d4e933b3-90b8-45cf-85cf-c5ef0ad7f729"
   }
-}</component>
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
 }</component>
@@ -74,18 +71,19 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
     "android.gradle.sync.needed": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "offline__pages",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/narasimhanatheshrao/Development/AxpertFlutter2.1/android",
+    "last_opened_file_path": "D:/Axpert Flutter Projects/AxpertFlutter2.1/android",
     "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.17",
     "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
     "show.migrate.to.gradle.popup": "false"
   }
 }]]></component>
