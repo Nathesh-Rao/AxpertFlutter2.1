@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/db/offline_db_module.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/inward_entry/inward_entry_consolidated_page.dart';
 import 'package:axpertflutter/Utils/LogServices/LogService.dart';
@@ -975,12 +976,344 @@ class InwardEntryDynamicController extends GetxController {
     submitPage();
   }
 
+  // Map<String, dynamic> generateSubmitPayload() {
+  //   final Map<String, dynamic> dc1Data = {};
+  //   final List fields = schema["fields"];
+
+  //   for (final f in fields) {
+  //     final String key = f["api_key"] ?? f["fld_name"];
+  //     final String name = f["fld_name"];
+  //     final String type = f["fld_type"];
+
+  //     dynamic value;
+
+  //     if (type == "dd") {
+  //       value = dropdownCtrls[name]?.value ?? "";
+  //     } else {
+  //       value = textCtrls[name]?.text.trim() ?? "";
+  //     }
+
+  //     dc1Data[key] = value;
+  //   }
+
+  //   final Map<String, dynamic> dc2Data = {};
+  //   final List gridFields = schema["fillgrids"]["fields"];
+
+  //   int rowIndex = 1;
+  //   for (final row in sampleGridRows) {
+  //     final Map<String, dynamic> rowData = {};
+
+  //     for (final f in gridFields) {
+  //       final String name = f["fld_name"];
+  //       final String key = f["fld_name"] ?? name;
+
+  //       final ctrl = row[name];
+  //       rowData[key] = ctrl?.text.trim() ?? "";
+  //     }
+
+  //     rowData["fillrows"] = "T";
+
+  //     dc2Data["row$rowIndex"] = rowData;
+  //     rowIndex++;
+  //   }
+
+  //   final Map<String, int> summary = {};
+
+  //   for (final f in gridFields) {
+  //     if (f["data_type"] == "n") {
+  //       summary[f["fld_name"]] = 0;
+  //     }
+  //   }
+
+  //   for (final row in sampleGridRows) {
+  //     for (final f in gridFields) {
+  //       if (f["data_type"] == "n") {
+  //         final String name = f["fld_name"];
+  //         final String v = row[name]?.text.trim() ?? "0";
+  //         final int n = int.tryParse(v) ?? 0;
+  //         summary[name] = (summary[name] ?? 0) + n;
+  //       }
+  //     }
+  //   }
+
+  //   final Map<String, dynamic> dc3Data = {
+  //     "row1": {
+  //       "tot_broken": summary["broken"]?.toString() ?? "0",
+  //       "tot_neckchip": summary["neck_chip"]?.toString() ?? "0",
+  //       "tot_extradirty": summary["extra_dirty"]?.toString() ?? "0",
+  //       "tot_short": summary["short"]?.toString() ?? "0",
+  //       "tot_otherbrand": summary["other_brand"]?.toString() ?? "0",
+  //       "tot_otherkf": summary["other_kf"]?.toString() ?? "0",
+  //       "tot_tornbags": summary["torn_bags"]?.toString() ?? "0",
+  //     }
+  //   };
+
+  //   final Map<String, dynamic> finalJson = {
+  //     "submitdata": {
+  //       "project": "bottleapp",
+  //       "token": "642656c07b8a4ea176afddfc3a231d1e",
+  //       "userauthkey": "00050148015001580159016132163450607080013",
+  //       "seed": "100045",
+  //       "username": "admin",
+  //       "trace": "false",
+  //       "keyfield": "",
+  //       "dataarray": {
+  //         "data": {
+  //           "mode": "new",
+  //           "keyvalue": "",
+  //           "recordid": "0",
+  //           "dc1": {"row1": dc1Data},
+  //           "dc2": dc2Data,
+  //           "dc3": dc3Data
+  //         }
+  //       }
+  //     }
+  //   };
+
+  //   return finalJson;
+  // }
+
+  // Map<String, dynamic> generateSubmitPayload() {
+  //   final Map<String, dynamic> dc1Data = {};
+  //   final List fields = schema["fields"];
+
+  //   for (final f in fields) {
+  //     final String name = f["fld_name"];
+  //     final String type = f["fld_type"];
+
+  //     dynamic value;
+
+  //     if (type == "dd") {
+  //       value = dropdownCtrls[name]?.value ?? "";
+  //     } else {
+  //       value = textCtrls[name]?.text.trim() ?? "";
+  //     }
+
+  //     dc1Data[name] = value;
+  //   }
+
+  //   final Map<String, dynamic> dc2Data = {};
+  //   final List gridFields = schema["fillgrids"]["fields"];
+
+  //   int rowIndex = 1;
+  //   for (final row in sampleGridRows) {
+  //     final Map<String, dynamic> rowData = {};
+
+  //     for (final f in gridFields) {
+  //       final String name = f["fld_name"];
+  //       final ctrl = row[name];
+  //       rowData[name] = ctrl?.text.trim() ?? "";
+  //     }
+
+  //     rowData["fillrows"] = rowIndex.toString();
+
+  //     dc2Data["row$rowIndex"] = rowData;
+  //     rowIndex++;
+  //   }
+
+  //   final Map<String, int> summary = {};
+
+  //   for (final f in gridFields) {
+  //     if (f["data_type"] == "n") {
+  //       summary[f["fld_name"]] = 0;
+  //     }
+  //   }
+
+  //   for (final row in sampleGridRows) {
+  //     for (final f in gridFields) {
+  //       if (f["data_type"] == "n") {
+  //         final String name = f["fld_name"];
+  //         final String v = row[name]?.text.trim() ?? "0";
+  //         final int n = int.tryParse(v) ?? 0;
+  //         summary[name] = (summary[name] ?? 0) + n;
+  //       }
+  //     }
+  //   }
+
+  //   final Map<String, dynamic> dc3Data = {
+  //     "row1": {
+  //       "tot_broken": summary["broken"]?.toString() ?? "0",
+  //       "tot_neckchip": summary["neck_chip"]?.toString() ?? "0",
+  //       "tot_extradirty": summary["extra_dirty"]?.toString() ?? "0",
+  //       "tot_short": summary["short"]?.toString() ?? "0",
+  //       "tot_otherbrand": summary["other_brand"]?.toString() ?? "0",
+  //       "tot_otherkf": summary["other_kf"]?.toString() ?? "0",
+  //       "tot_tornbags": summary["torn_bags"]?.toString() ?? "0",
+  //     }
+  //   };
+
+  //   String sessionId = AppStorage().retrieveValue(AppStorage.SESSIONID) ?? "";
+  //   // String sessionId = "ARM-bottleapp-69446109-e848-4c9a-98a8-6975473adb77";
+
+  //   return {
+  //     "ARMSessionId": sessionId,
+  //     "publickey": "InwardEntry",
+  //     "project": "bottleapp",
+  //     "submitdata": {
+  //       "username": "admin",
+  //       "trace": "true",
+  //       "keyfield": "",
+  //       "dataarray": {
+  //         "data": {
+  //           "mode": "new",
+  //           "keyvalue": "",
+  //           "recordid": "0",
+  //           "dc1": {"row1": dc1Data},
+  //           "dc2": dc2Data,
+  //           "dc3": dc3Data
+  //         }
+  //       }
+  //     }
+  //   };
+  // }
+
+  // Map<String, dynamic> generateRestSubmitPayLoad() {
+  //   final Map<String, dynamic> col1 = {};
+  //   final List fields = schema["fields"];
+
+  //   // 1. Entry Date Time
+  //   String entryDate =
+  //       _formatDateToSubmit(textCtrls["entryDate"]?.text.trim() ?? "");
+  //   String entryTime =
+  //       _formatTimeToSubmit(textCtrls["entryTime"]?.text.trim() ?? "");
+  //   col1["entry_date_time"] = "$entryDate $entryTime".trim();
+
+  //   // 2. Exit Date Time
+  //   String exitDate =
+  //       _formatDateToSubmit(textCtrls["exitDate"]?.text.trim() ?? "");
+  //   String exitTime =
+  //       _formatTimeToSubmit(textCtrls["exitTime"]?.text.trim() ?? "");
+  //   col1["exit_date_time"] = "$exitDate $exitTime".trim();
+
+  //   // 3. Add other missing required keys
+  //   col1["mfg_dt_btl"] = "";
+  //   col1["testdt"] = "";
+
+  //   final ignoredKeys = {"entry_date_time", "exit_date_time"};
+
+  //   for (final f in fields) {
+  //     final String name = f["fld_name"];
+  //     final String key = f["api_key"] ?? name;
+  //     final String type = f["fld_type"];
+
+  //     if (ignoredKeys.contains(key)) continue;
+
+  //     String valueToSave = "";
+
+  //     if (type == "dd") {
+  //       valueToSave = dropdownCtrls[name]?.value ?? "";
+  //     } else {
+  //       String rawValue = textCtrls[name]?.text.trim() ?? "";
+  //       // if (type == "date" || type == "d") {
+  //       //   valueToSave = _formatDateToSubmit(rawValue);
+  //       // } else if (type == "time" || type == "t") {
+  //       //   valueToSave = _formatTimeToSubmit(rawValue);
+  //       // } else {
+  //       valueToSave = rawValue;
+  //       // }
+  //     }
+
+  //     col1[key] = valueToSave;
+  //   }
+
+  //   final Map<String, dynamic> recid1Data = {
+  //     "rowno": "001",
+  //     "text": "0",
+  //     "columns": col1
+  //   };
+
+  //   final List<Map<String, dynamic>> recid2List = [];
+  //   final List gridFields = schema["fillgrids"]["fields"];
+
+  //   int rowIndex = 1;
+  //   for (final row in sampleGridRows) {
+  //     final Map<String, dynamic> col2 = {};
+
+  //     for (final f in gridFields) {
+  //       final String name = f["fld_name"];
+  //       final String key = f["api_key"] ?? name;
+  //       final String type = f["fld_type"];
+
+  //       final ctrl = row[name];
+  //       String rawValue = ctrl?.text.trim() ?? "";
+
+  //       if (type == "date" || type == "d") {
+  //         col2[key] = _formatDateToSubmit(rawValue);
+  //       } else {
+  //         col2[key] = rawValue;
+  //       }
+  //     }
+  //     col2["fillrows"] = rowIndex.toString();
+  //     recid2List.add({
+  //       "rowno": rowIndex.toString().padLeft(3, '0'),
+  //       "text": "0",
+  //       "columns": col2
+  //     });
+  //     rowIndex++;
+  //   }
+
+  //   final Map<String, int> summary = {};
+  //   for (final f in gridFields) {
+  //     if (f["data_type"] == "n") summary[f["fld_name"]] = 0;
+  //   }
+  //   for (final row in sampleGridRows) {
+  //     for (final f in gridFields) {
+  //       if (f["data_type"] == "n") {
+  //         final String name = f["fld_name"];
+  //         final int n = int.tryParse(row[name]?.text.trim() ?? "0") ?? 0;
+  //         summary[name] = (summary[name] ?? 0) + n;
+  //       }
+  //     }
+  //   }
+  //   final Map<String, dynamic> col3 = {
+  //     "tot_broken": summary["broken"]?.toString() ?? "0",
+  //     "tot_neckchip": summary["neck_chip"]?.toString() ?? "0",
+  //     "tot_extradirty": summary["extra_dirty"]?.toString() ?? "0",
+  //     "tot_short": summary["short"]?.toString() ?? "0",
+  //     "tot_otherbrand": summary["other_brand"]?.toString() ?? "0",
+  //     "tot_otherkf": summary["other_kf"]?.toString() ?? "0",
+  //     "tot_tornbags": summary["torn_bags"]?.toString() ?? "0",
+  //   };
+  //   final Map<String, dynamic> recid3Data = {
+  //     "rowno": "001",
+  //     "text": "0",
+  //     "columns": col3
+  //   };
+
+  //   return {
+  //     "_parameters": [
+  //       {
+  //         "savedata": {
+  //           "axpapp": "bottleapp",
+  //           "seed": "1983",
+  //           "username": "admin",
+  //           "password": "a5ca360e803b868680e2b6f7805fcb9e",
+  //           "transid": "inwae",
+  //           "xmltext": "",
+  //           "trace": "true",
+  //           "changedrows": {},
+  //           "recordid": "0",
+  //           "recdata": [
+  //             {
+  //               "axp_recid1": [recid1Data]
+  //             },
+  //             {"axp_recid2": recid2List},
+  //             {
+  //               "axp_recid3": [recid3Data]
+  //             }
+  //           ]
+  //         }
+  //       }
+  //     ]
+  //   };
+  // }
+
   Map<String, dynamic> generateSubmitPayload() {
+    // ----------------- 1. DC1 (Header Data) -----------------
     final Map<String, dynamic> dc1Data = {};
     final List fields = schema["fields"];
 
     for (final f in fields) {
-      final String key = f["api_key"] ?? f["fld_name"];
       final String name = f["fld_name"];
       final String type = f["fld_type"];
 
@@ -992,9 +1325,10 @@ class InwardEntryDynamicController extends GetxController {
         value = textCtrls[name]?.text.trim() ?? "";
       }
 
-      dc1Data[key] = value;
+      dc1Data[name] = value;
     }
 
+    // ----------------- 2. DC2 (Grid Data) -----------------
     final Map<String, dynamic> dc2Data = {};
     final List gridFields = schema["fillgrids"]["fields"];
 
@@ -1004,13 +1338,11 @@ class InwardEntryDynamicController extends GetxController {
 
       for (final f in gridFields) {
         final String name = f["fld_name"];
-        final String key = f["api_key"] ?? name;
-
         final ctrl = row[name];
-        rowData[key] = ctrl?.text.trim() ?? "";
+        rowData[name] = ctrl?.text.trim() ?? "";
       }
 
-      rowData["fillrows"] = "T";
+      rowData["fillrows"] = rowIndex.toString();
 
       dc2Data["row$rowIndex"] = rowData;
       rowIndex++;
@@ -1018,6 +1350,7 @@ class InwardEntryDynamicController extends GetxController {
 
     final Map<String, int> summary = {};
 
+    // Init summary keys
     for (final f in gridFields) {
       if (f["data_type"] == "n") {
         summary[f["fld_name"]] = 0;
@@ -1047,14 +1380,15 @@ class InwardEntryDynamicController extends GetxController {
       }
     };
 
-    final Map<String, dynamic> finalJson = {
+    String sessionId = AppStorage().retrieveValue(AppStorage.SESSIONID) ?? "";
+
+    return {
+      "ARMSessionId": sessionId,
+      "publickey": "InwardEntry",
+      "project": "bottleapp",
       "submitdata": {
-        "project": "bottleapp",
-        "token": "642656c07b8a4ea176afddfc3a231d1e",
-        "userauthkey": "00050148015001580159016132163450607080013",
-        "seed": "100045",
         "username": "admin",
-        "trace": "false",
+        "trace": "true",
         "keyfield": "",
         "dataarray": {
           "data": {
@@ -1068,235 +1402,78 @@ class InwardEntryDynamicController extends GetxController {
         }
       }
     };
-
-    return finalJson;
   }
 
-  Map<String, dynamic> generateRestSubmitPayLoad() {
-    // =========================================================================
-    // 1. GENERATE axp_recid1 (Header Data)
-    // =========================================================================
-    final Map<String, dynamic> col1 = {};
-    final List fields = schema["fields"];
+  // String _formatDateToSubmit(String isoDate) {
+  //   if (isoDate.isEmpty) return "";
+  //   try {
+  //     final parts = isoDate.split('-');
+  //     if (parts.length == 3) {
+  //       return "${parts[2]}/${parts[1]}/${parts[0]}";
+  //     }
+  //   } catch (_) {}
+  //   return isoDate;
+  // }
 
-    // --- STEP A: Manually Build the Combined Fields first ---
+  // String _formatTimeToSubmit(String isoTime) {
+  //   if (isoTime.isEmpty) return "";
+  //   try {
+  //     final parts = isoTime.split(':');
+  //     if (parts.length >= 2) {
+  //       int h = int.parse(parts[0]);
+  //       int m = int.parse(parts[1]);
+  //       String ampm = "AM";
 
-    // 1. Entry Date Time
-    String entryDate =
-        _formatDateToSubmit(textCtrls["entryDate"]?.text.trim() ?? "");
-    String entryTime =
-        _formatTimeToSubmit(textCtrls["entryTime"]?.text.trim() ?? "");
-    col1["entry_date_time"] = "$entryDate $entryTime".trim();
+  //       if (h >= 12) {
+  //         ampm = "PM";
+  //         if (h > 12) h -= 12;
+  //       }
+  //       if (h == 0) h = 12;
 
-    // 2. Exit Date Time
-    String exitDate =
-        _formatDateToSubmit(textCtrls["exitDate"]?.text.trim() ?? "");
-    String exitTime =
-        _formatTimeToSubmit(textCtrls["exitTime"]?.text.trim() ?? "");
-    col1["exit_date_time"] = "$exitDate $exitTime".trim();
+  //       // Output: 6:44:00 PM
+  //       return "$h:${m.toString().padLeft(2, '0')}:00 $ampm";
+  //     }
+  //   } catch (_) {}
+  //   return isoTime;
+  // }
 
-    // 3. Add other missing required keys
-    col1["mfg_dt_btl"] = "";
-    col1["testdt"] = "";
+  // String _formatValue(String value, String type) {
+  //   if (value.isEmpty) return "";
 
-    final ignoredKeys = {"entry_date_time", "exit_date_time"};
+  //   if (type == "date" || type == "d") {
+  //     try {
+  //       final parts = value.split('-');
+  //       if (parts.length == 3) {
+  //         return "${parts[2]}/${parts[1]}/${parts[0]}";
+  //       }
+  //     } catch (e) {
+  //       return value;
+  //     }
+  //   }
 
-    for (final f in fields) {
-      final String name = f["fld_name"];
-      final String key = f["api_key"] ?? name;
-      final String type = f["fld_type"];
+  //   if (type == "time" || type == "t") {
+  //     try {
+  //       final parts = value.split(':');
+  //       if (parts.length == 2) {
+  //         int hour = int.parse(parts[0]);
+  //         int minute = int.parse(parts[1]);
+  //         String period = "AM";
 
-      if (ignoredKeys.contains(key)) continue;
+  //         if (hour >= 12) {
+  //           period = "PM";
+  //           if (hour > 12) hour -= 12;
+  //         }
+  //         if (hour == 0) hour = 12;
 
-      String valueToSave = "";
+  //         return "$hour:${minute.toString().padLeft(2, '0')}:00 $period";
+  //       }
+  //     } catch (e) {
+  //       return value;
+  //     }
+  //   }
 
-      if (type == "dd") {
-        valueToSave = dropdownCtrls[name]?.value ?? "";
-      } else {
-        String rawValue = textCtrls[name]?.text.trim() ?? "";
-        if (type == "date" || type == "d") {
-          valueToSave = _formatDateToSubmit(rawValue);
-        } else if (type == "time" || type == "t") {
-          valueToSave = _formatTimeToSubmit(rawValue);
-        } else {
-          valueToSave = rawValue;
-        }
-      }
-
-      col1[key] = valueToSave;
-    }
-
-    final Map<String, dynamic> recid1Data = {
-      "rowno": "001",
-      "text": "0",
-      "columns": col1
-    };
-
-    // =========================================================================
-    // 2. GENERATE axp_recid2 (Grid Rows)
-    // =========================================================================
-    final List<Map<String, dynamic>> recid2List = [];
-    final List gridFields = schema["fillgrids"]["fields"];
-
-    int rowIndex = 1;
-    for (final row in sampleGridRows) {
-      final Map<String, dynamic> col2 = {};
-
-      for (final f in gridFields) {
-        final String name = f["fld_name"];
-        final String key = f["api_key"] ?? name;
-        final String type = f["fld_type"];
-
-        final ctrl = row[name];
-        String rawValue = ctrl?.text.trim() ?? "";
-
-        if (type == "date" || type == "d") {
-          col2[key] = _formatDateToSubmit(rawValue);
-        } else {
-          col2[key] = rawValue;
-        }
-      }
-      col2["fillrows"] = rowIndex.toString();
-      recid2List.add({
-        "rowno": rowIndex.toString().padLeft(3, '0'),
-        "text": "0",
-        "columns": col2
-      });
-      rowIndex++;
-    }
-
-    // =========================================================================
-    // 3. GENERATE axp_recid3 (Totals)
-    // =========================================================================
-    final Map<String, int> summary = {};
-    for (final f in gridFields) {
-      if (f["data_type"] == "n") summary[f["fld_name"]] = 0;
-    }
-    for (final row in sampleGridRows) {
-      for (final f in gridFields) {
-        if (f["data_type"] == "n") {
-          final String name = f["fld_name"];
-          final int n = int.tryParse(row[name]?.text.trim() ?? "0") ?? 0;
-          summary[name] = (summary[name] ?? 0) + n;
-        }
-      }
-    }
-    final Map<String, dynamic> col3 = {
-      "tot_broken": summary["broken"]?.toString() ?? "0",
-      "tot_neckchip": summary["neck_chip"]?.toString() ?? "0",
-      "tot_extradirty": summary["extra_dirty"]?.toString() ?? "0",
-      "tot_short": summary["short"]?.toString() ?? "0",
-      "tot_otherbrand": summary["other_brand"]?.toString() ?? "0",
-      "tot_otherkf": summary["other_kf"]?.toString() ?? "0",
-      "tot_tornbags": summary["torn_bags"]?.toString() ?? "0",
-    };
-    final Map<String, dynamic> recid3Data = {
-      "rowno": "001",
-      "text": "0",
-      "columns": col3
-    };
-
-    // =========================================================================
-    // 4. RETURN FINAL JSON
-    // =========================================================================
-    return {
-      "_parameters": [
-        {
-          "savedata": {
-            "axpapp": "bottleapp",
-            "seed": "1983",
-            "username": "admin",
-            "password": "a5ca360e803b868680e2b6f7805fcb9e",
-            "transid": "inwae",
-            "xmltext": "",
-            "trace": "true",
-            "changedrows": {},
-            "recordid": "0",
-            "recdata": [
-              {
-                "axp_recid1": [recid1Data]
-              },
-              {"axp_recid2": recid2List},
-              {
-                "axp_recid3": [recid3Data]
-              }
-            ]
-          }
-        }
-      ]
-    };
-  }
-
-  String _formatDateToSubmit(String isoDate) {
-    if (isoDate.isEmpty) return "";
-    try {
-      final parts = isoDate.split('-');
-      if (parts.length == 3) {
-        return "${parts[2]}/${parts[1]}/${parts[0]}";
-      }
-    } catch (_) {}
-    return isoDate;
-  }
-
-  String _formatTimeToSubmit(String isoTime) {
-    if (isoTime.isEmpty) return "";
-    try {
-      final parts = isoTime.split(':');
-      if (parts.length >= 2) {
-        int h = int.parse(parts[0]);
-        int m = int.parse(parts[1]);
-        String ampm = "AM";
-
-        if (h >= 12) {
-          ampm = "PM";
-          if (h > 12) h -= 12;
-        }
-        if (h == 0) h = 12;
-
-        // Output: 6:44:00 PM
-        return "$h:${m.toString().padLeft(2, '0')}:00 $ampm";
-      }
-    } catch (_) {}
-    return isoTime;
-  }
-
-  String _formatValue(String value, String type) {
-    if (value.isEmpty) return "";
-
-    if (type == "date" || type == "d") {
-      try {
-        final parts = value.split('-');
-        if (parts.length == 3) {
-          return "${parts[2]}/${parts[1]}/${parts[0]}";
-        }
-      } catch (e) {
-        return value;
-      }
-    }
-
-    if (type == "time" || type == "t") {
-      try {
-        final parts = value.split(':');
-        if (parts.length == 2) {
-          int hour = int.parse(parts[0]);
-          int minute = int.parse(parts[1]);
-          String period = "AM";
-
-          if (hour >= 12) {
-            period = "PM";
-            if (hour > 12) hour -= 12;
-          }
-          if (hour == 0) hour = 12;
-
-          return "$hour:${minute.toString().padLeft(2, '0')}:00 $period";
-        }
-      } catch (e) {
-        return value;
-      }
-    }
-
-    return value;
-  }
+  //   return value;
+  // }
 
 // =========================================================
   //                 MAIN SUBMIT FUNCTION
@@ -1310,7 +1487,8 @@ class InwardEntryDynamicController extends GetxController {
 
     try {
       isLoading.value = true;
-      final Map<String, dynamic> formData = generateRestSubmitPayLoad();
+      // final Map<String, dynamic> formDataRest = generateRestSubmitPayLoad();
+      final Map<String, dynamic> formData = generateSubmitPayload();
 
       final isOnline = await Get.find<InternetConnectivity>().check();
 

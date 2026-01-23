@@ -6,6 +6,8 @@ import 'package:axpertflutter/Constants/Const.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/models/data_source_model.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/models/form_page_model.dart';
 import 'package:axpertflutter/Utils/LogServices/LogService.dart';
+import 'package:axpertflutter/Utils/ServerConnections/ExecuteApi.dart';
+import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -17,7 +19,7 @@ enum SubmitStatus { success, savedOffline, apiFailure }
 
 class OfflineDbModule {
   OfflineDbModule._();
-
+  // static ServerConnections serverConnections = ServerConnections();
   static Database? _db;
 
   // INIT
@@ -594,52 +596,116 @@ class OfflineDbModule {
     );
   }
 
+  // static Future<SubmitStatus> _submitFormSmartInternal({
+  //   required String username,
+  //   required String projectName,
+  //   required Map<String, dynamic> submitBody,
+  //   required bool isInternetAvailable,
+  // }) async {
+  //   if (isInternetAvailable) {
+  //     var url = Const.getFullARMUrl(ExecuteApi.API_ARM_EXECUTE_PUBLISHED);
+  //     serverConnections.postToServer(
+  //         url: url, body: jsonEncode(submitBody), isBearer: true);
+
+  //     final String? res = await OfflineDatasources.post(
+  //       endpoint: OfflineDatasources.API_SUBMIT_OFFLINE_FORM,
+  //       body: submitBody,
+  //     );
+
+  //     log(submitBody.toString(), name: "submitBody OFFLINE");
+  //     log(res.toString(), name: "submit res OFFLINE");
+  //     if (res != null && res.isNotEmpty) {
+  //       try {
+  //         final decoded = jsonDecode(res);
+
+  //         if (decoded is Map<String, dynamic> &&
+  //             decoded.containsKey('result')) {
+  //           final resultList = decoded['result'] as List<dynamic>;
+
+  //           if (resultList.isNotEmpty) {
+  //             final firstResult = resultList[0] as Map<String, dynamic>;
+
+  //             if (firstResult.containsKey('message')) {
+  //               final messageList = firstResult['message'] as List<dynamic>;
+
+  //               if (messageList.isNotEmpty) {
+  //                 final msgObj = messageList[0] as Map<String, dynamic>;
+
+  //                 if (msgObj.containsKey('msg') ||
+  //                     msgObj.containsKey('recordid')) {
+  //                   return SubmitStatus.success;
+  //                 }
+  //               }
+  //             }
+  //           }
+  //         }
+  //       } catch (e) {
+  //         LogService.writeLog(
+  //             message:
+  //                 "[API_PARSE_ERROR] Could not parse success response: $e");
+  //       }
+
+  //       return SubmitStatus.apiFailure;
+  //     }
+
+  //     return SubmitStatus.apiFailure;
+  //   }
+
+  //   await _database.insert(
+  //     OfflineDBConstants.TABLE_PENDING_REQUESTS,
+  //     {
+  //       OfflineDBConstants.COL_USERNAME: username,
+  //       OfflineDBConstants.COL_PROJECT_NAME: projectName,
+  //       OfflineDBConstants.COL_REQUEST_JSON: jsonEncode(submitBody),
+  //       OfflineDBConstants.COL_STATUS: OfflineDBConstants.STATUS_PENDING,
+  //       OfflineDBConstants.COL_CREATED_AT: DateTime.now().toIso8601String(),
+  //     },
+  //   );
+
+  //   return SubmitStatus.savedOffline;
+  // }
+
   static Future<SubmitStatus> _submitFormSmartInternal({
     required String username,
     required String projectName,
     required Map<String, dynamic> submitBody,
     required bool isInternetAvailable,
   }) async {
+    // 1. ONLINE SUBMISSION
     if (isInternetAvailable) {
-      final String? res = await OfflineDatasources.post(
-        endpoint: OfflineDatasources.API_SUBMIT_OFFLINE_FORM,
-        body: submitBody,
-      );
+      try {
+        // Initialize ServerConnections (Assuming default constructor works)
+        // If you use GetX dependency injection, use: Get.find<ServerConnections>()
+        final ServerConnections serverConnections = ServerConnections();
 
-      log(submitBody.toString(), name: "submitBody OFFLINE");
-      log(res.toString(), name: "submit res OFFLINE");
-      if (res != null && res.isNotEmpty) {
-        try {
-          final decoded = jsonDecode(res);
+        final String url =
+            Const.getFullARMUrl(ExecuteApi.API_ARM_EXECUTE_PUBLISHED);
 
-          if (decoded is Map<String, dynamic> &&
-              decoded.containsKey('result')) {
-            final resultList = decoded['result'] as List<dynamic>;
+        // --- NEW API CALL ---
+        final dynamic responseStr = await serverConnections.postToServer(
+          url: url,
+          body: jsonEncode(submitBody),
+          isBearer: true,
+        );
+        log(jsonEncode(submitBody), name: "SUBMIT_RESPONSE_BODY");
+        log(responseStr, name: "SUBMIT_RESPONSE");
 
-            if (resultList.isNotEmpty) {
-              final firstResult = resultList[0] as Map<String, dynamic>;
+        if (responseStr != null && responseStr.isNotEmpty) {
+          final decoded = jsonDecode(responseStr);
 
-              if (firstResult.containsKey('message')) {
-                final messageList = firstResult['message'] as List<dynamic>;
-
-                if (messageList.isNotEmpty) {
-                  final msgObj = messageList[0] as Map<String, dynamic>;
-
-                  if (msgObj.containsKey('msg') ||
-                      msgObj.containsKey('recordid')) {
-                    return SubmitStatus.success;
-                  }
-                }
-              }
+          if (decoded is Map<String, dynamic>) {
+            if (decoded['success'] == true) {
+              return SubmitStatus.success;
+            } else {
+              final msg = decoded['message'] ?? "Unknown Error";
+              LogService.writeLog(
+                  message: "[API_FAIL] Server returned false: $msg");
+              return SubmitStatus.apiFailure;
             }
           }
-        } catch (e) {
-          LogService.writeLog(
-              message:
-                  "[API_PARSE_ERROR] Could not parse success response: $e");
         }
-
-        return SubmitStatus.apiFailure;
+      } catch (e) {
+        LogService.writeLog(message: "[API_EXCEPTION] $e");
       }
 
       return SubmitStatus.apiFailure;
@@ -659,9 +725,94 @@ class OfflineDbModule {
     return SubmitStatus.savedOffline;
   }
 
-  // =================================================
-  // PENDING SYNC (STATUS BASED)
-  // =================================================
+  static Future<String> processPendingQueue(
+      {required bool isInternetAvailable}) async {
+    if (!isInternetAvailable) return "No internet connection";
+
+    final scope = await _getLastOfflineUserScope();
+    if (scope == null) return "No user session found";
+
+    final username = scope['username']!;
+    final projectName = scope['projectName']!;
+
+    final rows = await _database.query(
+      OfflineDBConstants.TABLE_PENDING_REQUESTS,
+      where: '''
+      ${OfflineDBConstants.COL_STATUS} IN (${OfflineDBConstants.STATUS_PENDING}, ${OfflineDBConstants.STATUS_ERROR})
+      AND ${OfflineDBConstants.COL_USERNAME} = ?
+      AND ${OfflineDBConstants.COL_PROJECT_NAME} = ?
+    ''',
+      whereArgs: [username, projectName],
+      orderBy: OfflineDBConstants.COL_CREATED_AT,
+    );
+
+    if (rows.isEmpty) return "Queue is empty";
+
+    int successCount = 0;
+    int failCount = 0;
+
+    final ServerConnections serverConnections = ServerConnections();
+    final String url =
+        Const.getFullARMUrl(ExecuteApi.API_ARM_EXECUTE_PUBLISHED);
+
+    for (final row in rows) {
+      final id = row[OfflineDBConstants.COL_ID] as int;
+      final bodyStr = row[OfflineDBConstants.COL_REQUEST_JSON] as String;
+
+      try {
+        final payload = jsonDecode(bodyStr);
+
+        final String res = await serverConnections.postToServer(
+          url: url,
+          body: jsonEncode(payload),
+          isBearer: true,
+        );
+
+        log(res.toString(), name: "processPendingQueue Response");
+
+        bool isSuccess = false;
+
+        // 3. New Parsing Logic
+        if (res.isNotEmpty) {
+          try {
+            final decoded = jsonDecode(res);
+            if (decoded is Map<String, dynamic> && decoded['success'] == true) {
+              isSuccess = true;
+            } else {
+              LogService.writeLog(
+                  message:
+                      "[QUEUE_FAIL] ID: $id - Server Msg: ${decoded['message']}");
+            }
+          } catch (e) {
+            LogService.writeLog(message: "[QUEUE_PARSE_ERR] ID: $id - $e");
+          }
+        }
+
+        // 4. Update DB Status
+        await _database.update(
+          OfflineDBConstants.TABLE_PENDING_REQUESTS,
+          {
+            OfflineDBConstants.COL_STATUS: isSuccess
+                ? OfflineDBConstants.STATUS_SUCCESS
+                : OfflineDBConstants.STATUS_ERROR,
+          },
+          where: '${OfflineDBConstants.COL_ID} = ?',
+          whereArgs: [id],
+        );
+
+        if (isSuccess)
+          successCount++;
+        else
+          failCount++;
+      } catch (e) {
+        failCount++;
+        LogService.writeLog(message: "[QUEUE_PROCESS_ERROR] ID: $id - $e");
+      }
+    }
+
+    return "Processed: $successCount success, $failCount failed";
+  }
+
   static Future<void> _syncPendingBeforeLogin({
     required String username,
     required String projectName,
@@ -680,26 +831,51 @@ class OfflineDbModule {
       orderBy: OfflineDBConstants.COL_CREATED_AT,
     );
 
+    if (rows.isEmpty) return;
+
+    // 1. Setup Connection
+    final ServerConnections serverConnections = ServerConnections();
+    final String url =
+        Const.getFullARMUrl(ExecuteApi.API_ARM_EXECUTE_PUBLISHED);
+
     for (final row in rows) {
       final id = row[OfflineDBConstants.COL_ID] as int;
-      final payload =
-          jsonDecode(row[OfflineDBConstants.COL_REQUEST_JSON] as String);
+      try {
+        final payload =
+            jsonDecode(row[OfflineDBConstants.COL_REQUEST_JSON] as String);
 
-      final res = await OfflineDatasources.post(
-        endpoint: OfflineDatasources.API_SUBMIT_OFFLINE_FORM,
-        body: payload,
-      );
+        final res = await serverConnections.postToServer(
+          url: url,
+          body: jsonEncode(payload),
+          isBearer: true,
+        );
 
-      await _database.update(
-        OfflineDBConstants.TABLE_PENDING_REQUESTS,
-        {
-          OfflineDBConstants.COL_STATUS: res != null
-              ? OfflineDBConstants.STATUS_SUCCESS
-              : OfflineDBConstants.STATUS_ERROR,
-        },
-        where: '${OfflineDBConstants.COL_ID} = ?',
-        whereArgs: [id],
-      );
+        bool isSuccess = false;
+
+        // 2. Check Success
+        if (res != null && res.isNotEmpty) {
+          try {
+            final decoded = jsonDecode(res);
+            if (decoded is Map<String, dynamic> && decoded['success'] == true) {
+              isSuccess = true;
+            }
+          } catch (_) {}
+        }
+
+        await _database.update(
+          OfflineDBConstants.TABLE_PENDING_REQUESTS,
+          {
+            OfflineDBConstants.COL_STATUS: isSuccess
+                ? OfflineDBConstants.STATUS_SUCCESS
+                : OfflineDBConstants.STATUS_ERROR,
+          },
+          where: '${OfflineDBConstants.COL_ID} = ?',
+          whereArgs: [id],
+        );
+      } catch (e) {
+        // Log error but continue
+        LogService.writeLog(message: "[SYNC_LOGIN_ERR] $e");
+      }
     }
   }
 
@@ -1049,73 +1225,73 @@ class OfflineDbModule {
     };
   }
 
-  static Future<String> processPendingQueue(
-      {required bool isInternetAvailable}) async {
-    if (!isInternetAvailable) return "No internet connection";
+  // static Future<String> processPendingQueue(
+  //     {required bool isInternetAvailable}) async {
+  //   if (!isInternetAvailable) return "No internet connection";
 
-    final scope = await _getLastOfflineUserScope();
-    if (scope == null) return "No user session found";
+  //   final scope = await _getLastOfflineUserScope();
+  //   if (scope == null) return "No user session found";
 
-    final username = scope['username']!;
-    final projectName = scope['projectName']!;
+  //   final username = scope['username']!;
+  //   final projectName = scope['projectName']!;
 
-    final rows = await _database.query(
-      OfflineDBConstants.TABLE_PENDING_REQUESTS,
-      where: '''
-      ${OfflineDBConstants.COL_STATUS} IN (${OfflineDBConstants.STATUS_PENDING}, ${OfflineDBConstants.STATUS_ERROR})
-      AND ${OfflineDBConstants.COL_USERNAME} = ?
-      AND ${OfflineDBConstants.COL_PROJECT_NAME} = ?
-    ''',
-      whereArgs: [username, projectName],
-      orderBy: OfflineDBConstants.COL_CREATED_AT,
-    );
+  //   final rows = await _database.query(
+  //     OfflineDBConstants.TABLE_PENDING_REQUESTS,
+  //     where: '''
+  //     ${OfflineDBConstants.COL_STATUS} IN (${OfflineDBConstants.STATUS_PENDING}, ${OfflineDBConstants.STATUS_ERROR})
+  //     AND ${OfflineDBConstants.COL_USERNAME} = ?
+  //     AND ${OfflineDBConstants.COL_PROJECT_NAME} = ?
+  //   ''',
+  //     whereArgs: [username, projectName],
+  //     orderBy: OfflineDBConstants.COL_CREATED_AT,
+  //   );
 
-    if (rows.isEmpty) return "Queue is empty";
+  //   if (rows.isEmpty) return "Queue is empty";
 
-    int successCount = 0;
-    int failCount = 0;
+  //   int successCount = 0;
+  //   int failCount = 0;
 
-    for (final row in rows) {
-      final id = row[OfflineDBConstants.COL_ID] as int;
-      final bodyStr = row[OfflineDBConstants.COL_REQUEST_JSON] as String;
+  //   for (final row in rows) {
+  //     final id = row[OfflineDBConstants.COL_ID] as int;
+  //     final bodyStr = row[OfflineDBConstants.COL_REQUEST_JSON] as String;
 
-      try {
-        final payload = jsonDecode(bodyStr);
+  //     try {
+  //       final payload = jsonDecode(bodyStr);
 
-        final res = await OfflineDatasources.post(
-          endpoint: OfflineDatasources.API_SUBMIT_OFFLINE_FORM,
-          body: payload,
-        );
-        log(res.toString(), name: "processPendingQueue");
-        bool isSuccess = false;
-        if (res != null && res.isNotEmpty) {
-          isSuccess = true;
-        }
+  //       final res = await OfflineDatasources.post(
+  //         endpoint: OfflineDatasources.API_SUBMIT_OFFLINE_FORM,
+  //         body: payload,
+  //       );
+  //       log(res.toString(), name: "processPendingQueue");
+  //       bool isSuccess = false;
+  //       if (res != null && res.isNotEmpty) {
+  //         isSuccess = true;
+  //       }
 
-        // Update DB Status
-        await _database.update(
-          OfflineDBConstants.TABLE_PENDING_REQUESTS,
-          {
-            OfflineDBConstants.COL_STATUS: isSuccess
-                ? OfflineDBConstants.STATUS_SUCCESS
-                : OfflineDBConstants.STATUS_ERROR,
-          },
-          where: '${OfflineDBConstants.COL_ID} = ?',
-          whereArgs: [id],
-        );
+  //       // Update DB Status
+  //       await _database.update(
+  //         OfflineDBConstants.TABLE_PENDING_REQUESTS,
+  //         {
+  //           OfflineDBConstants.COL_STATUS: isSuccess
+  //               ? OfflineDBConstants.STATUS_SUCCESS
+  //               : OfflineDBConstants.STATUS_ERROR,
+  //         },
+  //         where: '${OfflineDBConstants.COL_ID} = ?',
+  //         whereArgs: [id],
+  //       );
 
-        if (isSuccess)
-          successCount++;
-        else
-          failCount++;
-      } catch (e) {
-        failCount++;
-        LogService.writeLog(message: "[QUEUE_PROCESS_ERROR] ID: $id - $e");
-      }
-    }
+  //       if (isSuccess)
+  //         successCount++;
+  //       else
+  //         failCount++;
+  //     } catch (e) {
+  //       failCount++;
+  //       LogService.writeLog(message: "[QUEUE_PROCESS_ERROR] ID: $id - $e");
+  //     }
+  //   }
 
-    return "Processed: $successCount success, $failCount failed";
-  }
+  //   return "Processed: $successCount success, $failCount failed";
+  // }
 
   static Future<void> refreshAllDatasourcesFromDownloadedPages() async {
     final pages = await getOfflinePages();
