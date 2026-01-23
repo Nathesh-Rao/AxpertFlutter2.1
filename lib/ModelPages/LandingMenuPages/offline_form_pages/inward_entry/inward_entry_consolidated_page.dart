@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 
 import 'inward_entry_dynamic_controller.dart';
 
@@ -122,22 +123,41 @@ class InwardEntryConsolidatedPage
           // ),
 
           Expanded(
-            child: GridView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                itemCount: filteredSummary.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  mainAxisSpacing: 10,
-                  crossAxisSpacing: 10,
-                  crossAxisCount: 2,
-                  childAspectRatio: 1.3,
-                ),
-                itemBuilder: (context, index) {
-                  var gridTiles = filteredSummary.entries.map((e) {
-                    return _gridStatTile(e.key, e.value);
-                  }).toList();
+            child: Builder(builder: (context) {
+              if (filteredSummary.entries.isEmpty) {
+                return Center(
+                  child: Column(
+                    spacing: 15,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset(width: 170, "assets/images/empty-box-2.png"),
+                      Text(
+                        "No sample boxes to show.\nGo back to add sample details if needed.",
+                        style: GoogleFonts.poppins(),
+                        textAlign: TextAlign.center,
+                      )
+                    ],
+                  ),
+                );
+              }
 
-                  return gridTiles[index];
-                }),
+              return GridView.builder(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: filteredSummary.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                    crossAxisCount: 2,
+                    childAspectRatio: 1.3,
+                  ),
+                  itemBuilder: (context, index) {
+                    var gridTiles = filteredSummary.entries.map((e) {
+                      return _gridStatTile(e.key, e.value);
+                    }).toList();
+
+                    return gridTiles[index];
+                  });
+            }),
           )
         ],
       ),
@@ -159,7 +179,9 @@ class InwardEntryConsolidatedPage
               },
               child: controller.isLoading.value
                   ? CupertinoActivityIndicator()
-                  : const Text("Submit"),
+                  : filteredSummary.entries.isEmpty
+                      ? const Text("Submit without samples")
+                      : const Text("Submit"),
             ),
           ),
         ),

@@ -242,91 +242,77 @@ class InwardEntryDynamicController extends GetxController {
   void openSampleDetailsDialog() {
     currentCardIndex.value = 0;
 
+    final RxBool isGridView = (Get.width > 600).obs;
+
     Get.dialog(
       Dialog(
         backgroundColor: Colors.transparent,
-        insetPadding: EdgeInsets.zero,
+        insetPadding: const EdgeInsets.all(16),
         child: SizedBox(
-          height: Get.height * 0.85,
-          width: Get.width,
+          height: Get.height * 0.9,
+          width: Get.width > 1000 ? 1000 : Get.width,
           child: Column(
             children: [
-              // ---------- HEADER ----------
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
+              Container(
+                padding: const EdgeInsets.all(12),
+                margin: const EdgeInsets.only(bottom: 10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 child: Row(
                   children: [
                     Chip(
-                      backgroundColor: Colors.white,
+                      backgroundColor: const Color(0xFFEFF6FF),
                       label: Obx(() => Text(
-                            "Item ${currentCardIndex.value + 1} of ${sampleGridRows.length}",
-                            style:
-                                GoogleFonts.poppins(color: MyColors.baseBlue),
+                            isGridView.value
+                                ? "Total Samples: ${sampleGridRows.length}"
+                                : "Sample ${currentCardIndex.value + 1} of ${sampleGridRows.length}",
+                            style: GoogleFonts.poppins(
+                              color: MyColors.baseBlue,
+                              fontWeight: FontWeight.w600,
+                            ),
                           )),
                     ),
                     const Spacer(),
+                    Obx(() => IconButton(
+                          onPressed: () => isGridView.toggle(),
+                          tooltip: isGridView.value
+                              ? "Switch to Single View"
+                              : "Switch to Grid View",
+                          icon: Icon(
+                            isGridView.value
+                                ? Icons.view_carousel_rounded // Icon for Pager
+                                : Icons.grid_view_rounded, // Icon for Grid
+                            color: MyColors.baseBlue,
+                          ),
+                        )),
+                    const SizedBox(width: 8),
                     GestureDetector(
                       onTap: () => Get.back(),
                       child: Chip(
-                        backgroundColor: Colors.white,
+                        backgroundColor: const Color(0xFFFEF2F2),
                         label: Text(
                           "Close",
-                          style: GoogleFonts.poppins(color: MyColors.baseRed),
+                          style: GoogleFonts.poppins(
+                            color: MyColors.baseRed,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-
-              // ---------- PAGE VIEW ----------
               Expanded(
-                child: PageView.builder(
-                  controller: pageController,
-                  onPageChanged: (i) {
-                    currentCardIndex.value = i;
-                  },
-                  itemCount: sampleGridRows.length,
-                  itemBuilder: (context, index) {
-                    final row = sampleGridRows[index];
-                    return _buildSampleFormPage(row, index + 1);
-                  },
-                ),
+                child: Obx(() {
+                  if (isGridView.value) {
+                    return _buildTabletGridView();
+                  } else {
+                    return _buildMobilePagerView();
+                  }
+                }),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Obx(
-                  () => Row(
-                    children: [
-                      currentCardIndex.value != 0
-                          ? InkWell(
-                              onTap: () {
-                                pageController.previousPage(
-                                    duration: Duration(milliseconds: 500),
-                                    curve: Curves.decelerate);
-                              },
-                              child: CircleAvatar(
-                                child: Icon(Icons.arrow_back),
-                              ),
-                            )
-                          : SizedBox(),
-                      Spacer(),
-                      currentCardIndex.value != sampleGridRows.length - 1
-                          ? InkWell(
-                              onTap: () {
-                                pageController.nextPage(
-                                    duration: Duration(milliseconds: 500),
-                                    curve: Curves.decelerate);
-                              },
-                              child: CircleAvatar(
-                                child: Icon(Icons.arrow_forward),
-                              ),
-                            )
-                          : SizedBox(),
-                    ],
-                  ),
-                ),
-              )
             ],
           ),
         ),
@@ -334,45 +320,280 @@ class InwardEntryDynamicController extends GetxController {
     );
   }
 
+  Widget _buildTabletGridView() {
+    return GridView.builder(
+      padding: const EdgeInsets.only(bottom: 20),
+      // gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+
+      //   maxCrossAxisExtent: 400,
+      //   mainAxisExtent: 500,
+      //   crossAxisSpacing: 12,
+      //   mainAxisSpacing: 12,
+      // ),
+      //
+      // gridampleGridRows.length,
+      itemCount: sampleGridRows.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          childAspectRatio: 0.45,
+          crossAxisCount: 3,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10),
+      itemBuilder: (context, index) {
+        final row = sampleGridRows[index];
+        return _buildSampleFormPage(row, index + 1);
+      },
+    );
+  }
+
+  Widget _buildMobilePagerView() {
+    return Column(
+      children: [
+        Expanded(
+          child: PageView.builder(
+            controller: pageController,
+            onPageChanged: (i) => currentCardIndex.value = i,
+            itemCount: sampleGridRows.length,
+            itemBuilder: (context, index) {
+              final row = sampleGridRows[index];
+              return _buildSampleFormPage(row, index + 1);
+            },
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Obx(
+            () => Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Previous Button
+                Opacity(
+                  opacity: currentCardIndex.value > 0 ? 1 : 0,
+                  child: FloatingActionButton.small(
+                    heroTag: "btn_prev",
+                    backgroundColor: Colors.white,
+                    onPressed: currentCardIndex.value > 0
+                        ? () {
+                            pageController.previousPage(
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeInOut);
+                          }
+                        : null,
+                    child: const Icon(Icons.arrow_back, color: Colors.black),
+                  ),
+                ),
+
+                // Next Button
+                Opacity(
+                  opacity: currentCardIndex.value < sampleGridRows.length - 1
+                      ? 1
+                      : 0,
+                  child: FloatingActionButton.small(
+                    heroTag: "btn_next",
+                    backgroundColor: MyColors.baseBlue,
+                    onPressed:
+                        currentCardIndex.value < sampleGridRows.length - 1
+                            ? () {
+                                pageController.nextPage(
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.easeInOut);
+                              }
+                            : null,
+                    child: const Icon(Icons.arrow_forward, color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
   Widget _buildSampleFormPage(
       Map<String, TextEditingController> model, int sno) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 4),
       child: Material(
         color: Colors.white,
         elevation: 2,
         borderRadius: BorderRadius.circular(16),
-        child: ListView(
-          padding: const EdgeInsets.all(12),
+        child: Column(
           children: [
-            Row(
-              children: [
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF1F5F9),
-                    borderRadius: BorderRadius.circular(8),
+            // Header
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                children: [
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF1F5F9),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      "ID: $sno",
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
                   ),
-                  child: Text(
-                    "ID: $sno",
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                ),
-                const Spacer(),
-                const Icon(Icons.swipe, size: 18, color: Colors.grey),
-              ],
+                  const Spacer(),
+                  const Icon(Icons.edit_note, size: 18, color: Colors.grey),
+                ],
+              ),
             ),
-            const SizedBox(height: 10),
-            ...model.entries.map((e) {
-              return _compactField(e.key, e.value, model);
-            }).toList(),
-            const SizedBox(height: 12),
+            const Divider(height: 1),
+
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.all(12),
+                primary: false,
+                children: [
+                  ...model.entries.map((e) {
+                    return _compactField(e.key, e.value, model);
+                  }).toList(),
+                ],
+              ),
+            ),
           ],
         ),
       ),
     );
   }
+
+  // void openSampleDetailsDialog() {
+  //   currentCardIndex.value = 0;
+
+  //   Get.dialog(
+  //     Dialog(
+  //       backgroundColor: Colors.transparent,
+  //       insetPadding: EdgeInsets.zero,
+  //       child: SizedBox(
+  //         height: Get.height * 0.85,
+  //         width: Get.width,
+  //         child: Column(
+  //           children: [
+  //             // ---------- HEADER ----------
+  //             Padding(
+  //               padding: const EdgeInsets.symmetric(horizontal: 12),
+  //               child: Row(
+  //                 children: [
+  //                   Chip(
+  //                     backgroundColor: Colors.white,
+  //                     label: Obx(() => Text(
+  //                           "Item ${currentCardIndex.value + 1} of ${sampleGridRows.length}",
+  //                           style:
+  //                               GoogleFonts.poppins(color: MyColors.baseBlue),
+  //                         )),
+  //                   ),
+  //                   const Spacer(),
+  //                   GestureDetector(
+  //                     onTap: () => Get.back(),
+  //                     child: Chip(
+  //                       backgroundColor: Colors.white,
+  //                       label: Text(
+  //                         "Close",
+  //                         style: GoogleFonts.poppins(color: MyColors.baseRed),
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+
+  //             // ---------- PAGE VIEW ----------
+  //             Expanded(
+  //               child: PageView.builder(
+  //                 controller: pageController,
+  //                 onPageChanged: (i) {
+  //                   currentCardIndex.value = i;
+  //                 },
+  //                 itemCount: sampleGridRows.length,
+  //                 itemBuilder: (context, index) {
+  //                   final row = sampleGridRows[index];
+  //                   return _buildSampleFormPage(row, index + 1);
+  //                 },
+  //               ),
+  //             ),
+  //             Padding(
+  //               padding: const EdgeInsets.all(8.0),
+  //               child: Obx(
+  //                 () => Row(
+  //                   children: [
+  //                     currentCardIndex.value != 0
+  //                         ? InkWell(
+  //                             onTap: () {
+  //                               pageController.previousPage(
+  //                                   duration: Duration(milliseconds: 500),
+  //                                   curve: Curves.decelerate);
+  //                             },
+  //                             child: CircleAvatar(
+  //                               child: Icon(Icons.arrow_back),
+  //                             ),
+  //                           )
+  //                         : SizedBox(),
+  //                     Spacer(),
+  //                     currentCardIndex.value != sampleGridRows.length - 1
+  //                         ? InkWell(
+  //                             onTap: () {
+  //                               pageController.nextPage(
+  //                                   duration: Duration(milliseconds: 500),
+  //                                   curve: Curves.decelerate);
+  //                             },
+  //                             child: CircleAvatar(
+  //                               child: Icon(Icons.arrow_forward),
+  //                             ),
+  //                           )
+  //                         : SizedBox(),
+  //                   ],
+  //                 ),
+  //               ),
+  //             )
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  // Widget _buildSampleFormPage(
+  //     Map<String, TextEditingController> model, int sno) {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(horizontal: 12),
+  //     child: Material(
+  //       color: Colors.white,
+  //       elevation: 2,
+  //       borderRadius: BorderRadius.circular(16),
+  //       child: ListView(
+  //         padding: const EdgeInsets.all(12),
+  //         children: [
+  //           Row(
+  //             children: [
+  //               Container(
+  //                 padding:
+  //                     const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+  //                 decoration: BoxDecoration(
+  //                   color: const Color(0xFFF1F5F9),
+  //                   borderRadius: BorderRadius.circular(8),
+  //                 ),
+  //                 child: Text(
+  //                   "ID: $sno",
+  //                   style: const TextStyle(fontWeight: FontWeight.w600),
+  //                 ),
+  //               ),
+  //               const Spacer(),
+  //               const Icon(Icons.swipe, size: 18, color: Colors.grey),
+  //             ],
+  //           ),
+  //           const SizedBox(height: 10),
+  //           ...model.entries.map((e) {
+  //             return _compactField(e.key, e.value, model);
+  //           }).toList(),
+  //           const SizedBox(height: 12),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _compactField(
     String label,
@@ -890,19 +1111,6 @@ class InwardEntryDynamicController extends GetxController {
       String valueToSave = "";
 
       if (type == "dd") {
-        // final String selectedId = dropdownCtrls[name]?.value ?? "";
-        // if (selectedId.isNotEmpty) {
-        //   final String dsKey = f["datasource"] ?? "";
-        //   final List<Map<String, dynamic>> options = datasourceMap[dsKey] ?? [];
-        //   final Map<String, dynamic> selectedOption = options.firstWhere(
-        //     (opt) => opt["id"].toString() == selectedId,
-        //     orElse: () => {},
-        //   );
-        //   valueToSave = selectedOption.isNotEmpty
-        //       ? selectedOption["value"].toString()
-        //       : "";
-        // }
-
         valueToSave = dropdownCtrls[name]?.value ?? "";
       } else {
         String rawValue = textCtrls[name]?.text.trim() ?? "";

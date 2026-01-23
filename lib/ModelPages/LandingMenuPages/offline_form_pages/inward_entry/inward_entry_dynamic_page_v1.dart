@@ -238,7 +238,7 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
           keyboardType: TextInputType.number,
           decoration: _inputDecoration(label, hasError),
           onChanged: (v) {
-            if (key == "bagsToSample") {
+            if (key == "bags_sample") {
               controller.onBagsToSampleChanged(v);
             }
           },
