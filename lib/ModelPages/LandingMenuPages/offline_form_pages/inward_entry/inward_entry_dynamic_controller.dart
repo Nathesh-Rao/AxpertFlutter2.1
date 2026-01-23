@@ -68,15 +68,6 @@ class InwardEntryDynamicController extends GetxController {
     resetForm();
   }
 
-  // prepareForm() {
-  //   resetForm();
-  //   scrollCtrl.animateTo(
-  //     0,
-  //     duration: const Duration(milliseconds: 500),
-  //     curve: Curves.easeInOut,
-  //   );
-  // }
-
   Future<void> prepareForm(Map<String, dynamic> newSchema) async {
     schema = newSchema;
     // 1. clear old stuff
@@ -461,141 +452,6 @@ class InwardEntryDynamicController extends GetxController {
     );
   }
 
-  // void openSampleDetailsDialog() {
-  //   currentCardIndex.value = 0;
-
-  //   Get.dialog(
-  //     Dialog(
-  //       backgroundColor: Colors.transparent,
-  //       insetPadding: EdgeInsets.zero,
-  //       child: SizedBox(
-  //         height: Get.height * 0.85,
-  //         width: Get.width,
-  //         child: Column(
-  //           children: [
-  //             // ---------- HEADER ----------
-  //             Padding(
-  //               padding: const EdgeInsets.symmetric(horizontal: 12),
-  //               child: Row(
-  //                 children: [
-  //                   Chip(
-  //                     backgroundColor: Colors.white,
-  //                     label: Obx(() => Text(
-  //                           "Item ${currentCardIndex.value + 1} of ${sampleGridRows.length}",
-  //                           style:
-  //                               GoogleFonts.poppins(color: MyColors.baseBlue),
-  //                         )),
-  //                   ),
-  //                   const Spacer(),
-  //                   GestureDetector(
-  //                     onTap: () => Get.back(),
-  //                     child: Chip(
-  //                       backgroundColor: Colors.white,
-  //                       label: Text(
-  //                         "Close",
-  //                         style: GoogleFonts.poppins(color: MyColors.baseRed),
-  //                       ),
-  //                     ),
-  //                   ),
-  //                 ],
-  //               ),
-  //             ),
-
-  //             // ---------- PAGE VIEW ----------
-  //             Expanded(
-  //               child: PageView.builder(
-  //                 controller: pageController,
-  //                 onPageChanged: (i) {
-  //                   currentCardIndex.value = i;
-  //                 },
-  //                 itemCount: sampleGridRows.length,
-  //                 itemBuilder: (context, index) {
-  //                   final row = sampleGridRows[index];
-  //                   return _buildSampleFormPage(row, index + 1);
-  //                 },
-  //               ),
-  //             ),
-  //             Padding(
-  //               padding: const EdgeInsets.all(8.0),
-  //               child: Obx(
-  //                 () => Row(
-  //                   children: [
-  //                     currentCardIndex.value != 0
-  //                         ? InkWell(
-  //                             onTap: () {
-  //                               pageController.previousPage(
-  //                                   duration: Duration(milliseconds: 500),
-  //                                   curve: Curves.decelerate);
-  //                             },
-  //                             child: CircleAvatar(
-  //                               child: Icon(Icons.arrow_back),
-  //                             ),
-  //                           )
-  //                         : SizedBox(),
-  //                     Spacer(),
-  //                     currentCardIndex.value != sampleGridRows.length - 1
-  //                         ? InkWell(
-  //                             onTap: () {
-  //                               pageController.nextPage(
-  //                                   duration: Duration(milliseconds: 500),
-  //                                   curve: Curves.decelerate);
-  //                             },
-  //                             child: CircleAvatar(
-  //                               child: Icon(Icons.arrow_forward),
-  //                             ),
-  //                           )
-  //                         : SizedBox(),
-  //                   ],
-  //                 ),
-  //               ),
-  //             )
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // Widget _buildSampleFormPage(
-  //     Map<String, TextEditingController> model, int sno) {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(horizontal: 12),
-  //     child: Material(
-  //       color: Colors.white,
-  //       elevation: 2,
-  //       borderRadius: BorderRadius.circular(16),
-  //       child: ListView(
-  //         padding: const EdgeInsets.all(12),
-  //         children: [
-  //           Row(
-  //             children: [
-  //               Container(
-  //                 padding:
-  //                     const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-  //                 decoration: BoxDecoration(
-  //                   color: const Color(0xFFF1F5F9),
-  //                   borderRadius: BorderRadius.circular(8),
-  //                 ),
-  //                 child: Text(
-  //                   "ID: $sno",
-  //                   style: const TextStyle(fontWeight: FontWeight.w600),
-  //                 ),
-  //               ),
-  //               const Spacer(),
-  //               const Icon(Icons.swipe, size: 18, color: Colors.grey),
-  //             ],
-  //           ),
-  //           const SizedBox(height: 10),
-  //           ...model.entries.map((e) {
-  //             return _compactField(e.key, e.value, model);
-  //           }).toList(),
-  //           const SizedBox(height: 12),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
-
   Widget _compactField(
     String label,
     TextEditingController controller,
@@ -976,338 +832,6 @@ class InwardEntryDynamicController extends GetxController {
     submitPage();
   }
 
-  // Map<String, dynamic> generateSubmitPayload() {
-  //   final Map<String, dynamic> dc1Data = {};
-  //   final List fields = schema["fields"];
-
-  //   for (final f in fields) {
-  //     final String key = f["api_key"] ?? f["fld_name"];
-  //     final String name = f["fld_name"];
-  //     final String type = f["fld_type"];
-
-  //     dynamic value;
-
-  //     if (type == "dd") {
-  //       value = dropdownCtrls[name]?.value ?? "";
-  //     } else {
-  //       value = textCtrls[name]?.text.trim() ?? "";
-  //     }
-
-  //     dc1Data[key] = value;
-  //   }
-
-  //   final Map<String, dynamic> dc2Data = {};
-  //   final List gridFields = schema["fillgrids"]["fields"];
-
-  //   int rowIndex = 1;
-  //   for (final row in sampleGridRows) {
-  //     final Map<String, dynamic> rowData = {};
-
-  //     for (final f in gridFields) {
-  //       final String name = f["fld_name"];
-  //       final String key = f["fld_name"] ?? name;
-
-  //       final ctrl = row[name];
-  //       rowData[key] = ctrl?.text.trim() ?? "";
-  //     }
-
-  //     rowData["fillrows"] = "T";
-
-  //     dc2Data["row$rowIndex"] = rowData;
-  //     rowIndex++;
-  //   }
-
-  //   final Map<String, int> summary = {};
-
-  //   for (final f in gridFields) {
-  //     if (f["data_type"] == "n") {
-  //       summary[f["fld_name"]] = 0;
-  //     }
-  //   }
-
-  //   for (final row in sampleGridRows) {
-  //     for (final f in gridFields) {
-  //       if (f["data_type"] == "n") {
-  //         final String name = f["fld_name"];
-  //         final String v = row[name]?.text.trim() ?? "0";
-  //         final int n = int.tryParse(v) ?? 0;
-  //         summary[name] = (summary[name] ?? 0) + n;
-  //       }
-  //     }
-  //   }
-
-  //   final Map<String, dynamic> dc3Data = {
-  //     "row1": {
-  //       "tot_broken": summary["broken"]?.toString() ?? "0",
-  //       "tot_neckchip": summary["neck_chip"]?.toString() ?? "0",
-  //       "tot_extradirty": summary["extra_dirty"]?.toString() ?? "0",
-  //       "tot_short": summary["short"]?.toString() ?? "0",
-  //       "tot_otherbrand": summary["other_brand"]?.toString() ?? "0",
-  //       "tot_otherkf": summary["other_kf"]?.toString() ?? "0",
-  //       "tot_tornbags": summary["torn_bags"]?.toString() ?? "0",
-  //     }
-  //   };
-
-  //   final Map<String, dynamic> finalJson = {
-  //     "submitdata": {
-  //       "project": "bottleapp",
-  //       "token": "642656c07b8a4ea176afddfc3a231d1e",
-  //       "userauthkey": "00050148015001580159016132163450607080013",
-  //       "seed": "100045",
-  //       "username": "admin",
-  //       "trace": "false",
-  //       "keyfield": "",
-  //       "dataarray": {
-  //         "data": {
-  //           "mode": "new",
-  //           "keyvalue": "",
-  //           "recordid": "0",
-  //           "dc1": {"row1": dc1Data},
-  //           "dc2": dc2Data,
-  //           "dc3": dc3Data
-  //         }
-  //       }
-  //     }
-  //   };
-
-  //   return finalJson;
-  // }
-
-  // Map<String, dynamic> generateSubmitPayload() {
-  //   final Map<String, dynamic> dc1Data = {};
-  //   final List fields = schema["fields"];
-
-  //   for (final f in fields) {
-  //     final String name = f["fld_name"];
-  //     final String type = f["fld_type"];
-
-  //     dynamic value;
-
-  //     if (type == "dd") {
-  //       value = dropdownCtrls[name]?.value ?? "";
-  //     } else {
-  //       value = textCtrls[name]?.text.trim() ?? "";
-  //     }
-
-  //     dc1Data[name] = value;
-  //   }
-
-  //   final Map<String, dynamic> dc2Data = {};
-  //   final List gridFields = schema["fillgrids"]["fields"];
-
-  //   int rowIndex = 1;
-  //   for (final row in sampleGridRows) {
-  //     final Map<String, dynamic> rowData = {};
-
-  //     for (final f in gridFields) {
-  //       final String name = f["fld_name"];
-  //       final ctrl = row[name];
-  //       rowData[name] = ctrl?.text.trim() ?? "";
-  //     }
-
-  //     rowData["fillrows"] = rowIndex.toString();
-
-  //     dc2Data["row$rowIndex"] = rowData;
-  //     rowIndex++;
-  //   }
-
-  //   final Map<String, int> summary = {};
-
-  //   for (final f in gridFields) {
-  //     if (f["data_type"] == "n") {
-  //       summary[f["fld_name"]] = 0;
-  //     }
-  //   }
-
-  //   for (final row in sampleGridRows) {
-  //     for (final f in gridFields) {
-  //       if (f["data_type"] == "n") {
-  //         final String name = f["fld_name"];
-  //         final String v = row[name]?.text.trim() ?? "0";
-  //         final int n = int.tryParse(v) ?? 0;
-  //         summary[name] = (summary[name] ?? 0) + n;
-  //       }
-  //     }
-  //   }
-
-  //   final Map<String, dynamic> dc3Data = {
-  //     "row1": {
-  //       "tot_broken": summary["broken"]?.toString() ?? "0",
-  //       "tot_neckchip": summary["neck_chip"]?.toString() ?? "0",
-  //       "tot_extradirty": summary["extra_dirty"]?.toString() ?? "0",
-  //       "tot_short": summary["short"]?.toString() ?? "0",
-  //       "tot_otherbrand": summary["other_brand"]?.toString() ?? "0",
-  //       "tot_otherkf": summary["other_kf"]?.toString() ?? "0",
-  //       "tot_tornbags": summary["torn_bags"]?.toString() ?? "0",
-  //     }
-  //   };
-
-  //   String sessionId = AppStorage().retrieveValue(AppStorage.SESSIONID) ?? "";
-  //   // String sessionId = "ARM-bottleapp-69446109-e848-4c9a-98a8-6975473adb77";
-
-  //   return {
-  //     "ARMSessionId": sessionId,
-  //     "publickey": "InwardEntry",
-  //     "project": "bottleapp",
-  //     "submitdata": {
-  //       "username": "admin",
-  //       "trace": "true",
-  //       "keyfield": "",
-  //       "dataarray": {
-  //         "data": {
-  //           "mode": "new",
-  //           "keyvalue": "",
-  //           "recordid": "0",
-  //           "dc1": {"row1": dc1Data},
-  //           "dc2": dc2Data,
-  //           "dc3": dc3Data
-  //         }
-  //       }
-  //     }
-  //   };
-  // }
-
-  // Map<String, dynamic> generateRestSubmitPayLoad() {
-  //   final Map<String, dynamic> col1 = {};
-  //   final List fields = schema["fields"];
-
-  //   // 1. Entry Date Time
-  //   String entryDate =
-  //       _formatDateToSubmit(textCtrls["entryDate"]?.text.trim() ?? "");
-  //   String entryTime =
-  //       _formatTimeToSubmit(textCtrls["entryTime"]?.text.trim() ?? "");
-  //   col1["entry_date_time"] = "$entryDate $entryTime".trim();
-
-  //   // 2. Exit Date Time
-  //   String exitDate =
-  //       _formatDateToSubmit(textCtrls["exitDate"]?.text.trim() ?? "");
-  //   String exitTime =
-  //       _formatTimeToSubmit(textCtrls["exitTime"]?.text.trim() ?? "");
-  //   col1["exit_date_time"] = "$exitDate $exitTime".trim();
-
-  //   // 3. Add other missing required keys
-  //   col1["mfg_dt_btl"] = "";
-  //   col1["testdt"] = "";
-
-  //   final ignoredKeys = {"entry_date_time", "exit_date_time"};
-
-  //   for (final f in fields) {
-  //     final String name = f["fld_name"];
-  //     final String key = f["api_key"] ?? name;
-  //     final String type = f["fld_type"];
-
-  //     if (ignoredKeys.contains(key)) continue;
-
-  //     String valueToSave = "";
-
-  //     if (type == "dd") {
-  //       valueToSave = dropdownCtrls[name]?.value ?? "";
-  //     } else {
-  //       String rawValue = textCtrls[name]?.text.trim() ?? "";
-  //       // if (type == "date" || type == "d") {
-  //       //   valueToSave = _formatDateToSubmit(rawValue);
-  //       // } else if (type == "time" || type == "t") {
-  //       //   valueToSave = _formatTimeToSubmit(rawValue);
-  //       // } else {
-  //       valueToSave = rawValue;
-  //       // }
-  //     }
-
-  //     col1[key] = valueToSave;
-  //   }
-
-  //   final Map<String, dynamic> recid1Data = {
-  //     "rowno": "001",
-  //     "text": "0",
-  //     "columns": col1
-  //   };
-
-  //   final List<Map<String, dynamic>> recid2List = [];
-  //   final List gridFields = schema["fillgrids"]["fields"];
-
-  //   int rowIndex = 1;
-  //   for (final row in sampleGridRows) {
-  //     final Map<String, dynamic> col2 = {};
-
-  //     for (final f in gridFields) {
-  //       final String name = f["fld_name"];
-  //       final String key = f["api_key"] ?? name;
-  //       final String type = f["fld_type"];
-
-  //       final ctrl = row[name];
-  //       String rawValue = ctrl?.text.trim() ?? "";
-
-  //       if (type == "date" || type == "d") {
-  //         col2[key] = _formatDateToSubmit(rawValue);
-  //       } else {
-  //         col2[key] = rawValue;
-  //       }
-  //     }
-  //     col2["fillrows"] = rowIndex.toString();
-  //     recid2List.add({
-  //       "rowno": rowIndex.toString().padLeft(3, '0'),
-  //       "text": "0",
-  //       "columns": col2
-  //     });
-  //     rowIndex++;
-  //   }
-
-  //   final Map<String, int> summary = {};
-  //   for (final f in gridFields) {
-  //     if (f["data_type"] == "n") summary[f["fld_name"]] = 0;
-  //   }
-  //   for (final row in sampleGridRows) {
-  //     for (final f in gridFields) {
-  //       if (f["data_type"] == "n") {
-  //         final String name = f["fld_name"];
-  //         final int n = int.tryParse(row[name]?.text.trim() ?? "0") ?? 0;
-  //         summary[name] = (summary[name] ?? 0) + n;
-  //       }
-  //     }
-  //   }
-  //   final Map<String, dynamic> col3 = {
-  //     "tot_broken": summary["broken"]?.toString() ?? "0",
-  //     "tot_neckchip": summary["neck_chip"]?.toString() ?? "0",
-  //     "tot_extradirty": summary["extra_dirty"]?.toString() ?? "0",
-  //     "tot_short": summary["short"]?.toString() ?? "0",
-  //     "tot_otherbrand": summary["other_brand"]?.toString() ?? "0",
-  //     "tot_otherkf": summary["other_kf"]?.toString() ?? "0",
-  //     "tot_tornbags": summary["torn_bags"]?.toString() ?? "0",
-  //   };
-  //   final Map<String, dynamic> recid3Data = {
-  //     "rowno": "001",
-  //     "text": "0",
-  //     "columns": col3
-  //   };
-
-  //   return {
-  //     "_parameters": [
-  //       {
-  //         "savedata": {
-  //           "axpapp": "bottleapp",
-  //           "seed": "1983",
-  //           "username": "admin",
-  //           "password": "a5ca360e803b868680e2b6f7805fcb9e",
-  //           "transid": "inwae",
-  //           "xmltext": "",
-  //           "trace": "true",
-  //           "changedrows": {},
-  //           "recordid": "0",
-  //           "recdata": [
-  //             {
-  //               "axp_recid1": [recid1Data]
-  //             },
-  //             {"axp_recid2": recid2List},
-  //             {
-  //               "axp_recid3": [recid3Data]
-  //             }
-  //           ]
-  //         }
-  //       }
-  //     ]
-  //   };
-  // }
-
   Map<String, dynamic> generateSubmitPayload() {
     // ----------------- 1. DC1 (Header Data) -----------------
     final Map<String, dynamic> dc1Data = {};
@@ -1381,13 +905,14 @@ class InwardEntryDynamicController extends GetxController {
     };
 
     String sessionId = AppStorage().retrieveValue(AppStorage.SESSIONID) ?? "";
+    final String username = AppStorage().retrieveValue(AppStorage.USER_NAME);
 
     return {
       "ARMSessionId": sessionId,
       "publickey": "InwardEntry",
       "project": "bottleapp",
       "submitdata": {
-        "username": "admin",
+        "username": username,
         "trace": "true",
         "keyfield": "",
         "dataarray": {
@@ -1404,80 +929,68 @@ class InwardEntryDynamicController extends GetxController {
     };
   }
 
-  // String _formatDateToSubmit(String isoDate) {
-  //   if (isoDate.isEmpty) return "";
-  //   try {
-  //     final parts = isoDate.split('-');
-  //     if (parts.length == 3) {
-  //       return "${parts[2]}/${parts[1]}/${parts[0]}";
-  //     }
-  //   } catch (_) {}
-  //   return isoDate;
-  // }
-
-  // String _formatTimeToSubmit(String isoTime) {
-  //   if (isoTime.isEmpty) return "";
-  //   try {
-  //     final parts = isoTime.split(':');
-  //     if (parts.length >= 2) {
-  //       int h = int.parse(parts[0]);
-  //       int m = int.parse(parts[1]);
-  //       String ampm = "AM";
-
-  //       if (h >= 12) {
-  //         ampm = "PM";
-  //         if (h > 12) h -= 12;
-  //       }
-  //       if (h == 0) h = 12;
-
-  //       // Output: 6:44:00 PM
-  //       return "$h:${m.toString().padLeft(2, '0')}:00 $ampm";
-  //     }
-  //   } catch (_) {}
-  //   return isoTime;
-  // }
-
-  // String _formatValue(String value, String type) {
-  //   if (value.isEmpty) return "";
-
-  //   if (type == "date" || type == "d") {
-  //     try {
-  //       final parts = value.split('-');
-  //       if (parts.length == 3) {
-  //         return "${parts[2]}/${parts[1]}/${parts[0]}";
-  //       }
-  //     } catch (e) {
-  //       return value;
-  //     }
+  // Future<void> submitPage() async {
+  //   if (!validateForm()) {
+  //     Get.snackbar("Required", "Please fill mandatory fields");
+  //     return;
   //   }
 
-  //   if (type == "time" || type == "t") {
-  //     try {
-  //       final parts = value.split(':');
-  //       if (parts.length == 2) {
-  //         int hour = int.parse(parts[0]);
-  //         int minute = int.parse(parts[1]);
-  //         String period = "AM";
+  //   try {
+  //     isLoading.value = true;
 
-  //         if (hour >= 12) {
-  //           period = "PM";
-  //           if (hour > 12) hour -= 12;
-  //         }
-  //         if (hour == 0) hour = 12;
+  //     final isOnline = await Get.find<InternetConnectivity>().check();
+  //     final Map<String, dynamic> mainBody = generateSubmitPayload();
 
-  //         return "$hour:${minute.toString().padLeft(2, '0')}:00 $period";
-  //       }
-  //     } catch (e) {
-  //       return value;
+  //     final SubmitStatus status = await OfflineDbModule.submitFormSmart(
+  //       submitBody: mainBody,
+  //       isInternetAvailable: isOnline,
+  //     );
+
+  //     switch (status) {
+  //       case SubmitStatus.success:
+  //         resetForm();
+  //         Get.back();
+
+  //         Get.snackbar(
+  //           "Success",
+  //           "Form submitted successfully!",
+  //           backgroundColor: Colors.green,
+  //           colorText: Colors.white,
+  //           duration: const Duration(seconds: 3),
+  //         );
+  //         break;
+
+  //       case SubmitStatus.savedOffline:
+  //         resetForm();
+  //         Get.back();
+
+  //         Get.snackbar(
+  //           "Saved Offline",
+  //           "No Internet. Form saved to pending queue.",
+  //           backgroundColor: Colors.blueAccent,
+  //           colorText: Colors.white,
+  //           duration: const Duration(seconds: 3),
+  //         );
+  //         break;
+
+  //       case SubmitStatus.apiFailure:
+  //         // SHOW THE ERROR! Do not close the form.
+  //         // Let user correct data or try again.
+  //         Get.snackbar(
+  //           "Submission Failed",
+  //           "Server rejected the request. Please check your data.",
+  //           backgroundColor: Colors.redAccent,
+  //           colorText: Colors.white,
+  //           duration: const Duration(seconds: 4),
+  //         );
+  //         break;
   //     }
+  //   } catch (e) {
+  //     Get.snackbar("Error", "Unexpected error: $e");
+  //   } finally {
+  //     isLoading.value = false;
   //   }
-
-  //   return value;
   // }
-
-// =========================================================
-  //                 MAIN SUBMIT FUNCTION
-  // =========================================================
 
   Future<void> submitPage() async {
     if (!validateForm()) {
@@ -1487,62 +1000,133 @@ class InwardEntryDynamicController extends GetxController {
 
     try {
       isLoading.value = true;
-      // final Map<String, dynamic> formDataRest = generateRestSubmitPayLoad();
-      final Map<String, dynamic> formData = generateSubmitPayload();
-
       final isOnline = await Get.find<InternetConnectivity>().check();
 
-      // CALL UPDATED METHOD
-      final SubmitStatus status = await OfflineDbModule.submitFormSmart(
-        submitBody: formData,
+      final Map<String, dynamic> mainBody = generateSubmitPayload();
+
+      final SubmitStatus mainStatus = await OfflineDbModule.submitFormSmart(
+        submitBody: mainBody,
         isInternetAvailable: isOnline,
       );
 
-      // HANDLE 3 STATES
-      switch (status) {
-        case SubmitStatus.success:
-          resetForm();
-          Get.back();
+      if (mainStatus == SubmitStatus.apiFailure) {
+        Get.snackbar(
+          "Submission Failed",
+          "Server rejected the main form. Please check your data.",
+          backgroundColor: Colors.redAccent,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 4),
+        );
+        return;
+      }
 
-          Get.snackbar(
-            "Success",
-            "Form submitted successfully!",
-            backgroundColor: Colors.green,
-            colorText: Colors.white,
-            duration: const Duration(seconds: 3),
+      // ignore: unused_local_variable
+      int imagesUploaded = 0;
+      // ignore: unused_local_variable
+      int imagesQueued = 0;
+      int imagesFailed = 0;
+
+      final List<Map<String, dynamic>> attachmentPayloads =
+          generateAttachmentPayloads();
+
+      if (attachmentPayloads.isNotEmpty) {
+        for (final attachBody in attachmentPayloads) {
+          final SubmitStatus imgStatus = await OfflineDbModule.submitFormSmart(
+            submitBody: attachBody,
+            isInternetAvailable: isOnline,
           );
-          break;
 
-        case SubmitStatus.savedOffline:
-          resetForm();
-          Get.back();
+          if (imgStatus == SubmitStatus.success)
+            imagesUploaded++;
+          else if (imgStatus == SubmitStatus.savedOffline)
+            imagesQueued++;
+          else
+            imagesFailed++;
+        }
+      }
 
-          Get.snackbar(
-            "Saved Offline",
-            "No Internet. Form saved to pending queue.",
-            backgroundColor: Colors.blueAccent,
-            colorText: Colors.white,
-            duration: const Duration(seconds: 3),
-          );
-          break;
+      resetForm();
+      Get.back();
 
-        case SubmitStatus.apiFailure:
-          // SHOW THE ERROR! Do not close the form.
-          // Let user correct data or try again.
-          Get.snackbar(
-            "Submission Failed",
-            "Server rejected the request. Please check your data.",
-            backgroundColor: Colors.redAccent,
-            colorText: Colors.white,
-            duration: const Duration(seconds: 4),
-          );
-          break;
+      if (mainStatus == SubmitStatus.savedOffline) {
+        Get.snackbar(
+          "Saved Offline",
+          "No Internet. Main form + ${attachmentPayloads.length} attachments saved to queue.",
+          backgroundColor: Colors.blueAccent,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 4),
+        );
+      } else if (imagesFailed == 0) {
+        Get.snackbar(
+          "Success",
+          "Form and all attachments submitted successfully!",
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 3),
+        );
+      } else {
+        Get.snackbar(
+          "Partial Success",
+          "Main form submitted, but $imagesFailed images failed to upload.",
+          backgroundColor: Colors.orangeAccent,
+          colorText: Colors.black,
+          duration: const Duration(seconds: 5),
+        );
       }
     } catch (e) {
       Get.snackbar("Error", "Unexpected error: $e");
     } finally {
       isLoading.value = false;
     }
+  }
+
+  List<Map<String, dynamic>> generateAttachmentPayloads() {
+    final List<Map<String, dynamic>> payloads = [];
+
+    final String refNo = textCtrls["ub_ge_no"]?.text.trim() ?? "UNKNOWN_REF";
+    final String sessionId = AppStorage().retrieveValue(AppStorage.SESSIONID);
+    final String username = AppStorage().retrieveValue(AppStorage.USER_NAME);
+    imageAttachmentJson.forEach((categoryKey, base64List) {
+      if (base64List.isEmpty) return;
+
+      final Map<String, dynamic> fileMap = {};
+      for (int i = 0; i < base64List.length; i++) {
+        fileMap["file${i + 1}"] = {
+          "filename": "${refNo}_${categoryKey}_${i + 1}.jpg",
+          "fileasbase64": base64List[i]
+        };
+      }
+
+      final Map<String, dynamic> payload = {
+        "ARMSessionId": sessionId,
+        "publickey": "InwardAttach",
+        "project": "bottleapp",
+        "submitdata": {
+          "username": username,
+          "trace": "true",
+          "keyfield": "",
+          "dataarray": {
+            "data": {
+              "mode": "new",
+              "keyvalue": "",
+              "recordid": "0",
+              "dc1": {
+                "row1": {
+                  "ub_gen_no": refNo,
+                  "category": categoryKey,
+                  "axpfile_file": fileMap,
+                  "axpfilepath_file": ""
+                }
+              }
+            }
+          }
+        }
+      };
+
+      payloads.add(payload);
+    });
+
+    return payloads;
   }
 
 ////////////////////////////////////////////////////////////////////////

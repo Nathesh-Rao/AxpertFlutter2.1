@@ -23,7 +23,8 @@ class PendingListController extends GetxController {
   var pendingCount = "0";
   var isLoading = false.obs;
 
-  var selectedIconNumber = 1.obs; //1->default, 2-> reload, 3->accesstime, 4-> filter, 5=> checklist
+  var selectedIconNumber =
+      1.obs; //1->default, 2-> reload, 3->accesstime, 4-> filter, 5=> checklist
   var isBulkAppr_SelectAll = false.obs;
 
   // PendingTaskModel? pendingTaskModel;
@@ -60,9 +61,11 @@ class PendingListController extends GetxController {
   Future<void> getNoOfPendingActiveTasks() async {
     LoadingScreen.show();
     isLoading.value = true;
-    var url = Const.getFullARMUrl(ServerConnections.API_GET_PENDING_ACTIVETASK_COUNT);
+    var url =
+        Const.getFullARMUrl(ServerConnections.API_GET_PENDING_ACTIVETASK_COUNT);
     var body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
-    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
+    var resp = await serverConnections.postToServer(
+        url: url, body: jsonEncode(body), isBearer: true);
     if (resp != "") {
       var jsonResp = jsonDecode(resp);
       if (jsonResp['result']['message'].toString() == "success") {
@@ -84,7 +87,11 @@ class PendingListController extends GetxController {
       "pageno": 1,
     };
 
-    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
+    var resp = await serverConnections.postToServer(
+        url: url,
+        body: jsonEncode(body),
+        isBearer: true,
+        show_errorSnackbar: false);
     if (resp != "") {
       var jsonResp = jsonDecode(resp);
       print(jsonResp);
@@ -93,7 +100,8 @@ class PendingListController extends GetxController {
         var dataList = jsonResp['result']['pendingtasks'];
 
         for (var item in dataList) {
-          PendingListModel pendingActiveListModel = PendingListModel.fromJson(item);
+          PendingListModel pendingActiveListModel =
+              PendingListModel.fromJson(item);
           activeList_Main.add(pendingActiveListModel);
         }
       }
@@ -121,8 +129,14 @@ class PendingListController extends GetxController {
     } else {
       needRefresh.value = true;
       var newList = activeList_Main.where((oldValue) {
-        return oldValue.displaytitle.toString().toLowerCase().contains(value.toString().toLowerCase()) ||
-            oldValue.eventdatetime.toString().toLowerCase().contains(value.toString().toLowerCase());
+        return oldValue.displaytitle
+                .toString()
+                .toLowerCase()
+                .contains(value.toString().toLowerCase()) ||
+            oldValue.eventdatetime
+                .toString()
+                .toLowerCase()
+                .contains(value.toString().toLowerCase());
       });
       // print("new list: " + newList.length.toString());
       pending_activeList.value = newList.toList();
@@ -138,25 +152,32 @@ class PendingListController extends GetxController {
   ////////////////////////************************** Pending List Item Details *****************
 
   void applyFilter() async {
-    var url = Const.getFullARMUrl(ServerConnections.API_GET_FILTERED_PENDING_TASK);
+    var url =
+        Const.getFullARMUrl(ServerConnections.API_GET_FILTERED_PENDING_TASK);
     Map<String, dynamic> body = {
       "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
       "AppName": globalVariableController.PROJECT_NAME.value.toString(),
       "pagesize": 1000,
       "pageno": 1,
     };
-    if (fromUserController.text.trim() != "") body["fromuser"] = fromUserController.text.trim();
-    if (processNameController.text.trim() != "") body["processname"] = processNameController.text.trim();
-    if (searchTextController.text.trim() != "") body["searchtext"] = searchTextController.text.trim();
-    if (dateFromController.text.trim() != "" && dateToController.text.trim() != "") {
+    if (fromUserController.text.trim() != "")
+      body["fromuser"] = fromUserController.text.trim();
+    if (processNameController.text.trim() != "")
+      body["processname"] = processNameController.text.trim();
+    if (searchTextController.text.trim() != "")
+      body["searchtext"] = searchTextController.text.trim();
+    if (dateFromController.text.trim() != "" &&
+        dateToController.text.trim() != "") {
       body["fromdate"] = dateFromController.text.trim();
       body["todate"] = dateToController.text.trim();
     } else {
-      if (dateFromController.text.trim() == "" && dateToController.text.trim() != "") {
+      if (dateFromController.text.trim() == "" &&
+          dateToController.text.trim() != "") {
         errDateFrom.value = "Enter from Date";
         return;
       }
-      if (dateFromController.text.trim() != "" && dateToController.text.trim() == "") {
+      if (dateFromController.text.trim() != "" &&
+          dateToController.text.trim() == "") {
         errDateTo.value = "Enter To Date";
         return;
       }
@@ -166,7 +187,8 @@ class PendingListController extends GetxController {
     if (body.length > 4) {
       selectedIconNumber.value = 4;
       LoadingScreen.show();
-      var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
+      var resp = await serverConnections.postToServer(
+          url: url, body: jsonEncode(body), isBearer: true);
       LoadingScreen.dismiss();
       if (resp != "") {
         var jsonResp = jsonDecode(resp);
@@ -192,8 +214,8 @@ class PendingListController extends GetxController {
   }
 
   void removeFilter() {
-    dateFromController.text =
-        dateToController.text = searchTextController.text = processNameController.text = fromUserController.text = "";
+    dateFromController.text = dateToController.text = searchTextController
+        .text = processNameController.text = fromUserController.text = "";
     if (selectedIconNumber != 1) getNoOfPendingActiveTasks();
     selectedIconNumber.value = 1;
   }
@@ -218,10 +240,12 @@ class PendingListController extends GetxController {
   // }
 
   Future<void> getBulkApprovalCount() async {
-    var url = Const.getFullARMUrl(ServerConnections.API_GET_BULK_APPROVAL_COUNT);
+    var url =
+        Const.getFullARMUrl(ServerConnections.API_GET_BULK_APPROVAL_COUNT);
     var body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
 
-    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
+    var resp = await serverConnections.postToServer(
+        url: url, body: jsonEncode(body), isBearer: true);
     if (resp != "") {
       var jsonResp = jsonDecode(resp);
       if (jsonResp['result']['message'].toString() == "success") {
@@ -229,7 +253,8 @@ class PendingListController extends GetxController {
         var dataList = jsonResp['result']['data'];
         LogService.writeLog(message: "getBulkApprovalCount=> $dataList");
         for (var item in dataList) {
-          BulkApprovalCountModel bulkApprovalCountModel = BulkApprovalCountModel.fromJson(item);
+          BulkApprovalCountModel bulkApprovalCountModel =
+              BulkApprovalCountModel.fromJson(item);
           bulkApprovalCount_list.add(bulkApprovalCountModel);
         }
       }
@@ -248,14 +273,16 @@ class PendingListController extends GetxController {
       "touser": appStorage.retrieveValue(AppStorage.USER_NAME)
     };
 
-    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
+    var resp = await serverConnections.postToServer(
+        url: url, body: jsonEncode(body), isBearer: true);
     if (resp != "") {
       var jsonResp = jsonDecode(resp);
       if (jsonResp['result']['message'].toString() == "success") {
         var dataList = jsonResp['result']['data'];
 
         for (var item in dataList) {
-          PendingListModel bulkApproval_activeTaskModel = PendingListModel.fromJson(item);
+          PendingListModel bulkApproval_activeTaskModel =
+              PendingListModel.fromJson(item);
           bulkApproval_activeList.add(bulkApproval_activeTaskModel);
         }
       }
@@ -265,7 +292,9 @@ class PendingListController extends GetxController {
   selectAll_BulkApproveList_item(value) {
     isBulkAppr_SelectAll.value = value;
     for (var item in bulkApproval_activeList) {
-      value == true ? item.bulkApprove_isSelected.value = true : item.bulkApprove_isSelected.value = false;
+      value == true
+          ? item.bulkApprove_isSelected.value = true
+          : item.bulkApprove_isSelected.value = false;
     }
   }
 
@@ -281,7 +310,9 @@ class PendingListController extends GetxController {
     var list_taskId = "";
     for (var item in bulkApproval_activeList) {
       if (item.bulkApprove_isSelected.value == true)
-        list_taskId.isEmpty ? list_taskId += item.taskid : list_taskId += "," + item.taskid;
+        list_taskId.isEmpty
+            ? list_taskId += item.taskid
+            : list_taskId += "," + item.taskid;
     }
 
     print("list_taskId: $list_taskId");
@@ -299,7 +330,8 @@ class PendingListController extends GetxController {
           snackPosition: SnackPosition.BOTTOM,
           duration: Duration(seconds: 3));
     } else {
-      var url = Const.getFullARMUrl(ServerConnections.API_POST_BULK_DO_BULK_ACTION);
+      var url =
+          Const.getFullARMUrl(ServerConnections.API_POST_BULK_DO_BULK_ACTION);
       var body = {
         "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
         "AxSessionId": "lqkrqbrwa3v3c2nmhq1dm1sk",
@@ -311,14 +343,16 @@ class PendingListController extends GetxController {
         "AppName": globalVariableController.PROJECT_NAME.value.toString(),
         "user": appStorage.retrieveValue(AppStorage.USER_NAME)
       };
-      var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
+      var resp = await serverConnections.postToServer(
+          url: url, body: jsonEncode(body), isBearer: true);
 
       print(resp);
       var jsonResp = jsonDecode(resp);
       // print(jsonResp['result']['success']);
       if (jsonResp["result"]["success"].toString() == "true") {
         Get.back();
-        Get.snackbar("Bulk Approval success", "All ${list_taskId.split(",").length} tasks approved",
+        Get.snackbar("Bulk Approval success",
+            "All ${list_taskId.split(",").length} tasks approved",
             backgroundColor: Colors.green,
             colorText: Colors.white,
             snackPosition: SnackPosition.BOTTOM,

@@ -43,10 +43,12 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       loginController.onLoad();
     });
+
+    var istablet = Get.width > 600;
     return Scaffold(
       // resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        toolbarHeight: 80,
+        toolbarHeight: istablet ? 150 : 80,
         elevation: 0,
         backgroundColor: Colors.white,
         centerTitle: true,

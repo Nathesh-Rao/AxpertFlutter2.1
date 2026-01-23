@@ -20,7 +20,8 @@ class CompletedListController extends GetxController {
   var completedCount = "0";
   var isLoading = false.obs;
 
-  var selectedIconNumber = 1.obs; //1->default, 2-> reload, 3->accesstime, 4-> filter, 5=> checklist
+  var selectedIconNumber =
+      1.obs; //1->default, 2-> reload, 3->accesstime, 4-> filter, 5=> checklist
   PendingTaskModel? completedTaskModel;
   List<PendingListModel> activeList_Main = [];
   PendingListModel? openModel;
@@ -28,7 +29,8 @@ class CompletedListController extends GetxController {
   var processFlowList = [].obs;
   TextEditingController searchController = TextEditingController();
   var statusListActiveIndex = 2;
-  ScrollController scrollController = ScrollController(initialScrollOffset: 100 * 3.0);
+  ScrollController scrollController =
+      ScrollController(initialScrollOffset: 100 * 3.0);
   ServerConnections serverConnections = ServerConnections();
   AppStorage appStorage = AppStorage();
   var widgetProcessFlowNeedRefresh = true.obs;
@@ -50,13 +52,19 @@ class CompletedListController extends GetxController {
   Future<void> getNoOfCompletedActiveTasks() async {
     LoadingScreen.show();
     isLoading.value = true;
-    var url = Const.getFullARMUrl(ServerConnections.API_GET_COMPLETED_ACTIVETASK_COUNT);
+    var url = Const.getFullARMUrl(
+        ServerConnections.API_GET_COMPLETED_ACTIVETASK_COUNT);
     var body = {'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID)};
-    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
+    var resp = await serverConnections.postToServer(
+        url: url,
+        body: jsonEncode(body),
+        isBearer: true,
+        show_errorSnackbar: false);
     if (resp != "") {
       var jsonResp = jsonDecode(resp);
       if (jsonResp['result']['message'].toString() == "success") {
-        print("jsonResp['result']['data'].toString() ${jsonResp['result']['data'].toString()}");
+        print(
+            "jsonResp['result']['data'].toString() ${jsonResp['result']['data'].toString()}");
         completedCount = jsonResp['result']['data'].toString();
       }
       await getPendingActiveList();
@@ -66,7 +74,8 @@ class CompletedListController extends GetxController {
   }
 
   Future<void> getPendingActiveList() async {
-    var url = Const.getFullARMUrl(ServerConnections.API_GET_COMPLETED_ACTIVETASK);
+    var url =
+        Const.getFullARMUrl(ServerConnections.API_GET_COMPLETED_ACTIVETASK);
     var body = {
       'ARMSessionId': appStorage.retrieveValue(AppStorage.SESSIONID),
       "Trace": "false",
@@ -75,7 +84,8 @@ class CompletedListController extends GetxController {
       "pageno": 1,
     };
 
-    var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
+    var resp = await serverConnections.postToServer(
+        url: url, body: jsonEncode(body), isBearer: true);
     if (resp != "") {
       var jsonResp = jsonDecode(resp);
       print(jsonResp);
@@ -84,7 +94,8 @@ class CompletedListController extends GetxController {
         var dataList = jsonResp['result']['completedtasks'];
 
         for (var item in dataList) {
-          PendingListModel pendingActiveListModel = PendingListModel.fromJson(item);
+          PendingListModel pendingActiveListModel =
+              PendingListModel.fromJson(item);
           activeList_Main.add(pendingActiveListModel);
         }
       }
@@ -112,8 +123,14 @@ class CompletedListController extends GetxController {
     } else {
       needRefresh.value = true;
       var newList = activeList_Main.where((oldValue) {
-        return oldValue.displaytitle.toString().toLowerCase().contains(value.toString().toLowerCase()) ||
-            oldValue.eventdatetime.toString().toLowerCase().contains(value.toString().toLowerCase());
+        return oldValue.displaytitle
+                .toString()
+                .toLowerCase()
+                .contains(value.toString().toLowerCase()) ||
+            oldValue.eventdatetime
+                .toString()
+                .toLowerCase()
+                .contains(value.toString().toLowerCase());
       });
       // print("new list: " + newList.length.toString());
       completed_activeList.value = newList.toList();
@@ -203,25 +220,32 @@ class CompletedListController extends GetxController {
   // }
 
   void applyFilter() async {
-    var url = Const.getFullARMUrl(ServerConnections.API_GET_FILTERED_COMPLETED_TASK);
+    var url =
+        Const.getFullARMUrl(ServerConnections.API_GET_FILTERED_COMPLETED_TASK);
     Map<String, dynamic> body = {
       "ARMSessionId": appStorage.retrieveValue(AppStorage.SESSIONID),
       "AppName": globalVariableController.PROJECT_NAME.value.toString(),
       "pagesize": 1000,
       "pageno": 1,
     };
-    if (fromUserController.text.trim() != "") body["fromuser"] = fromUserController.text.trim();
-    if (processNameController.text.trim() != "") body["processname"] = processNameController.text.trim();
-    if (searchTextController.text.trim() != "") body["searchtext"] = searchTextController.text.trim();
-    if (dateFromController.text.trim() != "" && dateToController.text.trim() != "") {
+    if (fromUserController.text.trim() != "")
+      body["fromuser"] = fromUserController.text.trim();
+    if (processNameController.text.trim() != "")
+      body["processname"] = processNameController.text.trim();
+    if (searchTextController.text.trim() != "")
+      body["searchtext"] = searchTextController.text.trim();
+    if (dateFromController.text.trim() != "" &&
+        dateToController.text.trim() != "") {
       body["fromdate"] = dateFromController.text.trim();
       body["todate"] = dateToController.text.trim();
     } else {
-      if (dateFromController.text.trim() == "" && dateToController.text.trim() != "") {
+      if (dateFromController.text.trim() == "" &&
+          dateToController.text.trim() != "") {
         errDateFrom.value = "Enter from Date";
         return;
       }
-      if (dateFromController.text.trim() != "" && dateToController.text.trim() == "") {
+      if (dateFromController.text.trim() != "" &&
+          dateToController.text.trim() == "") {
         errDateTo.value = "Enter To Date";
         return;
       }
@@ -231,7 +255,8 @@ class CompletedListController extends GetxController {
     if (body.length > 4) {
       selectedIconNumber.value = 4;
       LoadingScreen.show();
-      var resp = await serverConnections.postToServer(url: url, body: jsonEncode(body), isBearer: true);
+      var resp = await serverConnections.postToServer(
+          url: url, body: jsonEncode(body), isBearer: true);
       LoadingScreen.dismiss();
       if (resp != "") {
         var jsonResp = jsonDecode(resp);
@@ -257,8 +282,8 @@ class CompletedListController extends GetxController {
   }
 
   void removeFilter() {
-    dateFromController.text =
-        dateToController.text = searchTextController.text = processNameController.text = fromUserController.text = "";
+    dateFromController.text = dateToController.text = searchTextController
+        .text = processNameController.text = fromUserController.text = "";
     if (selectedIconNumber != 1) getNoOfCompletedActiveTasks();
     selectedIconNumber.value = 1;
   }

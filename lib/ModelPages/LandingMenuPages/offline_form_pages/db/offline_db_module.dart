@@ -688,7 +688,7 @@ class OfflineDbModule {
           isBearer: true,
         );
         log(jsonEncode(submitBody), name: "SUBMIT_RESPONSE_BODY");
-        log(responseStr, name: "SUBMIT_RESPONSE");
+        log(responseStr, name: "SUBMIT_RESPONSE_RES");
 
         if (responseStr != null && responseStr.isNotEmpty) {
           final decoded = jsonDecode(responseStr);
@@ -735,6 +735,10 @@ class OfflineDbModule {
     final username = scope['username']!;
     final projectName = scope['projectName']!;
 
+    final String currentSessionId =
+        AppStorage().retrieveValue(AppStorage.SESSIONID) ?? "";
+    if (currentSessionId.isEmpty) return "No active session to sync";
+
     final rows = await _database.query(
       OfflineDBConstants.TABLE_PENDING_REQUESTS,
       where: '''
@@ -760,35 +764,29 @@ class OfflineDbModule {
       final bodyStr = row[OfflineDBConstants.COL_REQUEST_JSON] as String;
 
       try {
-        final payload = jsonDecode(bodyStr);
+        final Map<String, dynamic> payload = jsonDecode(bodyStr);
 
-        final String res = await serverConnections.postToServer(
+        payload['ARMSessionId'] = currentSessionId;
+
+        final dynamic res = await serverConnections.postToServer(
           url: url,
           body: jsonEncode(payload),
           isBearer: true,
         );
 
-        log(res.toString(), name: "processPendingQueue Response");
-
         bool isSuccess = false;
-
-        // 3. New Parsing Logic
-        if (res.isNotEmpty) {
+        if (res != null && res.isNotEmpty) {
           try {
             final decoded = jsonDecode(res);
             if (decoded is Map<String, dynamic> && decoded['success'] == true) {
               isSuccess = true;
             } else {
               LogService.writeLog(
-                  message:
-                      "[QUEUE_FAIL] ID: $id - Server Msg: ${decoded['message']}");
+                  message: "[QUEUE_FAIL] ID: $id - Msg: ${decoded['message']}");
             }
-          } catch (e) {
-            LogService.writeLog(message: "[QUEUE_PARSE_ERR] ID: $id - $e");
-          }
+          } catch (_) {}
         }
 
-        // 4. Update DB Status
         await _database.update(
           OfflineDBConstants.TABLE_PENDING_REQUESTS,
           {
@@ -813,12 +811,22 @@ class OfflineDbModule {
     return "Processed: $successCount success, $failCount failed";
   }
 
+  // ==============================================================================
+
   static Future<void> _syncPendingBeforeLogin({
     required String username,
     required String projectName,
     required bool isInternetAvailable,
   }) async {
     if (!isInternetAvailable) return;
+
+    final String currentSessionId =
+        AppStorage().retrieveValue(AppStorage.SESSIONID) ?? "";
+    if (currentSessionId.isEmpty) {
+      LogService.writeLog(
+          message: "[SYNC_SKIP] No active session ID found for sync");
+      return;
+    }
 
     final rows = await _database.query(
       OfflineDBConstants.TABLE_PENDING_REQUESTS,
@@ -833,7 +841,6 @@ class OfflineDbModule {
 
     if (rows.isEmpty) return;
 
-    // 1. Setup Connection
     final ServerConnections serverConnections = ServerConnections();
     final String url =
         Const.getFullARMUrl(ExecuteApi.API_ARM_EXECUTE_PUBLISHED);
@@ -841,8 +848,11 @@ class OfflineDbModule {
     for (final row in rows) {
       final id = row[OfflineDBConstants.COL_ID] as int;
       try {
-        final payload =
+        final Map<String, dynamic> payload =
             jsonDecode(row[OfflineDBConstants.COL_REQUEST_JSON] as String);
+
+        // 2. OVERRIDE with Fresh Session ID
+        payload['ARMSessionId'] = currentSessionId;
 
         final res = await serverConnections.postToServer(
           url: url,
@@ -851,8 +861,6 @@ class OfflineDbModule {
         );
 
         bool isSuccess = false;
-
-        // 2. Check Success
         if (res != null && res.isNotEmpty) {
           try {
             final decoded = jsonDecode(res);
@@ -873,11 +881,164 @@ class OfflineDbModule {
           whereArgs: [id],
         );
       } catch (e) {
-        // Log error but continue
         LogService.writeLog(message: "[SYNC_LOGIN_ERR] $e");
       }
     }
   }
+
+  // static Future<String> processPendingQueue(
+  //     {required bool isInternetAvailable}) async {
+  //   if (!isInternetAvailable) return "No internet connection";
+
+  //   final scope = await _getLastOfflineUserScope();
+  //   if (scope == null) return "No user session found";
+
+  //   final username = scope['username']!;
+  //   final projectName = scope['projectName']!;
+
+  //   final rows = await _database.query(
+  //     OfflineDBConstants.TABLE_PENDING_REQUESTS,
+  //     where: '''
+  //     ${OfflineDBConstants.COL_STATUS} IN (${OfflineDBConstants.STATUS_PENDING}, ${OfflineDBConstants.STATUS_ERROR})
+  //     AND ${OfflineDBConstants.COL_USERNAME} = ?
+  //     AND ${OfflineDBConstants.COL_PROJECT_NAME} = ?
+  //   ''',
+  //     whereArgs: [username, projectName],
+  //     orderBy: OfflineDBConstants.COL_CREATED_AT,
+  //   );
+
+  //   if (rows.isEmpty) return "Queue is empty";
+
+  //   int successCount = 0;
+  //   int failCount = 0;
+
+  //   final ServerConnections serverConnections = ServerConnections();
+  //   final String url =
+  //       Const.getFullARMUrl(ExecuteApi.API_ARM_EXECUTE_PUBLISHED);
+
+  //   for (final row in rows) {
+  //     final id = row[OfflineDBConstants.COL_ID] as int;
+  //     final bodyStr = row[OfflineDBConstants.COL_REQUEST_JSON] as String;
+
+  //     try {
+  //       final payload = jsonDecode(bodyStr);
+
+  //       final String res = await serverConnections.postToServer(
+  //         url: url,
+  //         body: jsonEncode(payload),
+  //         isBearer: true,
+  //       );
+
+  //       log(res.toString(), name: "processPendingQueue Response");
+
+  //       bool isSuccess = false;
+
+  //       // 3. New Parsing Logic
+  //       if (res.isNotEmpty) {
+  //         try {
+  //           final decoded = jsonDecode(res);
+  //           if (decoded is Map<String, dynamic> && decoded['success'] == true) {
+  //             isSuccess = true;
+  //           } else {
+  //             LogService.writeLog(
+  //                 message:
+  //                     "[QUEUE_FAIL] ID: $id - Server Msg: ${decoded['message']}");
+  //           }
+  //         } catch (e) {
+  //           LogService.writeLog(message: "[QUEUE_PARSE_ERR] ID: $id - $e");
+  //         }
+  //       }
+
+  //       // 4. Update DB Status
+  //       await _database.update(
+  //         OfflineDBConstants.TABLE_PENDING_REQUESTS,
+  //         {
+  //           OfflineDBConstants.COL_STATUS: isSuccess
+  //               ? OfflineDBConstants.STATUS_SUCCESS
+  //               : OfflineDBConstants.STATUS_ERROR,
+  //         },
+  //         where: '${OfflineDBConstants.COL_ID} = ?',
+  //         whereArgs: [id],
+  //       );
+
+  //       if (isSuccess)
+  //         successCount++;
+  //       else
+  //         failCount++;
+  //     } catch (e) {
+  //       failCount++;
+  //       LogService.writeLog(message: "[QUEUE_PROCESS_ERROR] ID: $id - $e");
+  //     }
+  //   }
+
+  //   return "Processed: $successCount success, $failCount failed";
+  // }
+
+  // static Future<void> _syncPendingBeforeLogin({
+  //   required String username,
+  //   required String projectName,
+  //   required bool isInternetAvailable,
+  // }) async {
+  //   if (!isInternetAvailable) return;
+
+  //   final rows = await _database.query(
+  //     OfflineDBConstants.TABLE_PENDING_REQUESTS,
+  //     where: '''
+  //     ${OfflineDBConstants.COL_STATUS} IN (${OfflineDBConstants.STATUS_PENDING}, ${OfflineDBConstants.STATUS_ERROR})
+  //     AND ${OfflineDBConstants.COL_USERNAME} = ?
+  //     AND ${OfflineDBConstants.COL_PROJECT_NAME} = ?
+  //   ''',
+  //     whereArgs: [username, projectName],
+  //     orderBy: OfflineDBConstants.COL_CREATED_AT,
+  //   );
+
+  //   if (rows.isEmpty) return;
+
+  //   // 1. Setup Connection
+  //   final ServerConnections serverConnections = ServerConnections();
+  //   final String url =
+  //       Const.getFullARMUrl(ExecuteApi.API_ARM_EXECUTE_PUBLISHED);
+
+  //   for (final row in rows) {
+  //     final id = row[OfflineDBConstants.COL_ID] as int;
+  //     try {
+  //       final payload =
+  //           jsonDecode(row[OfflineDBConstants.COL_REQUEST_JSON] as String);
+
+  //       final res = await serverConnections.postToServer(
+  //         url: url,
+  //         body: jsonEncode(payload),
+  //         isBearer: true,
+  //       );
+
+  //       bool isSuccess = false;
+
+  //       // 2. Check Success
+  //       if (res != null && res.isNotEmpty) {
+  //         try {
+  //           final decoded = jsonDecode(res);
+  //           if (decoded is Map<String, dynamic> && decoded['success'] == true) {
+  //             isSuccess = true;
+  //           }
+  //         } catch (_) {}
+  //       }
+
+  //       await _database.update(
+  //         OfflineDBConstants.TABLE_PENDING_REQUESTS,
+  //         {
+  //           OfflineDBConstants.COL_STATUS: isSuccess
+  //               ? OfflineDBConstants.STATUS_SUCCESS
+  //               : OfflineDBConstants.STATUS_ERROR,
+  //         },
+  //         where: '${OfflineDBConstants.COL_ID} = ?',
+  //         whereArgs: [id],
+  //       );
+  //     } catch (e) {
+  //       // Log error but continue
+  //       LogService.writeLog(message: "[SYNC_LOGIN_ERR] $e");
+  //     }
+  //   }
+  // }
 
   // =================================================
   // SYNC ALL DATA (BUTTON)

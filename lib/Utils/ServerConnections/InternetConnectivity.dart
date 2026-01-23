@@ -54,7 +54,6 @@ class InternetConnectivity extends GetxController {
   // =================================================
   void _handleStateChange(bool nowOnline) {
     if (_lastConnectionState == nowOnline) {
-      // No actual state change, ignore noisy events
       return;
     }
 
