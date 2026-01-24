@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:js_interop';
 import 'package:axpertflutter/Constants/AppStorage.dart';
+import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/db/offline_db_module.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/inward_entry/inward_entry_consolidated_page.dart';
 import 'package:axpertflutter/Utils/LogServices/LogService.dart';
@@ -906,11 +908,11 @@ class InwardEntryDynamicController extends GetxController {
 
     String sessionId = AppStorage().retrieveValue(AppStorage.SESSIONID) ?? "";
     final String username = AppStorage().retrieveValue(AppStorage.USER_NAME);
-
+    var project = globalVariableController.PROJECT_NAME.value;
     return {
       "ARMSessionId": sessionId,
       "publickey": "InwardEntry",
-      "project": "bottleapp",
+      "project": project,
       "submitdata": {
         "username": username,
         "trace": "true",
@@ -1096,11 +1098,11 @@ class InwardEntryDynamicController extends GetxController {
           "fileasbase64": base64List[i]
         };
       }
-
+      var project = globalVariableController.PROJECT_NAME.value;
       final Map<String, dynamic> payload = {
         "ARMSessionId": sessionId,
         "publickey": "InwardAttach",
-        "project": "bottleapp",
+        "project": project,
         "submitdata": {
           "username": username,
           "trace": "true",

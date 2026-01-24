@@ -37,7 +37,7 @@
     </queries>
     <application
         android:exported="true"
-        android:label="Axpert Flutter"
+        android:label="Bottle Sampling"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="false"
