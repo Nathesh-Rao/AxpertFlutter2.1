@@ -2,6 +2,7 @@ import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Controller/LandingPageController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class WidgetDisplayProfileDetails extends StatelessWidget {
   WidgetDisplayProfileDetails({super.key});
@@ -16,12 +17,15 @@ class WidgetDisplayProfileDetails extends StatelessWidget {
       child: Container(
         margin: EdgeInsets.only(top: 40),
         height: 250,
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
+        decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(20)),
         child: Column(
           children: [
             Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20)),
                 color: MyColors.buzzilyblack,
               ),
               height: 200,
@@ -39,11 +43,11 @@ class WidgetDisplayProfileDetails extends StatelessWidget {
                   ),
                   SizedBox(height: 10),
                   Text(landingPageController.userName.value, //main profile name
-                      style: const TextStyle(
+                      style: GoogleFonts.nunitoSans(
                         fontWeight: FontWeight.w900,
                         color: MyColors.white1,
                         fontSize: 12,
-                        fontFamily: "nunitoreg1",
+                        // fontFamily: "nunitoreg1",
                       )),
                   SizedBox(height: 15),
                   Container(
@@ -61,11 +65,14 @@ class WidgetDisplayProfileDetails extends StatelessWidget {
                           borderRadius: BorderRadius.all(Radius.circular(38)),
                         ),
                         padding: const EdgeInsets.fromLTRB(4.0, 5.0, 0.0, 0.0),
-                        child: Column(children: const [
+                        child: Column(children: [
                           Text(
                             'Manage Your Account',
                             textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.white, fontSize: 14, fontFamily: "nunitoreg"),
+                            style: GoogleFonts.nunitoSans(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
                           ),
                         ]),
                       ),

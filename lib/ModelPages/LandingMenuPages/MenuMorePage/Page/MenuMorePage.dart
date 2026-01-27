@@ -11,7 +11,8 @@ import 'package:hexcolor/hexcolor.dart';
 class MenuMorePage extends StatelessWidget {
   MenuMorePage({super.key});
 
-  final MenuMorePageController menuMorePageController = Get.find(); //Get.put(MenuMorePageController());
+  final MenuMorePageController menuMorePageController =
+      Get.find(); //Get.put(MenuMorePageController());
 
   @override
   Widget build(BuildContext context) {
@@ -38,16 +39,16 @@ reBuild_old(MenuMorePageController menuMorePageController) {
             enabled: true,
             decoration: InputDecoration(
               hintText: 'Search',
-              hintStyle: TextStyle(
+              hintStyle: GoogleFonts.poppins(
                 fontSize: 12,
-                fontFamily: 'Poppins',
+                // fontFamily: 'Poppins',
                 color: HexColor("#8E8E8E"),
               ),
               filled: true,
               fillColor: HexColor("#FFFFFF"),
-              labelStyle: TextStyle(
+              labelStyle: GoogleFonts.poppins(
                 fontSize: 15,
-                fontFamily: 'Poppins',
+                // fontFamily: 'Poppins',
                 color: HexColor("#8B193F"),
               ),
               contentPadding: EdgeInsets.only(left: 10),
@@ -55,22 +56,23 @@ reBuild_old(MenuMorePageController menuMorePageController) {
                 borderSide: BorderSide(color: HexColor("#7070704F")),
                 borderRadius: BorderRadius.circular(5),
               ),
-              suffixIcon: menuMorePageController.searchController.text.toString() == ""
-                  ? GestureDetector(
-                      child: Icon(
-                        Icons.search_outlined,
-                        color: HexColor("#8E8E8EA3"),
-                      ),
-                    )
-                  : GestureDetector(
-                      onTap: () {
-                        menuMorePageController.clearCalled();
-                      },
-                      child: Icon(
-                        Icons.clear,
-                        color: HexColor("#8E8E8EA3"),
-                      ),
-                    ),
+              suffixIcon:
+                  menuMorePageController.searchController.text.toString() == ""
+                      ? GestureDetector(
+                          child: Icon(
+                            Icons.search_outlined,
+                            color: HexColor("#8E8E8EA3"),
+                          ),
+                        )
+                      : GestureDetector(
+                          onTap: () {
+                            menuMorePageController.clearCalled();
+                          },
+                          child: Icon(
+                            Icons.clear,
+                            color: HexColor("#8E8E8EA3"),
+                          ),
+                        ),
               focusedBorder: OutlineInputBorder(
                 borderSide: const BorderSide(color: MyColors.blue1),
                 borderRadius: BorderRadius.circular(10),
@@ -78,7 +80,10 @@ reBuild_old(MenuMorePageController menuMorePageController) {
             ),
           ),
           SizedBox(height: 10),
-          Visibility(visible: menuMorePageController.fetchList.length == 0 ? true : false, child: WidgetNoDataFound()),
+          Visibility(
+              visible:
+                  menuMorePageController.fetchList.length == 0 ? true : false,
+              child: WidgetNoDataFound()),
           FutureBuilder(
             future: menuMorePageController.futureBuilder(),
             builder: (context, snapshot) {
@@ -96,16 +101,25 @@ reBuild_old(MenuMorePageController menuMorePageController) {
                       //print("valuen: $mainIndex");
                       return Container(
                         margin: EdgeInsets.only(bottom: 15),
-                        decoration: BoxDecoration(border: Border.all(width: 1, color: HexColor('EDF0F8')), borderRadius: BorderRadius.circular(10)),
+                        decoration: BoxDecoration(
+                            border:
+                                Border.all(width: 1, color: HexColor('EDF0F8')),
+                            borderRadius: BorderRadius.circular(10)),
                         child: Theme(
-                          data: ThemeData().copyWith(dividerColor: Colors.transparent),
+                          data: ThemeData()
+                              .copyWith(dividerColor: Colors.transparent),
                           child: ExpansionTile(
                             initiallyExpanded: true,
                             title: Text(
-                              menuMorePageController.fetchList[mainIndex].toString(),
+                              menuMorePageController.fetchList[mainIndex]
+                                  .toString(),
                               textAlign: TextAlign.left,
                               overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.poppins(textStyle: TextStyle(color: HexColor("#3E4153"), fontSize: 14, fontWeight: FontWeight.w900)),
+                              style: GoogleFonts.poppins(
+                                  textStyle: TextStyle(
+                                      color: HexColor("#3E4153"),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w900)),
                             ),
                             children: [
                               SizedBox(height: 3),
@@ -114,20 +128,29 @@ reBuild_old(MenuMorePageController menuMorePageController) {
                                 color: Colors.grey.withOpacity(0.4),
                               ),
                               GridView.builder(
-                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                    childAspectRatio: 1,
-                                    crossAxisCount: 3, // HERE YOU CAN ADD THE NO OF ITEMS PER LINE
-                                    mainAxisSpacing: 10,
-                                    crossAxisSpacing: 10),
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                        childAspectRatio: 1,
+                                        crossAxisCount:
+                                            3, // HERE YOU CAN ADD THE NO OF ITEMS PER LINE
+                                        mainAxisSpacing: 10,
+                                        crossAxisSpacing: 10),
                                 // childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height / 5),
                                 shrinkWrap: true,
                                 controller: ScrollController(),
                                 physics: ClampingScrollPhysics(),
-                                itemCount: menuMorePageController.getSubmenuItemList(mainIndex).length,
+                                itemCount: menuMorePageController
+                                    .getSubmenuItemList(mainIndex)
+                                    .length,
                                 // itemCount: 200,
                                 itemBuilder: (context, index) {
-                                  print("value mainIndex, subIndex: $mainIndex $index");
-                                  return getGridItem(menuMorePageController, menuMorePageController.getSubmenuItemList(mainIndex)[index], index);
+                                  print(
+                                      "value mainIndex, subIndex: $mainIndex $index");
+                                  return getGridItem(
+                                      menuMorePageController,
+                                      menuMorePageController
+                                          .getSubmenuItemList(mainIndex)[index],
+                                      index);
                                 },
                               )
                             ],
@@ -141,7 +164,8 @@ reBuild_old(MenuMorePageController menuMorePageController) {
                   return Center(
                       child: Text(
                     "Loading Please Wait...",
-                    style: TextStyle(color: MyColors.blue2, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        color: MyColors.blue2, fontWeight: FontWeight.bold),
                   )); //Center(child: CircularProgressIndicator());
                 }
               }
@@ -169,16 +193,16 @@ reBuild(MenuMorePageController menuMorePageController) {
               enabled: true,
               decoration: InputDecoration(
                 hintText: 'Search',
-                hintStyle: TextStyle(
+                hintStyle: GoogleFonts.poppins(
                   fontSize: 12,
-                  fontFamily: 'Poppins',
+                  // fontFamily: 'Poppins',
                   color: HexColor("#8E8E8E"),
                 ),
                 filled: true,
                 fillColor: HexColor("#FFFFFF"),
-                labelStyle: TextStyle(
+                labelStyle: GoogleFonts.poppins(
                   fontSize: 15,
-                  fontFamily: 'Poppins',
+                  // fontFamily: 'Poppins',
                   color: HexColor("#8B193F"),
                 ),
                 contentPadding: EdgeInsets.only(left: 10),
@@ -186,22 +210,24 @@ reBuild(MenuMorePageController menuMorePageController) {
                   borderSide: BorderSide(color: HexColor("#7070704F")),
                   borderRadius: BorderRadius.circular(5),
                 ),
-                suffixIcon: menuMorePageController.searchController.text.toString() == ""
-                    ? GestureDetector(
-                        child: Icon(
-                          Icons.search_outlined,
-                          color: HexColor("#8E8E8EA3"),
-                        ),
-                      )
-                    : GestureDetector(
-                        onTap: () {
-                          menuMorePageController.clearCalled();
-                        },
-                        child: Icon(
-                          Icons.clear,
-                          color: HexColor("#8E8E8EA3"),
-                        ),
-                      ),
+                suffixIcon:
+                    menuMorePageController.searchController.text.toString() ==
+                            ""
+                        ? GestureDetector(
+                            child: Icon(
+                              Icons.search_outlined,
+                              color: HexColor("#8E8E8EA3"),
+                            ),
+                          )
+                        : GestureDetector(
+                            onTap: () {
+                              menuMorePageController.clearCalled();
+                            },
+                            child: Icon(
+                              Icons.clear,
+                              color: HexColor("#8E8E8EA3"),
+                            ),
+                          ),
                 focusedBorder: OutlineInputBorder(
                   borderSide: const BorderSide(color: MyColors.blue1),
                   borderRadius: BorderRadius.circular(10),
@@ -218,7 +244,9 @@ reBuild(MenuMorePageController menuMorePageController) {
           //print("valuen: $mainIndex");
           return Container(
             margin: EdgeInsets.only(bottom: 10, top: 10),
-            decoration: BoxDecoration(border: Border.all(width: 1, color: HexColor('EDF0F8')), borderRadius: BorderRadius.circular(10)),
+            decoration: BoxDecoration(
+                border: Border.all(width: 1, color: HexColor('EDF0F8')),
+                borderRadius: BorderRadius.circular(10)),
             child: Theme(
               data: ThemeData().copyWith(dividerColor: Colors.transparent),
               child: ExpansionTile(
@@ -227,7 +255,11 @@ reBuild(MenuMorePageController menuMorePageController) {
                   menuMorePageController.fetchList[mainIndex].toString(),
                   textAlign: TextAlign.left,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.poppins(textStyle: TextStyle(color: HexColor("#3E4153"), fontSize: 14, fontWeight: FontWeight.w900)),
+                  style: GoogleFonts.poppins(
+                      textStyle: TextStyle(
+                          color: HexColor("#3E4153"),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w900)),
                 ),
                 children: [
                   SizedBox(height: 3),
@@ -238,18 +270,26 @@ reBuild(MenuMorePageController menuMorePageController) {
                   GridView.builder(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         childAspectRatio: 1,
-                        crossAxisCount: isTablet() ? 3 : 5, // HERE YOU CAN ADD THE NO OF ITEMS PER LINE
+                        crossAxisCount: isTablet()
+                            ? 3
+                            : 5, // HERE YOU CAN ADD THE NO OF ITEMS PER LINE
                         mainAxisSpacing: 10,
                         crossAxisSpacing: 10),
                     // childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height / 5),
                     shrinkWrap: true,
                     controller: ScrollController(),
                     physics: ClampingScrollPhysics(),
-                    itemCount: menuMorePageController.getSubmenuItemList(mainIndex).length,
+                    itemCount: menuMorePageController
+                        .getSubmenuItemList(mainIndex)
+                        .length,
                     // itemCount: 200,
                     itemBuilder: (context, index) {
                       print("value mainIndex, subIndex: $mainIndex $index");
-                      return getGridItem(menuMorePageController, menuMorePageController.getSubmenuItemList(mainIndex)[index], index);
+                      return getGridItem(
+                          menuMorePageController,
+                          menuMorePageController
+                              .getSubmenuItemList(mainIndex)[index],
+                          index);
                     },
                   )
                 ],
@@ -262,7 +302,8 @@ reBuild(MenuMorePageController menuMorePageController) {
   );
 }
 
-getGridItem(MenuMorePageController menuMorePageController, MenuItemModel model, int index) {
+getGridItem(MenuMorePageController menuMorePageController, MenuItemModel model,
+    int index) {
   return GestureDetector(
     onTap: () {
       menuMorePageController.openItemClick(model);
@@ -274,7 +315,8 @@ getGridItem(MenuMorePageController menuMorePageController, MenuItemModel model, 
         Container(
           child: Material(
             color: menuMorePageController.colorList[index % 8], //color
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
             clipBehavior: Clip.antiAlias,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
@@ -293,7 +335,11 @@ getGridItem(MenuMorePageController menuMorePageController, MenuItemModel model, 
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
             textAlign: TextAlign.center,
-            style: TextStyle(color: (HexColor("#3E4153")), fontSize: 11, fontFamily: "Poppins", fontWeight: FontWeight.bold),
+            style: GoogleFonts.poppins(
+                color: (HexColor("#3E4153")),
+                fontSize: 11,
+                // fontFamily: "Poppins",
+                fontWeight: FontWeight.bold),
           ),
         ),
       ],

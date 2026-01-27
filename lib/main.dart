@@ -30,6 +30,15 @@ import 'package:http/http.dart' as http;
 // import 'package:platform_device_id/platform_device_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 
+void testAssets() async {
+  try {
+    final s = await rootBundle.loadString('AssetManifest.json');
+    print("ASSET MANIFEST LENGTH = ${s.length}");
+  } catch (e) {
+    print("ASSET SYSTEM BROKEN: $e");
+  }
+}
+
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
@@ -80,7 +89,8 @@ Future<void> main() async {
     );
     LogService.writeLog(message: "[OFFLINE_DB_INIT_001][STACK] $st");
   }
-  GoogleFonts.config.allowRuntimeFetching = false;
+  // GoogleFonts.config.allowRuntimeFetching = false;
+  testAssets();
   runApp(MyApp());
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: Colors.black38));

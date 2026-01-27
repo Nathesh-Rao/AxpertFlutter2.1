@@ -7,6 +7,7 @@ import 'package:axpertflutter/ModelPages/ProjectListing/Controller/ProjectListin
 import 'package:axpertflutter/ModelPages/ProjectListing/Widgets/ProjectItemListTile.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 
 import '../../../Utils/LogServices/LogService.dart';
@@ -20,8 +21,10 @@ class ProjectListingPage extends StatefulWidget {
 }
 
 class _ProjectListingPageState extends State<ProjectListingPage> {
-  ProjectListingController projectListingController = Get.put(ProjectListingController());
-  AddConnectionController projectController = Get.put(AddConnectionController());
+  ProjectListingController projectListingController =
+      Get.put(ProjectListingController());
+  AddConnectionController projectController =
+      Get.put(AddConnectionController());
   @override
   void initState() {
     LogService.writeLog(message: "[>] ProjectListingPage");
@@ -62,7 +65,9 @@ class _ProjectListingPageState extends State<ProjectListingPage> {
                     child: ClipRRect(
                       clipBehavior: Clip.antiAliasWithSaveLayer,
                       borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(80), topLeft: Radius.circular(80), topRight: Radius.circular(80)),
+                          bottomLeft: Radius.circular(80),
+                          topLeft: Radius.circular(80),
+                          topRight: Radius.circular(80)),
                       child: Container(
                         height: MediaQuery.of(context).size.height / 1.5,
                         width: MediaQuery.of(context).size.width,
@@ -98,7 +103,8 @@ class _ProjectListingPageState extends State<ProjectListingPage> {
                                         Hero(
                                           tag: 'axpertImage',
                                           child: Padding(
-                                            padding: const EdgeInsets.only(top: 10.0, left: 10),
+                                            padding: const EdgeInsets.only(
+                                                top: 10.0, left: 10),
                                             child: Image.asset(
                                               // 'assets/images/buzzily-logo.png',
                                               'assets/images/axpert_full.png',
@@ -111,14 +117,15 @@ class _ProjectListingPageState extends State<ProjectListingPage> {
                                       ],
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.only(top: 15.0, left: 0, right: 0),
+                                      padding: const EdgeInsets.only(
+                                          top: 15.0, left: 0, right: 0),
                                       child: Text(
                                         'Connect to application',
-                                        style: TextStyle(
+                                        style: GoogleFonts.poppins(
                                           color: MyColors.buzzilyblack,
                                           fontWeight: FontWeight.w600,
                                           fontSize: 20,
-                                          fontFamily: 'Proxima_Nova_Regular',
+                                          // fontFamily: 'Proxima_Nova_Regular',
                                         ),
                                       ),
                                     ),
@@ -129,32 +136,64 @@ class _ProjectListingPageState extends State<ProjectListingPage> {
                                       },
                                       child: Obx(
                                         () => SizedBox(
-                                          height: MediaQuery.of(context).size.height * 0.6,
-                                          child: projectController.projects.isNotEmpty
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.6,
+                                          child: projectController
+                                                  .projects.isNotEmpty
                                               ? ListView.builder(
-                                                  padding: EdgeInsets.only(left: 20, right: 20),
-                                                  itemCount: projectController.projects.length,
+                                                  padding: EdgeInsets.only(
+                                                      left: 20, right: 20),
+                                                  itemCount: projectController
+                                                      .projects.length,
                                                   itemBuilder: (_, index) {
                                                     return GestureDetector(
                                                       onTap: () {
-                                                        print("index data: " + projectController.projects[index].id);
+                                                        print("index data: " +
+                                                            projectController
+                                                                .projects[index]
+                                                                .id);
                                                       },
                                                       child: Dismissible(
                                                           background: Container(
-                                                            margin: EdgeInsets.only(top: 5, bottom: 5),
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                    top: 5,
+                                                                    bottom: 5),
                                                             decoration: BoxDecoration(
-                                                                color: Colors.red,
-                                                                borderRadius: BorderRadius.horizontal(left: Radius.circular(10))),
+                                                                color:
+                                                                    Colors.red,
+                                                                borderRadius: BorderRadius.horizontal(
+                                                                    left: Radius
+                                                                        .circular(
+                                                                            10))),
                                                             child: Row(
-                                                              mainAxisAlignment: MainAxisAlignment.start,
-                                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .center,
                                                               children: [
                                                                 Padding(
-                                                                  padding: const EdgeInsets.only(left: 10),
-                                                                  child: AnimateIcon(
-                                                                    iconType: IconType.continueAnimation,
-                                                                    color: Colors.white,
-                                                                    animateIcon: AnimateIcons.trashBin, onTap: () {},
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .only(
+                                                                          left:
+                                                                              10),
+                                                                  child:
+                                                                      AnimateIcon(
+                                                                    iconType:
+                                                                        IconType
+                                                                            .continueAnimation,
+                                                                    color: Colors
+                                                                        .white,
+                                                                    animateIcon:
+                                                                        AnimateIcons
+                                                                            .trashBin,
+                                                                    onTap:
+                                                                        () {},
 
                                                                     // child: Text(
                                                                     //   "Delete",
@@ -164,25 +203,45 @@ class _ProjectListingPageState extends State<ProjectListingPage> {
                                                               ],
                                                             ),
                                                           ),
-                                                          secondaryBackground: Container(
-                                                            margin: EdgeInsets.only(top: 5, bottom: 5),
+                                                          secondaryBackground:
+                                                              Container(
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                    top: 5,
+                                                                    bottom: 5),
                                                             decoration: BoxDecoration(
-                                                                color: Colors.amber,
-                                                                borderRadius:
-                                                                    BorderRadius.horizontal(right: Radius.circular(10))),
+                                                                color: Colors
+                                                                    .amber,
+                                                                borderRadius: BorderRadius.horizontal(
+                                                                    right: Radius
+                                                                        .circular(
+                                                                            10))),
                                                             child: Row(
-                                                              mainAxisAlignment: MainAxisAlignment.end,
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .end,
                                                               children: [
                                                                 // Text(
                                                                 //   "Edit",
                                                                 //   style: TextStyle(color: Colors.white, fontSize: 18),
                                                                 // ),
                                                                 Padding(
-                                                                  padding: EdgeInsets.only(right: 10),
-                                                                  child: AnimateIcon(
-                                                                    onTap: () {}, animateIcon: AnimateIcons.edit,
-                                                                    iconType: IconType.continueAnimation,
-                                                                    color: Colors.white,
+                                                                  padding: EdgeInsets
+                                                                      .only(
+                                                                          right:
+                                                                              10),
+                                                                  child:
+                                                                      AnimateIcon(
+                                                                    onTap:
+                                                                        () {},
+                                                                    animateIcon:
+                                                                        AnimateIcons
+                                                                            .edit,
+                                                                    iconType:
+                                                                        IconType
+                                                                            .continueAnimation,
+                                                                    color: Colors
+                                                                        .white,
                                                                     // child: Text(
                                                                     //   "Edit",
                                                                     //   style: TextStyle(color: Colors.white, fontSize: 18),
@@ -191,26 +250,43 @@ class _ProjectListingPageState extends State<ProjectListingPage> {
                                                               ],
                                                             ),
                                                           ),
-                                                          confirmDismiss: (direction) async {
-                                                            if (direction == DismissDirection.endToStart) {
-                                                              projectController.edit(projectController.projects[index]);
+                                                          confirmDismiss:
+                                                              (direction) async {
+                                                            if (direction ==
+                                                                DismissDirection
+                                                                    .endToStart) {
+                                                              projectController.edit(
+                                                                  projectController
+                                                                          .projects[
+                                                                      index]);
                                                             }
-                                                            if (direction == DismissDirection.startToEnd) {
-                                                              projectController.delete(projectController.projects[index]);
+                                                            if (direction ==
+                                                                DismissDirection
+                                                                    .startToEnd) {
+                                                              projectController.delete(
+                                                                  projectController
+                                                                          .projects[
+                                                                      index]);
                                                             }
                                                             return false;
                                                           },
                                                           key: ValueKey(index),
-                                                          child: ProjectItemListTile(projectController.projects[index])),
+                                                          child: ProjectItemListTile(
+                                                              projectController
+                                                                      .projects[
+                                                                  index])),
                                                     );
                                                   })
                                               : GestureDetector(
                                                   onTap: () {
-                                                    projectController.clearAllData();
-                                                    Get.toNamed(Routes.AddNewConnection);
+                                                    projectController
+                                                        .clearAllData();
+                                                    Get.toNamed(Routes
+                                                        .AddNewConnection);
                                                   },
                                                   child: Container(
-                                                    padding: EdgeInsets.only(top: 250),
+                                                    padding: EdgeInsets.only(
+                                                        top: 250),
                                                     height: 50,
                                                     child: Column(
                                                       children: [
@@ -218,11 +294,19 @@ class _ProjectListingPageState extends State<ProjectListingPage> {
                                                           height: 50,
                                                           width: 250,
                                                           decoration: BoxDecoration(
-                                                              color: MyColors.blue2, borderRadius: BorderRadius.circular(30)),
+                                                              color: MyColors
+                                                                  .blue2,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          30)),
                                                           child: Center(
                                                             child: Text(
                                                               "+ Add Connection",
-                                                              style: TextStyle(color: Colors.white, fontSize: 20),
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 20),
                                                             ),
                                                           ),
 
@@ -246,7 +330,8 @@ class _ProjectListingPageState extends State<ProjectListingPage> {
               ],
             ),
           ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
           floatingActionButton: Obx(
             () => Visibility(
               visible: projectController.projects.isNotEmpty,
@@ -259,11 +344,11 @@ class _ProjectListingPageState extends State<ProjectListingPage> {
                 },
                 label: Text(
                   'Add Connection',
-                  style: TextStyle(
+                  style: GoogleFonts.poppins(
                     color: MyColors.white1,
                     fontWeight: FontWeight.w900,
                     fontSize: 15,
-                    fontFamily: 'Proxima_Nova_Regular',
+                    // fontFamily: 'Proxima_Nova_Regular',
                   ),
                 ),
                 icon: Icon(Icons.add, color: MyColors.white1, size: 25),
@@ -276,7 +361,8 @@ class _ProjectListingPageState extends State<ProjectListingPage> {
   _NavigateToAddConnectionPage() async {
     var data = await Get.toNamed(Routes.AddNewConnection);
     if (data != null) {
-      if (projectListingController.isCountAvailable.value == false) projectListingController.isCountAvailable.value = true;
+      if (projectListingController.isCountAvailable.value == false)
+        projectListingController.isCountAvailable.value = true;
       setState(() {
         projectListingController.getProjectList();
       });

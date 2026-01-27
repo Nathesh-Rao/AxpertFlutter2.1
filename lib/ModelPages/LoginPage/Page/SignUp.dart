@@ -37,11 +37,11 @@ class _SignUpUserState extends State<SignUpUser> {
                 icon: Icon(Icons.arrow_back_ios)),
             title: Text(
               "Sign Up",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  color: HexColor("#000000"),
-                  fontFamily: 'redhatsmbold'),
+              style: GoogleFonts.redHatMono(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                color: HexColor("#000000"),
+              ),
             ),
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
@@ -66,34 +66,34 @@ class _SignUpUserState extends State<SignUpUser> {
                             'Welcome ' +
                                 signUpController.userNameController.text.trim(),
                             textAlign: TextAlign.left,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize:
-                                    MediaQuery.of(context).size.height * 0.02,
-                                color: MyColors.blue2,
-                                fontFamily: 'opensansbold'),
+                            style: GoogleFonts.openSans(
+                              fontWeight: FontWeight.bold,
+                              fontSize:
+                                  MediaQuery.of(context).size.height * 0.02,
+                              color: MyColors.blue2,
+                            ),
                           ),
                           SizedBox(height: 20),
                           Text(
                             'Enter OTP',
                             textAlign: TextAlign.left,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize:
-                                    MediaQuery.of(context).size.height * 0.02,
-                                color: MyColors.blue1,
-                                fontFamily: 'poppinssemibold'),
+                            style: GoogleFonts.openSans(
+                              fontWeight: FontWeight.bold,
+                              fontSize:
+                                  MediaQuery.of(context).size.height * 0.02,
+                              color: MyColors.blue1,
+                            ),
                           ),
                           SizedBox(height: 20),
                           Text(
                             "OTP Sent Successfully",
                             textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontWeight: FontWeight.normal,
-                                fontSize:
-                                    MediaQuery.of(context).size.height * 0.02,
-                                color: MyColors.blue2,
-                                fontFamily: 'opensansbold'),
+                            style: GoogleFonts.openSans(
+                              fontWeight: FontWeight.normal,
+                              fontSize:
+                                  MediaQuery.of(context).size.height * 0.02,
+                              color: MyColors.blue2,
+                            ),
                           ),
                           SizedBox(height: 30),
                           SizedBox(
@@ -128,10 +128,10 @@ class _SignUpUserState extends State<SignUpUser> {
                           SizedBox(height: 20),
                           Text(
                             signUpController.errOtp.value,
-                            style: const TextStyle(
-                                color: MyColors.red,
-                                fontSize: 12,
-                                fontFamily: 'opensansbold'),
+                            style: GoogleFonts.openSans(
+                              color: MyColors.red,
+                              fontSize: 12,
+                            ),
                           ),
                           SizedBox(height: 30),
                           GestureDetector(
@@ -180,9 +180,9 @@ class _SignUpUserState extends State<SignUpUser> {
                                             width: 2, color: MyColors.blue2)),
                                     child: Text(
                                       "Resend OTP",
-                                      style: TextStyle(
+                                      style: GoogleFonts.redHatText(
                                           color: MyColors.blue2,
-                                          fontFamily: 'redhabold',
+                                          // fontFamily: 'redhabold',
                                           fontSize: MediaQuery.of(context)
                                                   .size
                                                   .height *
@@ -210,7 +210,7 @@ class _SignUpUserState extends State<SignUpUser> {
                               ? Column(
                                   children: [
                                     DropdownButtonFormField(
-                                        value: signUpController
+                                        initialValue: signUpController
                                             .ddSelectedValue.value,
                                         isExpanded: true,
                                         items: signUpController
@@ -365,10 +365,10 @@ class _SignUpUserState extends State<SignUpUser> {
                                               color: HexColor("#E2E1E6")),
                                         ),
                                         hintText: 'Confirm Password',
-                                        hintStyle: TextStyle(
+                                        hintStyle: GoogleFonts.poppins(
                                             fontWeight: FontWeight.w600,
                                             fontSize: 15,
-                                            fontFamily: 'Poppins',
+                                            // fontFamily: 'Poppins',
                                             color: HexColor("#3E4153")),
                                         prefixIcon: Icon(
                                           Icons.lock,
@@ -389,9 +389,9 @@ class _SignUpUserState extends State<SignUpUser> {
                                         ),
                                         filled: true,
                                         fillColor: MyColors.white1,
-                                        labelStyle: const TextStyle(
+                                        labelStyle: GoogleFonts.poppins(
                                           fontSize: 22,
-                                          fontFamily: 'Poppins',
+                                          // fontFamily: 'Poppins',
                                         ),
                                         contentPadding: const EdgeInsets.only(
                                             top: 15, left: 10),
@@ -419,10 +419,10 @@ class _SignUpUserState extends State<SignUpUser> {
                                                 color: HexColor("#E2E1E6")),
                                           ),
                                           hintText: 'Email',
-                                          hintStyle: TextStyle(
+                                          hintStyle: GoogleFonts.poppins(
                                               fontWeight: FontWeight.w600,
                                               fontSize: 15,
-                                              fontFamily: 'Poppins',
+                                              // fontFamily: 'Poppins',
                                               color: HexColor("#3E4153")),
                                           prefixIcon: Icon(
                                             Icons.email,
@@ -465,10 +465,10 @@ class _SignUpUserState extends State<SignUpUser> {
                                                 color: HexColor("#E2E1E6")),
                                           ),
                                           hintText: 'Mobile No',
-                                          hintStyle: TextStyle(
+                                          hintStyle: GoogleFonts.poppins(
                                               fontWeight: FontWeight.w600,
                                               fontSize: 15,
-                                              fontFamily: 'Poppins',
+                                              // fontFamily: 'Poppins',
                                               color: HexColor("#3E4153")),
                                           prefixIcon: Icon(
                                             Icons.phone_android,
@@ -497,10 +497,10 @@ class _SignUpUserState extends State<SignUpUser> {
                                                   BorderRadius.circular(20)),
                                           child: Center(
                                             child: Text('Register',
-                                                style: TextStyle(
+                                                style: GoogleFonts.poppins(
                                                     fontWeight: FontWeight.w500,
                                                     fontSize: 16,
-                                                    fontFamily: 'Poppins',
+                                                    // fontFamily: 'Poppins',
                                                     color: MyColors.white1)),
                                           ),
                                         ),
@@ -514,10 +514,10 @@ class _SignUpUserState extends State<SignUpUser> {
                                       child: Text(
                                     "Only Internal or External users are eligible to Register. \n \nPlease contact Axpert Support.",
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
+                                    style: GoogleFonts.poppins(
                                         fontWeight: FontWeight.w400,
                                         fontSize: 12,
-                                        fontFamily: 'Poppins',
+                                        // fontFamily: 'Poppins',
                                         letterSpacing: 1,
                                         color: Colors.black),
                                   ))),
@@ -535,18 +535,18 @@ class _SignUpUserState extends State<SignUpUser> {
                                 children: [
                                   Text("Existing User ?",
                                       textAlign: TextAlign.center,
-                                      style: TextStyle(
+                                      style: GoogleFonts.poppins(
                                           fontWeight: FontWeight.w600,
                                           fontSize: 12,
-                                          fontFamily: 'Poppins',
+                                          // fontFamily: 'Poppins',
                                           color: HexColor("#3E4153"))),
                                   Text(
                                     "Sign In",
-                                    style: TextStyle(
+                                    style: GoogleFonts.poppins(
                                         decoration: TextDecoration.underline,
                                         fontWeight: FontWeight.w600,
                                         fontSize: 12,
-                                        fontFamily: 'Poppins',
+                                        // fontFamily: 'Poppins',
                                         color: HexColor("#4E9AF5")),
                                   ),
                                 ],
@@ -557,10 +557,10 @@ class _SignUpUserState extends State<SignUpUser> {
                           FittedBox(
                             child: Text(
                               "By using the software, you agree to the",
-                              style: TextStyle(
+                              style: GoogleFonts.poppins(
                                   fontWeight: FontWeight.w400,
                                   fontSize: 12,
-                                  fontFamily: 'Poppins',
+                                  // fontFamily: 'Poppins',
                                   letterSpacing: 1,
                                   color: Colors.black),
                             ),
@@ -575,7 +575,7 @@ class _SignUpUserState extends State<SignUpUser> {
                                       decoration: TextDecoration.underline,
                                       fontWeight: FontWeight.w400,
                                       fontSize: 12,
-                                      fontFamily: 'Poppins',
+                                      // fontFamily: 'Poppins',
                                       color: Colors.blue,
                                       letterSpacing: 1),
                                 ),
@@ -583,10 +583,10 @@ class _SignUpUserState extends State<SignUpUser> {
                               FittedBox(
                                 child: Text(
                                   " and the",
-                                  style: TextStyle(
+                                  style: GoogleFonts.poppins(
                                       fontWeight: FontWeight.w400,
                                       fontSize: 12,
-                                      fontFamily: 'Poppins',
+                                      // fontFamily: 'Poppins',
                                       color: Colors.black,
                                       letterSpacing: 1),
                                 ),
@@ -594,11 +594,11 @@ class _SignUpUserState extends State<SignUpUser> {
                               FittedBox(
                                 child: Text(
                                   " Terms of Use",
-                                  style: TextStyle(
+                                  style: GoogleFonts.poppins(
                                       decoration: TextDecoration.underline,
                                       fontWeight: FontWeight.w400,
                                       fontSize: 12,
-                                      fontFamily: 'Poppins',
+                                      // fontFamily: 'Poppins',
                                       color: Colors.blue,
                                       letterSpacing: 1),
                                 ),
@@ -609,10 +609,10 @@ class _SignUpUserState extends State<SignUpUser> {
                           Text(
                             "Powered By",
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 12,
-                                fontFamily: 'Poppins',
+                                // fontFamily: 'Poppins',
                                 color: Colors.black,
                                 letterSpacing: 1),
                           ),

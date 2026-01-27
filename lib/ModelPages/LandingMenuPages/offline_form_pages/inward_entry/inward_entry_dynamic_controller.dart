@@ -1,19 +1,13 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:developer';
-import 'dart:js_interop';
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/db/offline_db_module.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/inward_entry/inward_entry_consolidated_page.dart';
-import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:axpertflutter/Utils/ServerConnections/InternetConnectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
-
-import 'inward_entry_schema.dart';
 
 class InwardEntryDynamicController extends GetxController {
   // ================== SCHEMA ==================
@@ -130,11 +124,20 @@ class InwardEntryDynamicController extends GetxController {
     for (final f in fields) {
       final String name = f["fld_name"];
       final String type = f["fld_type"];
+      final String defValue = f["def_value"]?.toString() ?? "";
 
       if (type == "dd") {
         dropdownCtrls[name] = "".obs;
+
+        if (defValue.isNotEmpty) {
+          List<String> validOptions = getDropdownOptions(name);
+
+          if (validOptions.contains(defValue)) {
+            dropdownCtrls[name]!.value = defValue;
+          }
+        }
       } else {
-        textCtrls[name] = TextEditingController();
+        textCtrls[name] = TextEditingController(text: defValue);
       }
     }
   }

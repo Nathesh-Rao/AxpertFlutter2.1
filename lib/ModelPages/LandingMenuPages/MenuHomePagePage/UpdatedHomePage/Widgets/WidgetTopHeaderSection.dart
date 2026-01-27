@@ -99,16 +99,16 @@ class WidgetTopHeaderSection extends StatelessWidget {
                     focusNode: fn,
                     decoration: InputDecoration(
                       hintText: 'Search',
-                      hintStyle: TextStyle(
+                      hintStyle: GoogleFonts.poppins(
                         fontSize: 14,
-                        fontFamily: 'Poppins',
+                        // fontFamily: 'Poppins',
                         //color: HexColor("#8E8E8E"),
                       ),
                       filled: true,
                       //fillColor: HexColor("#FFFFFF"),
-                      labelStyle: TextStyle(
+                      labelStyle: GoogleFonts.poppins(
                         fontSize: 15,
-                        fontFamily: 'Poppins',
+                        // fontFamily: 'Poppins',
                         //  color: HexColor("#8B193F"),
                       ),
                       contentPadding: EdgeInsets.only(left: 10),

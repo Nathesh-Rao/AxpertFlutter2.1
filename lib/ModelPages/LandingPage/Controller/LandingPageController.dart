@@ -1254,8 +1254,8 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
                           obscureText: !showOldPass.value,
                           keyboardType: TextInputType.text,
                           onChanged: (value) {},
-                          style: const TextStyle(
-                              fontFamily: "nunitobold", fontSize: 14.0),
+                          style:GoogleFonts.nunitoSans(
+                            ),
                           decoration: InputDecoration(
                             labelText: 'Existing Password',
                             hintText: 'Enter your old password',
@@ -1278,8 +1278,8 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
                           obscureText: !showNewPass.value,
                           keyboardType: TextInputType.text,
                           onChanged: (value) {},
-                          style: const TextStyle(
-                              fontFamily: "nunitobold", fontSize: 14.0),
+                          style:  GoogleFonts.nunitoSans(
+                          fontSize: 14.0),
                           decoration: InputDecoration(
                             labelText: 'New Password',
                             hintText: 'Enter your new password',
@@ -1302,8 +1302,8 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
                           obscureText: !showConNewPass.value,
                           keyboardType: TextInputType.text,
                           onChanged: (value) {},
-                          style: const TextStyle(
-                              fontFamily: "nunitobold", fontSize: 14.0),
+                          style: GoogleFonts.nunitoSans(
+                              fontSize: 14.0),
                           decoration: InputDecoration(
                             labelText: 'Confrmation Password',
                             hintText: 'Enter your Confrmation password',
@@ -1345,10 +1345,10 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
                                     child: Text(
                                       'Save',
                                       textAlign: TextAlign.center,
-                                      style: TextStyle(
+                                      style: GoogleFonts.nunitoSans(
                                           color: Colors.white,
                                           fontSize: 14,
-                                          fontFamily: "nunitoreg"),
+                                        ),
                                     ),
                                   ),
                                 ),
@@ -1420,7 +1420,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
           controller: userCtrl,
           enableInteractiveSelection: false,
           keyboardType: TextInputType.text,
-          style: const TextStyle(fontFamily: "nunitobold", fontSize: 14.0),
+          style: GoogleFonts.nunitoSans( fontSize: 14.0),
           decoration: const InputDecoration(
             labelText: 'User Name',
             hintText: 'User Name',
@@ -1438,12 +1438,12 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
               borderRadius: BorderRadius.all(Radius.circular(5)),
             ),
             padding: const EdgeInsets.fromLTRB(3.0, 6.0, 3.0, 3.0),
-            child: Column(children: const [
+            child: Column(children:  [
               Text(
                 'Cancel',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: Colors.white, fontSize: 14, fontFamily: "nunitoreg"),
+                style: GoogleFonts.nunitoSans(
+                    color: Colors.white, fontSize: 14, ),
               ),
             ]),
           ),
@@ -1461,7 +1461,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
               obscureText: !showOldPass.value,
               keyboardType: TextInputType.text,
               onChanged: (value) {},
-              style: const TextStyle(fontFamily: "nunitobold", fontSize: 14.0),
+              style: GoogleFonts.nunitoSans(fontSize: 14.0),
               decoration: InputDecoration(
                 labelText: 'Old Password',
                 hintText: 'Enter your old password',
@@ -1482,7 +1482,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
               obscureText: !showNewPass.value,
               keyboardType: TextInputType.text,
               onChanged: (value) {},
-              style: const TextStyle(fontFamily: "nunitobold", fontSize: 14.0),
+              style: GoogleFonts.nunitoSans( fontSize: 14.0),
               decoration: InputDecoration(
                 labelText: 'New Password',
                 hintText: 'Enter your new password',
@@ -1503,7 +1503,7 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
               obscureText: !showConNewPass.value,
               keyboardType: TextInputType.text,
               onChanged: (value) {},
-              style: const TextStyle(fontFamily: "nunitobold", fontSize: 14.0),
+              style: GoogleFonts.nunitoSans( fontSize: 14.0),
               decoration: InputDecoration(
                 labelText: 'Confrmation Password',
                 hintText: 'Enter your Confrmation password',
@@ -1536,13 +1536,13 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
                       borderRadius: BorderRadius.all(Radius.circular(5)),
                     ),
                     padding: const EdgeInsets.fromLTRB(3.0, 6.0, 3.0, 3.0),
-                    child: Column(children: const [
+                    child: Column(children:  [
                       Text('Cancel',
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: GoogleFonts.nunitoSans(
                               color: Colors.white,
                               fontSize: 14,
-                              fontFamily: "nunitoreg"))
+                          ))
                     ]),
                   ),
                 ),
@@ -1569,10 +1569,11 @@ class LandingPageController extends GetxController with WidgetsBindingObserver {
                     child: Text(
                       'Update',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontFamily: "nunitoreg"),
+                      style: GoogleFonts.nunitoSans(
+                        color: Colors.white,
+                        fontSize: 14,
+                        // fontFamily: "nunitoreg",
+                      ),
                     ),
                   ),
                 ),
