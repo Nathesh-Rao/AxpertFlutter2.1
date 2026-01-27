@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:path_provider/path_provider.dart'; // To get safe storage location
+import 'package:path/path.dart' as p;
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lottie/lottie.dart';
 
 import 'inward_entry_dynamic_controller.dart';
 
@@ -705,8 +705,8 @@ class InwardEntryConsolidatedPage
   }
   // ================= IMAGE THUMB =================
 
-  Widget _imageThumb(String key, int index, String b64) {
-    final bytes = base64Decode(b64);
+  Widget _imageThumb(String key, int index, String path) {
+    ImageProvider imageProvider = FileImage(File(path));
     var isTablet = Get.width > 600;
     return Stack(
       children: [
@@ -718,7 +718,7 @@ class InwardEntryConsolidatedPage
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: MyColors.baseBlue.withAlpha(50)),
             image: DecorationImage(
-              image: MemoryImage(bytes),
+              image: imageProvider,
               fit: BoxFit.cover,
             ),
           ),
@@ -763,16 +763,48 @@ class InwardEntryConsolidatedPage
     );
   }
 
+  // Future<void> _pickImages(String key) async {
+  //   final picker = ImagePicker();
+  //   final XFile? image = await picker.pickImage(source: ImageSource.camera);
+  //   if (image != null) {
+  //     final bytes = await File(image.path).readAsBytes();
+  //     final b64 = base64Encode(bytes);
+
+  //     controller.imageAttachmentJson[key]!.add(b64);
+
+  //     controller.imageAttachmentJson.refresh();
+  //     controller.validateImages(isPartial: true);
+  //   }
+  // }
+
   Future<void> _pickImages(String key) async {
     final picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.camera);
-    if (image != null) {
-      final bytes = await File(image.path).readAsBytes();
-      final b64 = base64Encode(bytes);
 
-      controller.imageAttachmentJson[key]!.add(b64);
+    // 1. Pick Image (Recommended: Reduce quality to save storage/bandwidth)
+    final XFile? image = await picker.pickImage(
+      source: ImageSource.camera,
+    );
+
+    if (image != null) {
+      final directory = await getApplicationDocumentsDirectory();
+
+      final String fileName =
+          '${DateTime.now().millisecondsSinceEpoch}_${p.basename(image.path)}';
+      final String localPath = '${directory.path}/$fileName';
+
+      await File(image.path).copy(localPath);
+
+      if (controller.imageAttachmentJson[key] == null) {
+        controller.imageAttachmentJson[key] = [];
+      }
+      controller.imageAttachmentJson[key]!.add(localPath);
 
       controller.imageAttachmentJson.refresh();
+
+      if (controller.imageErrors[key] == true) {
+        controller.imageErrors[key] = false;
+      }
+
       controller.validateImages(isPartial: true);
     }
   }

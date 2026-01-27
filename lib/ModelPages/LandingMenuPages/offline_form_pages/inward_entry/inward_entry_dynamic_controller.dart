@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/db/offline_db_module.dart';
@@ -1240,7 +1241,7 @@ class InwardEntryDynamicController extends GetxController {
       var forceOffline = schema["force_offline"];
       submitStatus.value = "Generating form data...";
       final Map<String, dynamic> mainBody = generateSubmitPayload();
-
+      log(mainBody.toString(), name: "MAIN_BODY");
       submitStatus.value = "Submitting Master Form...";
 
       final SubmitStatus mainStatus = await OfflineDbModule.submitFormSmart(

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:axpertflutter/Constants/AppStorage.dart';
 import 'package:axpertflutter/Constants/Const.dart';
@@ -625,20 +626,17 @@ class OfflineDbModule {
     required bool isInternetAvailable,
     required bool force_offline,
   }) async {
-    // 1. ONLINE SUBMISSION
     if (isInternetAvailable && !force_offline) {
       try {
-        // Initialize ServerConnections (Assuming default constructor works)
-        // If you use GetX dependency injection, use: Get.find<ServerConnections>()
         final ServerConnections serverConnections = ServerConnections();
 
         final String url =
             Const.getFullARMUrl(ExecuteApi.API_ARM_EXECUTE_PUBLISHED);
-
-        // --- NEW API CALL ---
+        final Map<String, dynamic> uploadPayload =
+            await _convertPayloadPathsToBase64(submitBody);
         final dynamic responseStr = await serverConnections.postToServer(
           url: url,
-          body: jsonEncode(submitBody),
+          body: jsonEncode(uploadPayload),
           isBearer: true,
         );
         log(jsonEncode(submitBody), name: "SUBMIT_RESPONSE_BODY");
@@ -649,6 +647,7 @@ class OfflineDbModule {
 
           if (decoded is Map<String, dynamic>) {
             if (decoded['success'] == true) {
+              await _deletePayloadFiles(submitBody);
               return SubmitStatus.success;
             } else {
               final msg = decoded['message'] ?? "Unknown Error";
@@ -670,7 +669,8 @@ class OfflineDbModule {
       {
         OfflineDBConstants.COL_USERNAME: username,
         OfflineDBConstants.COL_PROJECT_NAME: projectName,
-        OfflineDBConstants.COL_REQUEST_JSON: jsonEncode(submitBody),
+        OfflineDBConstants.COL_REQUEST_JSON:
+            jsonEncode(submitBody), // Saving Paths
         OfflineDBConstants.COL_STATUS: OfflineDBConstants.STATUS_PENDING,
         OfflineDBConstants.COL_CREATED_AT: DateTime.now().toIso8601String(),
       },
@@ -765,115 +765,6 @@ class OfflineDbModule {
   //   return "Processed: $successCount success, $failCount failed";
   // }
 
-  static Future<String> processPendingQueue(
-      {required bool isInternetAvailable}) async {
-    if (!isInternetAvailable) return "No internet connection";
-
-    final scope = await _getLastOfflineUserScope();
-    if (scope == null) return "No user session found";
-
-    final username = scope['username']!;
-    final projectName = scope['projectName']!;
-
-    final String currentSessionId =
-        AppStorage().retrieveValue(AppStorage.SESSIONID) ?? "";
-    if (currentSessionId.isEmpty) return "No active session to sync";
-
-    // --- FIX START: Fetch ONLY IDs first ---
-    final idRows = await _database.query(
-      OfflineDBConstants.TABLE_PENDING_REQUESTS,
-      columns: [OfflineDBConstants.COL_ID], // <--- Only fetch ID
-      where: '''
-      ${OfflineDBConstants.COL_STATUS} IN (${OfflineDBConstants.STATUS_PENDING}, ${OfflineDBConstants.STATUS_ERROR})
-      AND ${OfflineDBConstants.COL_USERNAME} = ?
-      AND ${OfflineDBConstants.COL_PROJECT_NAME} = ?
-    ''',
-      whereArgs: [username, projectName],
-      orderBy: OfflineDBConstants.COL_CREATED_AT,
-    );
-
-    if (idRows.isEmpty) return "Queue is empty";
-    // --- FIX END ---
-
-    int successCount = 0;
-    int failCount = 0;
-
-    final ServerConnections serverConnections = ServerConnections();
-    final String url =
-        Const.getFullARMUrl(ExecuteApi.API_ARM_EXECUTE_PUBLISHED);
-
-    // Loop through IDs one by one
-    for (final row in idRows) {
-      final id = row[OfflineDBConstants.COL_ID] as int;
-
-      try {
-        // --- FETCH HEAVY DATA INDIVIDUALLY ---
-        // We fetch the JSON only for this specific ID.
-        // This ensures the CursorWindow only holds ONE heavy row at a time.
-        final List<Map<String, Object?>> heavyRow = await _database.query(
-          OfflineDBConstants.TABLE_PENDING_REQUESTS,
-          columns: [OfflineDBConstants.COL_REQUEST_JSON],
-          where: '${OfflineDBConstants.COL_ID} = ?',
-          whereArgs: [id],
-        );
-
-        if (heavyRow.isEmpty) continue; // Should not happen, but safe check
-
-        final bodyStr =
-            heavyRow.first[OfflineDBConstants.COL_REQUEST_JSON] as String;
-
-        // ----------------------------------------
-        // ... Rest of your existing upload logic ...
-        final Map<String, dynamic> payload = jsonDecode(bodyStr);
-
-        payload['ARMSessionId'] = currentSessionId;
-
-        final dynamic res = await serverConnections.postToServer(
-          url: url,
-          body: jsonEncode(payload),
-          isBearer: true,
-        );
-
-        bool isSuccess = false;
-        if (res != null && res.isNotEmpty) {
-          try {
-            final decoded = jsonDecode(res);
-            if (decoded is Map<String, dynamic> && decoded['success'] == true) {
-              isSuccess = true;
-            } else {
-              LogService.writeLog(
-                  message: "[QUEUE_FAIL] ID: $id - Msg: ${decoded['message']}");
-            }
-          } catch (_) {}
-        }
-
-        // Update status
-        await _database.update(
-          OfflineDBConstants.TABLE_PENDING_REQUESTS,
-          {
-            OfflineDBConstants.COL_STATUS: isSuccess
-                ? OfflineDBConstants.STATUS_SUCCESS
-                : OfflineDBConstants.STATUS_ERROR,
-            // Optional: Clear the JSON blob on success to free up space?
-            // OfflineDBConstants.COL_REQUEST_JSON: isSuccess ? "" : bodyStr
-          },
-          where: '${OfflineDBConstants.COL_ID} = ?',
-          whereArgs: [id],
-        );
-
-        if (isSuccess)
-          successCount++;
-        else
-          failCount++;
-      } catch (e) {
-        failCount++;
-        LogService.writeLog(message: "[QUEUE_PROCESS_ERROR] ID: $id - $e");
-      }
-    }
-
-    return "Processed: $successCount success, $failCount failed";
-  }
-  // ==============================================================================
   // static Future<String> processPendingQueue(
   //     {required bool isInternetAvailable}) async {
   //   if (!isInternetAvailable) return "No internet connection";
@@ -891,7 +782,7 @@ class OfflineDbModule {
   //   // --- FIX START: Fetch ONLY IDs first ---
   //   final idRows = await _database.query(
   //     OfflineDBConstants.TABLE_PENDING_REQUESTS,
-  //     columns: [OfflineDBConstants.COL_ID],
+  //     columns: [OfflineDBConstants.COL_ID], // <--- Only fetch ID
   //     where: '''
   //     ${OfflineDBConstants.COL_STATUS} IN (${OfflineDBConstants.STATUS_PENDING}, ${OfflineDBConstants.STATUS_ERROR})
   //     AND ${OfflineDBConstants.COL_USERNAME} = ?
@@ -911,11 +802,14 @@ class OfflineDbModule {
   //   final String url =
   //       Const.getFullARMUrl(ExecuteApi.API_ARM_EXECUTE_PUBLISHED);
 
+  //   // Loop through IDs one by one
   //   for (final row in idRows) {
   //     final id = row[OfflineDBConstants.COL_ID] as int;
 
   //     try {
   //       // --- FETCH HEAVY DATA INDIVIDUALLY ---
+  //       // We fetch the JSON only for this specific ID.
+  //       // This ensures the CursorWindow only holds ONE heavy row at a time.
   //       final List<Map<String, Object?>> heavyRow = await _database.query(
   //         OfflineDBConstants.TABLE_PENDING_REQUESTS,
   //         columns: [OfflineDBConstants.COL_REQUEST_JSON],
@@ -929,7 +823,7 @@ class OfflineDbModule {
   //           heavyRow.first[OfflineDBConstants.COL_REQUEST_JSON] as String;
 
   //       // ----------------------------------------
-
+  //       // ... Rest of your existing upload logic ...
   //       final Map<String, dynamic> payload = jsonDecode(bodyStr);
 
   //       payload['ARMSessionId'] = currentSessionId;
@@ -960,8 +854,7 @@ class OfflineDbModule {
   //           OfflineDBConstants.COL_STATUS: isSuccess
   //               ? OfflineDBConstants.STATUS_SUCCESS
   //               : OfflineDBConstants.STATUS_ERROR,
-  //           // Optional: Clear the JSON blob on success to free up space?
-  //           // OfflineDBConstants.COL_REQUEST_JSON: isSuccess ? "" : bodyStr
+
   //         },
   //         where: '${OfflineDBConstants.COL_ID} = ?',
   //         whereArgs: [id],
@@ -979,6 +872,200 @@ class OfflineDbModule {
 
   //   return "Processed: $successCount success, $failCount failed";
   // }
+
+  static Future<String> processPendingQueue({
+    required bool isInternetAvailable,
+    Function(int current, int total)? onProgress, // Optional UI callback
+  }) async {
+    if (!isInternetAvailable) return "No internet connection";
+
+    final scope = await _getLastOfflineUserScope();
+    if (scope == null) return "No user session found";
+
+    final username = scope['username']!;
+    final projectName = scope['projectName']!;
+
+    final String currentSessionId =
+        AppStorage().retrieveValue(AppStorage.SESSIONID) ?? "";
+    if (currentSessionId.isEmpty) return "No active session to sync";
+
+    // 1. Fetch ONLY IDs first (Lightweight)
+    final idRows = await _database.query(
+      OfflineDBConstants.TABLE_PENDING_REQUESTS,
+      columns: [OfflineDBConstants.COL_ID],
+      where: '''
+      ${OfflineDBConstants.COL_STATUS} IN (${OfflineDBConstants.STATUS_PENDING}, ${OfflineDBConstants.STATUS_ERROR})
+      AND ${OfflineDBConstants.COL_USERNAME} = ?
+      AND ${OfflineDBConstants.COL_PROJECT_NAME} = ?
+    ''',
+      whereArgs: [username, projectName],
+      orderBy: OfflineDBConstants.COL_CREATED_AT,
+    );
+
+    if (idRows.isEmpty) return "Queue is empty";
+
+    int successCount = 0;
+    int failCount = 0;
+    int total = idRows.length;
+
+    final ServerConnections serverConnections = ServerConnections();
+    final String url =
+        Const.getFullARMUrl(ExecuteApi.API_ARM_EXECUTE_PUBLISHED);
+
+    // 2. Loop through IDs
+    for (int i = 0; i < total; i++) {
+      final row = idRows[i];
+      final id = row[OfflineDBConstants.COL_ID] as int;
+
+      // Update UI Progress
+      if (onProgress != null) onProgress(i + 1, total);
+
+      try {
+        // 3. SAFE READ: Use _readLargeString (Chunking)
+        // This handles both new small JSONs and old massive JSONs safely.
+        final bodyStr = await _readLargeString(
+          table: OfflineDBConstants.TABLE_PENDING_REQUESTS,
+          column: OfflineDBConstants.COL_REQUEST_JSON,
+          where: '${OfflineDBConstants.COL_ID} = ?',
+          whereArgs: [id],
+        );
+
+        if (bodyStr == null || bodyStr.isEmpty) {
+          LogService.writeLog(message: "[QUEUE_SKIP] ID: $id - Empty body");
+          continue;
+        }
+
+        // 4. Decode & Prep
+        final Map<String, dynamic> originalPayload = jsonDecode(bodyStr);
+        originalPayload['ARMSessionId'] = currentSessionId;
+
+        // 5. CONVERT PATHS -> BASE64 (The Magic Step)
+        // This reads local files and creates a temporary upload-ready map
+        final Map<String, dynamic> uploadPayload =
+            await _convertPayloadPathsToBase64(originalPayload);
+
+        // 6. UPLOAD
+        final dynamic res = await serverConnections.postToServer(
+          url: url,
+          body: jsonEncode(uploadPayload),
+          isBearer: true,
+        );
+
+        // 7. CHECK SUCCESS
+        bool isSuccess = false;
+        String? errorMsg;
+
+        if (res != null && res.isNotEmpty) {
+          try {
+            final decoded = jsonDecode(res);
+            if (decoded is Map<String, dynamic> && decoded['success'] == true) {
+              isSuccess = true;
+            } else {
+              errorMsg = decoded['message'] ?? "Unknown Server Error";
+            }
+          } catch (e) {
+            errorMsg = "Parse Error: $e";
+          }
+        } else {
+          errorMsg = "Empty Response";
+        }
+
+        if (isSuccess) {
+          // 8. CLEANUP: Delete local files to free space
+          await _deletePayloadFiles(originalPayload);
+          successCount++;
+        } else {
+          failCount++;
+          LogService.writeLog(message: "[QUEUE_FAIL] ID: $id - $errorMsg");
+        }
+
+        // 9. UPDATE STATUS
+        await _database.update(
+          OfflineDBConstants.TABLE_PENDING_REQUESTS,
+          {
+            OfflineDBConstants.COL_STATUS: isSuccess
+                ? OfflineDBConstants.STATUS_SUCCESS
+                : OfflineDBConstants.STATUS_ERROR,
+          },
+          where: '${OfflineDBConstants.COL_ID} = ?',
+          whereArgs: [id],
+        );
+      } catch (e) {
+        failCount++;
+        LogService.writeLog(message: "[QUEUE_PROCESS_ERROR] ID: $id - $e");
+      }
+    }
+
+    return "Processed: $successCount success, $failCount failed";
+  }
+
+  static Future<Map<String, dynamic>> _convertPayloadPathsToBase64(
+      Map<String, dynamic> originalBody) async {
+    Map<String, dynamic> payload = jsonDecode(jsonEncode(originalBody));
+
+    await _recursivePathProcessor(payload, _convertAction);
+
+    return payload;
+  }
+
+  static Future<dynamic> _convertAction(dynamic value) async {
+    if (value is String && value.startsWith('/')) {
+      final file = File(value);
+      if (await file.exists()) {
+        final bytes = await file.readAsBytes();
+        return base64Encode(bytes);
+      } else {
+        return "";
+      }
+    }
+  }
+
+  static Future<void> _deletePayloadFiles(Map<String, dynamic> body) async {
+    await _recursivePathProcessor(body, _deleteAction);
+  }
+
+  static Future<void> _recursivePathProcessor(
+    dynamic data,
+    Future<dynamic> Function(dynamic) action,
+  ) async {
+    if (data is Map<String, dynamic>) {
+      for (var key in data.keys) {
+        if (key == 'fileasbase64') {
+          var value = data[key];
+
+          if (value is String) {
+            data[key] = await action(value);
+          } else if (value is List) {
+            for (int i = 0; i < value.length; i++) {
+              value[i] = await action(value[i]);
+            }
+          }
+        } else {
+          await _recursivePathProcessor(data[key], action);
+        }
+      }
+    } else if (data is List) {
+      for (var item in data) {
+        await _recursivePathProcessor(item, action);
+      }
+    }
+  }
+
+  // Helper action: Delete File
+  static Future<dynamic> _deleteAction(dynamic value) async {
+    if (value is String && value.startsWith('/')) {
+      final file = File(value);
+      try {
+        if (await file.exists()) {
+          await file.delete();
+          print("Deleted local image: $value");
+        }
+      } catch (e) {
+        print("Error deleting file: $e");
+      }
+    }
+    return value;
+  }
 
   static Future<String?> _readLargeString({
     required String table,
