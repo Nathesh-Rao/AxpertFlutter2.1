@@ -29,6 +29,8 @@ class AppStorage {
 
   late final box;
 
+  static const String AUTO_SYNC = "auto_sync";
+
   AppStorage() {
     box = GetStorage();
   }

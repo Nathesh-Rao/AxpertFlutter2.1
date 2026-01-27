@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:axpertflutter/Constants/CommonMethods.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/db/offline_db_module.dart';
 
 import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:flutter/material.dart';
@@ -282,6 +283,49 @@ class SettingsPage extends StatelessWidget {
                                     )),
                               ),
                               Divider(),
+                              // ListTile(
+                              //   onTap: () async {},
+                              //   leading: Icon(Icons.description_outlined),
+                              //   title: Text(
+                              //     "Auto Sync",
+                              //     style: GoogleFonts.poppins(
+                              //         textStyle: TextStyle(fontSize: 18)),
+                              //   ),
+                              //   trailing: FlutterSwitch(
+                              //     height: 30,
+                              //     value: false,
+                              //     showOnOff: true,
+                              //     activeColor: MyColors.blue2,
+                              //     onToggle: (bool values) {},
+                              //   ),
+                              // ),
+
+                              ListTile(
+                                  leading: Icon(Icons.sync),
+                                  title: Text(
+                                    "Auto Sync",
+                                    style: GoogleFonts.poppins(
+                                        textStyle: TextStyle(fontSize: 18)),
+                                  ),
+                                  trailing: StatefulBuilder(
+                                      builder: (context, setStateC) {
+                                    return SizedBox(
+                                      width: 60,
+                                      child: FlutterSwitch(
+                                        height: 30,
+                                        value: OfflineDbModule.autoSync,
+                                        showOnOff: true,
+                                        activeColor: MyColors.blue2,
+                                        onToggle: (bool values) async {
+                                          await OfflineDbModule
+                                              .toggleAutoSync();
+                                          setStateC(() {});
+                                        },
+                                      ),
+                                    );
+                                  })),
+                              Divider(),
+
                               ListTile(
                                 onTap: () {
                                   // DemoUtils.showDemoBarrier();

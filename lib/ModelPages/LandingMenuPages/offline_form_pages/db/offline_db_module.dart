@@ -23,7 +23,25 @@ class OfflineDbModule {
   static Database? _db;
 
   // INIT
+
+  static var autoSync = false;
+
+  static Future<bool> toggleAutoSync() async {
+    var appstrg = AppStorage();
+
+    bool current = await appstrg.retrieveValue(AppStorage.AUTO_SYNC) ?? false;
+
+    bool newValue = !current;
+
+    await appstrg.storeValue(AppStorage.AUTO_SYNC, newValue);
+
+    autoSync = newValue;
+
+    return newValue;
+  }
+
   static Future<void> init() async {
+    autoSync = await AppStorage().retrieveValue(AppStorage.AUTO_SYNC) ?? false;
     final dbPath = join(await getDatabasesPath(), 'offline_forms.db');
 
     _db = await openDatabase(
@@ -96,11 +114,14 @@ class OfflineDbModule {
     );
 
     // // 1. Sync THIS user's pending queue
-    await _syncPendingBeforeLogin(
-      username: username,
-      projectName: projectName,
-      isInternetAvailable: isInternetAvailable,
-    );
+
+    if (autoSync) {
+      await _syncPendingBeforeLogin(
+        username: username,
+        projectName: projectName,
+        isInternetAvailable: isInternetAvailable,
+      );
+    }
 
     // 2. Fetch offline pages ONLY for this user+project
     final pages = await fetchAndStoreOfflinePages();
@@ -580,10 +601,10 @@ class OfflineDbModule {
   // =================================================
   // SMART SUBMIT
   // =================================================
-  static Future<SubmitStatus> submitFormSmart({
-    required Map<String, dynamic> submitBody,
-    required bool isInternetAvailable,
-  }) async {
+  static Future<SubmitStatus> submitFormSmart(
+      {required Map<String, dynamic> submitBody,
+      required bool isInternetAvailable,
+      required bool forceOffline}) async {
     final scope = await _getLastOfflineUserScope();
     if (scope == null)
       return SubmitStatus.apiFailure; // Or handles error differently
@@ -593,86 +614,19 @@ class OfflineDbModule {
       projectName: scope['projectName']!,
       submitBody: submitBody,
       isInternetAvailable: isInternetAvailable,
+      force_offline: forceOffline,
     );
   }
-
-  // static Future<SubmitStatus> _submitFormSmartInternal({
-  //   required String username,
-  //   required String projectName,
-  //   required Map<String, dynamic> submitBody,
-  //   required bool isInternetAvailable,
-  // }) async {
-  //   if (isInternetAvailable) {
-  //     var url = Const.getFullARMUrl(ExecuteApi.API_ARM_EXECUTE_PUBLISHED);
-  //     serverConnections.postToServer(
-  //         url: url, body: jsonEncode(submitBody), isBearer: true);
-
-  //     final String? res = await OfflineDatasources.post(
-  //       endpoint: OfflineDatasources.API_SUBMIT_OFFLINE_FORM,
-  //       body: submitBody,
-  //     );
-
-  //     log(submitBody.toString(), name: "submitBody OFFLINE");
-  //     log(res.toString(), name: "submit res OFFLINE");
-  //     if (res != null && res.isNotEmpty) {
-  //       try {
-  //         final decoded = jsonDecode(res);
-
-  //         if (decoded is Map<String, dynamic> &&
-  //             decoded.containsKey('result')) {
-  //           final resultList = decoded['result'] as List<dynamic>;
-
-  //           if (resultList.isNotEmpty) {
-  //             final firstResult = resultList[0] as Map<String, dynamic>;
-
-  //             if (firstResult.containsKey('message')) {
-  //               final messageList = firstResult['message'] as List<dynamic>;
-
-  //               if (messageList.isNotEmpty) {
-  //                 final msgObj = messageList[0] as Map<String, dynamic>;
-
-  //                 if (msgObj.containsKey('msg') ||
-  //                     msgObj.containsKey('recordid')) {
-  //                   return SubmitStatus.success;
-  //                 }
-  //               }
-  //             }
-  //           }
-  //         }
-  //       } catch (e) {
-  //         LogService.writeLog(
-  //             message:
-  //                 "[API_PARSE_ERROR] Could not parse success response: $e");
-  //       }
-
-  //       return SubmitStatus.apiFailure;
-  //     }
-
-  //     return SubmitStatus.apiFailure;
-  //   }
-
-  //   await _database.insert(
-  //     OfflineDBConstants.TABLE_PENDING_REQUESTS,
-  //     {
-  //       OfflineDBConstants.COL_USERNAME: username,
-  //       OfflineDBConstants.COL_PROJECT_NAME: projectName,
-  //       OfflineDBConstants.COL_REQUEST_JSON: jsonEncode(submitBody),
-  //       OfflineDBConstants.COL_STATUS: OfflineDBConstants.STATUS_PENDING,
-  //       OfflineDBConstants.COL_CREATED_AT: DateTime.now().toIso8601String(),
-  //     },
-  //   );
-
-  //   return SubmitStatus.savedOffline;
-  // }
 
   static Future<SubmitStatus> _submitFormSmartInternal({
     required String username,
     required String projectName,
     required Map<String, dynamic> submitBody,
     required bool isInternetAvailable,
+    required bool force_offline,
   }) async {
     // 1. ONLINE SUBMISSION
-    if (isInternetAvailable) {
+    if (isInternetAvailable && !force_offline) {
       try {
         // Initialize ServerConnections (Assuming default constructor works)
         // If you use GetX dependency injection, use: Get.find<ServerConnections>()
@@ -725,6 +679,92 @@ class OfflineDbModule {
     return SubmitStatus.savedOffline;
   }
 
+  // static Future<String> processPendingQueue(
+  //     {required bool isInternetAvailable}) async {
+  //   if (!isInternetAvailable) return "No internet connection";
+
+  //   final scope = await _getLastOfflineUserScope();
+  //   if (scope == null) return "No user session found";
+
+  //   final username = scope['username']!;
+  //   final projectName = scope['projectName']!;
+
+  //   final String currentSessionId =
+  //       AppStorage().retrieveValue(AppStorage.SESSIONID) ?? "";
+  //   if (currentSessionId.isEmpty) return "No active session to sync";
+
+  //   final rows = await _database.query(
+  //     OfflineDBConstants.TABLE_PENDING_REQUESTS,
+  //     where: '''
+  //     ${OfflineDBConstants.COL_STATUS} IN (${OfflineDBConstants.STATUS_PENDING}, ${OfflineDBConstants.STATUS_ERROR})
+  //     AND ${OfflineDBConstants.COL_USERNAME} = ?
+  //     AND ${OfflineDBConstants.COL_PROJECT_NAME} = ?
+  //   ''',
+  //     whereArgs: [username, projectName],
+  //     orderBy: OfflineDBConstants.COL_CREATED_AT,
+  //   );
+
+  //   if (rows.isEmpty) return "Queue is empty";
+
+  //   int successCount = 0;
+  //   int failCount = 0;
+
+  //   final ServerConnections serverConnections = ServerConnections();
+  //   final String url =
+  //       Const.getFullARMUrl(ExecuteApi.API_ARM_EXECUTE_PUBLISHED);
+
+  //   for (final row in rows) {
+  //     final id = row[OfflineDBConstants.COL_ID] as int;
+  //     final bodyStr = row[OfflineDBConstants.COL_REQUEST_JSON] as String;
+
+  //     try {
+  //       final Map<String, dynamic> payload = jsonDecode(bodyStr);
+
+  //       payload['ARMSessionId'] = currentSessionId;
+
+  //       final dynamic res = await serverConnections.postToServer(
+  //         url: url,
+  //         body: jsonEncode(payload),
+  //         isBearer: true,
+  //       );
+
+  //       bool isSuccess = false;
+  //       if (res != null && res.isNotEmpty) {
+  //         try {
+  //           final decoded = jsonDecode(res);
+  //           if (decoded is Map<String, dynamic> && decoded['success'] == true) {
+  //             isSuccess = true;
+  //           } else {
+  //             LogService.writeLog(
+  //                 message: "[QUEUE_FAIL] ID: $id - Msg: ${decoded['message']}");
+  //           }
+  //         } catch (_) {}
+  //       }
+
+  //       await _database.update(
+  //         OfflineDBConstants.TABLE_PENDING_REQUESTS,
+  //         {
+  //           OfflineDBConstants.COL_STATUS: isSuccess
+  //               ? OfflineDBConstants.STATUS_SUCCESS
+  //               : OfflineDBConstants.STATUS_ERROR,
+  //         },
+  //         where: '${OfflineDBConstants.COL_ID} = ?',
+  //         whereArgs: [id],
+  //       );
+
+  //       if (isSuccess)
+  //         successCount++;
+  //       else
+  //         failCount++;
+  //     } catch (e) {
+  //       failCount++;
+  //       LogService.writeLog(message: "[QUEUE_PROCESS_ERROR] ID: $id - $e");
+  //     }
+  //   }
+
+  //   return "Processed: $successCount success, $failCount failed";
+  // }
+
   static Future<String> processPendingQueue(
       {required bool isInternetAvailable}) async {
     if (!isInternetAvailable) return "No internet connection";
@@ -739,8 +779,10 @@ class OfflineDbModule {
         AppStorage().retrieveValue(AppStorage.SESSIONID) ?? "";
     if (currentSessionId.isEmpty) return "No active session to sync";
 
-    final rows = await _database.query(
+    // --- FIX START: Fetch ONLY IDs first ---
+    final idRows = await _database.query(
       OfflineDBConstants.TABLE_PENDING_REQUESTS,
+      columns: [OfflineDBConstants.COL_ID], // <--- Only fetch ID
       where: '''
       ${OfflineDBConstants.COL_STATUS} IN (${OfflineDBConstants.STATUS_PENDING}, ${OfflineDBConstants.STATUS_ERROR})
       AND ${OfflineDBConstants.COL_USERNAME} = ?
@@ -750,7 +792,8 @@ class OfflineDbModule {
       orderBy: OfflineDBConstants.COL_CREATED_AT,
     );
 
-    if (rows.isEmpty) return "Queue is empty";
+    if (idRows.isEmpty) return "Queue is empty";
+    // --- FIX END ---
 
     int successCount = 0;
     int failCount = 0;
@@ -759,11 +802,28 @@ class OfflineDbModule {
     final String url =
         Const.getFullARMUrl(ExecuteApi.API_ARM_EXECUTE_PUBLISHED);
 
-    for (final row in rows) {
+    // Loop through IDs one by one
+    for (final row in idRows) {
       final id = row[OfflineDBConstants.COL_ID] as int;
-      final bodyStr = row[OfflineDBConstants.COL_REQUEST_JSON] as String;
 
       try {
+        // --- FETCH HEAVY DATA INDIVIDUALLY ---
+        // We fetch the JSON only for this specific ID.
+        // This ensures the CursorWindow only holds ONE heavy row at a time.
+        final List<Map<String, Object?>> heavyRow = await _database.query(
+          OfflineDBConstants.TABLE_PENDING_REQUESTS,
+          columns: [OfflineDBConstants.COL_REQUEST_JSON],
+          where: '${OfflineDBConstants.COL_ID} = ?',
+          whereArgs: [id],
+        );
+
+        if (heavyRow.isEmpty) continue; // Should not happen, but safe check
+
+        final bodyStr =
+            heavyRow.first[OfflineDBConstants.COL_REQUEST_JSON] as String;
+
+        // ----------------------------------------
+        // ... Rest of your existing upload logic ...
         final Map<String, dynamic> payload = jsonDecode(bodyStr);
 
         payload['ARMSessionId'] = currentSessionId;
@@ -787,12 +847,15 @@ class OfflineDbModule {
           } catch (_) {}
         }
 
+        // Update status
         await _database.update(
           OfflineDBConstants.TABLE_PENDING_REQUESTS,
           {
             OfflineDBConstants.COL_STATUS: isSuccess
                 ? OfflineDBConstants.STATUS_SUCCESS
                 : OfflineDBConstants.STATUS_ERROR,
+            // Optional: Clear the JSON blob on success to free up space?
+            // OfflineDBConstants.COL_REQUEST_JSON: isSuccess ? "" : bodyStr
           },
           where: '${OfflineDBConstants.COL_ID} = ?',
           whereArgs: [id],
@@ -810,8 +873,145 @@ class OfflineDbModule {
 
     return "Processed: $successCount success, $failCount failed";
   }
-
   // ==============================================================================
+  // static Future<String> processPendingQueue(
+  //     {required bool isInternetAvailable}) async {
+  //   if (!isInternetAvailable) return "No internet connection";
+
+  //   final scope = await _getLastOfflineUserScope();
+  //   if (scope == null) return "No user session found";
+
+  //   final username = scope['username']!;
+  //   final projectName = scope['projectName']!;
+
+  //   final String currentSessionId =
+  //       AppStorage().retrieveValue(AppStorage.SESSIONID) ?? "";
+  //   if (currentSessionId.isEmpty) return "No active session to sync";
+
+  //   // --- FIX START: Fetch ONLY IDs first ---
+  //   final idRows = await _database.query(
+  //     OfflineDBConstants.TABLE_PENDING_REQUESTS,
+  //     columns: [OfflineDBConstants.COL_ID],
+  //     where: '''
+  //     ${OfflineDBConstants.COL_STATUS} IN (${OfflineDBConstants.STATUS_PENDING}, ${OfflineDBConstants.STATUS_ERROR})
+  //     AND ${OfflineDBConstants.COL_USERNAME} = ?
+  //     AND ${OfflineDBConstants.COL_PROJECT_NAME} = ?
+  //   ''',
+  //     whereArgs: [username, projectName],
+  //     orderBy: OfflineDBConstants.COL_CREATED_AT,
+  //   );
+
+  //   if (idRows.isEmpty) return "Queue is empty";
+  //   // --- FIX END ---
+
+  //   int successCount = 0;
+  //   int failCount = 0;
+
+  //   final ServerConnections serverConnections = ServerConnections();
+  //   final String url =
+  //       Const.getFullARMUrl(ExecuteApi.API_ARM_EXECUTE_PUBLISHED);
+
+  //   for (final row in idRows) {
+  //     final id = row[OfflineDBConstants.COL_ID] as int;
+
+  //     try {
+  //       // --- FETCH HEAVY DATA INDIVIDUALLY ---
+  //       final List<Map<String, Object?>> heavyRow = await _database.query(
+  //         OfflineDBConstants.TABLE_PENDING_REQUESTS,
+  //         columns: [OfflineDBConstants.COL_REQUEST_JSON],
+  //         where: '${OfflineDBConstants.COL_ID} = ?',
+  //         whereArgs: [id],
+  //       );
+
+  //       if (heavyRow.isEmpty) continue; // Should not happen, but safe check
+
+  //       final bodyStr =
+  //           heavyRow.first[OfflineDBConstants.COL_REQUEST_JSON] as String;
+
+  //       // ----------------------------------------
+
+  //       final Map<String, dynamic> payload = jsonDecode(bodyStr);
+
+  //       payload['ARMSessionId'] = currentSessionId;
+
+  //       final dynamic res = await serverConnections.postToServer(
+  //         url: url,
+  //         body: jsonEncode(payload),
+  //         isBearer: true,
+  //       );
+
+  //       bool isSuccess = false;
+  //       if (res != null && res.isNotEmpty) {
+  //         try {
+  //           final decoded = jsonDecode(res);
+  //           if (decoded is Map<String, dynamic> && decoded['success'] == true) {
+  //             isSuccess = true;
+  //           } else {
+  //             LogService.writeLog(
+  //                 message: "[QUEUE_FAIL] ID: $id - Msg: ${decoded['message']}");
+  //           }
+  //         } catch (_) {}
+  //       }
+
+  //       // Update status
+  //       await _database.update(
+  //         OfflineDBConstants.TABLE_PENDING_REQUESTS,
+  //         {
+  //           OfflineDBConstants.COL_STATUS: isSuccess
+  //               ? OfflineDBConstants.STATUS_SUCCESS
+  //               : OfflineDBConstants.STATUS_ERROR,
+  //           // Optional: Clear the JSON blob on success to free up space?
+  //           // OfflineDBConstants.COL_REQUEST_JSON: isSuccess ? "" : bodyStr
+  //         },
+  //         where: '${OfflineDBConstants.COL_ID} = ?',
+  //         whereArgs: [id],
+  //       );
+
+  //       if (isSuccess)
+  //         successCount++;
+  //       else
+  //         failCount++;
+  //     } catch (e) {
+  //       failCount++;
+  //       LogService.writeLog(message: "[QUEUE_PROCESS_ERROR] ID: $id - $e");
+  //     }
+  //   }
+
+  //   return "Processed: $successCount success, $failCount failed";
+  // }
+
+  static Future<String?> _readLargeString({
+    required String table,
+    required String column,
+    required String where,
+    required List<Object?> whereArgs,
+  }) async {
+    final lengthResult = await _database.rawQuery(
+      'SELECT length($column) as len FROM $table WHERE $where',
+      whereArgs,
+    );
+
+    if (lengthResult.isEmpty) return null;
+    int totalLength = (lengthResult.first['len'] as int?) ?? 0;
+
+    if (totalLength == 0) return "";
+
+    const int chunkSize = 1000000;
+    StringBuffer finalString = StringBuffer();
+
+    for (int offset = 1; offset <= totalLength; offset += chunkSize) {
+      final chunkResult = await _database.rawQuery(
+        'SELECT substr($column, ?, ?) as chunk FROM $table WHERE $where',
+        [offset, chunkSize, ...whereArgs],
+      );
+
+      if (chunkResult.isNotEmpty) {
+        finalString.write(chunkResult.first['chunk'] as String);
+      }
+    }
+
+    return finalString.toString();
+  }
 
   static Future<void> _syncPendingBeforeLogin({
     required String username,

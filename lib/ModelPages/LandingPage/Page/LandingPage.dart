@@ -141,6 +141,7 @@ class LandingPage extends StatelessWidget {
                     onTap: offlineFormController.actionPushPending,
                   ),
                   _simpleRow(
+                    isDisabled: true,
                     icon: Icons.clear_all,
                     color: Colors.brown,
                     title: "Clear Pending Queue",
@@ -150,6 +151,7 @@ class LandingPage extends StatelessWidget {
                   const Divider(),
                   _sectionHeader("Storage"),
                   _simpleRow(
+                    isDisabled: true,
                     icon: Icons.delete_outline,
                     color: Colors.redAccent,
                     title: "Clear Forms Cache",
@@ -157,6 +159,7 @@ class LandingPage extends StatelessWidget {
                     onTap: offlineFormController.actionClearForms,
                   ),
                   _simpleRow(
+                    isDisabled: true,
                     icon: Icons.delete_sweep,
                     color: Colors.red,
                     title: "Clear Datasources Cache",
@@ -166,6 +169,7 @@ class LandingPage extends StatelessWidget {
                   const Divider(),
                   _sectionHeader("Danger Zone"),
                   _simpleRow(
+                    // isDisabled: true,
                     icon: Icons.warning,
                     color: Colors.red.shade900,
                     title: "Clear ALL Offline Data",
@@ -204,28 +208,39 @@ class LandingPage extends StatelessWidget {
     required String subtitle,
     required VoidCallback onTap,
     bool isDanger = false,
+    bool isDisabled = false,
   }) {
+    final Color iconColor = isDisabled ? Colors.grey.shade400 : color;
+
+    final Color titleColor = isDisabled
+        ? Colors.grey.shade400
+        : (isDanger ? Colors.red : MyColors.AXMDark);
+
+    final Color subTitleColor =
+        isDisabled ? Colors.grey.shade300 : MyColors.AXMGray;
+
     return ListTile(
       dense: true,
       visualDensity: const VisualDensity(horizontal: 0, vertical: -2),
-      leading: Icon(icon, size: 20, color: color),
+      enabled: !isDisabled,
+      leading: Icon(icon, size: 20, color: iconColor),
       title: Text(
         title,
         style: GoogleFonts.poppins(
           fontSize: 13.5,
           fontWeight: FontWeight.w500,
-          color: isDanger ? Colors.red : MyColors.AXMDark,
+          color: titleColor,
         ),
       ),
       subtitle: Text(
         subtitle,
         style: GoogleFonts.poppins(
           fontSize: 11,
-          color: MyColors.AXMGray,
+          color: subTitleColor,
         ),
       ),
-      trailing: const Icon(Icons.chevron_right, size: 18),
-      onTap: onTap,
+      trailing: isDisabled ? null : const Icon(Icons.chevron_right, size: 18),
+      onTap: isDisabled ? null : onTap,
     );
   }
 }

@@ -1,4 +1,6 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:axpertflutter/Constants/MyColors.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -52,30 +54,44 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
           ),
         ),
         actions: [
+          // IconButton(
+          //   onPressed: () => controller.prepareForm(schema),
+          //   icon: Icon(Icons.history, color: MyColors.green),
+          // ),
           IconButton(
-            onPressed: () => controller.resetForm(),
+            onPressed: () => controller.prepareForm(schema),
             icon: Icon(Icons.history, color: MyColors.baseYellow),
           )
         ],
         iconTheme: const IconThemeData(color: Colors.black87),
       ),
-      body: ListView(
-        controller: controller.scrollCtrl,
-        padding: const EdgeInsets.all(16),
-        children: [
-          ...sections.entries.map((entry) {
-            final sectionTitle = entry.key;
-            final sectionFields = entry.value;
+      body: Obx(
+        () => ListView(
+          controller: controller.scrollCtrl,
+          padding: const EdgeInsets.all(16),
+          children: controller.isFormPreparing.value
+              ? [
+                  Center(
+                    child: CupertinoActivityIndicator(
+                      color: MyColors.baseBlue,
+                    ),
+                  )
+                ]
+              : [
+                  ...sections.entries.map((entry) {
+                    final sectionTitle = entry.key;
+                    final sectionFields = entry.value;
 
-            return _Section(
-              title: sectionTitle,
-              children: sectionFields.map((f) {
-                return _buildFieldFromSchema(context, f);
-              }).toList(),
-            );
-          }).toList(),
-          const SizedBox(height: 50),
-        ],
+                    return _Section(
+                      title: sectionTitle,
+                      children: sectionFields.map((f) {
+                        return _buildFieldFromSchema(context, f);
+                      }).toList(),
+                    );
+                  }).toList(),
+                  const SizedBox(height: 50),
+                ],
+        ),
       ),
       floatingActionButton: Builder(builder: (context) {
         final bool keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
@@ -147,13 +163,14 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
   }
 
   Widget _buildFieldFromSchema(BuildContext context, Map<String, dynamic> f) {
-    final String type = f["fld_type"];
+    final String rawType = f["fld_type"];
     final String name = f["fld_name"];
     final String label = f["fld_caption"];
     final bool mandatory = (f["allowempty"] == "F");
     final bool readonly = (f["readonly"] == "T");
     final String datetime_format = f["datetime_format"] = "";
-
+    final bool isUpper = rawType.endsWith("_upper");
+    final String type = isUpper ? rawType.replaceAll("_upper", "") : rawType;
     switch (type) {
       case "c":
         return _text(
@@ -223,6 +240,8 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
     }
   }
 
+//todo => capitalize from expressions field
+
   Widget _text(String label, TextEditingController ctrl, String key,
       {bool mandatory = false}) {
     return _RowWithField(
@@ -248,6 +267,7 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
       child: Obx(() {
         final hasError = controller.errors.containsKey(key);
         return TextFormField(
+          
           controller: ctrl,
           keyboardType: TextInputType.number,
           decoration: _inputDecoration(label, hasError),
@@ -261,6 +281,9 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
     );
   }
 
+  // todo
+// auto select value if length ==1
+// if auto_select == true then def_value??first_value
   Widget _dropdown(
     String label,
     RxString value,
@@ -275,23 +298,58 @@ class InwardEntryDynamicPageV1 extends GetView<InwardEntryDynamicController> {
       child: Obx(() {
         final hasError = controller.errors.containsKey(key);
 
-        // 1. Check if Enabled
         final bool isEnabled = controller.isFieldEnabled(key);
 
-        // 2. Get Options (Empty if disabled)
         final List<String> options =
             isEnabled ? controller.getDropdownOptions(key) : [];
+        options.sort((a, b) {
+          final numA = num.tryParse(a);
+          final numB = num.tryParse(b);
 
-        // 3. Value Validation
-        String? selectedValue = value.value;
-        if (selectedValue.isEmpty || !isEnabled) {
-          selectedValue = null;
-        } else if (!options.contains(selectedValue)) {
-          selectedValue = null;
+          if (numA != null && numB != null) {
+            return numB.compareTo(numA);
+          } else {
+            return a.toLowerCase().compareTo(b.toLowerCase());
+          }
+        });
+
+        String currentRxValue = value.value;
+        String? finalUiValue = currentRxValue;
+        if (options.length == 1) {
+          finalUiValue = options.first;
         }
 
+        if (finalUiValue.isNotEmpty) {
+          if (!options.contains(finalUiValue)) {
+            finalUiValue = null;
+          }
+        }
+        if (!isEnabled || finalUiValue == "") {
+          finalUiValue = null;
+        }
+        final String targetRxState = finalUiValue ?? "";
+        if (currentRxValue != targetRxState) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            value.value = targetRxState;
+
+            if (targetRxState.isNotEmpty) controller.errors.remove(key);
+          });
+        }
+        // String? selectedValue;
+        // if (options.length == 1) {
+        //   selectedValue = options.first;
+        // } else {
+        //   selectedValue = value.value;
+        // }
+
+        // if (selectedValue.isEmpty || !isEnabled) {
+        //   selectedValue = null;
+        // } else if (!options.contains(selectedValue)) {
+        //   selectedValue = null;
+        // }
+
         return DropdownButtonFormField<String>(
-          initialValue: selectedValue,
+          initialValue: finalUiValue,
           isExpanded: true,
           hint: Text(
             isEnabled

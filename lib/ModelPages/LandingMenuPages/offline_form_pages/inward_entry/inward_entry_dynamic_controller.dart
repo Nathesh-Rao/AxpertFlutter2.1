@@ -21,11 +21,13 @@ class InwardEntryDynamicController extends GetxController {
   Map<String, dynamic> mainFormJson = {};
   Map<String, dynamic> dc1SubmitFormJson = {};
 
-  List<Map<String, dynamic>> sampleGridJson = [];
+  // List<Map<String, dynamic>> sampleGridJson = [];
   Map<String, dynamic> sampleSummaryJson = {};
   RxMap<String, List<String>> imageAttachmentJson =
       <String, List<String>>{}.obs;
+  var filteredSummary = <String, dynamic>{}.obs;
 
+  var imageErrors = <String, bool>{}.obs;
   TextEditingController getTextCtrl(String name) => textCtrls[name]!;
   RxString getDropdownCtrl(String name) => dropdownCtrls[name]!;
 
@@ -34,7 +36,7 @@ class InwardEntryDynamicController extends GetxController {
   var isAtTop = true.obs;
   var currentCardIndex = 0.obs;
   final Map<String, List<Map<String, dynamic>>> datasourceMap = {};
-
+  var samplePercentageDivValue = 5;
   // ================== SAMPLE GRID ==================
   final RxList<Map<String, TextEditingController>> sampleGridRows =
       <Map<String, TextEditingController>>[].obs;
@@ -64,7 +66,9 @@ class InwardEntryDynamicController extends GetxController {
     resetForm();
   }
 
+  var isFormPreparing = false.obs;
   Future<void> prepareForm(Map<String, dynamic> newSchema) async {
+    isFormPreparing.value = true;
     schema = newSchema;
     // 1. clear old stuff
     resetForm();
@@ -93,6 +97,8 @@ class InwardEntryDynamicController extends GetxController {
     if (scrollCtrl.hasClients) {
       scrollCtrl.jumpTo(0);
     }
+
+    isFormPreparing.value = false;
   }
 
   Future<void> loadDatasources() async {
@@ -123,9 +129,10 @@ class InwardEntryDynamicController extends GetxController {
 
     for (final f in fields) {
       final String name = f["fld_name"];
-      final String type = f["fld_type"];
+      final String rawType = f["fld_type"];
       final String defValue = f["def_value"]?.toString() ?? "";
-
+      final bool isUpper = rawType.endsWith("_upper");
+      final String type = isUpper ? rawType.replaceAll("_upper", "") : rawType;
       if (type == "dd") {
         dropdownCtrls[name] = "".obs;
 
@@ -137,16 +144,42 @@ class InwardEntryDynamicController extends GetxController {
           }
         }
       } else {
-        textCtrls[name] = TextEditingController(text: defValue);
+        final ctrl = TextEditingController(text: defValue);
+        textCtrls[name] = ctrl;
+        if (isUpper) {
+          ctrl.addListener(() {
+            final String text = ctrl.text;
+            final String formatted = text.toUpperCase();
+
+            if (text != formatted) {
+              int cursorPosition = ctrl.selection.baseOffset;
+
+              ctrl.value = TextEditingValue(
+                text: formatted,
+                selection: TextSelection.collapsed(offset: cursorPosition),
+              );
+            }
+          });
+        }
       }
     }
   }
 
   void _attachBusinessListeners() {
     getTextCtrl("received_bags_crates").addListener(_onReceivedChanged);
+    // ever(getTextCtrl("eceived_bags_crates"), (_){
+    //   _onReceivedChanged();
+    // });
     getTextCtrl("bags_sample").addListener(_recheckMiniFab);
     getTextCtrl("loaded_truck").addListener(_calculateNetWeight);
     getTextCtrl("empty_truck").addListener(_calculateNetWeight);
+    // getDropdownCtrl("packing").listen((_) {
+    //   _onReceivedChanged();
+    // });
+
+    ever(getDropdownCtrl("packing"), (_) {
+      _onReceivedChanged();
+    });
   }
 
   _calculateNetWeight() {
@@ -161,30 +194,75 @@ class InwardEntryDynamicController extends GetxController {
     getTextCtrl("netweight").text = netweight.toString();
   }
 
+  // void _onReceivedChanged() {
+  //   final received =
+  //       int.tryParse(getTextCtrl("received_bags_crates").text.trim()) ?? 0;
+
+  //   final String packingType = getDropdownCtrl("packing").value.toLowerCase();
+
+  //   int percentage = 5;
+  //   if (packingType.contains("crate")) {
+  //     percentage = 2;
+  //   }
+
+  //   if (received < 20) {
+  //     getTextCtrl("bags_sample").text = '';
+  //     clearSampleGrid();
+  //     _recheckMiniFab();
+  //     return;
+  //   }
+
+  //   int sample = ((received * percentage) / 100).round();
+
+  //   if (sample < 1) sample = 1;
+
+  //   getTextCtrl("bags_sample").text = sample.toString();
+
+  //   _generateSampleGrid(sample);
+  //   _recheckMiniFab();
+  // }
+
   void _onReceivedChanged() {
     final received =
         int.tryParse(getTextCtrl("received_bags_crates").text.trim()) ?? 0;
 
-    if (received < 20) {
+    final String packingType =
+        getDropdownCtrl("packing").value.trim().toLowerCase();
+
+    int percentage = 0;
+
+    if (packingType.isNotEmpty) {
+      if (packingType.contains("crate")) {
+        percentage = 2;
+      } else {
+        percentage = 5;
+      }
+    }
+
+    if (percentage == 0 || received < 20) {
       getTextCtrl("bags_sample").text = '';
       clearSampleGrid();
       _recheckMiniFab();
       return;
     }
 
-    int sample = (received * 5) ~/ 100;
+    int sample = ((received * percentage) / 100).round();
+
     if (sample < 1) sample = 1;
 
     getTextCtrl("bags_sample").text = sample.toString();
 
     _generateSampleGrid(sample);
     _recheckMiniFab();
+    onBagsToSampleChanged(sample.toString());
+
+    debugPrint("_onReceivedChanged updated with value => $sample");
   }
 
   void onBagsToSampleChanged(String value) {
     _bagsToSampleDebounce?.cancel();
 
-    _bagsToSampleDebounce = Timer(const Duration(seconds: 1), () {
+    _bagsToSampleDebounce = Timer(const Duration(milliseconds: 300), () {
       final int count = int.tryParse(value) ?? 0;
 
       if (count >= 1) {
@@ -613,14 +691,14 @@ class InwardEntryDynamicController extends GetxController {
     }
     dc1SubmitFormJson = buildDc1SubmitFormJson();
     // mainFormJson = buildMainFormJson();
-    sampleGridJson = buildSampleGridJson();
+    // sampleGridJson = buildSampleGridJson();
     sampleSummaryJson = buildSampleSummaryJson();
 
     debugPrint("====== MAIN FORM JSON ======");
     debugPrint(mainFormJson.toString());
 
-    debugPrint("====== SAMPLE GRID JSON ======");
-    debugPrint(sampleGridJson.toString());
+    // debugPrint("====== SAMPLE GRID JSON ======");
+    // debugPrint(sampleGridJson.toString());
 
     debugPrint("====== SAMPLE SUMMARY JSON ======");
     debugPrint(sampleSummaryJson.toString());
@@ -694,25 +772,25 @@ class InwardEntryDynamicController extends GetxController {
     return result;
   }
 
-  List<Map<String, dynamic>> buildSampleGridJson() {
-    final List<Map<String, dynamic>> rows = [];
-    final List gridFields = schema["fillgrids"]["fields"];
+  // List<Map<String, dynamic>> buildSampleGridJson() {
+  //   final List<Map<String, dynamic>> rows = [];
+  //   final List gridFields = schema["fillgrids"]["fields"];
 
-    for (final row in sampleGridRows) {
-      final Map<String, dynamic> obj = {};
+  //   for (final row in sampleGridRows) {
+  //     final Map<String, dynamic> obj = {};
 
-      for (final f in gridFields) {
-        final String name = f["fld_name"];
-        final String key = name;
-        final ctrl = row[name];
-        obj[key] = ctrl?.text.trim() ?? "";
-      }
+  //     for (final f in gridFields) {
+  //       final String name = f["fld_name"];
+  //       final String key = name;
+  //       final ctrl = row[name];
+  //       obj[key] = ctrl?.text.trim() ?? "";
+  //     }
 
-      rows.add(obj);
-    }
+  //     rows.add(obj);
+  //   }
 
-    return rows;
-  }
+  //   return rows;
+  // }
 
   List<Map<String, dynamic>> getOptionsForField(String fieldName) {
     final List fields = schema["fields"];
@@ -834,7 +912,66 @@ class InwardEntryDynamicController extends GetxController {
   }
 
   submit() {
-    submitPage();
+    if (validateImages()) {
+      submitPage();
+    } else {
+      Get.snackbar("Missing Images",
+          "Please add at least one image for the highlighted items.",
+          backgroundColor: Colors.redAccent,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+          margin: EdgeInsets.all(16));
+    }
+  }
+
+  void calculateFilteredSummary() {
+    filteredSummary.clear();
+    imageErrors.clear();
+
+    var result = Map<String, dynamic>.fromEntries(
+      sampleSummaryJson.entries.where((e) {
+        if (e.key == "maf_date" || e.key == "maf_year" || e.key == "short") {
+          return false;
+        }
+        final num v = num.tryParse(e.value.toString()) ?? 0;
+        return v > 0;
+      }),
+    );
+
+    filteredSummary.value = result;
+
+    for (var key in result.keys) {
+      if (!imageAttachmentJson.containsKey(key)) {
+        imageAttachmentJson[key] = [];
+      }
+    }
+
+    update(["sample_list"]);
+  }
+
+  bool validateImages({bool isPartial = false}) {
+    if (isPartial) {
+      bool hasActiveErrors = imageErrors.containsValue(true);
+
+      if (!hasActiveErrors) return true;
+    }
+
+    bool isValid = true;
+    imageErrors.clear();
+
+    filteredSummary.forEach((key, value) {
+      List? images = imageAttachmentJson[key];
+
+      if (images == null || images.isEmpty) {
+        imageErrors[key] = true;
+        isValid = false;
+      } else {
+        imageErrors[key] = false;
+      }
+    });
+
+    imageErrors.refresh();
+    return isValid;
   }
 
   Map<String, dynamic> generateSubmitPayload() {
@@ -997,6 +1134,98 @@ class InwardEntryDynamicController extends GetxController {
   //   }
   // }
 
+  // Future<void> submitPage() async {
+  //   if (!validateForm()) {
+  //     Get.snackbar("Required", "Please fill mandatory fields");
+  //     return;
+  //   }
+
+  //   try {
+  //     isLoading.value = true;
+  //     final isOnline = await Get.find<InternetConnectivity>().check();
+
+  //     final Map<String, dynamic> mainBody = generateSubmitPayload();
+
+  //     final SubmitStatus mainStatus = await OfflineDbModule.submitFormSmart(
+  //       submitBody: mainBody,
+  //       isInternetAvailable: isOnline,
+  //     );
+
+  //     if (mainStatus == SubmitStatus.apiFailure) {
+  //       Get.snackbar(
+  //         "Submission Failed",
+  //         "Server rejected the main form. Please check your data.",
+  //         backgroundColor: Colors.redAccent,
+  //         colorText: Colors.white,
+  //         duration: const Duration(seconds: 4),
+  //       );
+  //       return;
+  //     }
+
+  //     // ignore: unused_local_variable
+  //     int imagesUploaded = 0;
+  //     // ignore: unused_local_variable
+  //     int imagesQueued = 0;
+  //     int imagesFailed = 0;
+
+  //     final List<Map<String, dynamic>> attachmentPayloads =
+  //         generateAttachmentPayloads();
+
+  //     if (attachmentPayloads.isNotEmpty) {
+  //       for (final attachBody in attachmentPayloads) {
+  //         final SubmitStatus imgStatus = await OfflineDbModule.submitFormSmart(
+  //           submitBody: attachBody,
+  //           isInternetAvailable: isOnline,
+  //         );
+
+  //         if (imgStatus == SubmitStatus.success)
+  //           imagesUploaded++;
+  //         else if (imgStatus == SubmitStatus.savedOffline)
+  //           imagesQueued++;
+  //         else
+  //           imagesFailed++;
+  //       }
+  //     }
+
+  //     resetForm();
+  //     prepareForm(schema);
+  //     Get.back();
+  //     isLoading.value = false;
+
+  //     if (mainStatus == SubmitStatus.savedOffline) {
+  //       Get.snackbar(
+  //         "Saved Offline",
+  //         "No Internet. Main form + ${attachmentPayloads.length} attachments saved to queue.",
+  //         backgroundColor: Colors.blueAccent,
+  //         colorText: Colors.white,
+  //         duration: const Duration(seconds: 4),
+  //       );
+  //     } else if (imagesFailed == 0) {
+  //       Get.snackbar(
+  //         "Success",
+  //         "Form and all attachments submitted successfully!",
+  //         backgroundColor: Colors.green,
+  //         colorText: Colors.white,
+  //         duration: const Duration(seconds: 3),
+  //       );
+  //     } else {
+  //       Get.snackbar(
+  //         "Partial Success",
+  //         "Main form submitted, but $imagesFailed images failed to upload.",
+  //         backgroundColor: Colors.orangeAccent,
+  //         colorText: Colors.black,
+  //         duration: const Duration(seconds: 5),
+  //       );
+  //     }
+  //   } catch (e) {
+  //     Get.snackbar("Error", "Unexpected error: $e");
+  //   } finally {
+  //     isLoading.value = false;
+  //   }
+  // }
+
+  // Add this variable to your controller
+  var submitStatus = "".obs;
   Future<void> submitPage() async {
     if (!validateForm()) {
       Get.snackbar("Required", "Please fill mandatory fields");
@@ -1005,16 +1234,24 @@ class InwardEntryDynamicController extends GetxController {
 
     try {
       isLoading.value = true;
-      final isOnline = await Get.find<InternetConnectivity>().check();
+      submitStatus.value = "Checking internet connection...";
 
+      final isOnline = await Get.find<InternetConnectivity>().check();
+      var forceOffline = schema["force_offline"];
+      submitStatus.value = "Generating form data...";
       final Map<String, dynamic> mainBody = generateSubmitPayload();
+
+      submitStatus.value = "Submitting Master Form...";
 
       final SubmitStatus mainStatus = await OfflineDbModule.submitFormSmart(
         submitBody: mainBody,
         isInternetAvailable: isOnline,
+        forceOffline: forceOffline,
       );
 
       if (mainStatus == SubmitStatus.apiFailure) {
+        isLoading.value = false;
+        submitStatus.value = "";
         Get.snackbar(
           "Submission Failed",
           "Server rejected the main form. Please check your data.",
@@ -1025,20 +1262,26 @@ class InwardEntryDynamicController extends GetxController {
         return;
       }
 
-      // ignore: unused_local_variable
-      int imagesUploaded = 0;
-      // ignore: unused_local_variable
-      int imagesQueued = 0;
-      int imagesFailed = 0;
+      submitStatus.value = "Preparing images for upload...";
 
       final List<Map<String, dynamic>> attachmentPayloads =
           generateAttachmentPayloads();
 
-      if (attachmentPayloads.isNotEmpty) {
-        for (final attachBody in attachmentPayloads) {
+      int imagesUploaded = 0;
+      int imagesQueued = 0;
+      int imagesFailed = 0;
+      int totalImages = attachmentPayloads.length;
+
+      if (totalImages > 0) {
+        for (int i = 0; i < totalImages; i++) {
+          submitStatus.value = "Uploading image ${i + 1} of $totalImages...";
+
+          final attachBody = attachmentPayloads[i];
+
           final SubmitStatus imgStatus = await OfflineDbModule.submitFormSmart(
             submitBody: attachBody,
             isInternetAvailable: isOnline,
+            forceOffline: forceOffline,
           );
 
           if (imgStatus == SubmitStatus.success)
@@ -1050,16 +1293,21 @@ class InwardEntryDynamicController extends GetxController {
         }
       }
 
+      submitStatus.value = "Finalizing...";
+      await Future.delayed(Duration(milliseconds: 500));
+// todo Form widget
       resetForm();
+      isLoading.value = false;
+      prepareForm(schema);
+      submitStatus.value = "";
       Get.back();
 
       if (mainStatus == SubmitStatus.savedOffline) {
         Get.snackbar(
           "Saved Offline",
-          "No Internet. Main form + ${attachmentPayloads.length} attachments saved to queue.",
+          "No Internet. Main form + $totalImages attachments saved to queue.",
           backgroundColor: Colors.blueAccent,
           colorText: Colors.white,
-          duration: const Duration(seconds: 4),
         );
       } else if (imagesFailed == 0) {
         Get.snackbar(
@@ -1067,21 +1315,20 @@ class InwardEntryDynamicController extends GetxController {
           "Form and all attachments submitted successfully!",
           backgroundColor: Colors.green,
           colorText: Colors.white,
-          duration: const Duration(seconds: 3),
         );
       } else {
         Get.snackbar(
           "Partial Success",
-          "Main form submitted, but $imagesFailed images failed to upload.",
+          "Main form submitted, but $imagesFailed images failed.",
           backgroundColor: Colors.orangeAccent,
           colorText: Colors.black,
-          duration: const Duration(seconds: 5),
         );
       }
     } catch (e) {
-      Get.snackbar("Error", "Unexpected error: $e");
-    } finally {
       isLoading.value = false;
+      submitStatus.value = "";
+      print("SUBMIT ERROR: $e");
+      Get.snackbar("Error", "Unexpected error: $e");
     }
   }
 
@@ -1140,6 +1387,7 @@ class InwardEntryDynamicController extends GetxController {
     for (final c in textCtrls.values) {
       c.dispose();
     }
+
     _bagsToSampleDebounce?.cancel();
     super.onClose();
   }

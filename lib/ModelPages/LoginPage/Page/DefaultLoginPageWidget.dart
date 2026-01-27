@@ -92,7 +92,8 @@ class _DefaultLoginPageWidgetState extends State<DefaultLoginPageWidget> {
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.025),
                   Obx(() => _projectNameWidget(
-                      projectName: loginController.currentProjectName.value)),
+                      projectName: loginController.currentProjectName.value
+                          .toUpperCase())),
                   Obx(
                     () => WidgetLoginTextField(
                       label: "Username",

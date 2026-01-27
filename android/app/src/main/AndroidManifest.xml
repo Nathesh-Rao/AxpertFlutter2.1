@@ -38,7 +38,7 @@
     <application
         android:exported="true"
         android:label="Bottle Sampling"
-        android:name="${applicationName}"
+
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="false"
         android:usesCleartextTraffic="true">

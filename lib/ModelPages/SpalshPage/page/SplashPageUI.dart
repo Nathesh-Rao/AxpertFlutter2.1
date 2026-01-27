@@ -178,12 +178,12 @@ class _SplashPageState extends State<SplashPage>
             child: RotationTransition(
               turns: Tween(begin: 0.0, end: 1.0).animate(_animationController),
               child: Container(
-                height: 80,
-                width: 80,
+                height: 90,
+                width: 90,
                 child: Image.asset(
                   'assets/images/ub_logo.png',
                   height: 80,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.contain,
                 ),
               ),
             ),
