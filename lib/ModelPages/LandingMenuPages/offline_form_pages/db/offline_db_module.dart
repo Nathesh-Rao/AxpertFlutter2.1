@@ -877,6 +877,7 @@ class OfflineDbModule {
     required bool isInternetAvailable,
     Function(int current, int total)? onProgress, // Optional UI callback
   }) async {
+    log("STARTED", name: "SUBMIT_RESPONSE");
     if (!isInternetAvailable) return "No internet connection";
 
     final scope = await _getLastOfflineUserScope();
@@ -939,17 +940,24 @@ class OfflineDbModule {
         final Map<String, dynamic> originalPayload = jsonDecode(bodyStr);
         originalPayload['ARMSessionId'] = currentSessionId;
 
+        log(originalPayload.toString(), name: "SUBMIT_RESPONSE_BEFORE");
         // 5. CONVERT PATHS -> BASE64 (The Magic Step)
         // This reads local files and creates a temporary upload-ready map
         final Map<String, dynamic> uploadPayload =
             await _convertPayloadPathsToBase64(originalPayload);
 
-        // 6. UPLOAD
+
+
+        log(jsonEncode(uploadPayload), name: "SUBMIT_RESPONSE_BODY");
+        // debugPrint(
+        //     "SUBMIT_RESPONSE_BODY ${jsonEncode(uploadPayload).toString()}");
+
         final dynamic res = await serverConnections.postToServer(
           url: url,
           body: jsonEncode(uploadPayload),
           isBearer: true,
         );
+        log(res, name: "SUBMIT_RESPONSE_RES");
 
         // 7. CHECK SUCCESS
         bool isSuccess = false;
@@ -992,6 +1000,8 @@ class OfflineDbModule {
         );
       } catch (e) {
         failCount++;
+        log(e.toString(), name: "SUBMIT_RESPONSE_ERR");
+
         LogService.writeLog(message: "[QUEUE_PROCESS_ERROR] ID: $id - $e");
       }
     }

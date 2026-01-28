@@ -789,7 +789,7 @@ class InwardEntryConsolidatedPage
       final directory = await getApplicationDocumentsDirectory();
 
       final String fileName =
-          '${DateTime.now().millisecondsSinceEpoch}_${p.basename(image.path)}';
+          '${DateTime.now().millisecondsSinceEpoch}.${(image.path.split(".").last)}';
       final String localPath = '${directory.path}/$fileName';
 
       await File(image.path).copy(localPath);

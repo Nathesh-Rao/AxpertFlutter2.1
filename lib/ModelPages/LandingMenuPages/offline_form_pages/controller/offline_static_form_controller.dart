@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:axpertflutter/Constants/MyColors.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/db/offline_db_module.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/models/sample_bag_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,15 +14,24 @@ class OfflineStaticFormController extends GetxController {
   Timer? _bagsToSampleDebounce;
   var currentCardIndex = 0.obs;
   var isAtTop = true.obs;
-
+  final pendingCount = 0.obs;
   @override
   void onInit() {
     resetForm();
 
     receivedBagsCtrl.addListener(_onReceivedChanged);
     bagsToSampleCtrl.addListener(_recheckMiniFab);
-
+    refreshPendingCount();
     super.onInit();
+  }
+
+  Future<void> refreshPendingCount() async {
+    try {
+      int count = await OfflineDbModule.getPendingCount();
+      pendingCount.value = count;
+    } catch (e) {
+      print("Error fetching pending count: $e");
+    }
   }
 
   void _onReceivedChanged() {

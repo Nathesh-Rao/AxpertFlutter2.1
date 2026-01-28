@@ -31,12 +31,22 @@ class OfflineFormController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    refreshPendingCount();
     // loadOfflineDashboard(); // 👈 THIS WAS MISSING
+  }
+
+  Future<void> refreshPendingCount() async {
+    try {
+      int count = await OfflineDbModule.getPendingCount();
+      pendingCount.value = count;
+    } catch (e) {
+      print("Error fetching pending count: $e");
+    }
   }
 
   Map<String, dynamic>? offlineUser;
   var offlineFormsCount = 0.obs;
-  int pendingCount = 0;
+  var pendingCount = 0.obs;
 
   bool isDashboardBusy = false;
 
@@ -610,6 +620,7 @@ class OfflineFormController extends GetxController {
       message: "This will delete all pending uploads. Continue?",
       action: () async {
         // await OfflineDbModule.clearPendingRequests();
+        refreshPendingCount();
       },
     );
   }
@@ -1067,12 +1078,12 @@ class OfflineFormController extends GetxController {
 
       // 5. Show Result
       _showSimpleSuccessDialog(title: "Upload Complete", message: resultMsg);
-
+      refreshPendingCount();
       LogService.writeLog(message: "$tag[DONE] $resultMsg");
     } catch (e, st) {
       Get.back(); // Ensure dialog closes
       LogService.writeLog(message: "$tag[FAILED] $e");
-
+      refreshPendingCount();
       Get.snackbar(
         "Upload Error",
         "Failed to process queue. Check logs.",
