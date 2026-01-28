@@ -1,5 +1,9 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
+import 'package:axpertflutter/Constants/AppStorage.dart';
+import 'package:axpertflutter/Constants/Const.dart';
+import 'package:axpertflutter/ModelPages/InApplicationWebView/controller/webview_controller.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/db/offline_db_constants.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/db/offline_db_module.dart';
 import 'package:axpertflutter/Utils/LogServices/LogService.dart';
@@ -22,16 +26,20 @@ class OfflineFormController extends GetxController {
   var isLoading = false.obs;
 
   RxList<OfflineFormPageModel> allPages = <OfflineFormPageModel>[].obs;
+
   RxList<OfflineAttachmentModel> attachments = <OfflineAttachmentModel>[].obs;
 
   final ImagePicker _imagePicker = ImagePicker();
 
   ///////////////////////////////////////
   // ================= OFFLINE DASHBOARD STATE =================
+
+  var isConnected = false.obs;
   @override
   void onInit() {
     super.onInit();
     refreshPendingCount();
+    listenInternetState();
     // loadOfflineDashboard(); // 👈 THIS WAS MISSING
   }
 
@@ -42,6 +50,16 @@ class OfflineFormController extends GetxController {
     } catch (e) {
       print("Error fetching pending count: $e");
     }
+  }
+
+  void listenInternetState() async {
+    final InternetConnectivity net = Get.find<InternetConnectivity>();
+
+    isConnected.value = await net.check();
+
+    ever<bool>(net.isConnected, (connected) {
+      isConnected.value = connected;
+    });
   }
 
   Map<String, dynamic>? offlineUser;
@@ -1503,5 +1521,16 @@ class OfflineFormController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+
+
+  Future<void> onReportCardClick(String transId) async {
+    WebViewController webViewController = Get.find();
+    var urlNew = "aspx/AxMain.aspx?authKey=AXPERT-" +
+        AppStorage().retrieveValue(AppStorage.SESSIONID) +
+        "&pname=" +
+        transId;
+    webViewController.openWebView(url: Const.getFullWebUrl(urlNew));
   }
 }

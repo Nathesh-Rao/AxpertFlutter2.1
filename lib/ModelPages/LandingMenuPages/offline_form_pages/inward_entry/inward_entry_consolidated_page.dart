@@ -783,6 +783,7 @@ class InwardEntryConsolidatedPage
     // 1. Pick Image (Recommended: Reduce quality to save storage/bandwidth)
     final XFile? image = await picker.pickImage(
       source: ImageSource.camera,
+      imageQuality: 70,
     );
 
     if (image != null) {

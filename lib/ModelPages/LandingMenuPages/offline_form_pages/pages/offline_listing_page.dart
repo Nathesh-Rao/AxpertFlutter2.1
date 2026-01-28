@@ -1,9 +1,12 @@
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/Constants/Routes.dart';
+import 'package:axpertflutter/ModelPages/InApplicationWebView/controller/webview_controller.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/controller/offline_form_controller.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/controller/offline_static_form_controller.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/inward_entry/inward_entry_dynamic_controller.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/inward_entry/inward_entry_dynamic_page_v1.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/inward_entry/widgets/form_action_tile.dart';
+import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/inward_entry/widgets/report_action_tile.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/models/form_page_model.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/pages/offline_static_page.dart';
 import 'package:axpertflutter/ModelPages/LandingMenuPages/offline_form_pages/widgets/offline_page_card.dart';
@@ -57,28 +60,31 @@ class OfflineListingPage extends GetView<OfflineFormController> {
                 //   index,
                 // ),
                 itemBuilder: (_, index) {
-                  final page = controller.allPages[index];
-                  if (page.transId != "inward_entry") {
-                    return OfflinePageCardCupertino(
-                      page: page,
-                      index: index,
-                      onTap: () => controller.loadPage(page),
-                      useColoredTile: true,
-                    );
-                  } else {
-                    final rawpage = controller.allRawPages[index];
-                    return SquareActionTile(
-                      icon: Icons.pages,
-                      title: rawpage["caption"],
-                      onTap: () async {
-                        await inwardEntryDynamicController.prepareForm(rawpage);
-                        Get.to(
-                          () => InwardEntryDynamicPageV1(schema: rawpage),
-                          transition: Transition.rightToLeft,
-                        );
-                      },
-                    );
-                  }
+                  return _getGridTile(index, inwardEntryDynamicController);
+
+                  // if (page.transId != "inward_entry") {
+                  //   return OfflinePageCardCupertino(
+                  //     page: page,
+                  //     index: index,
+                  //     onTap: () => controller.loadPage(page),
+                  //     useColoredTile: true,
+                  //   );
+
+                  //   // return CircleAvatar();
+                  // } else {
+                  //   final rawpage = controller.allRawPages[index];
+                  //   return SquareActionTile(
+                  //     icon: Icons.pages,
+                  //     title: rawpage["caption"],
+                  //     onTap: () async {
+                  //       await inwardEntryDynamicController.prepareForm(rawpage);
+                  //       Get.to(
+                  //         () => InwardEntryDynamicPageV1(schema: rawpage),
+                  //         transition: Transition.rightToLeft,
+                  //       );
+                  //     },
+                  //   );
+                  // }
                 },
               ),
             ),
@@ -94,98 +100,47 @@ class OfflineListingPage extends GetView<OfflineFormController> {
       // ),
     );
   }
-}
 
-class SquareActionTile extends StatelessWidget {
-  final String title;
-  final String? subtitle;
-  final IconData icon;
-  final VoidCallback onTap;
-  final Color? color;
+  Widget _getGridTile(
+      int index, InwardEntryDynamicController inwardEntryDynamicController) {
+    final page = controller.allPages[index];
+    final rawPage = controller.allRawPages[index];
 
-  const SquareActionTile({
-    super.key,
-    required this.title,
-    required this.icon,
-    required this.onTap,
-    this.subtitle,
-    this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final Color bg = color ?? const Color(0xFF2563EB);
-
-    final isTablet = Get.width > 600;
-
-    return AspectRatio(
-      aspectRatio: 1,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(18),
-        onTap: onTap,
-        child: Container(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(18),
-              image: DecorationImage(
-                  image: AssetImage("assets/images/card_bg.png"),
-                  fit: BoxFit.cover)),
-          padding: const EdgeInsets.all(14),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Icon bubble
-              Container(
-                width: isTablet ? 84 : 42,
-                height: isTablet ? 84 : 42,
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.18),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(
-                  icon,
-                  size: isTablet ? 44 : 22,
-                  color: Colors.white,
-                ),
-              ),
-
-              const Spacer(),
-
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                decoration: BoxDecoration(
-                    color: Colors.white.withAlpha(50),
-                    borderRadius: BorderRadius.circular(50)),
-                child: Text(
-                  title,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.poppins(
-                    fontSize: isTablet ? 24 : 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                    height: 1.2,
-                  ),
-                ),
-              ),
-
-              if (subtitle != null) ...[
-                const SizedBox(height: 4),
-                Text(
-                  subtitle!,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.poppins(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white.withValues(alpha: 0.85),
-                  ),
-                ),
-              ],
-            ],
-          ),
+    if (page.pageType == "form") {
+      if (page.transId == "inward_entry") {
+        return FormActionTile(
+          icon: Icons.pages,
+          title: rawPage["caption"],
+          onTap: () async {
+            await inwardEntryDynamicController.prepareForm(rawPage);
+            Get.to(
+              () => InwardEntryDynamicPageV1(schema: rawPage),
+              transition: Transition.rightToLeft,
+            );
+          },
+        );
+      } else {
+        return OfflinePageCardCupertino(
+          page: page,
+          index: index,
+          onTap: () => controller.loadPage(page),
+          useColoredTile: true,
+        );
+      }
+    } else if (page.pageType == "iview") {
+      return Obx(
+        () => ReportActionTile(
+          isDisabled: !controller.isConnected.value,
+          icon: Icons.report,
+          title: rawPage["caption"],
+          onTap: () {
+            controller.onReportCardClick(rawPage['transid']);
+          },
         ),
-      ),
-    );
+      );
+    } else {
+      return SizedBox.shrink();
+    }
   }
 }
 

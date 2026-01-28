@@ -10,11 +10,15 @@ import 'package:axpertflutter/Utils/LogServices/LogService.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ExecuteApi.dart';
 import 'package:axpertflutter/Utils/ServerConnections/ServerConnections.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:http/http.dart' as http;
 import 'offline_datasources.dart';
 import 'offline_db_constants.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 enum SubmitStatus { success, savedOffline, apiFailure }
 
@@ -943,22 +947,33 @@ class OfflineDbModule {
         log(originalPayload.toString(), name: "SUBMIT_RESPONSE_BEFORE");
         // 5. CONVERT PATHS -> BASE64 (The Magic Step)
         // This reads local files and creates a temporary upload-ready map
+
+        final stopwatch1 = Stopwatch()..start();
         final Map<String, dynamic> uploadPayload =
             await _convertPayloadPathsToBase64(originalPayload);
-
-
-
-        log(jsonEncode(uploadPayload), name: "SUBMIT_RESPONSE_BODY");
+        stopwatch1.stop();
+        LogService.writeLog(
+          message:
+              "[B64_SPEED] ID: _convertPayloadPathsToBase64 - Took: ${stopwatch1.elapsed.inSeconds} s :: ${stopwatch1.elapsedMilliseconds} ms",
+        );
+        // log(jsonEncode(uploadPayload), name: "SUBMIT_RESPONSE_BODY");
         // debugPrint(
         //     "SUBMIT_RESPONSE_BODY ${jsonEncode(uploadPayload).toString()}");
-
+        // log(jsonEncode(uploadPayload), name: "[PAYLOAD_SPEED]");
+        // savePayloadForPostman(uploadPayload,
+        //     "${originalPayload['publickey']}${DateTime.now().millisecond}");
+        final stopwatch = Stopwatch()..start();
         final dynamic res = await serverConnections.postToServer(
           url: url,
           body: jsonEncode(uploadPayload),
           isBearer: true,
         );
         log(res, name: "SUBMIT_RESPONSE_RES");
-
+        stopwatch.stop();
+        LogService.writeLog(
+          message:
+              "[API_SPEED] ID: $id - Took: ${stopwatch.elapsed.inSeconds} s :: ${stopwatch.elapsedMilliseconds} ms",
+        );
         // 7. CHECK SUCCESS
         bool isSuccess = false;
         String? errorMsg;
@@ -1018,16 +1033,124 @@ class OfflineDbModule {
     return payload;
   }
 
+  static Future<void> savePayloadForPostman(
+      Map<String, dynamic> payload, String name) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/${name}_payload.json');
+
+    await file.writeAsString(jsonEncode(payload));
+
+    print("✅ FILE SAVED AT SPEED: ${file.path}");
+    Get.snackbar("Saved", "File ready for extraction");
+  }
+
   static Future<dynamic> _convertAction(dynamic value) async {
     if (value is String && value.startsWith('/')) {
       final file = File(value);
       if (await file.exists()) {
-        final bytes = await file.readAsBytes();
-        return base64Encode(bytes);
+        // final bytes = await compressFile(file);
+        // if (bytes != null) {
+        //   var b64 = base64Encode(bytes);
+
+        //   return b64;
+        // }
+
+        var b64 = await fileToBase64Correct(file);
+
+        return b64;
       } else {
         return "";
       }
     }
+  }
+
+  static Future<String> fileToBase64Correct(File file) async {
+    final output = StringBuffer();
+
+    final encoder = Base64Encoder();
+    final stream = file.openRead().transform(encoder);
+
+    await for (final chunk in stream) {
+      output.write(chunk);
+    }
+
+    return output.toString();
+  }
+
+  static Future<String> compressAndBase64Large(File file) async {
+    final tempDir = await getTemporaryDirectory();
+    final targetPath =
+        '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+
+    final compressedFile = await FlutterImageCompress.compressAndGetFile(
+      file.path,
+      targetPath,
+      quality: 60,
+      minWidth: 1280,
+      minHeight: 1280,
+    );
+
+    if (compressedFile == null) {
+      throw Exception('Compression failed');
+    }
+
+    final result = await streamFileToBase64(compressedFile);
+    await File(targetPath).delete();
+    return result;
+  }
+
+  static Future<String> streamFileToBase64(XFile file) async {
+    final inputStream = file.openRead();
+    final base64Sink = StringBuffer();
+
+    await for (var chunk in inputStream) {
+      base64Sink.write(base64.encode(chunk));
+    }
+
+    return base64Sink.toString();
+  }
+
+  static Future<String> compressImageToBase64(File imageFile) async {
+    final Uint8List? compressedBytes =
+        await FlutterImageCompress.compressWithFile(
+      imageFile.absolute.path,
+      quality: 65,
+      minWidth: 1280,
+      minHeight: 1280,
+      format: CompressFormat.jpeg,
+    );
+
+    if (compressedBytes == null) {
+      throw Exception("Compression failed");
+    }
+
+    return base64Encode(compressedBytes);
+  }
+
+  // static Future<String> compressAndConvertToBase64(File file) async {
+  //   final dir = await getTemporaryDirectory();
+  //   final targetPath = '${dir.path}/compressed.jpg';
+  //   final compressedFile = await FlutterImageCompress.compressAndGetFile(
+  //     file.absolute.path,
+  //     targetPath,
+  //     quality: 70, // 0–100
+  //     minWidth: 1080, // resize
+  //     minHeight: 1080,
+  //     format: CompressFormat.jpeg,
+  //   );
+
+  //   // _deleteAction(targetPath);
+  //   return base64Encode(await compressedFile!.readAsBytes());
+  // }
+
+  static Future<Uint8List?> compressFile(File file) async {
+    var result = await FlutterImageCompress.compressWithFile(
+      file.absolute.path,
+      quality: 70,
+    );
+    print(file.lengthSync());
+    print(result?.length);
+    return result;
   }
 
   static Future<void> _deletePayloadFiles(Map<String, dynamic> body) async {

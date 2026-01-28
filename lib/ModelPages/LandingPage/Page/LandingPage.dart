@@ -158,7 +158,8 @@ class LandingPage extends StatelessWidget {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                              )),),
+                              )),
+                  ),
                   _simpleRow(
                     isDisabled: true,
                     icon: Icons.clear_all,
@@ -188,7 +189,7 @@ class LandingPage extends StatelessWidget {
                   const Divider(),
                   _sectionHeader("Danger Zone"),
                   _simpleRow(
-                    isDisabled: true,
+                    // isDisabled: true,
                     icon: Icons.warning,
                     color: Colors.red.shade900,
                     title: "Clear ALL Offline Data",

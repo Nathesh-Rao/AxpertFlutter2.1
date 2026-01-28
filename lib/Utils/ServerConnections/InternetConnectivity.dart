@@ -9,7 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class InternetConnectivity extends GetxController {
   var isConnected = false.obs;
-
+  static InternetConnectivity to = Get.find();
   bool _lastConnectionState = true; // assume online initially
 
   InternetConnectivity() {

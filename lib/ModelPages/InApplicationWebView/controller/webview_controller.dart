@@ -5,6 +5,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
 
 class WebViewController extends GetxController {
+  static WebViewController to = Get.find();
   var currentIndex = 0.obs;
   var currentUrl = ''.obs;
   var previousUrl = '';
