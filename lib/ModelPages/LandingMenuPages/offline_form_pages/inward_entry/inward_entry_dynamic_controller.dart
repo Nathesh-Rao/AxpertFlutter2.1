@@ -1056,7 +1056,7 @@ class InwardEntryDynamicController extends GetxController {
       "project": project,
       "submitdata": {
         "username": username,
-        "trace": "true",
+        "trace": "false",
         "keyfield": "",
         "dataarray": {
           "data": {
@@ -1356,7 +1356,7 @@ class InwardEntryDynamicController extends GetxController {
         "project": project,
         "submitdata": {
           "username": username,
-          "trace": "true",
+          "trace": "false",
           "keyfield": "",
           "dataarray": {
             "data": {

@@ -333,6 +333,7 @@ class OfflineLandingPage extends GetView<OfflineFormController> {
                         const Divider(),
                         _sectionHeader("Danger Zone"),
                         _simpleRow(
+                          
                           icon: Icons.warning,
                           color: Colors.red.shade900,
                           title: "Clear ALL Offline Data",

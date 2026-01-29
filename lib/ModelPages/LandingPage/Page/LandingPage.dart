@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:axpertflutter/Constants/MyColors.dart';
 import 'package:axpertflutter/ModelPages/InApplicationWebView/controller/webview_controller.dart';
 import 'package:axpertflutter/ModelPages/InApplicationWebView/page/InApplicationWebView.dart';
@@ -9,6 +11,7 @@ import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetBottomNavigat
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetDrawer.dart';
 import 'package:axpertflutter/ModelPages/LandingPage/Widgets/WidgetLandingAppBarUpdated.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -20,65 +23,12 @@ class LandingPage extends StatelessWidget {
   final LandingPageController landingPageController = Get.find();
   final MenuHomePageController menuHomePageController =
       Get.put(MenuHomePageController());
-  final WebViewController webViewController = Get.find();
-  final ActiveTaskListController _c = Get.put(ActiveTaskListController());
-  final OfflineFormController offlineFormController = Get.find();
-  @override
-  Widget build(BuildContext context) {
-    return Obx(
-      () => PopScope(
-        canPop: false,
-        onPopInvokedWithResult: (didPop, result) async {
-          if (didPop) return; // already popped, no action needed
 
-          if (webViewController.currentIndex.value == 1) {
-            // If WebView is visible, go back to Home instead of closing app
-            webViewController.currentIndex.value = 0;
-          } else {
-            // If already on Home, allow normal app close
-            final shouldPop = await landingPageController.onWillPop();
-            /*if (shouldPop) {
-                  // Completely close the app
-                  SystemNavigator.pop();
-                }*/
-          }
-        },
-        child: IndexedStack(
-          index: webViewController.currentIndex.value,
-          children: [
-            Scaffold(
-              onDrawerChanged: (isOPen) {
-                if (isOPen) {
-                  offlineFormController.refreshPendingCount();
-                }
-              },
-              appBar: WidgetLandingAppBarUpdated(),
-              // appBar: WidgetLandingAppBar(),
-              drawer: _getDrawerWidget(context),
-              bottomNavigationBar: AppBottomNavigation(),
-              body: /*WillPopScope(
-                onWillPop: landingPageController.onWillPop,
-                child:*/
-                  Obx(
-                () => Stack(
-                  children: [
-                    landingPageController.getPage(),
-                  ],
-                ),
-              ),
-              /* menuHomePageController.switchPage.value == true
-                        ? InApplicationWebViewer(menuHomePageController.webUrl)
-                        : landingPageController.getPage(),
-                    ),*/
-            ),
-            //  ),
-            Obx(() =>
-                InApplicationWebViewer(webViewController.currentUrl.value)),
-          ],
-        ),
-      ),
-    );
-  }
+  final OfflineFormController offlineFormController = Get.find();
+  final WebViewController webViewController = Get.find();
+
+  final ActiveTaskListController _c = Get.put(ActiveTaskListController());
+  Timer? _holdTimer;
 
   Widget _getDrawerWidget(BuildContext context) {
     if (landingPageController.bottomIndex.value == 5) {
@@ -97,14 +47,33 @@ class LandingPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ===== HEADER =====
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-              child: Text(
-                "Offline Data Manager",
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: MyColors.AXMDark,
+            GestureDetector(
+              onTapDown: (_) {
+                _holdTimer = Timer(const Duration(seconds: 3), () {
+                  HapticFeedback.mediumImpact();
+                  offlineFormController.actionClearAll();
+                });
+              },
+              onTapUp: (_) {
+                if (_holdTimer?.isActive ?? false) {
+                  _holdTimer?.cancel();
+                }
+              },
+              onTapCancel: () {
+                if (_holdTimer?.isActive ?? false) {
+                  _holdTimer?.cancel();
+                }
+              },
+              
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                child: Text(
+                  "Offline Data Manager",
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: MyColors.AXMDark,
+                  ),
                 ),
               ),
             ),
@@ -138,6 +107,7 @@ class LandingPage extends StatelessWidget {
                   const Divider(),
                   _sectionHeader("Queue"),
                   Obx(
+                    // TODO Percentage || progress indicater for the uploads going on
                     () => _simpleRow(
                         icon: Icons.upload_file,
                         color: Colors.deepOrange,
@@ -189,7 +159,7 @@ class LandingPage extends StatelessWidget {
                   const Divider(),
                   _sectionHeader("Danger Zone"),
                   _simpleRow(
-                    // isDisabled: true,
+                    isDisabled: true,
                     icon: Icons.warning,
                     color: Colors.red.shade900,
                     title: "Clear ALL Offline Data",
@@ -268,6 +238,63 @@ class LandingPage extends StatelessWidget {
         ),
         Positioned(right: 60, top: 2, child: trailing ?? SizedBox.shrink())
       ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(
+      () => PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) async {
+          if (didPop) return; // already popped, no action needed
+
+          if (webViewController.currentIndex.value == 1) {
+            // If WebView is visible, go back to Home instead of closing app
+            webViewController.currentIndex.value = 0;
+          } else {
+            // If already on Home, allow normal app close
+            final shouldPop = await landingPageController.onWillPop();
+            /*if (shouldPop) {
+                  // Completely close the app
+                  SystemNavigator.pop();
+                }*/
+          }
+        },
+        child: IndexedStack(
+          index: webViewController.currentIndex.value,
+          children: [
+            Scaffold(
+              onDrawerChanged: (isOPen) {
+                if (isOPen) {
+                  offlineFormController.refreshPendingCount();
+                }
+              },
+              appBar: WidgetLandingAppBarUpdated(),
+              // appBar: WidgetLandingAppBar(),
+              drawer: _getDrawerWidget(context),
+              bottomNavigationBar: AppBottomNavigation(),
+              body: /*WillPopScope(
+                onWillPop: landingPageController.onWillPop,
+                child:*/
+                  Obx(
+                () => Stack(
+                  children: [
+                    landingPageController.getPage(),
+                  ],
+                ),
+              ),
+              /* menuHomePageController.switchPage.value == true
+                        ? InApplicationWebViewer(menuHomePageController.webUrl)
+                        : landingPageController.getPage(),
+                    ),*/
+            ),
+            //  ),
+            Obx(() =>
+                InApplicationWebViewer(webViewController.currentUrl.value)),
+          ],
+        ),
+      ),
     );
   }
 }
